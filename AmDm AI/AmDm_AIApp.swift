@@ -12,7 +12,7 @@ import SwiftData
 struct AmDm_AIApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            User.self,
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -25,7 +25,7 @@ struct AmDm_AIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            Subscription()
         }
         .modelContainer(sharedModelContainer)
     }

@@ -8,20 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */; };
-		C39C87382BB0073B00EBF82C /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C87372BB0073B00EBF82C /* ContentView.swift */; };
-		C39C873A2BB0073B00EBF82C /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C87392BB0073B00EBF82C /* Item.swift */; };
 		C39C873C2BB0073D00EBF82C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873B2BB0073D00EBF82C /* Assets.xcassets */; };
 		C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */; };
+		C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */; };
+		C3AD8ED22BB1648000D94DB5 /* UserDataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* UserDataModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C39C87322BB0073B00EBF82C /* AmDm AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AmDm AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmDm_AIApp.swift; sourceTree = "<group>"; };
-		C39C87372BB0073B00EBF82C /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		C39C87392BB0073B00EBF82C /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		C39C873B2BB0073D00EBF82C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AmDm_AI.entitlements; sourceTree = "<group>"; };
 		C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		C3AD8ED12BB1647F00D94DB5 /* UserDataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDataModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,11 +54,12 @@
 		C39C87342BB0073B00EBF82C /* AmDm AI */ = {
 			isa = PBXGroup;
 			children = (
-				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
-				C39C87372BB0073B00EBF82C /* ContentView.swift */,
-				C39C87392BB0073B00EBF82C /* Item.swift */,
-				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
+				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
+				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
+				C3B54DFE2BB1AB0A000DCF15 /* Model */,
+				C3B54DFC2BB1AAF9000DCF15 /* Views */,
+				C3B54DFA2BB1AA55000DCF15 /* Screens */,
 				C39C873E2BB0073D00EBF82C /* Preview Content */,
 			);
 			path = "AmDm AI";
@@ -70,6 +71,45 @@
 				C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */ = {
+			isa = PBXGroup;
+			children = (
+				C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */,
+			);
+			path = SubscriptionPlans;
+			sourceTree = "<group>";
+		};
+		C3B54DFC2BB1AAF9000DCF15 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				C3B54DFD2BB1AB02000DCF15 /* Buttons */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		C3B54DFD2BB1AB02000DCF15 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		C3B54DFE2BB1AB0A000DCF15 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C3AD8ED12BB1647F00D94DB5 /* UserDataModel.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,8 +182,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C39C87382BB0073B00EBF82C /* ContentView.swift in Sources */,
-				C39C873A2BB0073B00EBF82C /* Item.swift in Sources */,
+				C3AD8ED22BB1648000D94DB5 /* UserDataModel.swift in Sources */,
+				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -271,19 +311,23 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "AmDm AI/AmDm_AI.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AmDm AI/Preview Content\"";
-				DEVELOPMENT_TEAM = K6HTTLLN74;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AmDm;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -292,14 +336,16 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.amdm.amdm.AmDm-AI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -309,19 +355,23 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = "AmDm AI/AmDm_AI.entitlements";
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AmDm AI/Preview Content\"";
-				DEVELOPMENT_TEAM = K6HTTLLN74;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = AmDm;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -330,14 +380,16 @@
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.amdm.amdm.AmDm-AI";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SDKROOT = auto;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
