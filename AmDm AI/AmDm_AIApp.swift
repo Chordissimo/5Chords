@@ -25,7 +25,7 @@ struct AmDm_AIApp: App {
 
     var body: some Scene {
         WindowGroup {
-            Subscription()
+            AllSongs()
         }
         .modelContainer(sharedModelContainer)
     }

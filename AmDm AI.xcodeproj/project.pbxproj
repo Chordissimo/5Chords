@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */; };
+		C376F5852BB1E6F900826453 /* AllSongs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C376F5842BB1E6F900826453 /* AllSongs.swift */; };
 		C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */; };
 		C39C873C2BB0073D00EBF82C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873B2BB0073D00EBF82C /* Assets.xcassets */; };
 		C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */; };
@@ -15,6 +17,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionPlanCard.swift; sourceTree = "<group>"; };
+		C376F5842BB1E6F900826453 /* AllSongs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSongs.swift; sourceTree = "<group>"; };
 		C39C87322BB0073B00EBF82C /* AmDm AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AmDm AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmDm_AIApp.swift; sourceTree = "<group>"; };
 		C39C873B2BB0073D00EBF82C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -35,6 +39,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		C376F5832BB1E67700826453 /* AllSongs */ = {
+			isa = PBXGroup;
+			children = (
+				C376F5842BB1E6F900826453 /* AllSongs.swift */,
+			);
+			path = AllSongs;
+			sourceTree = "<group>";
+		};
 		C39C87292BB0073B00EBF82C = {
 			isa = PBXGroup;
 			children = (
@@ -58,7 +70,6 @@
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C3B54DFE2BB1AB0A000DCF15 /* Model */,
-				C3B54DFC2BB1AAF9000DCF15 /* Views */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
 				C39C873E2BB0073D00EBF82C /* Preview Content */,
 			);
@@ -76,6 +87,7 @@
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				C376F5832BB1E67700826453 /* AllSongs */,
 				C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */,
 			);
 			path = Screens;
@@ -84,24 +96,10 @@
 		C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */ = {
 			isa = PBXGroup;
 			children = (
+				C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */,
 				C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */,
 			);
 			path = SubscriptionPlans;
-			sourceTree = "<group>";
-		};
-		C3B54DFC2BB1AAF9000DCF15 /* Views */ = {
-			isa = PBXGroup;
-			children = (
-				C3B54DFD2BB1AB02000DCF15 /* Buttons */,
-			);
-			path = Views;
-			sourceTree = "<group>";
-		};
-		C3B54DFD2BB1AB02000DCF15 /* Buttons */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Buttons;
 			sourceTree = "<group>";
 		};
 		C3B54DFE2BB1AB0A000DCF15 /* Model */ = {
@@ -184,7 +182,9 @@
 			files = (
 				C3AD8ED22BB1648000D94DB5 /* UserDataModel.swift in Sources */,
 				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
+				C376F5852BB1E6F900826453 /* AllSongs.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
+				C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

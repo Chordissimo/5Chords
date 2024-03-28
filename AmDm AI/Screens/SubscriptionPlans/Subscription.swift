@@ -10,13 +10,13 @@ import SwiftData
 
 struct Subscription: View {
     @Environment(\.modelContext) private var modelContext
-    @State var user = User()
-    
+    @Binding var user: User
+
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             
             Color.black.ignoresSafeArea()
-            
+                
             VStack {
                 HStack {
                     Text("AmDm ai")
@@ -33,61 +33,28 @@ struct Subscription: View {
                     .frame(width: 80, height: 80)
                     .padding()
                 
-                PlansListView(user: $user)
-
+                ForEach(MockData.plans) { plan in
+                    if(plan.planId > 0) {
+                        SubscriptionPlanCard(title: plan.title, description: plan.description)
+                            .onTapGesture {
+                                user.selectPlan(registrationDate: Date(), subscriptionPlanId: plan.planId)
+                            }
+                    }
+                }
+                
                 Spacer()
                 
                 Button("Limited version") {
-                    print(user.registrationDate as Any, user.subscriptionPlanId as Any)
+                    user.selectPlan(registrationDate: Date(), subscriptionPlanId: 0)
                 }
-                
-            }.safeAreaPadding(.horizontal)
-        }
-    }
-    
-
-}
-
-#Preview {
-    Subscription()
-}
-
-struct PlansListView: View {
-    @Binding var user: User
-    
-    var body: some View {
-        VStack {
-            ForEach(MockData.plans) { plan in
-                SubscriptionPlanCard(title: plan.title, description: plan.description)
-                    .onTapGesture {
-                        user.selectPlan(registrationDate: Date(), subscriptionPlanId: plan.planId)
-                    }
             }
+
         }
     }
+    
+
 }
 
-struct SubscriptionPlanCard: View {
-    let title: String
-    let description: String
-    
-    var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 25)
-                .stroke(Color.white, style: StrokeStyle(lineWidth: 1.0))
-            
-            VStack {
-                Text(title)
-                    .font(.largeTitle)
-                    .foregroundStyle(.white)
-                
-                Text(description)
-                    .font(.title)
-                    .foregroundStyle(.white)
-            }
-            .padding(20)
-            .multilineTextAlignment(.center)
-        }
-        .frame(height: 150)
-    }
-}
+//#Preview {
+//    Subscription()
+//}
