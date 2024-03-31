@@ -43,13 +43,14 @@ struct MockData: Hashable {
 
 // ----- AllSongsView ----
 
-struct Song: Identifiable, Hashable {
+struct SongData: Identifiable, Hashable {
     let id = UUID()
     var created: Date = Date()
     var name: String = "Untitled song"
     var duration: Int = 0
-    var chords = [Chord]()
     var playbackPosition = 0.0
+    var isCompacted = true
+    var chords = [Chord]()
 }
 
 struct Chord: Identifiable, Hashable {
@@ -61,7 +62,7 @@ struct Chord: Identifiable, Hashable {
 
 final class SongsList: ObservableObject {
     @Published var songs = [
-        Song(name: "Stareway to heaven", duration: 100, chords: [
+        SongData(name: "Stareway to heaven", duration: 100, chords: [
             Chord(name: "Am", description: "A minor"),
             Chord(name: "G", description: "G major"),
             Chord(name: "F", description: "F major"),
@@ -71,7 +72,7 @@ final class SongsList: ObservableObject {
             Chord(name: "Csus2", description: "C suspended 2"),
             Chord(name: "Csus4", description: "C suspended 4")]
             ),
-        Song(name: "Back in Black", duration: 60, chords: [
+        SongData(name: "Back in Black", duration: 60, chords: [
             Chord(name: "E", description: "E minor"),
             Chord(name: "D", description: "D major"),
             Chord(name: "A", description: "A major")]
@@ -82,16 +83,24 @@ final class SongsList: ObservableObject {
     init() {}
     
     func add() -> Void {
-        let song = Song(name: "Back in Black", duration: 60, chords: [
+        let song = SongData(name: "Back in Black", duration: 60, isCompacted: false, chords: [
             Chord(name: "E", description: "E minor"),
             Chord(name: "D", description: "D major"),
             Chord(name: "A", description: "A major")]
         )
         self.songs.append(song)
+        self.songs.sort { $0.created > $1.created }
+        self.expand(index: 0)
     }
     
     func del(index: Int) -> Void {
         self.songs.remove(at: index)
+    }
+    
+    func expand(index: Int) {
+        for i in songs.indices {
+            songs[i].isCompacted = i != index
+        }
     }
     
 }

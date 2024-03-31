@@ -14,7 +14,7 @@ struct OptionsToggle: View {
         } label: {
             Image(systemName: "slider.horizontal.3")
                 .resizable()
-                .frame(width: 22, height: 22)
+                .frame(width: 18, height: 18)
                 .aspectRatio(contentMode: .fit)
                 .foregroundStyle(Color.purple)
         }
@@ -22,5 +22,8 @@ struct OptionsToggle: View {
 }
 
 #Preview {
-    OptionsToggle()
+    return ZStack {
+        Color.black
+        OptionsToggle()
+    }
 }

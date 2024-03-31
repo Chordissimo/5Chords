@@ -37,7 +37,7 @@ struct EditableText: View  {
             TextField("", text: $temporaryText, onCommit: { text = temporaryText })
                 .foregroundStyle(Color.white)
                 .fontWeight(.semibold)
-                .font(.system(size: 20))
+                .font(.system(size: 17))
                 .focused($isFocused, equals: true)
                 .onTapGesture { isFocused = true }
         default:

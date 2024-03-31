@@ -23,8 +23,8 @@ struct ChordView: View {
         default:
             ForEach(chords.indices, id: \.self) { index in
                 Text(chords[index].name)
-                    .foregroundStyle(Color.white)
-                    .font(.system(size: 14))
+                    .foregroundStyle(Color.customGray1)
+                    .font(.system(size: 15))
                     .fontWeight(.semibold)
             }
             

@@ -1,0 +1,76 @@
+//
+//  YTlink.swift
+//  AmDm AI
+//
+//  Created by Anton on 30/03/2024.
+//
+
+import SwiftUI
+
+struct YTlink: View {
+    @Binding var text: String
+    @State private var temporaryText: String
+    @FocusState private var isFocused: Bool
+    private var placeholder = "Paste a Youtube link here"
+    
+    init(text: Binding<String>) {
+        self._text = text
+        self.temporaryText = text.wrappedValue
+    }
+    
+    var body: some View {
+        TextField("", text: $temporaryText, prompt: Text(placeholder).foregroundStyle(Color.customGray1))
+            .disableAutocorrection(true)
+            .focused($isFocused, equals: true)
+            .onSubmit {
+                text = temporaryText
+            }
+            .onTapGesture {
+                isFocused = true
+            }
+            .textFieldStyle(CustomTextFieldStyle())
+        
+        
+    }
+    
+}
+
+#Preview {
+    @State var text = ""
+    return ZStack {
+        Color.black
+        YTlink(text: $text)
+    }
+}
+
+extension View {
+    func placeholder<Content: View>(when shouldShow: Bool, alignment: Alignment = .leading, @ViewBuilder placeholder: () -> Content) -> some View {
+
+        return ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
+        }
+    }
+}
+
+struct CustomTextFieldStyle: TextFieldStyle {
+    func _body(configuration: TextField<Self._Label>) -> some View {
+        configuration
+            .foregroundStyle(Color.customGray1)
+            .font(.system(size: 15))
+            .padding(EdgeInsets(top: 5, leading: 55, bottom: 5, trailing: 15))
+            .background(Color.customDarkGray)
+            .cornerRadius(10)
+            .frame(height: 20)
+            .overlay(
+                HStack {
+                    Image("youtube.logo")
+                        .resizable()
+                        .frame(width: 28, height: 20)
+                        .aspectRatio(contentMode: .fit)
+                        .padding(EdgeInsets(top: 5, leading: 15, bottom: 5, trailing: 15))
+                    Spacer()
+                }
+            )
+    }
+}

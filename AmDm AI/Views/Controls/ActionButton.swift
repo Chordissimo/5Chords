@@ -18,18 +18,10 @@ struct ActionButton: View {
             action()
         } label: {
             if let systemImageNameUnwrappred = systemImageName {
-                if let sizeUnwrapped = size {
-                    Image(systemName: systemImageNameUnwrappred)
-                        .resizable()
-                        .frame(width: sizeUnwrapped, height: sizeUnwrapped)
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundStyle(Color.purple)
-                } else {
-                    Image(systemName: systemImageNameUnwrappred)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundStyle(Color.purple)
-                }
+                Image(systemName: systemImageNameUnwrappred)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .foregroundStyle(Color.purple)
             } else {
                 if let titleUnwrapped = title {
                     Text(titleUnwrapped)
@@ -49,6 +41,7 @@ struct ActionButton: View {
     func preview() -> Void {
         print("Tapped")
     }
-    return ActionButton(action: preview)
+    return ActionButton(systemImageName: "trash", action: preview)
+        .frame(width: 20)
 }
 

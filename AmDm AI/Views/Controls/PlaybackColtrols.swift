@@ -11,7 +11,7 @@ struct PlaybackColtrols: View {
     var body: some View {
         Image(systemName: "gobackward.5")
             .resizable()
-            .frame(width: 28, height: 28)
+            .frame(width: 26, height: 26)
             .aspectRatio(contentMode: .fit)
             .foregroundStyle(Color.white)
         Image(systemName: "play.fill")
@@ -22,12 +22,17 @@ struct PlaybackColtrols: View {
             .padding(EdgeInsets(top: 0, leading: 30, bottom: 0, trailing: 25))
         Image(systemName: "goforward.5")
             .resizable()
-            .frame(width: 28, height: 28)
+            .frame(width: 26, height: 26)
             .aspectRatio(contentMode: .fit)
             .foregroundStyle(Color.white)
     }
 }
 
 #Preview {
-    PlaybackColtrols()
+    return ZStack {
+        Color.black
+        HStack {
+            PlaybackColtrols()
+        }
+    }
 }
