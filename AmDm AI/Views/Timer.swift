@@ -10,14 +10,20 @@ import SwiftUI
 
 struct TimerView: View {
     @Binding var timerState: Bool
+    @Binding var duration: Double
+    var songName: String
+    
     @State private var timer: Timer?
-    @State private var elapsedTime: TimeInterval = 0
+//    @State private var elapsedTime: TimeInterval = 0
     @State private var isTimerRunning = false
     
     var body: some View {
         VStack {
             if timerState {
-                Text("\(formatTime(elapsedTime))")
+                Text(songName)
+                    .foregroundStyle(Color.white)
+                    .font(.system(size: 18))
+                Text(formatTime(duration,precision: TimePrecision.santiseconds))
                     .foregroundStyle(Color.customGray1)
                 Text("Recording...")
                     .foregroundStyle(Color.customGray1)
@@ -25,8 +31,8 @@ struct TimerView: View {
             }
         }.onAppear() {
             if timerState {
-                timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-                    elapsedTime += 1
+                timer = Timer.scheduledTimer(withTimeInterval: 0.001, repeats: true) { _ in
+                    duration += 0.001
                 }
                 isTimerRunning = true
             }
@@ -34,21 +40,20 @@ struct TimerView: View {
             timer?.invalidate()
             timer = nil
             isTimerRunning = false
-            elapsedTime = 0
         }
-    }
-        
-    private func formatTime(_ time: TimeInterval) -> String {
-        let minutes = Int(time) / 60
-        let seconds = Int(time) % 60
-        return String(format: "%02d:%02d", minutes, seconds)
     }
 }
 
 
 #Preview {
-    @State var started: Bool = false
+    @State var started: Bool = true
+    @State var duration: Double = TimeInterval(0)
     return VStack {
-        TimerView(timerState: $started)
+        TimerView(timerState: $started, duration: $duration, songName: "New recording")
+        Button("stop") {
+            print(started)
+            started = false
+            print(started)
+        }
     }
 }

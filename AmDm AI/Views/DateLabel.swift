@@ -12,7 +12,7 @@ struct DateLabel: View {
     var color: Color?
     
     var body: some View {
-        Text(dateToString(date: date))
+        Text(dateToString(date))
             .foregroundStyle(color ?? Color.white)
             .font(.system(size: 15))
     }

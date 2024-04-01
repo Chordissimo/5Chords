@@ -8,14 +8,13 @@
 import SwiftUI
 
 struct YTlink: View {
-    @Binding var text: String
-    @State private var temporaryText: String
+    @ObservedObject var songsList: SongsList
+    @State private var temporaryText: String = ""
     @FocusState private var isFocused: Bool
     private var placeholder = "Paste a Youtube link here"
-    
-    init(text: Binding<String>) {
-        self._text = text
-        self.temporaryText = text.wrappedValue
+
+    init(songsList: ObservedObject<SongsList>) {
+        self._songsList = songsList
     }
     
     var body: some View {
@@ -40,17 +39,18 @@ struct YTlink: View {
     }
     
     private func Submit() {
-        text = temporaryText
+//        text = temporaryText
         temporaryText = ""
         isFocused = false
+        songsList.add(duration: TimeInterval(63))
     }
 }
 
 #Preview {
-    @State var text = ""
+    @ObservedObject var songsList = SongsList()
     return ZStack {
         Color.black
-        YTlink(text: $text)
+        YTlink(songsList: _songsList)
     }
 }
 

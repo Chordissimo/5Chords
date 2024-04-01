@@ -12,7 +12,8 @@ struct AllSongs: View {
     @State var bottomSheetVisible = false
     @Environment(\.modelContext) private var modelContext
     @State var user = User()
-    @State var YTtext: String = ""
+//    @State var YTtext: String = ""
+    @State var duration: TimeInterval = 0
     
     @ObservedObject var songsList = SongsList()
     
@@ -25,7 +26,7 @@ struct AllSongs: View {
                     Color.black.ignoresSafeArea()
                     VStack {
                         VStack {
-                            YTlink(text: $YTtext)
+                            YTlink(songsList: _songsList)
                         }
                         .padding(.top,5)
                         .padding(.bottom, 10)
@@ -45,7 +46,7 @@ struct AllSongs: View {
                                 
                                 VStack {
                                     if recordStarted {
-                                        TimerView(timerState: $recordStarted)
+                                        TimerView(timerState: $recordStarted, duration: $duration, songName: songsList.getNewSongName())
                                             .padding(.top, 20)
                                             .transition(.asymmetric(insertion: AnyTransition.move(edge: .bottom).combined(with: .opacity), removal: AnyTransition.move(edge: .top).combined(with: .opacity).animation(.easeOut(duration: 0.1))))
 
@@ -54,7 +55,8 @@ struct AllSongs: View {
                                     RecordButton(parentHeight: windowHeight * 0.1) {
                                         recordStarted.toggle()
                                         if(recordStarted == false) {
-                                            songsList.add()
+                                            songsList.add(duration: duration)
+                                            duration = TimeInterval(0)
                                         }
                                     }
                                 }
@@ -72,7 +74,9 @@ struct AllSongs: View {
                         ActionButton(title: "Upload") {
                             print("Upload tapped")
                         }
-                )
+                ).background(content: {
+                    Text("11")
+                })
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle("All songs")
                 .toolbarBackground(Color.black, for: .navigationBar)

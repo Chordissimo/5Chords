@@ -27,6 +27,7 @@
 		C3A0CF6E2BBAAEA000A0C4FD /* SongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0CF6D2BBAAEA000A0C4FD /* SongList.swift */; };
 		C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */; };
 		C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */; };
+		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		C3A0CF6D2BBAAEA000A0C4FD /* SongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList.swift; sourceTree = "<group>"; };
 		C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		C3C7F4A62BBB273A00E83503 /* SongDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetails.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -75,6 +77,7 @@
 				C357AB0C2BB7E6B200440554 /* PlaybackSlider.swift */,
 				C361E8282BB8A70800F33B40 /* YTlink.swift */,
 				C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */,
+				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -87,7 +90,6 @@
 				C357AB132BB7EB4B00440554 /* ActionButton.swift */,
 				C361E82A2BB927A500F33B40 /* RecordButton.swift */,
 				C384AB822BB935B800A7615A /* ActionsToggle.swift */,
-				C3A0CF6D2BBAAEA000A0C4FD /* SongList.swift */,
 			);
 			path = Controls;
 			sourceTree = "<group>";
@@ -104,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				C376F5842BB1E6F900826453 /* AllSongs.swift */,
+				C3A0CF6D2BBAAEA000A0C4FD /* SongList.swift */,
 			);
 			path = AllSongs;
 			sourceTree = "<group>";
@@ -127,11 +130,11 @@
 		C39C87342BB0073B00EBF82C /* AmDm AI */ = {
 			isa = PBXGroup;
 			children = (
+				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
+				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
+				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
 				C361E8252BB860C200F33B40 /* Helpers */,
 				C357AB032BB7D4CC00440554 /* Views */,
-				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
-				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
-				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C3B54DFE2BB1AB0A000DCF15 /* Model */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
 				C39C873E2BB0073D00EBF82C /* Preview Content */,
@@ -250,6 +253,7 @@
 				C3A0CF6E2BBAAEA000A0C4FD /* SongList.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,
+				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
 				C357AB092BB7E41500440554 /* Chords.swift in Sources */,
 				C357AB102BB7E92E00440554 /* PlaybackColtrols.swift in Sources */,
 				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,

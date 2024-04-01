@@ -7,7 +7,13 @@
 
 import Foundation
 
-func dateToString(date: Date) -> String {
+enum TimePrecision: Int {
+    case milliseconds = 0
+    case santiseconds = 1
+    case seconds = 2
+}
+
+func dateToString(_ date: Date) -> String {
     let calendar = Calendar.current
     let daysBetween = calendar.dateComponents([.day], from: date, to: Date()).day
     let dateFormatter = DateFormatter()
@@ -23,38 +29,18 @@ func dateToString(date: Date) -> String {
     }
 }
 
-func formattedDuration(seconds: Int) -> String {
-    let hours = seconds / 3600
-    let minutes = (seconds % 3600) / 60
-    let remainingSeconds = seconds % 60
+func formatTime(_ time: TimeInterval, precision: TimePrecision? = TimePrecision.seconds) -> String {
+    let minutes = Int(time) / 60
+    let seconds = Int(time) % 60
+    let santiseconds = Int(((time - Double(minutes * 60) - Double(seconds)) * 100).rounded())
+    let milliseconds = Int(((time - Double(minutes * 60) - Double(seconds)) * 1000).rounded())
     
-    var formattedDuration = ""
-
-    if hours > 0 {
-        if hours >= 10 {
-            formattedDuration += "\(hours):"
-        } else if hours < 10 && hours != 0 {
-            formattedDuration += "0\(hours):"
-        } else {
-            formattedDuration += "00:"
+    if let p = precision {
+        if p == TimePrecision.milliseconds {
+            return String(format: "%02d:%02d.%03d", minutes, seconds, milliseconds)
+        } else if p == TimePrecision.santiseconds {
+            return String(format: "%02d:%02d.%02d", minutes, seconds, santiseconds)
         }
     }
-    
-    if minutes >= 10 {
-        formattedDuration += "\(minutes):"
-    } else if minutes < 10 && minutes != 0 {
-        formattedDuration += "0\(minutes):"
-    } else {
-        formattedDuration += "00:"
-    }
-    
-    if remainingSeconds >= 10 {
-        formattedDuration += "\(remainingSeconds)"
-    } else if remainingSeconds < 10 && remainingSeconds != 0 {
-        formattedDuration += "0\(remainingSeconds)"
-    } else {
-        formattedDuration += "00"
-    }
-    
-    return formattedDuration
+    return String(format: "%02d:%02d", minutes, seconds)
 }

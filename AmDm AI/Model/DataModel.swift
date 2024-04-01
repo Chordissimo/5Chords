@@ -47,7 +47,7 @@ struct SongData: Identifiable, Hashable {
     let id = UUID()
     var created: Date = Date()
     var name: String = "Untitled song"
-    var duration: Int = 0
+    var duration: TimeInterval = 0
     var playbackPosition = 0.0
     var isExpanded = false
     var chords = [Chord]()
@@ -62,7 +62,7 @@ struct Chord: Identifiable, Hashable {
 
 final class SongsList: ObservableObject {
     @Published var songs = [
-        SongData(name: "Stareway to heaven", duration: 100, chords: [
+        SongData(name: "Stareway to heaven", duration: TimeInterval(100), chords: [
             Chord(name: "Am", description: "A minor"),
             Chord(name: "G", description: "G major"),
             Chord(name: "F", description: "F major"),
@@ -72,18 +72,18 @@ final class SongsList: ObservableObject {
             Chord(name: "Csus2", description: "C suspended 2"),
             Chord(name: "Csus4", description: "C suspended 4")]
             ),
-        SongData(name: "Back in Black", duration: 60, chords: [
+        SongData(name: "Back in Black", duration: TimeInterval(60), chords: [
             Chord(name: "E", description: "E minor"),
             Chord(name: "D", description: "D major"),
             Chord(name: "A", description: "A major")]
             )
-        
     ]
     
     init() {}
     
-    func add() -> Void {
-        let song = SongData(name: "Back in Black", duration: 60, isExpanded: true, chords: [
+    func add(duration: TimeInterval, songName: String? = "") -> Void {
+        let n = songName!.isEmpty ? getNewSongName() : songName!
+        let song = SongData(name: n, duration: duration, isExpanded: true, chords: [
             Chord(name: "E", description: "E minor"),
             Chord(name: "D", description: "D major"),
             Chord(name: "A", description: "A major")]
@@ -91,6 +91,17 @@ final class SongsList: ObservableObject {
         self.songs.append(song)
         self.songs.sort { $0.created > $1.created }
         self.expand(index: 0)
+    }
+    
+    func getNewSongName() -> String {
+        let songs = self.songs.filter { s in
+            s.name.contains("New recording")
+        }
+        if songs.isEmpty {
+            return "New recording"
+        } else {
+            return "New recording " + String(songs.count)
+        }
     }
     
     func del(index: Int) -> Void {

@@ -59,16 +59,6 @@ struct SongsListView: View {
     }
 }
 
-#Preview {
-    @ObservedObject var songsList = SongsList()
-        songsList.songs.removeAll()
-    return ZStack {
-        Color.black.ignoresSafeArea()
-        SongsListView(songsList: _songsList)
-    }
-}
-
-
 struct CollapsedListItem: View {
     @Binding var song: SongData
     @ObservedObject var songsList: SongsList
@@ -89,7 +79,7 @@ struct CollapsedListItem: View {
                 }
                 Spacer()
                 VStack(spacing: 0) {
-                    Text(formattedDuration(seconds: song.duration))
+                    Text(formatTime(song.duration))
                         .foregroundStyle(Color.customGray1)
                         .font(.system(size: 15))
                         .padding(.top,4)
@@ -105,6 +95,7 @@ struct CollapsedListItem: View {
 struct ExpandedListItem: View {
     @Binding var song: SongData
     @ObservedObject var songsList: SongsList
+    @State var isSongDetailsPresented: Bool = false
     
     var body: some View {
         VStack {
@@ -121,25 +112,41 @@ struct ExpandedListItem: View {
             }
             .padding(.leading,2)
             
-            HStack {
-                //chords
-                ChordView(chords: song.chords)
+            //chords
+            VStack {
+                Button {
+                    print("ddd")
+                    isSongDetailsPresented.toggle()
+                } label: {
+                    HStack {
+                        ChordView(chords: song.chords)
+                    }
+
+                }.buttonStyle(BorderlessButtonStyle())
             }
             .padding(.top, 5)
             .padding(.bottom, 7)
+            .sheet(isPresented: $isSongDetailsPresented) {
+                SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented)
+            }
             
             HStack {
                 // controls
                 ActionButton(systemImageName: "ellipsis.circle") {
                     print("options toggle tapped")
-                }.frame(width: 20)
+                }
+                .frame(width: 20)
+                
                 Spacer()
+                
                 PlaybackColtrols()
+                
                 Spacer()
+                
                 ActionButton(systemImageName: "trash") {
                     songsList.del(song: song)
-                    print(songsList.songs.count)
-                }.frame(width: 18)
+                }
+                .frame(width: 18)
             }
             .padding(.leading,2)
             .padding(.bottom,5)
@@ -172,5 +179,14 @@ struct BlankListView: View {
             }
             .frame(maxHeight: .infinity)
         }
+    }
+}
+
+#Preview {
+    @ObservedObject var songsList = SongsList()
+//        songsList.songs.removeAll()
+    return ZStack {
+        Color.black.ignoresSafeArea()
+        SongsListView(songsList: _songsList)
     }
 }

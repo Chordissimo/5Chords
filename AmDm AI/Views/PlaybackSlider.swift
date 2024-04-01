@@ -9,11 +9,11 @@ import SwiftUI
 
 struct PlaybackSlider: View {
     @Binding private var playbackPosition: Double
-    @Binding private var duration: Int
+    @Binding private var duration: TimeInterval
     @State var startLabel: String
     @State var finishLabel: String
     
-    init(playbackPosition: Binding<Double>, duration: Binding<Int>) {
+    init(playbackPosition: Binding<Double>, duration: Binding<TimeInterval>) {
         self._playbackPosition = playbackPosition
         self._duration = duration
         self.startLabel = "0:00"
@@ -39,14 +39,14 @@ struct PlaybackSlider: View {
             } .padding(EdgeInsets(top: -10, leading: 0, bottom: 0, trailing: 0))
 
         }.onAppear() {
-            finishLabel = formattedDuration(seconds: duration)
+            finishLabel = formatTime(duration)
         }
     }
 }
 
 #Preview {
     @State var playbackPosition = 0.0
-    @State var duration = 75
+    @State var duration = TimeInterval(75)
     return ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
         Color.black.ignoresSafeArea()
         PlaybackSlider(playbackPosition: $playbackPosition,duration: $duration)

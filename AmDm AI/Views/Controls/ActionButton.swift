@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ActionButton: View {
-    var size: CGFloat?
     var systemImageName: String?
     var title: String?
     var action: () -> Void
@@ -21,16 +20,13 @@ struct ActionButton: View {
                 Image(systemName: systemImageNameUnwrappred)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-                    .foregroundStyle(Color.purple)
             } else {
                 if let titleUnwrapped = title {
                     Text(titleUnwrapped)
                         .foregroundStyle(Color.purple)
-                        .fontWeight(.semibold)
                 } else {
                     Text("No label")
                         .foregroundStyle(Color.purple)
-                        .fontWeight(.semibold)
                 }
             }
         }.buttonStyle(BorderlessButtonStyle())
