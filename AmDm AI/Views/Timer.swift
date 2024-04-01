@@ -25,33 +25,20 @@ struct TimerView: View {
             }
         }.onAppear() {
             if timerState {
-                startTimer()
+                timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
+                    elapsedTime += 1
+                }
+                isTimerRunning = true
             }
         }.onDisappear() {
-            stopTimer()
-            resetTimer()
+            timer?.invalidate()
+            timer = nil
+            isTimerRunning = false
+            elapsedTime = 0
         }
     }
-    
-    func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { _ in
-            elapsedTime += 1
-        }
-        isTimerRunning = true
-    }
-    
-    func stopTimer() {
-        timer?.invalidate()
-        timer = nil
-        isTimerRunning = false
-    }
-    
-    func resetTimer() {
-        stopTimer()
-        elapsedTime = 0
-    }
-    
-    func formatTime(_ time: TimeInterval) -> String {
+        
+    private func formatTime(_ time: TimeInterval) -> String {
         let minutes = Int(time) / 60
         let seconds = Int(time) % 60
         return String(format: "%02d:%02d", minutes, seconds)
@@ -60,7 +47,7 @@ struct TimerView: View {
 
 
 #Preview {
-    @State var started = false
+    @State var started: Bool = false
     return VStack {
         TimerView(timerState: $started)
     }

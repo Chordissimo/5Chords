@@ -49,7 +49,7 @@ struct SongData: Identifiable, Hashable {
     var name: String = "Untitled song"
     var duration: Int = 0
     var playbackPosition = 0.0
-    var isCompacted = true
+    var isExpanded = false
     var chords = [Chord]()
 }
 
@@ -83,7 +83,7 @@ final class SongsList: ObservableObject {
     init() {}
     
     func add() -> Void {
-        let song = SongData(name: "Back in Black", duration: 60, isCompacted: false, chords: [
+        let song = SongData(name: "Back in Black", duration: 60, isExpanded: true, chords: [
             Chord(name: "E", description: "E minor"),
             Chord(name: "D", description: "D major"),
             Chord(name: "A", description: "A major")]
@@ -96,11 +96,23 @@ final class SongsList: ObservableObject {
     func del(index: Int) -> Void {
         self.songs.remove(at: index)
     }
-    
-    func expand(index: Int) {
-        for i in songs.indices {
-            songs[i].isCompacted = i != index
+
+    func del(song: SongData) -> Void {
+        if let i = self.songs.firstIndex(of: song) {
+            self.songs.remove(at: i)
         }
     }
-    
+
+    func expand(index: Int) {
+        for i in songs.indices {
+            songs[i].isExpanded = i == index
+        }
+    }
+
+    func expand(song: SongData) {
+        for i in songs.indices {
+            songs[i].isExpanded = songs[i] == song
+        }
+    }
+
 }

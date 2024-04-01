@@ -24,15 +24,14 @@ struct AllSongs: View {
                 ZStack {
                     Color.black.ignoresSafeArea()
                     VStack {
-                        ScrollView {
-                            VStack {
-                                YTlink(text: $YTtext)
-                            }
-                            .padding(.top,5)
-                            .padding(.bottom, 10)
-                            .padding(.trailing, 20)
-                            SongsListView(songsList: _songsList)
+                        VStack {
+                            YTlink(text: $YTtext)
                         }
+                        .padding(.top,5)
+                        .padding(.bottom, 10)
+                        .padding(.trailing, 20)
+
+                        SongsListView(songsList: _songsList)
                         
                         VStack {
                             ZStack(alignment: .bottom) {
@@ -66,12 +65,12 @@ struct AllSongs: View {
                 }
                 .navigationBarItems(
                     leading:
-                        ActionButton(systemImageName: "chevron.left") {
+                        ActionButton(systemImageName: "slider.horizontal.3") {
                             print("Left tapped")
                         },
                     trailing:
-                        ActionButton(title: "Edit") {
-                            print("Edit tapped")
+                        ActionButton(title: "Upload") {
+                            print("Upload tapped")
                         }
                 )
                 .ignoresSafeArea(.keyboard)

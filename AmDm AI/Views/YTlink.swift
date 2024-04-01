@@ -19,20 +19,31 @@ struct YTlink: View {
     }
     
     var body: some View {
-        TextField("", text: $temporaryText, prompt: Text(placeholder).foregroundStyle(Color.customGray1))
-            .disableAutocorrection(true)
-            .focused($isFocused, equals: true)
-            .onSubmit {
-                text = temporaryText
+        ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
+            TextField("", text: $temporaryText, prompt: Text(placeholder).foregroundStyle(Color.customGray1))
+                .disableAutocorrection(true)
+                .focused($isFocused, equals: true)
+                .onSubmit { Submit() }
+                .onTapGesture {
+                    isFocused = true
+                }
+                .textFieldStyle(CustomTextFieldStyle())
+            Button {
+                Submit()
+            } label: {
+                Image(systemName: "arrow.turn.down.left")
+                    .foregroundColor(.purple)
+                    .padding(.trailing,10)
+                    .opacity(temporaryText.isEmpty ? 0 : 1)
             }
-            .onTapGesture {
-                isFocused = true
-            }
-            .textFieldStyle(CustomTextFieldStyle())
-        
-        
+        }
     }
     
+    private func Submit() {
+        text = temporaryText
+        temporaryText = ""
+        isFocused = false
+    }
 }
 
 #Preview {
@@ -40,16 +51,6 @@ struct YTlink: View {
     return ZStack {
         Color.black
         YTlink(text: $text)
-    }
-}
-
-extension View {
-    func placeholder<Content: View>(when shouldShow: Bool, alignment: Alignment = .leading, @ViewBuilder placeholder: () -> Content) -> some View {
-
-        return ZStack(alignment: alignment) {
-            placeholder().opacity(shouldShow ? 1 : 0)
-            self
-        }
     }
 }
 

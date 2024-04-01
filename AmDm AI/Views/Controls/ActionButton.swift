@@ -33,7 +33,7 @@ struct ActionButton: View {
                         .fontWeight(.semibold)
                 }
             }
-        }
+        }.buttonStyle(BorderlessButtonStyle())
     }
 }
 
