@@ -28,6 +28,7 @@
 		C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */; };
 		C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */; };
 		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
+		C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3C7F4D42BBDC72D00E83503 /* SwiftyChords */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,6 +195,7 @@
 			);
 			name = "AmDm AI";
 			packageProductDependencies = (
+				C3C7F4D42BBDC72D00E83503 /* SwiftyChords */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -223,6 +226,7 @@
 			);
 			mainGroup = C39C87292BB0073B00EBF82C;
 			packageReferences = (
+				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -499,6 +503,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/antm677/SwiftyGuitarChords.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		C3C7F4D42BBDC72D00E83503 /* SwiftyChords */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */;
+			productName = SwiftyChords;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = C39C872A2BB0073B00EBF82C /* Project object */;
 }
