@@ -6,10 +6,12 @@
 //
 
 import SwiftUI
+import SwiftyChords
 
 struct SongDetails: View {
     @Binding var song: SongData
     @Binding var isSongDetailsPresented: Bool
+    let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
     var body: some View {
         ZStack {
@@ -31,8 +33,9 @@ struct SongDetails: View {
                         .fontWeight(.semibold)
                     Text(dateToString(song.created) + "   " + formatTime(song.duration))
                         .foregroundStyle(.customGray1)
-                }
-                Spacer()
+                }.padding(.bottom,30)
+                
+                ChordsView(chords: song.chords, style: ChordDisplayStyle.pictogram)
 
                 VStack {
                     PlaybackSlider(playbackPosition: $song.playbackPosition, duration: $song.duration)
@@ -49,17 +52,21 @@ struct SongDetails: View {
                     PlaybackColtrols(scale: .large).frame(width: 100)
                 }.padding()
             }
-            .frame(width: .infinity)
         }
     }
 }
 
+
 #Preview {
     @State var isSongDetailsPresented: Bool = true
     @State var song = SongData(name: "Back in Black", duration: TimeInterval(60), chords: [
-        Chord(name: "E", description: "E minor"),
-        Chord(name: "D", description: "D major"),
-        Chord(name: "A", description: "A major")]
+        Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
+        Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
+        Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
+        Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
+        Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
+        Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
+        Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
     )
     return SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented)
 }

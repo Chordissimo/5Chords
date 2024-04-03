@@ -118,9 +118,9 @@ struct ExpandedListItem: View {
                     print("ddd")
                     isSongDetailsPresented.toggle()
                 } label: {
-                    HStack {
-                        ChordView(chords: song.chords)
-                    }
+//                    HStack {
+                        ChordsView(chords: song.chords) 
+//                    }
 
                 }.buttonStyle(BorderlessButtonStyle())
             }

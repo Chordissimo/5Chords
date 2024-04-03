@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		C357AB052BB7D50900440554 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB042BB7D50900440554 /* EditableText.swift */; };
 		C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB062BB7E30A00440554 /* DateLabel.swift */; };
-		C357AB092BB7E41500440554 /* Chords.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB082BB7E41500440554 /* Chords.swift */; };
+		C357AB092BB7E41500440554 /* ChordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB082BB7E41500440554 /* ChordsView.swift */; };
 		C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB0C2BB7E6B200440554 /* PlaybackSlider.swift */; };
 		C357AB102BB7E92E00440554 /* PlaybackColtrols.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB0F2BB7E92E00440554 /* PlaybackColtrols.swift */; };
 		C357AB122BB7EA2600440554 /* OptionsToggle.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB112BB7EA2600440554 /* OptionsToggle.swift */; };
@@ -33,7 +33,7 @@
 /* Begin PBXFileReference section */
 		C357AB042BB7D50900440554 /* EditableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableText.swift; sourceTree = "<group>"; };
 		C357AB062BB7E30A00440554 /* DateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateLabel.swift; sourceTree = "<group>"; };
-		C357AB082BB7E41500440554 /* Chords.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chords.swift; sourceTree = "<group>"; };
+		C357AB082BB7E41500440554 /* ChordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordsView.swift; sourceTree = "<group>"; };
 		C357AB0C2BB7E6B200440554 /* PlaybackSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackSlider.swift; sourceTree = "<group>"; };
 		C357AB0F2BB7E92E00440554 /* PlaybackColtrols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackColtrols.swift; sourceTree = "<group>"; };
 		C357AB112BB7EA2600440554 /* OptionsToggle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsToggle.swift; sourceTree = "<group>"; };
@@ -73,7 +73,7 @@
 				C357AB0E2BB7E91200440554 /* Controls */,
 				C357AB042BB7D50900440554 /* EditableText.swift */,
 				C357AB062BB7E30A00440554 /* DateLabel.swift */,
-				C357AB082BB7E41500440554 /* Chords.swift */,
+				C357AB082BB7E41500440554 /* ChordsView.swift */,
 				C357AB0C2BB7E6B200440554 /* PlaybackSlider.swift */,
 				C361E8282BB8A70800F33B40 /* YTlink.swift */,
 				C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */,
@@ -192,6 +192,8 @@
 			dependencies = (
 			);
 			name = "AmDm AI";
+			packageProductDependencies = (
+			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
 			productType = "com.apple.product-type.application";
@@ -220,6 +222,8 @@
 				Base,
 			);
 			mainGroup = C39C87292BB0073B00EBF82C;
+			packageReferences = (
+			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -254,7 +258,7 @@
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
-				C357AB092BB7E41500440554 /* Chords.swift in Sources */,
+				C357AB092BB7E41500440554 /* ChordsView.swift in Sources */,
 				C357AB102BB7E92E00440554 /* PlaybackColtrols.swift in Sources */,
 				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
 				C361E82B2BB927A500F33B40 /* RecordButton.swift in Sources */,

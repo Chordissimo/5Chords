@@ -74,9 +74,7 @@ struct AllSongs: View {
                         ActionButton(title: "Upload") {
                             print("Upload tapped")
                         }
-                ).background(content: {
-                    Text("11")
-                })
+                )
                 .ignoresSafeArea(.keyboard)
                 .navigationTitle("All songs")
                 .toolbarBackground(Color.black, for: .navigationBar)

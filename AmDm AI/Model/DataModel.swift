@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import SwiftyChords
 
 @Model
 final class User {
@@ -55,28 +56,27 @@ struct SongData: Identifiable, Hashable {
 
 struct Chord: Identifiable, Hashable {
     let id = UUID()
-    var name: String
-    var description: String
-    //    let pictogram: ???
+    var key: Chords.Key
+    var suffix: Chords.Suffix
 }
 
 final class SongsList: ObservableObject {
     @Published var songs = [
         SongData(name: "Stareway to heaven", duration: TimeInterval(100), chords: [
-            Chord(name: "Am", description: "A minor"),
-            Chord(name: "G", description: "G major"),
-            Chord(name: "F", description: "F major"),
-            Chord(name: "Fmaj7", description: "F major 7"),
-            Chord(name: "Dsus2", description: "D suspended 2"),
-            Chord(name: "Dsus4", description: "D suspended 4"),
-            Chord(name: "Csus2", description: "C suspended 2"),
-            Chord(name: "Csus4", description: "C suspended 4")]
-            ),
+            Chord(key: Chords.Key.a, suffix: Chords.Suffix.minor),
+            Chord(key: Chords.Key.g, suffix: Chords.Suffix.major),
+            Chord(key: Chords.Key.f, suffix: Chords.Suffix.major),
+            Chord(key: Chords.Key.f, suffix: Chords.Suffix.majorSeven),
+            Chord(key: Chords.Key.d, suffix: Chords.Suffix.susTwo),
+            Chord(key: Chords.Key.d, suffix: Chords.Suffix.susFour),
+            Chord(key: Chords.Key.c, suffix: Chords.Suffix.susTwo),
+            Chord(key: Chords.Key.c, suffix: Chords.Suffix.susFour)]
+        ),
         SongData(name: "Back in Black", duration: TimeInterval(60), chords: [
-            Chord(name: "E", description: "E minor"),
-            Chord(name: "D", description: "D major"),
-            Chord(name: "A", description: "A major")]
-            )
+            Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
+            Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
+            Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
+        )
     ]
     
     init() {}
@@ -84,9 +84,9 @@ final class SongsList: ObservableObject {
     func add(duration: TimeInterval, songName: String? = "") -> Void {
         let n = songName!.isEmpty ? getNewSongName() : songName!
         let song = SongData(name: n, duration: duration, isExpanded: true, chords: [
-            Chord(name: "E", description: "E minor"),
-            Chord(name: "D", description: "D major"),
-            Chord(name: "A", description: "A major")]
+            Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
+            Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
+            Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
         )
         self.songs.append(song)
         self.songs.sort { $0.created > $1.created }
