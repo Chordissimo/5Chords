@@ -35,8 +35,7 @@ struct ChordsView: View {
                 HStack {
                     Spacer()
                     ForEach(chords.indices, id: \.self) { index in
-                        let suffix = ["major","minor"].contains(chords[index].suffix.rawValue) ? "" : chords[index].suffix.rawValue
-                        Text(chords[index].key.rawValue + suffix)
+                        Text(chords[index].key.display.symbol + chords[index].suffix.display.symbolized)
                             .foregroundStyle(Color.customGray1)
                             .font(.system(size: 15))
                             .fontWeight(.semibold)

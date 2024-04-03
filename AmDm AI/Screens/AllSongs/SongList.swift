@@ -115,7 +115,6 @@ struct ExpandedListItem: View {
             //chords
             VStack {
                 Button {
-                    print("ddd")
                     isSongDetailsPresented.toggle()
                 } label: {
 //                    HStack {
@@ -132,11 +131,8 @@ struct ExpandedListItem: View {
             
             HStack {
                 // controls
-                ActionButton(systemImageName: "ellipsis.circle") {
-                    print("options toggle tapped")
-                }
-                .frame(width: 20)
-                
+                Share(label: "", content: "Chords by AmDm AI")
+
                 Spacer()
                 
                 PlaybackColtrols()

@@ -17,7 +17,7 @@ func dateToString(_ date: Date) -> String {
     let calendar = Calendar.current
     let daysBetween = calendar.dateComponents([.day], from: date, to: Date()).day
     let dateFormatter = DateFormatter()
-
+    
     if daysBetween == 0 {
         dateFormatter.dateFormat = "hh:mm a"
         return dateFormatter.string(from: date)

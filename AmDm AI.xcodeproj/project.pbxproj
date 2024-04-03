@@ -29,6 +29,7 @@
 		C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */; };
 		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
 		C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3C7F4D42BBDC72D00E83503 /* SwiftyChords */; };
+		C3C7F4D72BBDCBBB00E83503 /* Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4D62BBDCBBB00E83503 /* Share.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +56,7 @@
 		C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
 		C3C7F4A62BBB273A00E83503 /* SongDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetails.swift; sourceTree = "<group>"; };
+		C3C7F4D62BBDCBBB00E83503 /* Share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Share.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				C361E8282BB8A70800F33B40 /* YTlink.swift */,
 				C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */,
 				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
+				C3C7F4D62BBDCBBB00E83503 /* Share.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -259,6 +262,7 @@
 				C361E8292BB8A70800F33B40 /* YTlink.swift in Sources */,
 				C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */,
 				C3A0CF6E2BBAAEA000A0C4FD /* SongList.swift in Sources */,
+				C3C7F4D72BBDCBBB00E83503 /* Share.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,

@@ -9,10 +9,8 @@ import SwiftUI
 
 struct AllSongs: View {
     @State var recordStarted: Bool = false
-    @State var bottomSheetVisible = false
     @Environment(\.modelContext) private var modelContext
     @State var user = User()
-//    @State var YTtext: String = ""
     @State var duration: TimeInterval = 0
     
     @ObservedObject var songsList = SongsList()
