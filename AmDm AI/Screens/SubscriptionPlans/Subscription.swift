@@ -19,7 +19,7 @@ struct Subscription: View {
                 
             VStack {
                 HStack {
-                    Text("AmDm ai")
+                    Text("Chords")
                         .font(.largeTitle)
                         .bold()
                         .foregroundStyle(.white)
@@ -55,6 +55,7 @@ struct Subscription: View {
 
 }
 
-//#Preview {
-//    Subscription()
-//}
+#Preview {
+    @State var user = User()
+    return Subscription(user: $user)
+}

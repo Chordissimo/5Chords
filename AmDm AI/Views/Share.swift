@@ -13,12 +13,12 @@ struct Share: View {
     
     var body: some View {
         ActionButton(systemImageName: "square.and.arrow.up", title: label) {
-            shareButton(content)
+            shareSheet(content)
         }.frame(width: 18)
     }
 }
 
-func shareButton(_ content: String) {
+func shareSheet(_ content: String) {
     let activityController = UIActivityViewController(activityItems: [content], applicationActivities: nil)
     
     let scenes = UIApplication.shared.connectedScenes

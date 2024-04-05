@@ -8,12 +8,12 @@
 import SwiftUI
 
 struct RecordButton: View {
-    @State var state: Bool = false
-    var parentHeight = 0.0
+    var height: Double
+    @Binding var recordStarted: Bool
     var action: () -> Void
     
     var body: some View {
-        let whiteCircleHeight = parentHeight * 0.7
+        let whiteCircleHeight = height * 0.7
         let grayCircleHeight = whiteCircleHeight - 5
         let redCircleHeight = grayCircleHeight - 5
         let redSquareHeight = redCircleHeight * 0.5
@@ -28,13 +28,12 @@ struct RecordButton: View {
                 .foregroundStyle(Color.customDarkGray)
             Button {
                 withAnimation {
-                    state.toggle()
                     action()
                 }
             } label: {
                 ZStack {
                     Circle()
-                        .frame(width: state ? redCircleHeightTapped : redCircleHeight, height: state ? redCircleHeightTapped : redCircleHeight)
+                        .frame(width: recordStarted ? redCircleHeightTapped : redCircleHeight, height: recordStarted ? redCircleHeightTapped : redCircleHeight)
                         .foregroundStyle(Color.red)
                     
                     RoundedRectangle(cornerRadius: 5)
@@ -48,13 +47,17 @@ struct RecordButton: View {
 }
 
 #Preview {
+    @State var recordStarted = false
     func preview() -> Void {
-//        print("isTapped")
+        //        print("isTapped")
     }
-    return ZStack(alignment: .bottom){
+    return ZStack {
         Color.black.ignoresSafeArea()
-        RecordButton(parentHeight: 100) {
-            preview()
-        }
-    }.ignoresSafeArea()
+        VStack {
+            RecordButton(height: 100, recordStarted: $recordStarted) {
+                preview()
+            }
+        }.frame(height: 100).border(Color.white, width: 1)
+    }
+    
 }

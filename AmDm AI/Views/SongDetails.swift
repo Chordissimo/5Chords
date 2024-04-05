@@ -11,7 +11,7 @@ import SwiftyChords
 struct SongDetails: View {
     @Binding var song: SongData
     @Binding var isSongDetailsPresented: Bool
-//    @Binding var isShareSheetPresented: Bool
+    @Binding var isShareSheetPresented: Bool
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
     var body: some View {
@@ -19,12 +19,12 @@ struct SongDetails: View {
             Color.customDarkGray.ignoresSafeArea()
             VStack {
                 HStack {
-//                    ActionButton(systemImageName: "square.and.arrow.up") {
-//                        isSongDetailsPresented = false
-//                    }
-                    Share(label: "Share...", content: "Chords by AmDm AI")
-                        .padding()
-
+                    ActionButton(systemImageName: "square.and.arrow.up") {
+                        isSongDetailsPresented = false
+                    }
+                    .frame(width:20)
+                    .foregroundColor(.purple)
+                    .padding()
 
                     Spacer()
                     ActionButton(systemImageName: "xmark.circle.fill") {
@@ -67,7 +67,7 @@ struct SongDetails: View {
 
 #Preview {
     @State var isSongDetailsPresented: Bool = true
-//    @State var isShareSheetPresented: Bool = true
+    @State var isShareSheetPresented: Bool = true
     
     @State var song = SongData(name: "Back in Black", duration: TimeInterval(60), chords: [
         Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
@@ -78,7 +78,7 @@ struct SongDetails: View {
         Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
         Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
     )
-    return SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented)
+    return SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
 }
 
 

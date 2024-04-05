@@ -96,6 +96,7 @@ struct ExpandedListItem: View {
     @Binding var song: SongData
     @ObservedObject var songsList: SongsList
     @State var isSongDetailsPresented: Bool = false
+    @State var isShareSheetPresented: Bool = false
     
     var body: some View {
         VStack {
@@ -125,13 +126,15 @@ struct ExpandedListItem: View {
             }
             .padding(.top, 5)
             .padding(.bottom, 7)
-            .sheet(isPresented: $isSongDetailsPresented) {
-                SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented)
+            .sheet(isPresented: $isSongDetailsPresented, onDismiss: {
+                songDetailsDismissed(isShareSheetPresented)
+            }) {
+                SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
             }
             
             HStack {
                 // controls
-                Share(label: "", content: "Chords by AmDm AI")
+                Share(label: "", content: "Chords for " + song.name)
 
                 Spacer()
                 
@@ -147,12 +150,14 @@ struct ExpandedListItem: View {
             .padding(.leading,2)
             .padding(.bottom,5)
         }
-        //        .transition(
-        //            .asymmetric(
-        //                insertion: AnyTransition.move(edge: .top),
-        //                removal: AnyTransition.identity
-        //            )
-        //        )
+    }
+    
+    func songDetailsDismissed(_ isShareSheetPresented: Bool) {
+        if !isShareSheetPresented {
+            if let s = songsList.getExpanded() {
+                shareSheet("Chords for " + s.name)
+            }
+        }
     }
 }
 

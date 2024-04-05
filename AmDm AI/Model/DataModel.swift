@@ -125,5 +125,13 @@ final class SongsList: ObservableObject {
             songs[i].isExpanded = songs[i] == song
         }
     }
+    
+    func getExpanded() -> SongData? {
+        if let i = self.songs.firstIndex(where: { $0.isExpanded == true }) {
+            return self.songs[i]
+        } else {
+            return nil
+        }
+    }
 
 }
