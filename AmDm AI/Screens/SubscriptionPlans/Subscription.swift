@@ -44,8 +44,10 @@ struct Subscription: View {
                 
                 Spacer()
                 
-                Button("Limited version") {
-                    user.selectPlan(registrationDate: Date(), subscriptionPlanId: 0)
+                if user.subscriptionPlanId == -1 {
+                    Button("Limited version") {
+                        user.selectPlan(registrationDate: Date(), subscriptionPlanId: 0)
+                    }
                 }
             }
 

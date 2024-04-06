@@ -35,7 +35,7 @@ struct AllSongs: View {
                         .padding(.trailing, 20)
                         
                         //List of recordings
-                        SongsListView(songsList: _songsList)
+                        SongsListView(songsList: songsList)
                         
                         //Record button
                         VStack {

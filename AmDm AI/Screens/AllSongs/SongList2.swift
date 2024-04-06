@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct SongsListView: View {
+struct SongsListView2: View {
     @ObservedObject var songsList: SongsList
     
     init(songsList: ObservedObject<SongsList>) {
@@ -22,11 +22,6 @@ struct SongsListView: View {
                 ForEach($songsList.songs) { song in
                     VStack {
                         CollapsedListItem(song: song, songsList: songsList)
-                            .onTapGesture {
-                                withAnimation(.smooth) {
-                                    songsList.expand(song: song.wrappedValue)
-                                }
-                            }
                             .swipeActions {
                                 Button(role: .destructive) {
                                     songsList.del(song: song.wrappedValue)
@@ -86,8 +81,17 @@ struct CollapsedListItem: View {
                 }
             }
             .background(Color.black)
+            .transition(.identity)
+            .onTapGesture {
+                withAnimation(.smooth) {
+                    songsList.expand(song: song)
+                }
+            }
         } else {
             ExpandedListItem(song: $song, songsList: songsList)
+                .transition(.asymmetric(
+                    insertion: .move(edge: .top),
+                    removal: .identity))
         }
     }
 }
@@ -118,10 +122,7 @@ struct ExpandedListItem: View {
                 Button {
                     isSongDetailsPresented.toggle()
                 } label: {
-//                    HStack {
-                        ChordsView(chords: song.chords) 
-//                    }
-
+                    ChordsView(chords: song.chords)
                 }.buttonStyle(BorderlessButtonStyle())
             }
             .padding(.top, 5)
@@ -135,7 +136,7 @@ struct ExpandedListItem: View {
             HStack {
                 // controls
                 Share(label: "", content: "Chords for " + song.name)
-
+                
                 Spacer()
                 
                 PlaybackColtrols()
@@ -150,6 +151,7 @@ struct ExpandedListItem: View {
             .padding(.leading,2)
             .padding(.bottom,5)
         }
+        .border(Color.blue, width: 1)
     }
     
     func songDetailsDismissed(_ isShareSheetPresented: Bool) {
@@ -188,6 +190,6 @@ struct BlankListView: View {
 //        songsList.songs.removeAll()
     return ZStack {
         Color.black.ignoresSafeArea()
-        SongsListView(songsList: _songsList)
+        SongsListView2(songsList: _songsList)
     }
 }

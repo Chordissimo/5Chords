@@ -21,6 +21,7 @@ struct SongDetails: View {
                 HStack {
                     ActionButton(systemImageName: "square.and.arrow.up") {
                         isSongDetailsPresented = false
+                        isShareSheetPresented = true
                     }
                     .frame(width:20)
                     .foregroundColor(.purple)
@@ -29,6 +30,7 @@ struct SongDetails: View {
                     Spacer()
                     ActionButton(systemImageName: "xmark.circle.fill") {
                         isSongDetailsPresented = false
+                        isShareSheetPresented = false
                     }
                     .frame(height: 25)
                     .foregroundColor(.customGray)
