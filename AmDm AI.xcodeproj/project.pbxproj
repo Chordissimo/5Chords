@@ -32,6 +32,8 @@
 		C3C7F4D72BBDCBBB00E83503 /* Share.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4D62BBDCBBB00E83503 /* Share.swift */; };
 		C3C7F4D92BC10FB300E83503 /* SongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4D82BC10FB300E83503 /* SongList.swift */; };
 		C3C7F4DB2BC1227C00E83503 /* SongList1.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4DA2BC1227C00E83503 /* SongList1.swift */; };
+		C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EC2BC1C3010063189D /* Settings.swift */; };
+		C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -61,6 +63,9 @@
 		C3C7F4D62BBDCBBB00E83503 /* Share.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Share.swift; sourceTree = "<group>"; };
 		C3C7F4D82BC10FB300E83503 /* SongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList.swift; sourceTree = "<group>"; };
 		C3C7F4DA2BC1227C00E83503 /* SongList1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList1.swift; sourceTree = "<group>"; };
+		C3DE80EC2BC1C3010063189D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "AmDm-AI-Info.plist"; sourceTree = SOURCE_ROOT; };
+		C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedVersionLabel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,8 +92,7 @@
 				C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */,
 				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
 				C3C7F4D62BBDCBBB00E83503 /* Share.swift */,
-				C3C7F4D82BC10FB300E83503 /* SongList.swift */,
-				C3C7F4DA2BC1227C00E83503 /* SongList1.swift */,
+				C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -117,7 +121,9 @@
 			isa = PBXGroup;
 			children = (
 				C376F5842BB1E6F900826453 /* AllSongs.swift */,
+				C3C7F4DA2BC1227C00E83503 /* SongList1.swift */,
 				C3A0CF6D2BBAAEA000A0C4FD /* SongList2.swift */,
+				C3C7F4D82BC10FB300E83503 /* SongList.swift */,
 			);
 			path = AllSongs;
 			sourceTree = "<group>";
@@ -141,6 +147,7 @@
 		C39C87342BB0073B00EBF82C /* AmDm AI */ = {
 			isa = PBXGroup;
 			children = (
+				C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
 				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
@@ -164,6 +171,7 @@
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				C3DE80EB2BC1C2BE0063189D /* Settings */,
 				C376F5832BB1E67700826453 /* AllSongs */,
 				C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */,
 			);
@@ -185,6 +193,14 @@
 				C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */,
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		C3DE80EB2BC1C2BE0063189D /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				C3DE80EC2BC1C3010063189D /* Settings.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -271,7 +287,9 @@
 				C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */,
 				C3A0CF6E2BBAAEA000A0C4FD /* SongList2.swift in Sources */,
 				C3C7F4D72BBDCBBB00E83503 /* Share.swift in Sources */,
+				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
+				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
 				C357AB092BB7E41500440554 /* ChordsView.swift in Sources */,
@@ -419,6 +437,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AmDm-AI-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AmDm;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -432,6 +451,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
@@ -463,6 +483,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "AmDm-AI-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = AmDm;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
@@ -476,6 +497,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";

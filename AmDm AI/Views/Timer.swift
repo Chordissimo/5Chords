@@ -18,34 +18,46 @@ struct TimerView: View {
     @State private var isTimerRunning = false
     
     var body: some View {
-        VStack {
-            if timerState {
-                Text(songName)
-                    .foregroundStyle(Color.white)
-                    .font(.system(size: 18))
-                Text(formatTime(duration,precision: TimePrecision.santiseconds))
-                    .foregroundStyle(Color.customGray1)
-                Text("Recording...")
-                    .foregroundStyle(Color.customGray1)
-                    .padding(.top, 20)
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
+            RoundedRectangle(cornerRadius: 16)
+                .ignoresSafeArea()
+                .ignoresSafeArea(.keyboard)
+                .frame(height: .infinity)
+                .frame(maxWidth: .infinity)
+                .foregroundColor(Color.customDarkGray)
+            VStack {
+                if timerState {
+                    Text(songName)
+                        .foregroundStyle(Color.white)
+                        .font(.system(size: 18))
+                    Text(formatTime(duration,precision: TimePrecision.santiseconds))
+                        .foregroundStyle(Color.customGray1)
+                    Text("Recording...")
+                        .foregroundStyle(Color.customGray1)
+                        .padding(.top, 20)
+                }
             }
-        }
-        .onAppear() {
-            if timerState {
-                timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in
-                    duration += 0.01
-                    if maxDuration > 0 {
-                        if duration >= 15 {
-                            stopTimer()
-                            timerState.toggle()
-                            NotificationCenter.default.post(name: Notification.Name.autoStop, object: nil)
+            .ignoresSafeArea()
+            .padding()
+            .onAppear() {
+                if timerState {
+                    timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { _ in
+                        duration += 0.01
+                        if maxDuration > 0 {
+                            if duration >= 15 {
+                                stopTimer()
+                                withAnimation {
+                                    timerState.toggle()
+                                }
+                                NotificationCenter.default.post(name: Notification.Name.autoStop, object: nil)
+                            }
                         }
                     }
+                    isTimerRunning = true
                 }
-                isTimerRunning = true
+            }.onDisappear() {
+                stopTimer()
             }
-        }.onDisappear() {
-            stopTimer()
         }
     }
     
@@ -67,9 +79,7 @@ extension Notification.Name {
     return VStack {
         TimerView(timerState: $started, duration: $duration, maxDuration: 15, songName: "New recording")
         Button("stop") {
-            print(started)
             started = false
-            print(started)
-        }.transition(.slide)//.animation(.snappy,value: 3)
+        }
     }
 }

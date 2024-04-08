@@ -14,8 +14,7 @@ struct SubscriptionPlanCard: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerRadius: 25)
-                .stroke(Color.white, style: StrokeStyle(lineWidth: 1.0))
-                .fill()
+                .stroke(Color.customGray, style: StrokeStyle(lineWidth: 1.0))
             
             VStack {
                 Text(title)

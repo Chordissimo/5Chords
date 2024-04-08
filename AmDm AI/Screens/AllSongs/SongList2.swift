@@ -106,7 +106,7 @@ struct ExpandedListItem: View {
         VStack {
             VStack(alignment: .leading, spacing: 0) {
                 //Title
-                EditableText(text: $song.name, style: EditableTextDisplayStyle.songTitle)
+                EditableText(text: $song.name, style: EditableTextDisplayStyle.songTitle, isEditable: true)
                 //Song creation date
                 DateLabel(date: song.created, color: Color.customGray1)
             }

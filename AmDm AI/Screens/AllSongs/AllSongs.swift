@@ -13,7 +13,8 @@ struct AllSongs: View {
     @State var user = User()
     @State var duration: TimeInterval = 0
     @State var runsCount: Int = 0
-    
+    @State var showSettings = false
+    @State var showUpload = false
     @ObservedObject var songsList = SongsList()
     
     
@@ -40,16 +41,33 @@ struct AllSongs: View {
                         //Record button
                         VStack {
                             ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                                RoundedRectangle(cornerRadius: recordStarted ? 16 : 0)
-                                    .ignoresSafeArea()
-                                    .ignoresSafeArea(.keyboard)
-                                    .frame(height: recordStarted ? windowHeight * 0.25 : windowHeight * 0.1)
-                                    .frame(maxWidth: .infinity)
-                                    .foregroundColor(Color.customDarkGray)
+                                if recordStarted {
+                                    TimerView(timerState: $recordStarted, duration: $duration, maxDuration: maxDuration, songName: songsList.getNewSongName())
+                                        .padding(.top, 20)
+                                        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.autoStop)) { obj in
+                                            songsList.add(duration: duration)
+                                            duration = TimeInterval(0)
+                                            runsCount = runsCount < 3 ? runsCount + 1 : runsCount
+                                        }
+                                        .frame(height: windowHeight * 0.3)
+                                        .transition(.move(edge: .bottom))
+                                } else {
+                                    Rectangle()
+                                        .ignoresSafeArea()
+                                        .ignoresSafeArea(.keyboard)
+                                        .frame(height: windowHeight * 0.1)
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(Color.customDarkGray)
+                                        .transition(.move(edge: .top))
+                                }
+                                
+                                LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
                                 
                                 RecordButton(height: windowHeight * 0.1, recordStarted: $recordStarted) {
                                     if (user.subscriptionPlanId == 0 && runsCount < 3) || user.subscriptionPlanId > 0 {
-                                        recordStarted.toggle()
+                                        withAnimation {
+                                            recordStarted.toggle()
+                                        }
                                         if recordStarted == false {
                                             songsList.add(duration: duration)
                                             duration = TimeInterval(0)
@@ -59,26 +77,7 @@ struct AllSongs: View {
                                         user.accessDisallowed = true
                                     }
                                 }
-                                VStack {
-                                    if recordStarted {
-                                        TimerView(timerState: $recordStarted, duration: $duration, maxDuration: maxDuration, songName: songsList.getNewSongName())
-                                            .padding(.top, 20)
-                                            .onReceive(NotificationCenter.default.publisher(for: Notification.Name.autoStop)) { obj in
-                                                songsList.add(duration: duration)
-                                                duration = TimeInterval(0)
-                                                runsCount = runsCount < 3 ? runsCount + 1 : runsCount
-                                            }
-                                    }
-
-                                    Spacer()
-                                    if user.subscriptionPlanId == 0 {
-                                        Text("Limited version")
-                                            .foregroundStyle(.customGray)
-                                            .padding(.bottom,5)
-                                    }
-                                }
-                                .ignoresSafeArea(.all, edges: .bottom)
-                                .frame(height: recordStarted ? windowHeight * 0.25 : windowHeight * 0.1)
+                                .padding(.bottom, 12)
                             }
                         }
                     }
@@ -86,12 +85,14 @@ struct AllSongs: View {
                 .navigationBarItems(
                     leading:
                         ActionButton(systemImageName: "slider.horizontal.3") {
-                            print("Left tapped")
+                            withAnimation {
+                                showSettings.toggle()
+                            }
                         }
                         .foregroundColor(.purple)
                     , trailing:
                         ActionButton(title: "Upload") {
-                            print("Upload tapped")
+                            showUpload = true
                         }
                 )
                 .ignoresSafeArea(.keyboard)
@@ -102,8 +103,23 @@ struct AllSongs: View {
                 .fullScreenCover(isPresented: $user.accessDisallowed) {
                     Subscription(user: $user)
                 }
+                .fullScreenCover(isPresented: $showSettings) {
+                    Settings(showSettings: $showSettings)
+                        .animation(.easeInOut(duration: 2), value: showSettings)
+                }
+                .fileImporter(
+                    isPresented: $showUpload,
+                    allowedContentTypes: [.plainText]
+                ) { result in
+                    switch result {
+                    case .success(let file):
+                        print(file.absoluteString)
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
             }
-        }
+        }.edgesIgnoringSafeArea(.bottom)
     }
 }
 

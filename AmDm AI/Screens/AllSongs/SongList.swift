@@ -53,15 +53,13 @@ struct ContentCell {
     var body: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text(song.name)
-                    .foregroundStyle(Color.white)
-                    .fontWeight(.semibold)
-                    .font(.system(size: 17))
+                EditableText(text: $song.name, style: EditableTextDisplayStyle.songTitle, isEditable: song.isExpanded)
                 HStack {
                     DateLabel(date: song.created, color: Color.customGray1)
                     Spacer()
                     if !song.isExpanded {
-                        Text(formatTime(song.duration)).foregroundStyle(Color.customGray1)
+                        Text(formatTime(song.duration))
+                            .foregroundStyle(Color.customGray1)
                             .font(.system(size: 15))
                     }
                 }
@@ -74,7 +72,6 @@ struct ContentCell {
                         VStack {
                             Button {
                                 isSongDetailsPresented = true
-                                print(isSongDetailsPresented)
                             } label: {
                                 ChordsView(chords: song.chords)
                                     .padding(.vertical, 10)
@@ -152,7 +149,6 @@ struct EmptyListView: View {
 
 #Preview {
     @ObservedObject var songsList = SongsList()
-//            songsList.songs.removeAll()
     return ZStack {
         Color.black.ignoresSafeArea()
         SongsListView(songsList: songsList)
