@@ -22,7 +22,7 @@ struct TimerView: View {
             RoundedRectangle(cornerRadius: 16)
                 .ignoresSafeArea()
                 .ignoresSafeArea(.keyboard)
-                .frame(height: .infinity)
+//                .frame(height: .infinity)
                 .frame(maxWidth: .infinity)
                 .foregroundColor(Color.customDarkGray)
             VStack {
@@ -30,11 +30,17 @@ struct TimerView: View {
                     Text(songName)
                         .foregroundStyle(Color.white)
                         .font(.system(size: 18))
+                        .transition(.identity)
+                        .animation(.linear, value: 0.1)
                     Text(formatTime(duration,precision: TimePrecision.santiseconds))
                         .foregroundStyle(Color.customGray1)
+                        .transition(.identity)
+                        .animation(.linear, value: 0.1)
                     Text("Recording...")
                         .foregroundStyle(Color.customGray1)
                         .padding(.top, 20)
+                        .transition(.identity)
+                        .animation(.linear, value: 0.1)
                 }
             }
             .ignoresSafeArea()
@@ -58,7 +64,7 @@ struct TimerView: View {
             }.onDisappear() {
                 stopTimer()
             }
-        }
+        }.transition(.move(edge: .bottom))
     }
     
     func stopTimer() {

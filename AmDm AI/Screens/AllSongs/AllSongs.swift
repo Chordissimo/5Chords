@@ -50,16 +50,14 @@ struct AllSongs: View {
                                             runsCount = runsCount < 3 ? runsCount + 1 : runsCount
                                         }
                                         .frame(height: windowHeight * 0.3)
-                                        .transition(.move(edge: .bottom))
-                                } else {
-                                    Rectangle()
-                                        .ignoresSafeArea()
-                                        .ignoresSafeArea(.keyboard)
-                                        .frame(height: windowHeight * 0.1)
-                                        .frame(maxWidth: .infinity)
-                                        .foregroundColor(Color.customDarkGray)
-                                        .transition(.move(edge: .top))
                                 }
+                                Rectangle()
+                                    .ignoresSafeArea()
+                                    .ignoresSafeArea(.keyboard)
+                                    .frame(height: windowHeight * 0.1)
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundColor(Color.customDarkGray)
+                                
                                 
                                 LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
                                 
@@ -85,9 +83,12 @@ struct AllSongs: View {
                 .navigationBarItems(
                     leading:
                         ActionButton(systemImageName: "slider.horizontal.3") {
-                            withAnimation {
-                                showSettings.toggle()
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
                             }
+//                            withAnimation {
+//                                showSettings.toggle()
+//                            }
                         }
                         .foregroundColor(.purple)
                     , trailing:
