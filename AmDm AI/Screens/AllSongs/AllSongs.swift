@@ -8,10 +8,9 @@
 import SwiftUI
 
 struct AllSongs: View {
-    @State var recordStarted: Bool = false
+    
     @Environment(\.modelContext) private var modelContext
     @State var user = User()
-    @State var duration: TimeInterval = 0
     @State var runsCount: Int = 0
     @State var showSettings = false
     @State var showUpload = false
@@ -19,7 +18,6 @@ struct AllSongs: View {
     
     
     var body: some View {
-        let maxDuration = user.subscriptionPlanId == 0 ? 15.0 : 0.0
         
         GeometryReader { geometry in
             let windowHeight = geometry.size.height
@@ -41,14 +39,9 @@ struct AllSongs: View {
                         //Record button
                         VStack {
                             ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                                if recordStarted {
-                                    TimerView(timerState: $recordStarted, duration: $duration, maxDuration: maxDuration, songName: songsList.getNewSongName())
+                                if songsList.recordStarted {
+                                    TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songName: songsList.getNewSongName())
                                         .padding(.top, 20)
-                                        .onReceive(NotificationCenter.default.publisher(for: Notification.Name.autoStop)) { obj in
-                                            songsList.add(duration: duration)
-                                            duration = TimeInterval(0)
-                                            runsCount = runsCount < 3 ? runsCount + 1 : runsCount
-                                        }
                                         .frame(height: windowHeight * 0.3)
                                 }
                                 Rectangle()
@@ -61,18 +54,11 @@ struct AllSongs: View {
                                 
                                 LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
                                 
-                                RecordButton(height: windowHeight * 0.1, recordStarted: $recordStarted) {
-                                    if (user.subscriptionPlanId == 0 && runsCount < 3) || user.subscriptionPlanId > 0 {
-                                        withAnimation {
-                                            recordStarted.toggle()
-                                        }
-                                        if recordStarted == false {
-                                            songsList.add(duration: duration)
-                                            duration = TimeInterval(0)
-                                            runsCount = runsCount < 3 ? runsCount + 1 : runsCount
-                                        }
+                                RecordButton(height: windowHeight * 0.1, recordStarted: $songsList.recordStarted) {
+                                    if songsList.recordStarted {
+                                        songsList.stopRecording()
                                     } else {
-                                        user.accessDisallowed = true
+                                        songsList.startRecording()
                                     }
                                 }
                                 .padding(.bottom, 12)

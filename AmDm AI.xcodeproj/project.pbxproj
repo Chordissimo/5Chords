@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B798989C2BCAAADB0052C127 /* Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989B2BCAAADB0052C127 /* Recording.swift */; };
+		B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989D2BCAB9930052C127 /* RecognitionApiService.swift */; };
+		B79898A12BCABA030052C127 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A02BCABA030052C127 /* Alamofire */; };
+		B79898A32BCABA030052C127 /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A22BCABA030052C127 /* AlamofireDynamic */; };
+		B79898A62BCAC2930052C127 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A52BCAC2930052C127 /* Realm */; };
+		B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A72BCAC2930052C127 /* RealmSwift */; };
+		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
 		C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C308C43E2BC5B35A00762643 /* StoreKit.framework */; };
 		C357AB052BB7D50900440554 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB042BB7D50900440554 /* EditableText.swift */; };
 		C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB062BB7E30A00440554 /* DateLabel.swift */; };
@@ -34,6 +41,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B798989B2BCAAADB0052C127 /* Recording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recording.swift; sourceTree = "<group>"; };
+		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
+		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		C308C43E2BC5B35A00762643 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		C357AB042BB7D50900440554 /* EditableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableText.swift; sourceTree = "<group>"; };
 		C357AB062BB7E30A00440554 /* DateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateLabel.swift; sourceTree = "<group>"; };
@@ -67,14 +77,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
+				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
+				B79898A32BCABA030052C127 /* AlamofireDynamic in Frameworks */,
 				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
 				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
+				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B798989A2BCAAAAB0052C127 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				B798989B2BCAAADB0052C127 /* Recording.swift */,
+				B798989D2BCAB9930052C127 /* RecognitionApiService.swift */,
+				B79898A92BCAC2CD0052C127 /* DatabaseService.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		C308C43D2BC5B35A00762643 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -151,6 +175,7 @@
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
 				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
+				B798989A2BCAAAAB0052C127 /* Services */,
 				C361E8252BB860C200F33B40 /* Helpers */,
 				C357AB032BB7D4CC00440554 /* Views */,
 				C3B54DFE2BB1AB0A000DCF15 /* Model */,
@@ -221,6 +246,10 @@
 			name = "AmDm AI";
 			packageProductDependencies = (
 				C3C7F4D42BBDC72D00E83503 /* SwiftyChords */,
+				B79898A02BCABA030052C127 /* Alamofire */,
+				B79898A22BCABA030052C127 /* AlamofireDynamic */,
+				B79898A52BCAC2930052C127 /* Realm */,
+				B79898A72BCAC2930052C127 /* RealmSwift */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -252,6 +281,8 @@
 			mainGroup = C39C87292BB0073B00EBF82C;
 			packageReferences = (
 				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
+				B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */,
+				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -295,9 +326,12 @@
 				C361E82B2BB927A500F33B40 /* RecordButton.swift in Sources */,
 				C376F5852BB1E6F900826453 /* AllSongs.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
+				B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */,
 				C357AB052BB7D50900440554 /* EditableText.swift in Sources */,
+				B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */,
 				C361E8272BB860D300F33B40 /* Helpers.swift in Sources */,
 				C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */,
+				B798989C2BCAAADB0052C127 /* Recording.swift in Sources */,
 				C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -429,7 +463,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AmDm AI/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CB782J78CX;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -475,7 +509,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AmDm AI/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = CB782J78CX;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -535,6 +569,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.9.1;
+			};
+		};
+		B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/realm-swift.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 		C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/antm677/SwiftyGuitarChords.git";
@@ -546,6 +596,26 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B79898A02BCABA030052C127 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B79898A22BCABA030052C127 /* AlamofireDynamic */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = AlamofireDynamic;
+		};
+		B79898A52BCAC2930052C127 /* Realm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = Realm;
+		};
+		B79898A72BCAC2930052C127 /* RealmSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */;
+			productName = RealmSwift;
+		};
 		C3C7F4D42BBDC72D00E83503 /* SwiftyChords */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */;
