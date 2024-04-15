@@ -14,8 +14,9 @@ class ChordModel: Object {
     @Persisted var chord: String
     @Persisted var timeSeconds: Double
     
-    convenience init(chord: String, timeSeconds: Double) {
+    convenience init(id: String, chord: String, timeSeconds: Double) {
         self.init()
+        self.id = id
         self.chord = chord
         self.timeSeconds = timeSeconds
     }
@@ -26,6 +27,8 @@ class SongModel: Object {
     @Persisted var id = UUID().uuidString
     @Persisted var name: String
     @Persisted var url: String
+    @Persisted var duration: TimeInterval
+    @Persisted var created: Date
     @Persisted var chords: List<ChordModel>
     
     
@@ -40,9 +43,11 @@ class SongModel: Object {
 class DatabaseService {
     lazy var realm = try! Realm()
     
-    func writeSong(name: String, url: String, chords: [Chord1]) {
+    func writeSong(name: String, url: String, duration: TimeInterval, chords: [Chord]) -> Song {
         
-        var dbChords = chords.map { ch in ChordModel(chord: ch.chord, timeSeconds: ch.timeSeconds) }
+        let dbChords = chords.map { ch in
+            ChordModel(id: ch.id, chord: ch.chord, timeSeconds: ch.timeSeconds)
+        }
         
         try! realm.write {
             realm.add(dbChords)
@@ -51,18 +56,45 @@ class DatabaseService {
         let realmChordList = List<ChordModel>()
         realmChordList.append(objectsIn: dbChords)
         
-        var song = SongModel()
+        let song = SongModel()
+        song.id = UUID().uuidString
         song.name = name
         song.url = url
+        song.duration = duration
         song.chords = realmChordList
+        song.created = Date()
         
         try! realm.write {
             realm.add(song)
         }
+        
+        return Song(
+            id: song.id,
+            name: song.name,
+            url: song.url,
+            duration: song.duration,
+            created: song.created,
+            chords: chords
+        )
     }
     
     
-    func getSongs() -> [Song1] {
-        return realm.objects(SongModel.self).map { Song1(name: $0.name, url: $0.url, chrds: $0.chords.map{ Chord1(chord: $0.chord, timeSeconds: $0.timeSeconds ) }) }
+    func getSongs() -> [Song] {
+        return realm.objects(SongModel.self).map {
+            Song(
+                id: $0.id,
+                name: $0.name,
+                url: $0.url,
+                duration: $0.duration,
+                created: $0.created,
+                chords: $0.chords.map {
+                    Chord(
+                        id: $0.id,
+                        chord: $0.chord,
+                        timeSeconds: $0.timeSeconds 
+                    )
+                }
+            )
+        }
     }
 }

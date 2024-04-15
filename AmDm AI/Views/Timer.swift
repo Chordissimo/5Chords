@@ -19,7 +19,6 @@ struct TimerView: View {
             RoundedRectangle(cornerRadius: 16)
                 .ignoresSafeArea()
                 .ignoresSafeArea(.keyboard)
-//                .frame(height: .infinity)
                 .frame(maxWidth: .infinity)
                 .foregroundColor(Color.customDarkGray)
             VStack {

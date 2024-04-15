@@ -45,7 +45,7 @@ struct SongsListView: View {
 }
 
 struct ContentCell {
-    @Binding var song: SongData
+    @Binding var song: Song
     @ObservedObject var songsList: SongsList
     @Binding var isSongDetailsPresented: Bool
     @Binding var isShareSheetPresented: Bool
@@ -90,7 +90,7 @@ struct ContentCell {
                             PlaybackColtrols()
                             Spacer()
                             ActionButton(systemImageName: "trash") {
-                                songsList.del(song: song)
+//                                songsList.del(song: song)
                             }
                             .frame(width: 18)
                         }

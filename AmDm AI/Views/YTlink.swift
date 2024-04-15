@@ -42,7 +42,7 @@ struct YTlink: View {
 //        text = temporaryText
         temporaryText = ""
         isFocused = false
-        songsList.add(duration: TimeInterval(63))
+//        songsList.add(duration: TimeInterval(63))
     }
 }
 

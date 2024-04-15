@@ -12,7 +12,7 @@ import Alamofire
 class RecognitionApiService {
     
     struct Response: Codable {
-        var chords: [Chord1]
+        var chords: [Chord]
     }
     
     private enum ServiceError: Error {
@@ -30,7 +30,7 @@ class RecognitionApiService {
                 multipartFormData: { multipartFormData in
                     multipartFormData.append(url, withName: "file")
                 },
-                to: "http://192.168.10.8:8000/upload"
+                to: "http://192.168.0.4:8000/upload"
             )
             .validate()
             .responseDecodable(of: Response.self) { response in

@@ -44,49 +44,95 @@ struct MockData: Hashable {
 
 // ----- AllSongsView ----
 
-struct SongData: Identifiable, Hashable {
-    let id = UUID()
-    var created: Date = Date()
-    var name: String = "Untitled song"
-    var duration: TimeInterval = 0
-    var playbackPosition = 0.0
-    var isExpanded = false
-    var chords = [Chord]()
-}
+//struct SongData: Identifiable, Hashable {
+//    let id = UUID()
+//    var created: Date = Date()
+//    var name: String = "Untitled song"
+//    var duration: TimeInterval = 0
+//    var playbackPosition = 0.0
+//    var isExpanded = false
+//    var chords = [Chord]()
+//}
 
-struct Chord: Identifiable, Hashable {
+struct UIChord: Identifiable, Hashable {
     let id = UUID()
     var key: Chords.Key
     var suffix: Chords.Suffix
-}
-
-
-struct Song1 {
-    var name: String
-    var url: URL
-    var chrds: [Chord1]
     
-    
-    init(name: String, url: String, chrds: [Chord1]) {
-        self.name = name
-        self.url = URL(string: url)!
-        self.chrds = chrds
+    static func getKey(from string: String) -> Chords.Key? {
+        switch string {
+        case "C": return .c
+        case "C#": return .cSharp
+        case "Db": return .dFlat
+        case "D": return .d
+        case "D#": return .dSharp
+        case "Eb": return .eFlat
+        case "E": return .e
+        case "F": return .f
+        case "F#": return .fSharp
+        case "Gb": return .gFlat
+        case "G": return .g
+        case "G#": return .gSharp
+        case "Ab": return .aFlat
+        case "A": return .a
+        case "A#": return .aSharp
+        case "Bb": return .bFlat
+        case "B": return .b
+        default: return nil
+        }
     }
 }
 
 
-class Chord1: Codable {
+struct Song: Identifiable, Equatable {
+    static func == (lhs: Song, rhs: Song) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    var name: String
+    var url: URL
+    var chords: [Chord]
+    var id: String
+    var isExpanded = false
+    var duration: TimeInterval
+    var created: Date
+    var playbackPosition = 0.0
+    
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [Chord]) {
+        self.id = id
+        self.name = name
+        self.url = URL(string: url)!
+        self.chords = chords
+        self.duration = duration
+        self.created = created
+    }
+}
+
+
+class Chord: Codable, Identifiable {
     var chord: String
     var timeSeconds: Double
+    var uiChord: UIChord {
+        if chord.uppercased() != "N" {
+            let parts = chord.uppercased().split(separator: ":")
+            return UIChord(
+                key: UIChord.getKey(from: String(parts[0]))!,
+                suffix: String(parts[1]) == "MIN" ? Chords.Suffix.minor : Chords.Suffix.major
+            )
+        }
+        return UIChord(key: .a, suffix: .minor) // fix this !!!
+    }
+    var id = UUID().uuidString
     
     enum CodingKeys: String, CodingKey {
         case chord
         case timeSeconds = "time_seconds"
     }
     
-    init(chord: String, timeSeconds: Double) {
+    init(id: String, chord: String, timeSeconds: Double) {
         self.chord = chord
         self.timeSeconds = timeSeconds
+        self.id = id
     }
     
     required init(from decoder: Decoder) throws {
@@ -98,23 +144,7 @@ class Chord1: Codable {
 
 
 final class SongsList: ObservableObject {
-    @Published var songs = [
-        SongData(name: "Stareway to heaven", duration: TimeInterval(100), chords: [
-            Chord(key: Chords.Key.a, suffix: Chords.Suffix.minor),
-            Chord(key: Chords.Key.g, suffix: Chords.Suffix.major),
-            Chord(key: Chords.Key.f, suffix: Chords.Suffix.major),
-            Chord(key: Chords.Key.f, suffix: Chords.Suffix.majorSeven),
-            Chord(key: Chords.Key.d, suffix: Chords.Suffix.susTwo),
-            Chord(key: Chords.Key.d, suffix: Chords.Suffix.susFour),
-            Chord(key: Chords.Key.c, suffix: Chords.Suffix.susTwo),
-            Chord(key: Chords.Key.c, suffix: Chords.Suffix.susFour)]
-                ),
-        SongData(name: "Back in Black", duration: TimeInterval(60), chords: [
-            Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
-            Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
-            Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
-                )
-    ]
+    @Published var songs: [Song]
     
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
@@ -124,7 +154,7 @@ final class SongsList: ObservableObject {
     private let databaseService = DatabaseService()
     
     init() {
-//        songs = self.databaseService.getSongs()
+        songs = self.databaseService.getSongs()
         
         recordingService.recordingCallback = { [weak self] url in
             guard let self = self else { return }
@@ -132,7 +162,8 @@ final class SongsList: ObservableObject {
             self.recognitioaApiService.recognizeAudio(url: url) { result in
                 switch result {
                 case .success(let response):
-                    self.databaseService.writeSong(name: UUID().uuidString, url: url.absoluteString, chords: response.chords)
+                    let song = self.databaseService.writeSong(name: self.getNewSongName(), url: url.absoluteString, duration: self.duration, chords: response.chords)
+                    self.songs.append(song)
                 case .failure(let failure):
                     print(failure)
                 }
@@ -158,17 +189,17 @@ final class SongsList: ObservableObject {
     }
     
     
-    func add(duration: TimeInterval, songName: String? = "") -> Void {
-        let n = songName!.isEmpty ? getNewSongName() : songName!
-        let song = SongData(name: n, duration: duration, isExpanded: true, chords: [
-            Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
-            Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
-            Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
-        )
-        self.songs.append(song)
-        self.songs.sort { $0.created > $1.created }
-        self.expand(index: 0)
-    }
+//    func add(duration: TimeInterval, songName: String? = "") -> Void {
+//        let n = songName!.isEmpty ? getNewSongName() : songName!
+//        let song = SongData(name: n, duration: duration, isExpanded: true, chords: [
+//            Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
+//            Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
+//            Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
+//        )
+//        self.songs.append(song)
+//        self.songs.sort { $0.created > $1.created }
+//        self.expand(index: 0)
+//    }
     
     func getNewSongName() -> String {
         let songs = self.songs.filter { s in
@@ -181,15 +212,15 @@ final class SongsList: ObservableObject {
         }
     }
     
-    func del(index: Int) -> Void {
-        self.songs.remove(at: index)
-    }
-    
-    func del(song: SongData) -> Void {
-        if let i = self.songs.firstIndex(of: song) {
-            self.songs.remove(at: i)
-        }
-    }
+//    func del(index: Int) -> Void {
+//        self.songs.remove(at: index)
+//    }
+//    
+//    func del(song: SongData) -> Void {
+//        if let i = self.songs.firstIndex(of: song) {
+//            self.songs.remove(at: i)
+//        }
+//    }
     
     func expand(index: Int) {
         for i in songs.indices {
@@ -197,13 +228,13 @@ final class SongsList: ObservableObject {
         }
     }
     
-    func expand(song: SongData) {
+    func expand(song: Song) {
         for i in songs.indices {
             songs[i].isExpanded = songs[i] == song
         }
     }
     
-    func getExpanded() -> SongData? {
+    func getExpanded() -> Song? {
         if let i = self.songs.firstIndex(where: { $0.isExpanded == true }) {
             return self.songs[i]
         } else {

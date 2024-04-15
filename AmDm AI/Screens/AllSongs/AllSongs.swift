@@ -72,9 +72,6 @@ struct AllSongs: View {
                             if let url = URL(string: UIApplication.openSettingsURLString) {
                                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
                             }
-//                            withAnimation {
-//                                showSettings.toggle()
-//                            }
                         }
                         .foregroundColor(.purple)
                     , trailing:
