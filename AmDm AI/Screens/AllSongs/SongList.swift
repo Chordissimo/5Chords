@@ -90,7 +90,7 @@ struct ContentCell {
                             PlaybackColtrols()
                             Spacer()
                             ActionButton(systemImageName: "trash") {
-//                                songsList.del(song: song)
+                                songsList.del(song: song)
                             }
                             .frame(width: 18)
                         }

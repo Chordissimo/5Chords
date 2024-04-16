@@ -14,7 +14,7 @@ enum EditableTextDisplayStyle {
 
 
 struct EditableText: View  {
-    @Binding var text: String
+    @Binding var sourceText: String
     var isEditable: Bool? = true
     var style: Int? = 0
 
@@ -22,14 +22,14 @@ struct EditableText: View  {
     @FocusState private var isFocused: Bool
 
     init(text: Binding<String>, isEditable: Bool?) {
-        self._text = text
+        self._sourceText = text
         self.temporaryText = text.wrappedValue
         self.isEditable = isEditable!
     }
     
     init(text: Binding<String>, style: Int, isEditable: Bool?) {
         self.style = style
-        self._text = text
+        self._sourceText = text
         self.temporaryText = text.wrappedValue
         self.isEditable = isEditable!
     }
@@ -38,7 +38,14 @@ struct EditableText: View  {
         if isEditable ?? true {
             switch style {
             case EditableTextDisplayStyle.songTitle:
-                TextField("", text: $temporaryText, onCommit: { text = temporaryText })
+                TextField("", text: $temporaryText)
+                    .onSubmit {
+                        if temporaryText == "" {
+                            temporaryText = sourceText
+                        } else {
+                            sourceText = temporaryText
+                        }
+                    }
                     .foregroundStyle(Color.white)
                     .fontWeight(.semibold)
                     .font(.system(size: 17))
@@ -50,7 +57,7 @@ struct EditableText: View  {
         } else {
             switch style {
             case EditableTextDisplayStyle.songTitle:
-                Text(text)
+                Text(sourceText)
                     .foregroundStyle(Color.white)
                     .fontWeight(.semibold)
                     .font(.system(size: 17))

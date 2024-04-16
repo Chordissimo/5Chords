@@ -78,6 +78,41 @@ class DatabaseService {
         )
     }
     
+    func updateSong(song: Song) {
+        let songSearchResults = realm.objects(SongModel.self).filter { s in
+            s.id == song.id
+        }
+        
+        let realm = try! Realm()
+        if let songObj = songSearchResults.first {
+            try! realm.write {
+                songObj.name = song.name
+            }
+        }
+    }
+    
+    func deleteSong(song: Song) {
+        let songSearchResults = realm.objects(SongModel.self).filter { s in
+            s.id == song.id
+        }
+        let realm = try! Realm()
+        if let songObj = songSearchResults.first {
+            let chordList = song.chords.map { ch in
+                return ch.id
+            }
+            let chordSearchResults = realm.objects(ChordModel.self).filter { ch in
+                chordList.contains(ch.id)
+            }
+            if chordSearchResults.count > 0 {
+                try! realm.write {
+                    realm.delete(chordSearchResults)
+                }
+            }
+            try! realm.write {
+                realm.delete(songObj)
+            }
+        }
+    }
     
     func getSongs() -> [Song] {
         return realm.objects(SongModel.self).map {

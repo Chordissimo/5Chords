@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B798989C2BCAAADB0052C127 /* Recording.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989B2BCAAADB0052C127 /* Recording.swift */; };
+		B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989B2BCAAADB0052C127 /* RecordingService.swift */; };
 		B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989D2BCAB9930052C127 /* RecognitionApiService.swift */; };
 		B79898A12BCABA030052C127 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A02BCABA030052C127 /* Alamofire */; };
 		B79898A32BCABA030052C127 /* AlamofireDynamic in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A22BCABA030052C127 /* AlamofireDynamic */; };
@@ -41,7 +41,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B798989B2BCAAADB0052C127 /* Recording.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Recording.swift; sourceTree = "<group>"; };
+		B798989B2BCAAADB0052C127 /* RecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingService.swift; sourceTree = "<group>"; };
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		C308C43E2BC5B35A00762643 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
@@ -92,7 +92,7 @@
 		B798989A2BCAAAAB0052C127 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				B798989B2BCAAADB0052C127 /* Recording.swift */,
+				B798989B2BCAAADB0052C127 /* RecordingService.swift */,
 				B798989D2BCAB9930052C127 /* RecognitionApiService.swift */,
 				B79898A92BCAC2CD0052C127 /* DatabaseService.swift */,
 			);
@@ -331,7 +331,7 @@
 				B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */,
 				C361E8272BB860D300F33B40 /* Helpers.swift in Sources */,
 				C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */,
-				B798989C2BCAAADB0052C127 /* Recording.swift in Sources */,
+				B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */,
 				C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

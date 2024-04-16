@@ -8,6 +8,7 @@
 import Foundation
 import SwiftData
 import SwiftyChords
+import Combine
 
 @Model
 final class User {
@@ -152,6 +153,7 @@ final class SongsList: ObservableObject {
     private let recordingService = RecordingService()
     private let recognitioaApiService = RecognitionApiService()
     private let databaseService = DatabaseService()
+    private var cancellables = Set<AnyCancellable>()
     
     init() {
         songs = self.databaseService.getSongs()
@@ -168,13 +170,23 @@ final class SongsList: ObservableObject {
                     print(failure)
                 }
             }
-            print("mtag", url)
+//            print("mtag", url)
         }
         
         recordingService.recordingTimeCallback = { [weak self] time in
             guard let self = self else { return }
             self.duration = time
         }
+        
+        $songs
+            .sink { [weak self] value in
+                for i in value.indices {
+                    if value[i].name != self?.songs[i].name {
+                        self?.databaseService.updateSong(song: value[i])
+                    }
+                }
+            }
+            .store(in: &cancellables)
     }
     
     
@@ -188,19 +200,6 @@ final class SongsList: ObservableObject {
         recordStarted = false
     }
     
-    
-//    func add(duration: TimeInterval, songName: String? = "") -> Void {
-//        let n = songName!.isEmpty ? getNewSongName() : songName!
-//        let song = SongData(name: n, duration: duration, isExpanded: true, chords: [
-//            Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
-//            Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
-//            Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
-//        )
-//        self.songs.append(song)
-//        self.songs.sort { $0.created > $1.created }
-//        self.expand(index: 0)
-//    }
-    
     func getNewSongName() -> String {
         let songs = self.songs.filter { s in
             s.name.contains("New recording")
@@ -211,16 +210,13 @@ final class SongsList: ObservableObject {
             return "New recording " + String(songs.count)
         }
     }
-    
-//    func del(index: Int) -> Void {
-//        self.songs.remove(at: index)
-//    }
-//    
-//    func del(song: SongData) -> Void {
-//        if let i = self.songs.firstIndex(of: song) {
-//            self.songs.remove(at: i)
-//        }
-//    }
+        
+    func del(song: Song) {
+        if let i = self.songs.firstIndex(of: song) {
+            self.databaseService.deleteSong(song: song)
+            self.songs.remove(at: i)
+        }
+    }
     
     func expand(index: Int) {
         for i in songs.indices {
