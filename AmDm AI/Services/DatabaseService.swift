@@ -30,6 +30,7 @@ class SongModel: Object {
     @Persisted var duration: TimeInterval
     @Persisted var created: Date
     @Persisted var chords: List<ChordModel>
+    @Persisted var songType: String
     
     
     convenience init(name: String, url: String) {
@@ -43,7 +44,9 @@ class SongModel: Object {
 class DatabaseService {
     lazy var realm = try! Realm()
     
-    func writeSong(name: String, url: String, duration: TimeInterval, chords: [Chord]) -> Song {
+    
+    
+    func writeSong(name: String, url: String, duration: TimeInterval, chords: [Chord], songType: SongType = .localFile) -> Song {
         
         let dbChords = chords.map { ch in
             ChordModel(id: ch.id, chord: ch.chord, timeSeconds: ch.timeSeconds)
@@ -63,6 +66,7 @@ class DatabaseService {
         song.duration = duration
         song.chords = realmChordList
         song.created = Date()
+        song.songType = songType.toString()
         
         try! realm.write {
             realm.add(song)
@@ -74,7 +78,8 @@ class DatabaseService {
             url: song.url,
             duration: song.duration,
             created: song.created,
-            chords: chords
+            chords: chords,
+            songType: songType
         )
     }
     
@@ -130,7 +135,8 @@ class DatabaseService {
                         chord: $0.chord,
                         timeSeconds: $0.timeSeconds 
                     )
-                }
+                },
+                songType: $0.songType == "localFile" ? .localFile : .youtube
             )
         }
     }

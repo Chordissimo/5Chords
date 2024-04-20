@@ -84,8 +84,13 @@ struct AllSongs: View {
                         }
                         .foregroundColor(.purple)
                     , trailing:
-                        ActionButton(title: "Upload") {
-                            showUpload = true
+                        HStack {
+                            ActionButton(title: "Upload") {
+                                showUpload = true
+                            }
+                            YoutubeView(videoDidSelected: { resultUrl in
+                                songsList.processYoutubeVideo(by: resultUrl)
+                            })
                         }
                 )
                 .ignoresSafeArea(.keyboard)

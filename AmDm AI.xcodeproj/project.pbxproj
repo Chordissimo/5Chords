@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71F3FD72BD42D63005C3606 /* YoutubeView.swift */; };
 		B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989B2BCAAADB0052C127 /* RecordingService.swift */; };
 		B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989D2BCAB9930052C127 /* RecognitionApiService.swift */; };
 		B79898A12BCABA030052C127 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A02BCABA030052C127 /* Alamofire */; };
@@ -43,6 +44,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B71F3FD72BD42D63005C3606 /* YoutubeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeView.swift; sourceTree = "<group>"; };
 		B798989B2BCAAADB0052C127 /* RecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingService.swift; sourceTree = "<group>"; };
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
 				C3C7F4D62BBDCBBB00E83503 /* Share.swift */,
 				C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */,
+				B71F3FD72BD42D63005C3606 /* YoutubeView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -323,6 +326,7 @@
 				C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */,
 				C3C7F4D72BBDCBBB00E83503 /* Share.swift in Sources */,
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
+				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
 				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,

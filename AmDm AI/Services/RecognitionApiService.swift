@@ -30,7 +30,7 @@ class RecognitionApiService {
                 multipartFormData: { multipartFormData in
                     multipartFormData.append(url, withName: "file")
                 },
-//                to: "http://192.168.0.4:8000/upload" // Anton
+                //                to: "http://192.168.0.4:8000/upload" // Anton
                 to: "http://192.168.10.8:8000/upload" // Marat
             )
             .validate()
@@ -45,9 +45,21 @@ class RecognitionApiService {
     }
     
     func recognizeAudioFromYoutube(
-        url: URL,
+        url: String,
         completion: @escaping ((Result<Response, Error>) -> Void)
     ) {
-        
+        AF.request(
+            //   to: "http://192.168.0.4:8000/upload/youtube", // Anton
+            "http://192.168.10.8:8000/upload/youtube", // Marat
+            method: .post, parameters: ["url": url], encoding: JSONEncoding.default)
+        .validate() // Optional: Validate the response (status code, content type, etc.)
+        .responseDecodable(of: Response.self) { response in
+            guard let result = response.value else {
+                completion(.failure(response.error ?? ServiceError.noResult))
+                return
+            }
+            
+            completion(.success(result))
+        }
     }
 }

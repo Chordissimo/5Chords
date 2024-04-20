@@ -81,7 +81,12 @@ struct ContentCell {
                             }
                         }
                         HStack {
-                            AudioPlayerView(scale: .small, song: $song, songsList: songsList, player: player)
+                            if song.songType == .localFile {
+                                AudioPlayerView(scale: .small, song: $song, songsList: songsList, player: player)
+                            } else {
+                                Text("Youtube")
+                            }
+                            
                         }
                         .padding(.bottom, 10)
                         .padding(.horizontal, 5)

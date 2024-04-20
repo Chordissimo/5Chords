@@ -10,6 +10,21 @@ import SwiftData
 import SwiftyChords
 import Combine
 
+
+enum SongType {
+    case localFile
+    case youtube
+    
+    func toString() -> String {
+        switch self {
+        case .localFile:
+            return "localFile"
+        case .youtube:
+            return "youtube"
+        }
+    }
+}
+
 @Model
 final class User {
     var registrationDate: Date?
@@ -91,14 +106,16 @@ struct Song: Identifiable, Equatable {
     var duration: TimeInterval
     var created: Date
     var playbackPosition = 0.0
+    var songType: SongType = .localFile
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [Chord]) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [Chord], songType: SongType = .localFile) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
         self.chords = chords
         self.duration = duration
         self.created = created
+        self.songType = songType
     }
 }
 
@@ -164,7 +181,6 @@ final class SongsList: ObservableObject {
                     print(failure)
                 }
             }
-            print("mtag", url)
         }
         
         recordingService.recordingTimeCallback = { [weak self] time in
@@ -185,6 +201,18 @@ final class SongsList: ObservableObject {
             .store(in: &cancellables)
     }
     
+    func processYoutubeVideo(by resultUrl: String) {
+        recognitioaApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
+            switch result {
+            case .success(let response):
+                let song = self.databaseService.writeSong(name: self.getNewSongName(), url: resultUrl, duration: self.duration, chords: response.chords, songType: .youtube)
+                self.songs.insert(song, at: 0)
+                self.expand(song: song)
+            case .failure(let failure):
+                print(failure)
+            }
+        }
+    }
     
     func startRecording() {
         recordingService.startRecording()
