@@ -30,7 +30,8 @@ class RecognitionApiService {
                 multipartFormData: { multipartFormData in
                     multipartFormData.append(url, withName: "file")
                 },
-                to: "http://192.168.0.4:8000/upload"
+//                to: "http://192.168.0.4:8000/upload" // Anton
+                to: "http://192.168.10.8:8000/upload" // Marat
             )
             .validate()
             .responseDecodable(of: Response.self) { response in

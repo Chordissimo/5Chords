@@ -18,6 +18,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
 
 
     func startRecording() {
+        print("matg", "startRecording")
         let audioSession = AVAudioSession.sharedInstance()
         
         do {
