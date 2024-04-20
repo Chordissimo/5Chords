@@ -24,14 +24,14 @@ struct EditableText: View  {
     init(text: Binding<String>, isEditable: Bool?) {
         self._sourceText = text
         self.temporaryText = text.wrappedValue
-        self.isEditable = isEditable!
+        self.isEditable = isEditable ?? true
     }
     
     init(text: Binding<String>, style: Int, isEditable: Bool?) {
         self.style = style
         self._sourceText = text
         self.temporaryText = text.wrappedValue
-        self.isEditable = isEditable!
+        self.isEditable = isEditable ?? true
     }
 
     var body: some View {
@@ -73,7 +73,7 @@ struct EditableText: View  {
     return ZStack {
         Color.black
         VStack {
-            EditableText(text: $text, style: EditableTextDisplayStyle.songTitle, isEditable: false)
+            EditableText(text: $text, style: EditableTextDisplayStyle.songTitle, isEditable: true)
         }
     }.ignoresSafeArea()
 }

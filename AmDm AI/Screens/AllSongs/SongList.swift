@@ -7,17 +7,11 @@
 
 import SwiftUI
 
-struct ListItem: Identifiable {
-    let id: Int
-    let title: String
-    var isExpanded: Bool = false
-}
-
 struct SongsListView: View {
     @ObservedObject var songsList: SongsList
     @State var isSongDetailsPresented: Bool = false
     @State var isShareSheetPresented: Bool = false
-
+    @ObservedObject var player = Player()
     
     var body: some View {
         if songsList.songs.count == 0 {
@@ -25,7 +19,13 @@ struct SongsListView: View {
         } else {
             ScrollView {
                 ForEach($songsList.songs) { song in
-                    ContentCell(song: song, songsList: songsList, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
+                    ContentCell(
+                        song: song,
+                        songsList: songsList,
+                        player: player,
+                        isSongDetailsPresented: $isSongDetailsPresented,
+                        isShareSheetPresented: $isShareSheetPresented
+                    )
                         .body.modifier(ScrollCell())
                         .onTapGesture {
                             if !song.isExpanded.wrappedValue {
@@ -47,6 +47,7 @@ struct SongsListView: View {
 struct ContentCell {
     @Binding var song: Song
     @ObservedObject var songsList: SongsList
+    @ObservedObject var player: Player
     @Binding var isSongDetailsPresented: Bool
     @Binding var isShareSheetPresented: Bool
     
@@ -65,10 +66,6 @@ struct ContentCell {
                 }
                 if song.isExpanded {
                     VStack(alignment: .leading) {
-                        HStack {
-                            PlaybackSlider(playbackPosition: $song.playbackPosition, duration: $song.duration)
-                                .padding(.horizontal, 3)
-                        }
                         VStack {
                             Button {
                                 isSongDetailsPresented = true
@@ -78,21 +75,13 @@ struct ContentCell {
                             }
                             .buttonStyle(BorderlessButtonStyle())
                             .sheet(isPresented: $isSongDetailsPresented, onDismiss: {
-                                print(isShareSheetPresented)
                                 songDetailsDismissed(isShareSheetPresented)
                             }) {
-                                SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
+                                SongDetails(song: $song, songsList: songsList, player: player, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
                             }
                         }
                         HStack {
-                            Share(label: "", content: "Chords for " + song.name)
-                            Spacer()
-                            PlaybackColtrols()
-                            Spacer()
-                            ActionButton(systemImageName: "trash") {
-                                songsList.del(song: song)
-                            }
-                            .frame(width: 18)
+                            AudioPlayerView(scale: .small, song: $song, songsList: songsList, player: player)
                         }
                         .padding(.bottom, 10)
                         .padding(.horizontal, 5)

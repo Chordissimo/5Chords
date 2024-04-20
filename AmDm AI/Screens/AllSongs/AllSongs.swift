@@ -22,49 +22,58 @@ struct AllSongs: View {
         GeometryReader { geometry in
             let windowHeight = geometry.size.height
             NavigationStack {
-                ZStack {
+                ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                     Color.black.ignoresSafeArea()
                     VStack {
-                        //Youtube link
-                        VStack {
+                        VStack { // Youtube
                             YTlink(songsList: _songsList)
+                                .padding(EdgeInsets(top: 5, leading: 0, bottom: 10, trailing: 20))
+                            Spacer()
+                            SongsListView(songsList: songsList)
                         }
-                        .padding(.top,5)
-                        .padding(.bottom, 10)
-                        .padding(.trailing, 20)
-                        
-                        //List of recordings
-                        SongsListView(songsList: songsList)
-                        
-                        //Record button
                         VStack {
-                            ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                                if songsList.recordStarted {
-                                    TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songName: songsList.getNewSongName())
-                                        .padding(.top, 20)
-                                        .frame(height: windowHeight * 0.3)
-                                }
-                                Rectangle()
-                                    .ignoresSafeArea()
-                                    .ignoresSafeArea(.keyboard)
-                                    .frame(height: windowHeight * 0.1)
-                                    .frame(maxWidth: .infinity)
-                                    .foregroundColor(Color.customDarkGray)
-                                
-                                
-                                LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
-                                
-                                RecordButton(height: windowHeight * 0.1, recordStarted: $songsList.recordStarted) {
-                                    if songsList.recordStarted {
-                                        songsList.stopRecording()
-                                    } else {
-                                        songsList.startRecording()
-                                    }
-                                }
-                                .padding(.bottom, 12)
+                            Color.white
+                        }
+                        .ignoresSafeArea()
+                        .frame(height: windowHeight * 0.1)
+                    }
+                    VStack { // recording panel with timer
+                        if songsList.recordStarted {
+                            Color.white.opacity(0.01)
+                            VStack {
+                                TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songName: songsList.getNewSongName())
+                                    .padding(.top, 20)
+                                    .frame(height: windowHeight * 0.3)
                             }
+                            .transition(.move(edge: .bottom))
+                            .ignoresSafeArea()
+                            .frame(height: windowHeight * 0.3)
                         }
                     }
+                    
+                    VStack { // record button
+                        ZStack {
+                            Color.customDarkGray
+                            RecordButton(height: windowHeight * 0.1, recordStarted: $songsList.recordStarted) {
+                                if songsList.recordStarted {
+                                    songsList.stopRecording()
+                                } else {
+                                    songsList.startRecording()
+                                }
+                            }
+                            .padding(.bottom, 12)
+                        }
+                    }
+                    .ignoresSafeArea()
+                    .frame(height: windowHeight * 0.1)
+                    
+                    VStack { // limited version notice
+                        LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
+                    }
+                    .ignoresSafeArea()
+                }
+                .onAppear {
+                    ScreenDimentions.maxWidth = geometry.size.width
                 }
                 .navigationBarItems(
                     leading:
@@ -103,7 +112,8 @@ struct AllSongs: View {
                     }
                 }
             }
-        }.edgesIgnoringSafeArea(.bottom)
+        }
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 

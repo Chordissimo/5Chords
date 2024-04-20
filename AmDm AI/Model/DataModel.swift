@@ -26,6 +26,11 @@ final class User {
     
 }
 
+struct ScreenDimentions {
+    static var maxHeight = 0.0
+    static var maxWidth = 0.0
+}
+
 struct SubscriptionPlan: Identifiable, Hashable {
     let id = UUID()
     let planId: Int
@@ -42,18 +47,6 @@ struct MockData: Hashable {
         SubscriptionPlan(planId: 3, title: "Plan C", description: "Description", price: 9.99)
     ]
 }
-
-// ----- AllSongsView ----
-
-//struct SongData: Identifiable, Hashable {
-//    let id = UUID()
-//    var created: Date = Date()
-//    var name: String = "Untitled song"
-//    var duration: TimeInterval = 0
-//    var playbackPosition = 0.0
-//    var isExpanded = false
-//    var chords = [Chord]()
-//}
 
 struct UIChord: Identifiable, Hashable {
     let id = UUID()
@@ -165,12 +158,13 @@ final class SongsList: ObservableObject {
                 switch result {
                 case .success(let response):
                     let song = self.databaseService.writeSong(name: self.getNewSongName(), url: url.absoluteString, duration: self.duration, chords: response.chords)
-                    self.songs.append(song)
+                    self.songs.insert(song, at: 0)
+                    self.expand(song: song)
                 case .failure(let failure):
                     print(failure)
                 }
             }
-//            print("mtag", url)
+            print("mtag", url)
         }
         
         recordingService.recordingTimeCallback = { [weak self] time in
@@ -180,9 +174,11 @@ final class SongsList: ObservableObject {
         
         $songs
             .sink { [weak self] value in
-                for i in value.indices {
-                    if value[i].name != self?.songs[i].name {
-                        self?.databaseService.updateSong(song: value[i])
+                if value.count == self?.songs.count {
+                    for i in value.indices {
+                        if value[i].name != self?.songs[i].name {
+                            self?.databaseService.updateSong(song: value[i])
+                        }
                     }
                 }
             }
@@ -215,6 +211,19 @@ final class SongsList: ObservableObject {
         if let i = self.songs.firstIndex(of: song) {
             self.databaseService.deleteSong(song: song)
             self.songs.remove(at: i)
+
+            var _url = song.url
+            let isReachable = (try? song.url.checkResourceIsReachable()) ?? false
+            do {
+                if !isReachable {
+                    let filename = String(song.url.absoluteString.split(separator: "/").last ?? "")
+                    let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                    _url = documentsPath.appendingPathComponent(filename)
+                }
+                try FileManager.default.removeItem(at: _url)
+            } catch {
+                print(error)
+            }
         }
     }
     

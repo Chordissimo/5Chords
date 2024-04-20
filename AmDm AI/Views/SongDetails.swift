@@ -10,6 +10,8 @@ import SwiftyChords
 
 struct SongDetails: View {
     @Binding var song: Song
+    @ObservedObject var songsList: SongsList
+    @ObservedObject var player: Player
     @Binding var isSongDetailsPresented: Bool
     @Binding var isShareSheetPresented: Bool
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
@@ -47,20 +49,17 @@ struct SongDetails: View {
                 
                 ChordsView(chords: song.chords, style: ChordDisplayStyle.pictogram)
 
-                VStack {
-                    PlaybackSlider(playbackPosition: $song.playbackPosition, duration: $song.duration)
-                }.padding()
+//                VStack {
+//                    PlaybackSlider(width: CGFloat(ScreenDimentions.maxWidth))
+//                }.padding()
+
+                AudioPlayerView(scale: .large, song: $song, songsList: songsList, player: player)
+                    .padding(.horizontal,20)
                 
-                VStack {
-                    Text("00:00.00")
-                        .foregroundStyle(Color.white)
-                        .font(.system(size: 40))
-                        .fontWeight(.bold)
-                }
-                
-                HStack {
-                    PlaybackColtrols(scale: .large).frame(width: 100)
-                }.padding()
+
+//                HStack {
+//                    PlaybackColtrols(scale: .large).frame(width: 100)
+//                }.padding()
             }
         }
     }

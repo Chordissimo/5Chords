@@ -115,7 +115,9 @@ class DatabaseService {
     }
     
     func getSongs() -> [Song] {
-        return realm.objects(SongModel.self).map {
+        return realm.objects(SongModel.self).sorted { s1, s2 in
+            return s1.created >= s2.created
+        }.map {
             Song(
                 id: $0.id,
                 name: $0.name,
