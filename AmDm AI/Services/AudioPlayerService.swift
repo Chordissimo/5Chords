@@ -19,29 +19,23 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     }
         
     func setupAudio(url: URL) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else {
-                return
+        var _url = url
+        let isReachable = (try? url.checkResourceIsReachable()) ?? false
+        do {
+            if !isReachable {
+                let filename = String(url.absoluteString.split(separator: "/").last ?? "")
+                let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                _url = documentsPath.appendingPathComponent(filename)
             }
-            var _url = url
-            let isReachable = (try? url.checkResourceIsReachable()) ?? false
-            do {
-                if !isReachable {
-                    let filename = String(url.absoluteString.split(separator: "/").last ?? "")
-                    let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                    _url = documentsPath.appendingPathComponent(filename)
-                }
-                self.audioPlayer = try AVAudioPlayer(contentsOf: _url)
-            } catch {
-                print(error)
-            }
-            
-            guard let player = self.audioPlayer else { return }
-            player.delegate = self
-            player.prepareToPlay()
-            self.duration = player.duration
-        }
+            audioPlayer = try AVAudioPlayer(contentsOf: _url)
+        } catch {
+            print(error)
+        }        
         
+        guard let player = audioPlayer else { return }
+        player.delegate = self
+        player.prepareToPlay()
+        self.duration = player.duration
     }
     
     func play() {
