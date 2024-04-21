@@ -28,8 +28,8 @@ enum SongType {
 @Model
 final class User {
     var registrationDate: Date?
-    var subscriptionPlanId: Int = -1
-    var accessDisallowed: Bool = true
+    var subscriptionPlanId: Int = 1
+    var accessDisallowed: Bool = false
     
     init() {}
     

@@ -12,20 +12,22 @@ struct SongsListView: View {
     @State var isSongDetailsPresented: Bool = false
     @State var isShareSheetPresented: Bool = false
     @ObservedObject var player = Player()
+    @State var initialAnimationStep = 0
     
     var body: some View {
-        if songsList.songs.count == 0 {
-            EmptyListView()
-        } else {
-            ScrollView {
-                ForEach($songsList.songs) { song in
-                    ContentCell(
-                        song: song,
-                        songsList: songsList,
-                        player: player,
-                        isSongDetailsPresented: $isSongDetailsPresented,
-                        isShareSheetPresented: $isShareSheetPresented
-                    )
+        ZStack {
+            if initialAnimationStep == 1 {
+                EmptyListView()
+            } else if initialAnimationStep == 2 {
+                ScrollView {
+                    ForEach($songsList.songs) { song in
+                        ContentCell(
+                            song: song,
+                            songsList: songsList,
+                            player: player,
+                            isSongDetailsPresented: $isSongDetailsPresented,
+                            isShareSheetPresented: $isShareSheetPresented
+                        )
                         .body.modifier(ScrollCell())
                         .onTapGesture {
                             if !song.isExpanded.wrappedValue {
@@ -34,13 +36,27 @@ struct SongsListView: View {
                                 }
                             }
                         }
+                    }
+                    .listRowBackground(Color.black)
+                    .listRowSeparatorTint(.customGray)
+                    .padding(.top, 10)
                 }
-                .listRowBackground(Color.black)
-                .listRowSeparatorTint(.customGray)
+                .transition(.move(edge: .bottom))
+                .listStyle(.plain)
+                .background(Color.black)
             }
-            .listStyle(.plain)
-            .background(Color.black)
         }
+        .onAppear {
+            withAnimation(.snappy) {
+                initialAnimationStep = songsList.songs.count == 0 ? 1 : 2
+            }
+        }
+        .onChange(of: songsList.songs.count, { oldValue, newValue in
+            withAnimation {
+                initialAnimationStep = newValue == 0 ? 1 : 2
+            }
+        })
+        
     }
 }
 
@@ -129,15 +145,17 @@ struct EmptyListView: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 60, height: 60)
                     .padding()
-                Text("No recordings")
-                    .foregroundStyle(Color.white)
-                    .font(.system(size: 28))
-                    .fontWeight(.bold)
-                Text("Songs you record will appear here.")
-                    .foregroundStyle(Color.customGray1)
+                VStack {
+                    Text("No recordings")
+                        .foregroundStyle(Color.white)
+                        .font(.system(size: 28))
+                        .fontWeight(.bold)
+                    Text("Songs you record will appear here.")
+                        .foregroundStyle(Color.customGray1)
+                }
             }
             .frame(maxHeight: .infinity)
-        }
+        }.transition(.move(edge: .bottom))
     }
 }
 

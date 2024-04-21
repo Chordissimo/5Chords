@@ -36,8 +36,7 @@ struct EditableText: View  {
 
     var body: some View {
         if isEditable ?? true {
-            switch style {
-            case EditableTextDisplayStyle.songTitle:
+            if style == EditableTextDisplayStyle.songTitle {
                 TextField("", text: $temporaryText)
                     .onSubmit {
                         if temporaryText == "" {
@@ -49,20 +48,14 @@ struct EditableText: View  {
                     .foregroundStyle(Color.white)
                     .fontWeight(.semibold)
                     .font(.system(size: 17))
-                    .focused($isFocused, equals: true)
                     .onTapGesture { isFocused = true }
-            default:
-                Text("To be added later")
             }
         } else {
-            switch style {
-            case EditableTextDisplayStyle.songTitle:
+            if style == EditableTextDisplayStyle.songTitle {
                 Text(sourceText)
                     .foregroundStyle(Color.white)
                     .fontWeight(.semibold)
                     .font(.system(size: 17))
-            default:
-                Text("To be added later")
             }
         }
     }

@@ -83,18 +83,11 @@ struct WebView: UIViewRepresentable {
 
 
 struct YoutubeView: View {
-    @State var showWebView = false
+    @Binding var showWebView: Bool
     var videoDidSelected: (_ resultUrl: String) -> Void
     
     var body: some View {
-        Button {
-            showWebView.toggle()
-        } label: {
-            Text("Youtube")
-        }
-        .fullScreenCover(isPresented: $showWebView){
-            WebView(url: URL(string: "https://youtube.com")!, showWebView: $showWebView, videoDidSelected: videoDidSelected)
-        }
+        WebView(url: URL(string: "https://youtube.com")!, showWebView: $showWebView, videoDidSelected: videoDidSelected)
     }
     
 }
