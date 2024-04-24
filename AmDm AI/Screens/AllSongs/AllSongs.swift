@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import AVFoundation
 
 class RecognitionMode: ObservableObject {
     @Published var index: Int = 0
@@ -42,9 +43,7 @@ class RecognitionMode: ObservableObject {
 }
 
 struct AllSongs: View {
-    
-    @Environment(\.modelContext) private var modelContext
-    @State var user = User()
+    @ObservedObject var user = User()
     @State var runsCount: Int = 0
     @State var showSettings = false
     @State var showUpload = false
@@ -56,7 +55,6 @@ struct AllSongs: View {
     var body: some View {
         
         GeometryReader { geometry in
-            let windowHeight = geometry.size.height
             NavigationStack {
                 ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                     Color.black.ignoresSafeArea()
@@ -68,7 +66,7 @@ struct AllSongs: View {
                             Color.clear
                         }
                         .ignoresSafeArea()
-                        .frame(height: windowHeight * 0.1)
+                        .frame(height: geometry.safeAreaInsets.bottom > 0 ? 80 : 110)
                     }
                     VStack { // recording panel with timer
                         if songsList.recordStarted {
@@ -76,11 +74,11 @@ struct AllSongs: View {
                             VStack {
                                 TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songName: songsList.getNewSongName())
                                     .padding(.top, 20)
-                                    .frame(height: windowHeight * 0.3)
+                                    .frame(height: 240)
                             }
                             .transition(.move(edge: .bottom))
                             .ignoresSafeArea()
-                            .frame(height: windowHeight * 0.3)
+                            .frame(height: 240)
                         }
                     }
                     
@@ -94,19 +92,21 @@ struct AllSongs: View {
                                 
                             } else if initialAnimationStep == 2 {
                                 HStack {
-                                    Button {
-                                        recognitionMode.direction = .trailing
-                                        withAnimation {
-                                            recognitionMode.swipeFromRight()
+                                    if !songsList.recordStarted {
+                                        Button {
+                                            recognitionMode.direction = .trailing
+                                            withAnimation {
+                                                recognitionMode.swipeFromRight()
+                                            }
+                                        } label: {
+                                            Image(systemName: "chevron.left")
+                                                .resizable()
+                                                .foregroundColor(.customGray)
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 15)
+                                                .padding(.leading,15)
+                                                .padding(.bottom, 25)
                                         }
-                                    } label: {
-                                        Image(systemName: "chevron.left")
-                                            .resizable()
-                                            .foregroundColor(.customGray)
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 15)
-                                            .padding(.leading,15)
-                                            .padding(.bottom, 25)
                                     }
                                     Spacer()
                                     if recognitionMode.current() == .microphone {
@@ -136,27 +136,28 @@ struct AllSongs: View {
 
                                     }
                                     Spacer()
-                                    Button {
-                                        recognitionMode.direction = .leading
-                                        withAnimation {
-                                            recognitionMode.swipeFromLeft()
+                                    if !songsList.recordStarted {
+                                        Button {
+                                            recognitionMode.direction = .leading
+                                            withAnimation {
+                                                recognitionMode.swipeFromLeft()
+                                            }
+                                        } label: {
+                                            Image(systemName: "chevron.right")
+                                                .resizable()
+                                                .foregroundColor(.customGray)
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 15)
+                                                .padding(.trailing,15)
+                                                .padding(.bottom, 25)
                                         }
-                                    } label: {
-                                        Image(systemName: "chevron.right")
-                                            .resizable()
-                                            .foregroundColor(.customGray)
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 15)
-                                            .padding(.trailing,15)
-                                            .padding(.bottom, 25)
                                     }
-
                                 }
                             }
                         }
                     }
                     .ignoresSafeArea()
-                    .frame(height: windowHeight * 0.1)
+                    .frame(height: geometry.safeAreaInsets.bottom > 0 ? 80 : 110)
                     .gesture(DragGesture(minimumDistance: 3.0, coordinateSpace: .local)
                         .onChanged({ value in
                             let newValue = value.location.x
@@ -166,7 +167,7 @@ struct AllSongs: View {
                             recognitionMode.currentLocation = newValue
                         })
                         .onEnded { value in
-                            withAnimation(.spring(.bouncy)) {
+                            withAnimation {
                                 switch(value.translation.width, value.translation.height) {
                                 case (...0, -30...30):  // left
                                     recognitionMode.swipeFromRight()
@@ -184,10 +185,9 @@ struct AllSongs: View {
                     .ignoresSafeArea()
                 }
                 .onAppear {
-                    ScreenDimentions.maxWidth = geometry.size.width
-                    ScreenDimentions.maxHeight = geometry.size.height
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
                         withAnimation(.snappy(extraBounce: 0.3)) {
+                            AudioServicesPlaySystemSound(SystemSoundID(1306)) //1104, 1306
                             initialAnimationStep = 1
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
@@ -206,25 +206,25 @@ struct AllSongs: View {
                         }
                     }
                 }
-//                .navigationTitle("All songs")
                 .toolbarBackground(Color.black, for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbarColorScheme(.dark)
                 .navigationBarItems(
                     trailing:
                         ActionButton(systemImageName: "slider.horizontal.3") {
-                            if let url = URL(string: UIApplication.openSettingsURLString) {
-                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                            }
+                            showSettings = true
+//                            if let url = URL(string: UIApplication.openSettingsURLString) {
+//                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+//                            }
                         }
                         .foregroundColor(.purple)
                 )
 
                 .fullScreenCover(isPresented: $user.accessDisallowed) {
-                    Subscription(user: $user)
+                    Subscription(user: user)
                 }
                 .fullScreenCover(isPresented: $showSettings) {
-                    Settings(showSettings: $showSettings)
+                    Settings(user: user, showSettings: $showSettings)
                         .animation(.easeInOut(duration: 2), value: showSettings)
                 }
                 .fullScreenCover(isPresented: $youtubeViewPresented) {
@@ -247,7 +247,6 @@ struct AllSongs: View {
                 }
             }
         }
-        .edgesIgnoringSafeArea(.bottom)
     }
 }
 

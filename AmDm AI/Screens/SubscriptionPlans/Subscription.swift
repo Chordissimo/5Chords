@@ -9,8 +9,8 @@ import SwiftUI
 import SwiftData
 
 struct Subscription: View {
-    @Environment(\.modelContext) private var modelContext
-    @Binding var user: User
+//    @Environment(\.modelContext) private var modelContext
+    @ObservedObject var user: User
 
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -59,5 +59,5 @@ struct Subscription: View {
 
 #Preview {
     @State var user = User()
-    return Subscription(user: $user)
+    return Subscription(user: user)
 }

@@ -44,7 +44,9 @@ class SongModel: Object {
 class DatabaseService {
     lazy var realm = try! Realm()
     
-    
+    init() {
+//        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+    }
     
     func writeSong(name: String, url: String, duration: TimeInterval, chords: [Chord], songType: SongType = .localFile) -> Song {
         

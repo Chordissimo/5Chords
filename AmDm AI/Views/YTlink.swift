@@ -19,7 +19,7 @@ struct YTlink: View {
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .trailing, vertical: .center)) {
-            TextField("", text: $temporaryText, prompt: Text(placeholder).foregroundStyle(Color.customGray1))
+            TextField("", text: $temporaryText, prompt: Text(placeholder).foregroundColor(.customGray1))
                 .disableAutocorrection(true)
                 .focused($isFocused, equals: true)
                 .onSubmit { Submit() }

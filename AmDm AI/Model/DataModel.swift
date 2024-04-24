@@ -25,10 +25,9 @@ enum SongType {
     }
 }
 
-@Model
-final class User {
+final class User: ObservableObject {
     var registrationDate: Date?
-    var subscriptionPlanId: Int = 1
+    var subscriptionPlanId: Int = 0
     var accessDisallowed: Bool = false
     
     init() {}
@@ -41,10 +40,6 @@ final class User {
     
 }
 
-struct ScreenDimentions {
-    static var maxHeight = 0.0
-    static var maxWidth = 0.0
-}
 
 struct SubscriptionPlan: Identifiable, Hashable {
     let id = UUID()
@@ -190,6 +185,7 @@ final class SongsList: ObservableObject {
         
         $songs
             .sink { [weak self] value in
+                // don't need to do anything in case new song is added, i.e. value.count > self?.songs.count
                 if value.count == self?.songs.count {
                     for i in value.indices {
                         if value[i].name != self?.songs[i].name {
@@ -205,7 +201,13 @@ final class SongsList: ObservableObject {
         recognitioaApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
             switch result {
             case .success(let response):
-                let song = self.databaseService.writeSong(name: self.getNewSongName(), url: resultUrl, duration: self.duration, chords: response.chords, songType: .youtube)
+                let song = self.databaseService.writeSong(
+                    name: self.getNewSongName(),
+                    url: resultUrl,
+                    duration: self.duration,
+                    chords: response.chords,
+                    songType: .youtube
+                )
                 self.songs.insert(song, at: 0)
                 self.expand(song: song)
             case .failure(let failure):

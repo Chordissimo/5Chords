@@ -12,7 +12,8 @@ struct YoutubeButton: View {
     
     var body: some View {
         GeometryReader { geometry  in
-            let whiteCircleHeight = geometry.size.height * 0.65
+            let whiteCircleHeight = 59.0
+//            let whiteCircleHeight = geometry.size.height * 0.65
             let grayCircleHeight = whiteCircleHeight - 5
             let redCircleHeight = grayCircleHeight - 5
             let ytLogoHeight = redCircleHeight * 0.4

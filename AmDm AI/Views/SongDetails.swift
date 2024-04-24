@@ -11,7 +11,6 @@ import SwiftyChords
 struct SongDetails: View {
     @Binding var song: Song
     @ObservedObject var songsList: SongsList
-    @ObservedObject var player: Player
     @Binding var isSongDetailsPresented: Bool
     @Binding var isShareSheetPresented: Bool
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
@@ -47,40 +46,13 @@ struct SongDetails: View {
                         .foregroundStyle(.customGray1)
                 }.padding(.bottom,30)
                 
-                ChordsView(chords: song.chords, style: ChordDisplayStyle.pictogram)
+                ChordsView(chords: song.chords, style: .pictogram_large)
 
-//                VStack {
-//                    PlaybackSlider(width: CGFloat(ScreenDimentions.maxWidth))
-//                }.padding()
-
-                AudioPlayerView(scale: .large, song: $song, songsList: songsList, player: player)
+                AudioPlayerView(scale: .large, song: $song, songsList: songsList)
                     .padding(.horizontal,20)
                 
-
-//                HStack {
-//                    PlaybackColtrols(scale: .large).frame(width: 100)
-//                }.padding()
             }
         }
     }
 }
-
-
-//#Preview {
-//    @State var isSongDetailsPresented: Bool = true
-//    @State var isShareSheetPresented: Bool = true
-//    
-//    @State var song = SongData(name: "Back in Black", duration: TimeInterval(60), chords: [
-//        Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
-//        Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
-//        Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
-//        Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
-//        Chord(key: Chords.Key.e, suffix: Chords.Suffix.major),
-//        Chord(key: Chords.Key.d, suffix: Chords.Suffix.major),
-//        Chord(key: Chords.Key.a, suffix: Chords.Suffix.major)]
-//    )
-//    return SongDetails(song: $song, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
-//}
-
-
 

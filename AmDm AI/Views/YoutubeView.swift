@@ -9,7 +9,6 @@ import SwiftUI
 import WebKit
 
 struct WebView: UIViewRepresentable {
-    
     var url: URL
     @Binding var showWebView: Bool
     var videoDidSelected: (_ resultUrl: String) -> Void
@@ -41,8 +40,6 @@ struct WebView: UIViewRepresentable {
     }
     
     func updateUIView(_ webView: WKWebView, context: Context) {
-        print("updateUIView")
-
         let request = URLRequest(url: url)
         webView.load(request)
     }
@@ -53,23 +50,19 @@ struct WebView: UIViewRepresentable {
     
     class WebViewCoordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var parent: WebView
-        
         var updateState: ((_ resultUrl: String) -> Void)?
         
         init(_ parent: WebView) {
             self.parent = parent
         }
         
-        
-        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-            print("didCommit")
-        }
-        
-        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-            print("didStartProvisionalNavigation")
-        }
-        
-        
+//        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+//            print("didCommit")
+//        }
+//        
+//        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+//            print("didStartProvisionalNavigation")
+//        }
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             if message.name == "clickHandler", let urlString = message.body as? String, urlString.contains("watch?v=") {
@@ -79,8 +72,6 @@ struct WebView: UIViewRepresentable {
         
     }
 }
-
-
 
 struct YoutubeView: View {
     @Binding var showWebView: Bool

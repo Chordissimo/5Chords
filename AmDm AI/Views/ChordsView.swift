@@ -8,20 +8,21 @@
 import SwiftUI
 import SwiftyChords
 
-enum ChordDisplayStyle {
-    static let inline = 0
-    static let pictogram = 1
+enum ChordDisplayStyle: Int {
+    case inline = 0
+    case pictogram_large = 1
+    case pictogram_small = 2
 }
 
+@available(iOS 16.4, *)
 struct ChordsView: View {
     var chords = [Chord]()
-    var style: Int? = 0
+    var style: ChordDisplayStyle
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
 
-    
     var body: some View {
         switch style {
-        case ChordDisplayStyle.pictogram:
+        case .pictogram_large:
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 30) {
                     ForEach(chords) { ch in
@@ -29,7 +30,26 @@ struct ChordsView: View {
                             .frame(width: 100, height: 100)
                     }
                 }
-            }.frame(maxHeight: .infinity).scrollBounceBehavior(.basedOnSize)
+            }
+            .frame(maxHeight: .infinity)
+            .scrollBounceBehavior(.basedOnSize)
+        case .pictogram_small:
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(chords) { ch in
+                        VStack {
+                            Text(ch.uiChord.key.display.symbol + ch.uiChord.suffix.display.symbolized)
+                                .foregroundStyle(Color.white)
+                                .font(.system(size: 15))
+                                .fontWeight(.semibold)
+                            ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: ch.uiChord.key).matching(suffix: ch.uiChord.suffix).first!))
+                                .frame(width: 50, height: 75)
+                        }
+                    }
+                }
+            }
+            .frame(maxHeight: .infinity)
+            .scrollBounceBehavior(.basedOnSize)
         default:
             ScrollView(.horizontal) {
                 HStack {
@@ -47,10 +67,19 @@ struct ChordsView: View {
     }
     
     func createShapeLayer(chordPosition: ChordPosition) -> CAShapeLayer {
-        let frame = CGRect(x: 0, y: 0, width: 100, height: 150)
+        var frame: CGRect
+        switch self.style {
+        case .pictogram_large:
+            frame = CGRect(x: 0, y: 0, width: 100, height: 150)
+        case .pictogram_small:
+            frame = CGRect(x: 0, y: 0, width: 50, height: 75)
+        default:
+            frame = CGRect(x: 0, y: 0, width: 0, height: 0) // we're not suppose to even call this method for the inline representation
+        }
+        
         let shapeLayer = chordPosition.chordLayer(
             rect: frame,
-            chordName:.init(show: true, key: .symbol, suffix: .symbolized), 
+            chordName:.init(show: false, key: .symbol, suffix: .symbolized),
             forPrint: false
         )
     

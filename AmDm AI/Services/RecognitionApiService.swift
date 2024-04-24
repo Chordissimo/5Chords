@@ -7,9 +7,10 @@
 
 import Foundation
 import Alamofire
-
+import SwiftUI
 
 class RecognitionApiService {
+    @AppStorage("server_ip") private var server_ip: String = ""
     
     struct Response: Codable {
         var chords: [Chord]
@@ -24,34 +25,39 @@ class RecognitionApiService {
         url: URL,
         completion: @escaping ((Result<Response, Error>) -> Void)
     ) {
-        
-        AF
-            .upload(
-                multipartFormData: { multipartFormData in
-                    multipartFormData.append(url, withName: "file")
-                },
-                to: "http://192.168.0.4:8000/upload" // Anton
+        AF.upload(
+            multipartFormData: { multipartFormData in
+                multipartFormData.append(url, withName: "file")
+            },
+            to: "http://" + server_ip + "/upload"
+//                to: "http://192.168.0.4:8000/upload" // Anton
 //                to: "http://192.168.10.8:8000/upload" // Marat
-            )
-            .validate()
-            .responseDecodable(of: Response.self) { response in
-                guard let result = response.value else {
-                    completion(.failure(response.error ?? ServiceError.noResult))
-                    return
-                }
-                
-                completion(.success(result))
+        )
+        .validate()
+        .responseDecodable(of: Response.self) { response in
+            guard let result = response.value else {
+                completion(.failure(response.error ?? ServiceError.noResult))
+                return
             }
+            
+            completion(.success(result))
+        }
     }
     
     func recognizeAudioFromYoutube(
         url: String,
         completion: @escaping ((Result<Response, Error>) -> Void)
     ) {
+        print(server_ip)
+        let requestUrl = "http://" + server_ip + "/upload/youtube"
+//          let requestUrl = "http://192.168.0.4:8000/upload/youtube" // Anton
+//          let requestUrl = "http://192.168.10.8:8000/upload/youtube" //Marat
         AF.request(
-            //   to: "http://192.168.0.4:8000/upload/youtube", // Anton
-            "http://192.168.10.8:8000/upload/youtube", // Marat
-            method: .post, parameters: ["url": url], encoding: JSONEncoding.default)
+            requestUrl,
+            method: .post,
+            parameters: ["url": url],
+            encoding: JSONEncoding.default
+        )
         .validate() // Optional: Validate the response (status code, content type, etc.)
         .responseDecodable(of: Response.self) { response in
             guard let result = response.value else {

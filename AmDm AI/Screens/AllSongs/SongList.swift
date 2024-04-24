@@ -11,7 +11,6 @@ struct SongsListView: View {
     @ObservedObject var songsList: SongsList
     @State var isSongDetailsPresented: Bool = false
     @State var isShareSheetPresented: Bool = false
-    @ObservedObject var player = Player()
     @State var initialAnimationStep = 0
     
     var body: some View {
@@ -24,7 +23,6 @@ struct SongsListView: View {
                         ContentCell(
                             song: song,
                             songsList: songsList,
-                            player: player,
                             isSongDetailsPresented: $isSongDetailsPresented,
                             isShareSheetPresented: $isShareSheetPresented
                         )
@@ -51,19 +49,18 @@ struct SongsListView: View {
                 initialAnimationStep = songsList.songs.count == 0 ? 1 : 2
             }
         }
-        .onChange(of: songsList.songs.count, { oldValue, newValue in
+        .onChange(of: songsList.songs.count, perform: { newValue in
             withAnimation {
                 initialAnimationStep = newValue == 0 ? 1 : 2
+                isSongDetailsPresented = true
             }
         })
-        
     }
 }
 
 struct ContentCell {
     @Binding var song: Song
     @ObservedObject var songsList: SongsList
-    @ObservedObject var player: Player
     @Binding var isSongDetailsPresented: Bool
     @Binding var isShareSheetPresented: Bool
     
@@ -78,34 +75,50 @@ struct ContentCell {
                         Text(formatTime(song.duration))
                             .foregroundStyle(Color.customGray1)
                             .font(.system(size: 15))
+                    } else {
+                        ActionButton(systemImageName: "trash") {
+                            songsList.del(song: song)
+                        }
+                        .frame(width: 18)
                     }
                 }
                 if song.isExpanded {
                     VStack(alignment: .leading) {
                         VStack {
-                            Button {
-                                isSongDetailsPresented = true
-                            } label: {
-                                ChordsView(chords: song.chords)
-                                    .padding(.vertical, 10)
-                            }
-                            .buttonStyle(BorderlessButtonStyle())
-                            .sheet(isPresented: $isSongDetailsPresented, onDismiss: {
-                                songDetailsDismissed(isShareSheetPresented)
-                            }) {
-                                SongDetails(song: $song, songsList: songsList, player: player, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
-                            }
-                        }
-                        HStack {
-                            if song.songType == .localFile {
-                                AudioPlayerView(scale: .small, song: $song, songsList: songsList, player: player)
-                            } else {
-                                Text("Youtube")
+                            HStack {
+                                Button {
+                                    isSongDetailsPresented = true
+                                } label: {
+                                    ChordsView(chords: song.chords, style: .pictogram_small)
+                                        .padding(.vertical, 10)
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+                                .sheet(isPresented: $isSongDetailsPresented, onDismiss: {
+                                    songDetailsDismissed(isShareSheetPresented)
+                                }) {
+                                    SongDetails(song: $song, songsList: songsList, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
+                                }
+                                
+                                Spacer()
+
+                                Button {
+                                    isSongDetailsPresented = true
+                                } label: {
+                                    Image(systemName: "play.circle")
+                                        .resizable()
+                                        .frame(width: 45, height: 45)
+                                        .foregroundColor(.white)
+                                }
+                                .buttonStyle(BorderlessButtonStyle())
+                                .sheet(isPresented: $isSongDetailsPresented, onDismiss: {
+                                    songDetailsDismissed(isShareSheetPresented)
+                                }) {
+                                    SongDetails(song: $song, songsList: songsList, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
+                                }
                             }
                             
+                            
                         }
-                        .padding(.bottom, 10)
-                        .padding(.horizontal, 5)
                     }
                 }
             }

@@ -11,7 +11,7 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var isPlaying: Bool = false
     @Published var duration: TimeInterval = 0.0
     @Published var currentTime: TimeInterval = 0.0
-    var audioPlayer: AVAudioPlayer?
+    var audioPlayer: AVAudioPlayer? = nil
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
         currentTime = flag ? duration : currentTime

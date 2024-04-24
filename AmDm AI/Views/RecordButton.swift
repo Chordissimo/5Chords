@@ -14,11 +14,13 @@ struct RecordButton: View {
     var body: some View {
         
         GeometryReader { geometry  in
-            let whiteCircleHeight = geometry.size.height * 0.65
-            let grayCircleHeight = whiteCircleHeight - 5
-            let redCircleHeight = grayCircleHeight - 5
-            let redSquareHeight = redCircleHeight * 0.5
-            let redCircleHeightTapped = redSquareHeight - 5
+            let whiteCircleHeight = 59.0
+//            let whiteCircleHeight = geometry.size.height * 0.65 //43
+            let grayCircleHeight = whiteCircleHeight - 5 // 38
+            let redCircleHeight = grayCircleHeight - 5 // 33
+            let redSquareHeight = redCircleHeight * 0.5 // 17
+            let redCircleHeightTapped = redSquareHeight - 5 // 12
+
             ZStack {
                 Circle()
                     .frame(width: whiteCircleHeight, height: whiteCircleHeight)
@@ -44,6 +46,9 @@ struct RecordButton: View {
             }
             .clipShape(Rectangle())
             .frame(width: geometry.size.width)
+            .onAppear {
+                print(geometry.size.height)
+            }
         }
     }
 }
