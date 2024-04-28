@@ -12,13 +12,30 @@ import RealmSwift
 class ChordModel: Object {
     @Persisted var id = UUID().uuidString
     @Persisted var chord: String
-    @Persisted var timeSeconds: Double
+    @Persisted var start: Int
+    @Persisted var end: Int
     
-    convenience init(id: String, chord: String, timeSeconds: Double) {
+    convenience init(id: String, chord: String, start: Int, end: Int) {
         self.init()
         self.id = id
         self.chord = chord
-        self.timeSeconds = timeSeconds
+        self.start = start
+        self.end = end
+    }
+}
+
+class AlignedTextModel: Object {
+    @Persisted var id = UUID().uuidString
+    @Persisted var text: String
+    @Persisted var start: Int?
+    @Persisted var end: Int?
+    
+    convenience init(id: String, text: String, start: Int?, end: Int?) {
+        self.init()
+        self.id = id
+        self.text = text
+        self.start = start
+        self.end = end
     }
 }
 
@@ -30,7 +47,9 @@ class SongModel: Object {
     @Persisted var duration: TimeInterval
     @Persisted var created: Date
     @Persisted var chords: List<ChordModel>
+    @Persisted var text: List<AlignedTextModel>
     @Persisted var songType: String
+    @Persisted var tempo: Float
     
     
     convenience init(name: String, url: String) {
@@ -45,21 +64,46 @@ class DatabaseService {
     lazy var realm = try! Realm()
     
     init() {
-//        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+        //        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
-    func writeSong(name: String, url: String, duration: TimeInterval, chords: [Chord], songType: SongType = .localFile) -> Song {
-        
+    
+    private func writeChords(chords: [Chord]) -> List<ChordModel> {
         let dbChords = chords.map { ch in
-            ChordModel(id: ch.id, chord: ch.chord, timeSeconds: ch.timeSeconds)
+            ChordModel(id: ch.id, chord: ch.chord, start: ch.start, end: ch.end)
         }
-        
         try! realm.write {
             realm.add(dbChords)
         }
-        
         let realmChordList = List<ChordModel>()
         realmChordList.append(objectsIn: dbChords)
+        return realmChordList
+    }
+    
+    private func writeText(text: [AlignedText]) -> List<AlignedTextModel> {
+        let dbTexts = text.map { ch in
+            AlignedTextModel(id: ch.id, text: ch.text, start: ch.start, end: ch.end)
+        }
+        try! realm.write {
+            realm.add(dbTexts)
+        }
+        let realmTextList = List<AlignedTextModel>()
+        realmTextList.append(objectsIn: dbTexts)
+        return realmTextList
+    }
+    
+    func writeSong(
+        name: String,
+        url: String,
+        duration: TimeInterval,
+        chords: [Chord],
+        text: [AlignedText],
+        tempo: Float,
+        songType: SongType = .localFile
+    ) -> Song {
+        
+        let realmChordList = writeChords(chords: chords)
+        let realmTextList = writeText(text: text)
         
         let song = SongModel()
         song.id = UUID().uuidString
@@ -67,8 +111,10 @@ class DatabaseService {
         song.url = url
         song.duration = duration
         song.chords = realmChordList
+        song.text = realmTextList
         song.created = Date()
         song.songType = songType.toString()
+        song.tempo = tempo
         
         try! realm.write {
             realm.add(song)
@@ -81,6 +127,8 @@ class DatabaseService {
             duration: song.duration,
             created: song.created,
             chords: chords,
+            text: text,
+            tempo: song.tempo,
             songType: songType
         )
     }
@@ -131,13 +179,23 @@ class DatabaseService {
                 url: $0.url,
                 duration: $0.duration,
                 created: $0.created,
-                chords: $0.chords.map {
+                chords: $0.chords.sorted{ x1, x2 in x1.start < x2.start }.map {
                     Chord(
                         id: $0.id,
                         chord: $0.chord,
-                        timeSeconds: $0.timeSeconds 
+                        start: $0.start,
+                        end: $0.end
                     )
                 },
+                text:  $0.text.sorted{ x1, x2 in x1.start ?? 0 < x2.start ?? 0 }.map {
+                    AlignedText(
+                        id: $0.id,
+                        text: $0.text,
+                        start: $0.start,
+                        end: $0.end
+                    )
+                },
+                tempo: $0.tempo,
                 songType: $0.songType == "localFile" ? .localFile : .youtube
             )
         }
