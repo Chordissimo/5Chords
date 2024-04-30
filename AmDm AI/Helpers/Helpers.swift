@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum TimePrecision: Int {
     case milliseconds = 0
@@ -43,4 +44,14 @@ func formatTime(_ time: TimeInterval, precision: TimePrecision? = TimePrecision.
         }
     }
     return String(format: "%02d:%02d", minutes, seconds)
+}
+
+func getSafeImage(named: String) -> Image {
+    if UIImage(named: named) != nil {
+        return Image(named)
+    } else if UIImage(systemName: named) != nil {
+        return Image(systemName: named)
+    } else {
+        return Image(systemName: "questionmark")
+    }
 }

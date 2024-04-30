@@ -19,7 +19,7 @@ struct Settings: View {
             VStack {
                 HStack(alignment: .center) {
                     Spacer()
-                    ActionButton(systemImageName: "xmark.circle.fill") {
+                    ActionButton(imageName: "xmark.circle.fill") {
                         showSettings = false
                     }
                     .frame(height: 25)

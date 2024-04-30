@@ -62,11 +62,7 @@ struct AudioPlayerView: View {
                     }
                 }
                 
-                HStack {
-                    if scale == .small {
-                        Share(label: "", content: "Chords for " + song.name)
-                    }
-                    
+                HStack {                    
                     Spacer()
                     
                     Button {
@@ -113,10 +109,10 @@ struct AudioPlayerView: View {
                     Spacer()
                     
                     if scale == .small {
-                        ActionButton(systemImageName: "trash") {
+                        ActionButton(imageName: "trash") {
                             songsList.del(song: song)
                         }
-                        .frame(width: 18)
+                        .frame(width: 50, height: 18)
                     }
                 }
                 .padding(.vertical, scale == .large ? 50 : 0)

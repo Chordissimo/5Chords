@@ -27,6 +27,9 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
                 let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 _url = documentsPath.appendingPathComponent(filename)
             }
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playback, mode: .default)
+            try audioSession.setActive(true)
             audioPlayer = try AVAudioPlayer(contentsOf: _url)
         } catch {
             print(error)
