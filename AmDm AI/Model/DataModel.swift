@@ -65,23 +65,23 @@ struct UIChord: Identifiable, Hashable {
     
     static func getKey(from string: String) -> Chords.Key? {
         switch string {
-        case "C": return .c
-        case "C#": return .cSharp
-        case "Db": return .dFlat
-        case "D": return .d
-        case "D#": return .dSharp
-        case "Eb": return .eFlat
-        case "E": return .e
-        case "F": return .f
-        case "F#": return .fSharp
-        case "Gb": return .gFlat
-        case "G": return .g
-        case "G#": return .gSharp
-        case "Ab": return .aFlat
-        case "A": return .a
-        case "A#": return .aSharp
-        case "Bb": return .bFlat
-        case "B": return .b
+        case "c": return .c
+        case "c#": return .cSharp
+        case "db": return .dFlat
+        case "d": return .d
+        case "d#": return .dSharp
+        case "eb": return .eFlat
+        case "e": return .e
+        case "f": return .f
+        case "f#": return .fSharp
+        case "gb": return .gFlat
+        case "g": return .g
+        case "g#": return .gSharp
+        case "ab": return .aFlat
+        case "a": return .a
+        case "a#": return .aSharp
+        case "bb": return .bFlat
+        case "b": return .b
         default: return nil
         }
     }
@@ -96,33 +96,66 @@ struct Song: Identifiable, Equatable {
     var name: String
     var url: URL
     var chords: [Chord]
+    var text: [AlignedText]
     var id: String
     var isExpanded = false
     var duration: TimeInterval
     var created: Date
     var playbackPosition = 0.0
     var songType: SongType = .localFile
+    var tempo: Float
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [Chord], songType: SongType = .localFile) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [Chord], text: [AlignedText], tempo: Float, songType: SongType = .localFile) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
         self.chords = chords
+        self.text = text
         self.duration = duration
         self.created = created
         self.songType = songType
+        self.tempo = tempo
+    }
+}
+
+
+class AlignedText: Codable, Identifiable {
+    var text: String
+    var start: Int?
+    var end: Int?
+    var id = UUID().uuidString
+    
+    enum CodingKeys: String, CodingKey {
+        case text
+        case start
+        case end
+    }
+    
+    init(id: String, text: String, start: Int?, end: Int?) {
+        self.text = text
+        self.start = start
+        self.end = end
+        self.id = id
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        text = try values.decode(String.self, forKey: .text)
+        start = try? values.decode(Int.self, forKey: .start)
+        end = try? values.decode(Int.self, forKey: .end)
     }
 }
 
 
 class Chord: Codable, Identifiable {
     var chord: String
-    var timeSeconds: Double
+    var start: Int
+    var end: Int
     var uiChord: UIChord {
         if chord.uppercased() != "N" {
             let parts = chord.uppercased().split(separator: ":")
             return UIChord(
-                key: UIChord.getKey(from: String(parts[0]))!,
+                key: UIChord.getKey(from: String(parts[0].lowercased()))!,
                 suffix: String(parts[1]) == "MIN" ? Chords.Suffix.minor : Chords.Suffix.major
             )
         }
@@ -132,19 +165,22 @@ class Chord: Codable, Identifiable {
     
     enum CodingKeys: String, CodingKey {
         case chord
-        case timeSeconds = "time_seconds"
+        case start
+        case end
     }
     
-    init(id: String, chord: String, timeSeconds: Double) {
+    init(id: String, chord: String, start: Int, end: Int) {
         self.chord = chord
-        self.timeSeconds = timeSeconds
+        self.start = start
+        self.end = end
         self.id = id
     }
     
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
         chord = try values.decode(String.self, forKey: .chord)
-        timeSeconds = try values.decode(Double.self, forKey: .timeSeconds)
+        start = try values.decode(Int.self, forKey: .start)
+        end = try values.decode(Int.self, forKey: .end)
     }
 }
 
@@ -169,7 +205,14 @@ final class SongsList: ObservableObject {
             self.recognitioaApiService.recognizeAudio(url: url) { result in
                 switch result {
                 case .success(let response):
-                    let song = self.databaseService.writeSong(name: self.getNewSongName(), url: url.absoluteString, duration: self.duration, chords: response.chords)
+                    let song = self.databaseService.writeSong(
+                        name: self.getNewSongName(),
+                        url: url.absoluteString,
+                        duration: self.duration,
+                        chords: response.chords,
+                        text: response.text ?? [],
+                        tempo: response.tempo
+                    )
                     self.songs.insert(song, at: 0)
                     self.expand(song: song)
                 case .failure(let failure):
@@ -206,6 +249,8 @@ final class SongsList: ObservableObject {
                     url: resultUrl,
                     duration: self.duration,
                     chords: response.chords,
+                    text: response.text ?? [],
+                    tempo: response.tempo,
                     songType: .youtube
                 )
                 self.songs.insert(song, at: 0)
