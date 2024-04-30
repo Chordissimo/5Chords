@@ -14,6 +14,8 @@ class RecognitionApiService {
     
     struct Response: Codable {
         var chords: [Chord]
+        var text: [AlignedText]?
+        var tempo: Float
     }
     
     private enum ServiceError: Error {
