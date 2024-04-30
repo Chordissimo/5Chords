@@ -56,13 +56,13 @@ struct WebView: UIViewRepresentable {
             self.parent = parent
         }
         
-//        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-//            print("didCommit")
-//        }
-//        
-//        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
-//            print("didStartProvisionalNavigation")
-//        }
+        //        func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        //            print("didCommit")
+        //        }
+        //
+        //        func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        //            print("didStartProvisionalNavigation")
+        //        }
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             if message.name == "clickHandler", let urlString = message.body as? String, urlString.contains("watch?v=") {
@@ -78,11 +78,18 @@ struct YoutubeView: View {
     var videoDidSelected: (_ resultUrl: String) -> Void
     
     var body: some View {
+        HStack {
+            ActionButton(imageName: "chevron.left", title: "Back") {
+                showWebView = false
+            }
+            .frame(height: 18)
+            .font(.system(size: 18))
+            .padding(.vertical, 10)
+            .padding(.horizontal,5)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity)
         WebView(url: URL(string: "https://youtube.com")!, showWebView: $showWebView, videoDidSelected: videoDidSelected)
     }
     
 }
-
-//#Preview {
-//    YoutubeView()
-//}

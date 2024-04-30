@@ -11,13 +11,16 @@ struct LimitedVersionLabel: View {
     var isLimitedVersion: Bool
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-            Color.clear.ignoresSafeArea()
+            Color.customDarkGray.ignoresSafeArea()
             if isLimitedVersion {
                 Text("Limited version")
                     .foregroundStyle(.customGray)
                     .padding(.bottom, 15)
+                    
             }
-        }.ignoresSafeArea()
+        }
+        .transition(.move(edge: .bottom))
+        .ignoresSafeArea()
     }
 }
 

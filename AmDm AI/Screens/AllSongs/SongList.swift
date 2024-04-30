@@ -10,21 +10,21 @@ import SwiftUI
 struct SongsListView: View {
     @ObservedObject var songsList: SongsList
     @State var isSongDetailsPresented: Bool = false
-    @State var isShareSheetPresented: Bool = false
     @State var initialAnimationStep = 0
     
     var body: some View {
         ZStack {
             if initialAnimationStep == 1 {
-                EmptyListView()
+                if !songsList.recordStarted {
+                    EmptyListView()
+                }
             } else if initialAnimationStep == 2 {
                 ScrollView {
                     ForEach($songsList.songs) { song in
                         ContentCell(
                             song: song,
                             songsList: songsList,
-                            isSongDetailsPresented: $isSongDetailsPresented,
-                            isShareSheetPresented: $isShareSheetPresented
+                            isSongDetailsPresented: $isSongDetailsPresented
                         )
                         .body.modifier(ScrollCell())
                         .onTapGesture {
@@ -39,7 +39,7 @@ struct SongsListView: View {
                     .listRowSeparatorTint(.customGray)
                     .padding(.top, 10)
                 }
-                .transition(.move(edge: .bottom))
+                .transition(.move(edge: .top))
                 .listStyle(.plain)
                 .background(Color.black)
             }
@@ -52,7 +52,7 @@ struct SongsListView: View {
         .onChange(of: songsList.songs.count, perform: { newValue in
             withAnimation {
                 initialAnimationStep = newValue == 0 ? 1 : 2
-                isSongDetailsPresented = true
+//                isSongDetailsPresented = true
             }
         })
     }
@@ -62,7 +62,6 @@ struct ContentCell {
     @Binding var song: Song
     @ObservedObject var songsList: SongsList
     @Binding var isSongDetailsPresented: Bool
-    @Binding var isShareSheetPresented: Bool
     
     var body: some View {
         HStack {
@@ -76,7 +75,7 @@ struct ContentCell {
                             .foregroundStyle(Color.customGray1)
                             .font(.system(size: 15))
                     } else {
-                        ActionButton(systemImageName: "trash") {
+                        ActionButton(imageName: "trash") {
                             songsList.del(song: song)
                         }
                         .frame(width: 18)
@@ -93,11 +92,6 @@ struct ContentCell {
                                         .padding(.vertical, 10)
                                 }
                                 .buttonStyle(BorderlessButtonStyle())
-                                .sheet(isPresented: $isSongDetailsPresented, onDismiss: {
-                                    songDetailsDismissed(isShareSheetPresented)
-                                }) {
-                                    SongDetails(song: $song, songsList: songsList, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
-                                }
                                 
                                 Spacer()
 
@@ -110,30 +104,21 @@ struct ContentCell {
                                         .foregroundColor(.white)
                                 }
                                 .buttonStyle(BorderlessButtonStyle())
-                                .sheet(isPresented: $isSongDetailsPresented, onDismiss: {
-                                    songDetailsDismissed(isShareSheetPresented)
-                                }) {
-                                    SongDetails(song: $song, songsList: songsList, isSongDetailsPresented: $isSongDetailsPresented, isShareSheetPresented: $isShareSheetPresented)
-                                }
                             }
-                            
-                            
                         }
                     }
+                    .navigationDestination(isPresented: $isSongDetailsPresented) {
+                        SongDetails(song: $song, songsList: songsList, isSongDetailsPresented: $isSongDetailsPresented)
+                    }
+//                    .fullScreenCover(isPresented: $isSongDetailsPresented) {
+//                        SongDetails(song: $song, songsList: songsList, isSongDetailsPresented: $isSongDetailsPresented)
+//                    }
                 }
             }
             Spacer()
         }
         .contentShape(Rectangle())
         .padding(.horizontal,10)
-    }
-    
-    func songDetailsDismissed(_ isShareSheetPresented: Bool) {
-        if isShareSheetPresented {
-            if let s = songsList.getExpanded() {
-                shareSheet("Chords for " + s.name)
-            }
-        }
     }
 }
 
@@ -168,7 +153,7 @@ struct EmptyListView: View {
                 }
             }
             .frame(maxHeight: .infinity)
-        }.transition(.move(edge: .bottom))
+        }
     }
 }
 
