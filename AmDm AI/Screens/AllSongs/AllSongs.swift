@@ -147,7 +147,9 @@ struct AllSongs: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
-                        VStack { Text("Pro Chords").font(.system(size: 32)).fontWeight(.semibold) }
+                        VStack {
+                            Text("Pro Chords").font(.system(size: 32)).fontWeight(.semibold)
+                        }
                     }
                 }
                 .toolbarBackground(Color.black, for: .navigationBar)
@@ -226,6 +228,7 @@ struct NavigationPrimaryButton: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: imageLogoWidth, height: imageHeight)
                                 .opacity(0.6)
+                                .transition(.scale)
                         }
                     }
                 }
