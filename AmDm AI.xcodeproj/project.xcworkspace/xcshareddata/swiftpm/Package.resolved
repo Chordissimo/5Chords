@@ -10,6 +10,15 @@
       }
     },
     {
+      "identity" : "dswaveformimage",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dmrschmidt/DSWaveformImage",
+      "state" : {
+        "revision" : "4c56578ee10128ee2b2c04c9c5aa73812de722db",
+        "version" : "14.2.2"
+      }
+    },
+    {
       "identity" : "realm-core",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/realm/realm-core.git",
@@ -34,6 +43,24 @@
       "state" : {
         "branch" : "main",
         "revision" : "1e5be0c7109397209f4de93b0036ddf5a5588e25"
+      }
+    },
+    {
+      "identity" : "waavform",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/nbrandes/Waavform.git",
+      "state" : {
+        "branch" : "main",
+        "revision" : "6d1c011bfd6fb22fcc470657846db2a5717bba77"
+      }
+    },
+    {
+      "identity" : "waveform",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AudioKit/Waveform.git",
+      "state" : {
+        "revision" : "79103e766434eb32aff9f0b169a469fce0af9ebd",
+        "version" : "1.0.2"
       }
     }
   ],
