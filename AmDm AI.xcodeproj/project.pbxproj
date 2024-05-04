@@ -15,6 +15,7 @@
 		B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A72BCAC2930052C127 /* RealmSwift */; };
 		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
 		C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C308C43E2BC5B35A00762643 /* StoreKit.framework */; };
+		C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C357AB052BB7D50900440554 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB042BB7D50900440554 /* EditableText.swift */; };
 		C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB062BB7E30A00440554 /* DateLabel.swift */; };
@@ -44,6 +45,8 @@
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		C308C43E2BC5B35A00762643 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
+		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		C357AB042BB7D50900440554 /* EditableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableText.swift; sourceTree = "<group>"; };
 		C357AB062BB7E30A00440554 /* DateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateLabel.swift; sourceTree = "<group>"; };
@@ -117,6 +120,8 @@
 				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
 				C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */,
 				B71F3FD72BD42D63005C3606 /* YoutubeView.swift */,
+				C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */,
+				C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -302,6 +307,7 @@
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
+				C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
 				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,

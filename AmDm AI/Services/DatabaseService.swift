@@ -67,7 +67,6 @@ class DatabaseService {
         //        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
-    
     private func writeChords(chords: [Chord]) -> List<ChordModel> {
         let dbChords = chords.map { ch in
             ChordModel(id: ch.id, chord: ch.chord, start: ch.start, end: ch.end)
