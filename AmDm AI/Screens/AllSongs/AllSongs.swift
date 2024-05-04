@@ -1,208 +1,154 @@
 //
-//  AllSongsView.swift
+//  AnimatedCarousel.swift
 //  AmDm AI
 //
-//  Created by Anton on 25/03/2024.
+//  Created by Anton on 28/04/2024.
 //
-
+//
 import SwiftUI
 import AVFoundation
 
-class RecognitionMode: ObservableObject {
-    @Published var index: Int = 0
-    @Published var stack: [modes] = [.youtube, .microphone, .upload]
-    @Published var direction: Edge = .trailing
-    @Published var currentLocation: CGFloat? = nil
-
-    init(selected: modes) {
-        self.index = selected.rawValue
-    }
-    
-    enum dir: Int {
-        case left = 0
-        case right = 1
-    }
-    
-    enum modes: Int {
-        case youtube = 0
-        case microphone = 1
-        case upload = 2
-    }
-    
-    func current() -> modes {
-        return stack[index]
-    }
-    
-    func swipeFromLeft() {
-        index = index < stack.count - 1 ? index + 1 : 0
-    }
-    
-    func swipeFromRight() {
-        index = index == 0 ? stack.count - 1 : index - 1
-    }
-}
-
 struct AllSongs: View {
     @ObservedObject var user = User()
-    @State var runsCount: Int = 0
     @State var showSettings = false
     @State var showUpload = false
     @State var youtubeViewPresented = false
-    @ObservedObject var songsList = SongsList()
-    @ObservedObject var recognitionMode = RecognitionMode(selected: .youtube)
+    @State var recordPanelPresented = false
     @State var initialAnimationStep = 0
+    @ObservedObject var songsList = SongsList()
     
     var body: some View {
-        
-        GeometryReader { geometry in
+        GeometryReader { proxy in
             NavigationStack {
                 ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                    Color.black.ignoresSafeArea()
+                    
+                    //Layer 1: song list + limited version label
                     VStack {
-                        VStack { // SongList
+                        VStack {
                             SongsListView(songsList: songsList)
                         }
+                        .frame(minHeight: proxy.size.height - 140)
+                        
                         VStack {
-                            Color.clear
+                            if initialAnimationStep >= 1 {
+                                LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
+                            }
                         }
                         .ignoresSafeArea()
-                        .frame(height: geometry.safeAreaInsets.bottom > 0 ? 80 : 110)
+                        .frame(height: 100)
                     }
-                    VStack { // recording panel with timer
-                        if songsList.recordStarted {
+                    
+                    // Layer 2: Circles around the primary button
+                    VStack {
+                        if initialAnimationStep >= 1 {
+                            ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+                                Circle()
+                                    .frame(width: 121, height: 121)
+                                    .foregroundColor(.customGray)
+                                Ellipse()
+                                    .frame(width: 121, height: 120)
+                                    .foregroundColor(.customDarkGray)
+                            }
+                            .transition(.move(edge: .bottom))
+                        }
+                    }
+                    
+                    // Layer 3: Secondary buttons
+                    VStack {
+                        if initialAnimationStep >= 1 {
+                            ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+                                HStack {
+                                    HStack(spacing: 20) {
+                                        NavigationSecondaryButton(imageName: "folder.circle.fill") {
+                                            showUpload = true
+                                        }
+                                        .frame(width: 50, height: 50)
+                                        NavigationSecondaryButton(imageName: "mic.circle.fill") {
+                                            recordPanelPresented.toggle()
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                withAnimation {
+                                                    if !songsList.recordStarted {
+                                                        songsList.startRecording()
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        .frame(width: 50, height: 50)
+                                    }
+                                    .padding(.top,20)
+                                    
+                                    Spacer()
+                                    
+                                    HStack(spacing: 20)  {
+                                        NavigationSecondaryButton(imageName: "custom.sound.cloud") {
+                                            print("custom.sound.cloud")
+                                        }
+                                        .frame(width: 50, height: 50)
+                                        NavigationSecondaryButton(imageName: "custom.tuningfork") {
+                                            print("custom.tuningfork")
+                                        }
+                                        .frame(width: 50, height: 50)
+                                    }
+                                    .padding(.top,20)
+                                }
+                            }
+                            .padding(.horizontal,10)
+                            .transition(.move(edge: .bottom))
+                        }
+                    }
+                    .ignoresSafeArea()
+                    .frame(height: 120)
+                    
+                    // Layer 4: Sliding recording panel with timer
+                    VStack {
+                        if recordPanelPresented {
                             Color.white.opacity(0.01)
                             VStack {
                                 TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songName: songsList.getNewSongName())
                                     .padding(.top, 20)
-                                    .frame(height: 240)
                             }
                             .transition(.move(edge: .bottom))
                             .ignoresSafeArea()
-                            .frame(height: 240)
                         }
                     }
                     
-                    VStack { // record button
-                        ZStack {
-                            Color.customDarkGray
-                            if initialAnimationStep == 1 {
-                                AnimatedRecordButton()
-                                    .transition(.scale(scale: 0.1))
-                                    .padding(.vertical, 12)
-                                
-                            } else if initialAnimationStep == 2 {
-                                HStack {
-                                    if !songsList.recordStarted {
-                                        Button {
-                                            recognitionMode.direction = .trailing
-                                            withAnimation {
-                                                recognitionMode.swipeFromRight()
-                                            }
-                                        } label: {
-                                            Image(systemName: "chevron.left")
-                                                .resizable()
-                                                .foregroundColor(.customGray)
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 15)
-                                                .padding(.leading,15)
-                                                .padding(.bottom, 25)
-                                        }
+                    // Layer 5: Primary button
+                    VStack {
+                        if initialAnimationStep == 2 {
+                            NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted) {
+                                if recordPanelPresented {
+                                    recordPanelPresented = false
+                                    if songsList.recordStarted {
+                                        songsList.stopRecording()
                                     }
-                                    Spacer()
-                                    if recognitionMode.current() == .microphone {
-                                        RecordButton(recordStarted: $songsList.recordStarted) {
-                                            if songsList.recordStarted {
-                                                songsList.stopRecording()
-                                            } else {
-                                                songsList.startRecording()
-                                            }
-                                        }
-                                        .padding(.vertical, 12)
-                                        .transition(.push(from: recognitionMode.direction))
-                                        
-                                    } else if recognitionMode.current() == .youtube {
-                                        YoutubeButton() {
-                                            youtubeViewPresented = true
-                                        }
-                                        .padding(.vertical, 12)
-                                        .transition(.push(from: recognitionMode.direction))
-
-                                    } else {
-                                        UploadButton() {
-                                            showUpload = true
-                                        }
-                                        .padding(.vertical, 12)
-                                        .transition(.push(from: recognitionMode.direction))
-
-                                    }
-                                    Spacer()
-                                    if !songsList.recordStarted {
-                                        Button {
-                                            recognitionMode.direction = .leading
-                                            withAnimation {
-                                                recognitionMode.swipeFromLeft()
-                                            }
-                                        } label: {
-                                            Image(systemName: "chevron.right")
-                                                .resizable()
-                                                .foregroundColor(.customGray)
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 15)
-                                                .padding(.trailing,15)
-                                                .padding(.bottom, 25)
-                                        }
-                                    }
+                                } else {
+                                    youtubeViewPresented = true
                                 }
                             }
+                            .padding(.bottom,20)
+                            .transition(.scale(scale: 0, anchor: .center))
                         }
-                    }
-                    .ignoresSafeArea()
-                    .frame(height: geometry.safeAreaInsets.bottom > 0 ? 80 : 110)
-                    .gesture(DragGesture(minimumDistance: 3.0, coordinateSpace: .local)
-                        .onChanged({ value in
-                            let newValue = value.location.x
-                            if let prev = recognitionMode.currentLocation {
-                                recognitionMode.direction = prev > newValue ? .trailing : .leading
-                            }
-                            recognitionMode.currentLocation = newValue
-                        })
-                        .onEnded { value in
-                            withAnimation {
-                                switch(value.translation.width, value.translation.height) {
-                                case (...0, -30...30):  // left
-                                    recognitionMode.swipeFromRight()
-                                case (0..., -30...30): //right
-                                    recognitionMode.swipeFromLeft()
-                                default:  print("no clue")
-                                }
-                            }
-                        }
-                    )
+                    }.frame(height: 100)
                     
-                    VStack { // limited version notice
-                        LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
-                    }
-                    .ignoresSafeArea()
                 }
                 .onAppear {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
-                        withAnimation(.snappy(extraBounce: 0.3)) {
-                            AudioServicesPlaySystemSound(SystemSoundID(1306)) //1104, 1306
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                        withAnimation {
                             initialAnimationStep = 1
                         }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                            initialAnimationStep = 2
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                            AudioServicesPlaySystemSound(SystemSoundID(1306)) //1104, 1306
+                            withAnimation(.linear(duration: 0.1)) {
+                                initialAnimationStep = 2
+                            }
                         }
                     }
                 }
-                .ignoresSafeArea(.keyboard)
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
                     ToolbarItem(placement: .topBarLeading) {
                         VStack {
-                            Text("All songs")
-                                .font(.system(size: 32))
-                                .fontWeight(.semibold)
+                            Text("Pro Chords").font(.system(size: 32)).fontWeight(.semibold)
                         }
                     }
                 }
@@ -211,33 +157,21 @@ struct AllSongs: View {
                 .toolbarColorScheme(.dark)
                 .navigationBarItems(
                     trailing:
-                        ActionButton(systemImageName: "slider.horizontal.3") {
+                        ActionButton(imageName: "slider.horizontal.3") {
                             showSettings = true
-//                            if let url = URL(string: UIApplication.openSettingsURLString) {
-//                                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-//                            }
-                        }
-                        .foregroundColor(.purple)
+                        }.foregroundColor(.purple)
                 )
-
-                .fullScreenCover(isPresented: $user.accessDisallowed) {
-                    Subscription(user: user)
-                }
+                .fullScreenCover(isPresented: $user.accessDisallowed) {  Subscription(user: user)  }
                 .fullScreenCover(isPresented: $showSettings) {
                     Settings(user: user, showSettings: $showSettings)
-                        .animation(.easeInOut(duration: 2), value: showSettings)
                 }
                 .fullScreenCover(isPresented: $youtubeViewPresented) {
                     YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
                         youtubeViewPresented = false
                         songsList.processYoutubeVideo(by: resultUrl)
                     })
-                    .animation(.easeInOut(duration: 2), value: youtubeViewPresented)
                 }
-                .fileImporter(
-                    isPresented: $showUpload,
-                    allowedContentTypes: [.plainText]
-                ) { result in
+                .fileImporter(isPresented: $showUpload, allowedContentTypes: [.plainText]) { result in
                     switch result {
                     case .success(let file):
                         print(file.absoluteString)
@@ -246,6 +180,107 @@ struct AllSongs: View {
                     }
                 }
             }
+        }
+    }
+}
+
+
+struct NavigationPrimaryButton: View {
+    var imageName: String
+    @Binding var recordStarted: Bool
+    var action: () -> Void
+    
+    var body: some View {
+        GeometryReader { geometry  in
+            let whiteCircleHeight = geometry.size.height
+            let grayCircleHeight = whiteCircleHeight - 2
+            let redCircleHeight = grayCircleHeight - 5
+            let redSquareHeight = redCircleHeight * 0.5
+            let redCircleHeightTapped = redSquareHeight - 5
+            let imageHeight = redCircleHeight * 0.6
+            let imageLogoWidth = redCircleHeight * 0.6
+            
+            ZStack {
+                Circle()
+                    .frame(width: whiteCircleHeight, height: whiteCircleHeight)
+                    .foregroundStyle(Color.white)
+                Circle()
+                    .frame(width: grayCircleHeight, height: grayCircleHeight)
+                    .foregroundStyle(Color.customDarkGray)
+                Button {
+                    withAnimation {
+                        action()
+                    }
+                } label: {
+                    ZStack {
+                        Circle()
+                            .frame(width: recordStarted ? redCircleHeightTapped : redCircleHeight, height: recordStarted ? redCircleHeightTapped : redCircleHeight)
+                            .foregroundStyle(Color.red)
+                        
+                        RoundedRectangle(cornerRadius: 5)
+                            .frame(width: redSquareHeight, height: redSquareHeight)
+                            .foregroundStyle(Color.red)
+                        
+                        if !recordStarted {
+                            Image(imageName)
+                                .resizable()
+                                .foregroundColor(.white)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: imageLogoWidth, height: imageHeight)
+                                .opacity(0.6)
+                                .transition(.scale)
+                        }
+                    }
+                }
+            }
+            .clipShape(Rectangle())
+            .frame(width: geometry.size.width)
+        }
+    }
+}
+
+
+struct NavigationSecondaryButton: View {
+    var imageName: String
+    var action: () -> Void
+    
+    var body: some View {
+        GeometryReader { geometry  in
+            let whiteCircleHeight = geometry.size.height
+            let grayCircleHeight = whiteCircleHeight - 2
+            let redCircleHeight = grayCircleHeight - 5
+            let imageHeight = redCircleHeight * 0.8
+            let imageLogoWidth = redCircleHeight * 0.8
+            
+            ZStack {
+                if imageName == "" {
+                    Color.clear
+                } else {
+                    Circle()
+                        .frame(width: whiteCircleHeight, height: whiteCircleHeight)
+                        .foregroundStyle(Color.clear)
+                    Circle()
+                        .frame(width: grayCircleHeight, height: grayCircleHeight)
+                        .foregroundStyle(Color.customDarkGray)
+                    
+                    Button {
+                        withAnimation {
+                            action()
+                        }
+                    } label: {
+                        ZStack {
+                            getSafeImage(named: imageName)
+                                .resizable()
+                                .foregroundColor(.white)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: imageLogoWidth, height: imageHeight)
+                                .opacity(0.6)
+                            
+                        }
+                    }
+                }
+            }
+            .frame(width: geometry.size.width)
         }
     }
 }

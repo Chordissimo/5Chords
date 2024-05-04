@@ -21,27 +21,24 @@ struct TimerView: View {
                 .ignoresSafeArea(.keyboard)
                 .frame(maxWidth: .infinity)
                 .foregroundColor(Color.customDarkGray)
-            VStack {
-                if timerState {
+            if timerState {
+                VStack {
                     Text(songName)
                         .foregroundStyle(Color.white)
                         .font(.system(size: 18))
-                        .transition(.identity)
-                        .animation(.linear, value: 0.1)
                     Text(formatTime(duration,precision: TimePrecision.santiseconds))
                         .foregroundStyle(Color.customGray1)
-                        .transition(.identity)
-                        .animation(.linear, value: 0.1)
                     Text("Recording...")
                         .foregroundStyle(Color.customGray1)
                         .padding(.top, 20)
-                        .transition(.identity)
-                        .animation(.linear, value: 0.1)
+                    
                 }
+                .transition(.asymmetric(insertion: .opacity, removal: .identity))
+                .ignoresSafeArea()
+                .padding()
             }
-            .ignoresSafeArea()
-            .padding()
-        }.transition(.move(edge: .bottom))
+            
+        }
     }
     
 }

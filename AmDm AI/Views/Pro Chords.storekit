@@ -1,0 +1,142 @@
+{
+  "identifier" : "507F583B",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+
+  ],
+  "settings" : {
+    "_applicationInternalID" : "6499357254",
+    "_billingGracePeriodEnabled" : true,
+    "_developerTeamID" : "YLUV9GUS77",
+    "_failTransactionsEnabled" : false,
+    "_lastSynchronizedDate" : 736508700.17899096,
+    "_locale" : "en_US",
+    "_storefront" : "USA",
+    "_storeKitErrors" : [
+      {
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : {
+          "index" : 1,
+          "type" : "purchase"
+        },
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : {
+          "index" : 0,
+          "type" : "verification"
+        },
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "21482440",
+      "localizations" : [
+
+      ],
+      "name" : "Subscriptions",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "99.99",
+          "familyShareable" : false,
+          "groupNumber" : 2,
+          "internalID" : "6502232792",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Renew yearly",
+              "displayName" : "Best value",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "pro_chords_9999_1y_3d0",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Best value",
+          "subscriptionGroupID" : "21482440",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "12.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "6502223936",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Renew every month",
+              "displayName" : "Starter",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "pro_chords_1299_1m_3d0",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "Starter",
+          "subscriptionGroupID" : "21482440",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 3,
+    "minor" : 0
+  }
+}

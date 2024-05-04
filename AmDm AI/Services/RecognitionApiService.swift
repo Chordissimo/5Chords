@@ -50,7 +50,6 @@ class RecognitionApiService {
         url: String,
         completion: @escaping ((Result<Response, Error>) -> Void)
     ) {
-        print(server_ip)
         let requestUrl = "http://" + server_ip + "/upload/youtube"
 //          let requestUrl = "http://192.168.0.4:8000/upload/youtube" // Anton
 //          let requestUrl = "http://192.168.10.8:8000/upload/youtube" //Marat

@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ActionButton: View {
-    var systemImageName: String?
+    var imageName: String?
     var title: String?
     var action: () -> Void
     
@@ -16,19 +16,20 @@ struct ActionButton: View {
         Button {
             action()
         } label: {
-            if let systemImageNameUnwrappred = systemImageName {
-                Image(systemName: systemImageNameUnwrappred)
+            let imageNameUnwrappred = imageName ?? ""
+            let titleUnwrapped = title ?? ""
+            
+            if imageNameUnwrappred != "" {
+                getSafeImage(named: imageNameUnwrappred)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
-            } else {
-                if let titleUnwrapped = title {
-                    Text(titleUnwrapped)
-                        .foregroundStyle(Color.purple)
-                } else {
-                    Text("No label")
-                        .foregroundStyle(Color.purple)
-                }
             }
+            
+            if titleUnwrapped != "" {
+                Text(titleUnwrapped)
+                    .foregroundStyle(Color.purple)
+            }
+            
         }.buttonStyle(BorderlessButtonStyle())
     }
 }
@@ -37,7 +38,7 @@ struct ActionButton: View {
     func preview() -> Void {
         print("Tapped")
     }
-    return ActionButton(systemImageName: "trash", action: preview)
-        .frame(width: 20)
+    return ActionButton(imageName: "trash", title: "trash", action: preview)
+        .frame(width: 150, height: 20)
 }
 
