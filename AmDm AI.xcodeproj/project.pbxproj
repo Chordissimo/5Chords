@@ -8,6 +8,15 @@
 
 /* Begin PBXBuildFile section */
 		B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71F3FD72BD42D63005C3606 /* YoutubeView.swift */; };
+		B75A6FD02BE0DE00001153ED /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FCF2BE0DE00001153ED /* ItemDetailView.swift */; };
+		B75A6FD22BE0DE1D001153ED /* ItemDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FD12BE0DE1D001153ED /* ItemDetailViewModel.swift */; };
+		B75A6FD52BE0DEB9001153ED /* DSWaveformImage in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FD42BE0DEB9001153ED /* DSWaveformImage */; };
+		B75A6FD72BE0DEB9001153ED /* DSWaveformImageViews in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */; };
+		B75A6FDA2BE0DFAE001153ED /* WaveProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FD92BE0DFAE001153ED /* WaveProgressBarView.swift */; };
+		B75A6FDC2BE0F03C001153ED /* ScrollableWaveformProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FDB2BE0F03C001153ED /* ScrollableWaveformProgressView.swift */; };
+		B75A6FDE2BE0F0E4001153ED /* splean.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B75A6FDD2BE0F0E4001153ED /* splean.mp3 */; };
+		B75A6FE12BE0F882001153ED /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FE02BE0F882001153ED /* Int.swift */; };
+		B75A6FE42BE1615E001153ED /* Waavform in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FE32BE1615E001153ED /* Waavform */; };
 		B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989B2BCAAADB0052C127 /* RecordingService.swift */; };
 		B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989D2BCAB9930052C127 /* RecognitionApiService.swift */; };
 		B79898A12BCABA030052C127 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A02BCABA030052C127 /* Alamofire */; };
@@ -48,6 +57,12 @@
 
 /* Begin PBXFileReference section */
 		B71F3FD72BD42D63005C3606 /* YoutubeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeView.swift; sourceTree = "<group>"; };
+		B75A6FCF2BE0DE00001153ED /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
+		B75A6FD12BE0DE1D001153ED /* ItemDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailViewModel.swift; sourceTree = "<group>"; };
+		B75A6FD92BE0DFAE001153ED /* WaveProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveProgressBarView.swift; sourceTree = "<group>"; };
+		B75A6FDB2BE0F03C001153ED /* ScrollableWaveformProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableWaveformProgressView.swift; sourceTree = "<group>"; };
+		B75A6FDD2BE0F0E4001153ED /* splean.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = splean.mp3; sourceTree = "<group>"; };
+		B75A6FE02BE0F882001153ED /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		B798989B2BCAAADB0052C127 /* RecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingService.swift; sourceTree = "<group>"; };
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
@@ -89,8 +104,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B75A6FD52BE0DEB9001153ED /* DSWaveformImage in Frameworks */,
 				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
 				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
+				B75A6FD72BE0DEB9001153ED /* DSWaveformImageViews in Frameworks */,
+				B75A6FE42BE1615E001153ED /* Waavform in Frameworks */,
 				B79898A32BCABA030052C127 /* AlamofireDynamic in Frameworks */,
 				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
 				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
@@ -101,6 +119,33 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B75A6FCE2BE0DD18001153ED /* ItemDetail */ = {
+			isa = PBXGroup;
+			children = (
+				B75A6FD82BE0DF84001153ED /* Components */,
+				B75A6FCF2BE0DE00001153ED /* ItemDetailView.swift */,
+				B75A6FD12BE0DE1D001153ED /* ItemDetailViewModel.swift */,
+			);
+			path = ItemDetail;
+			sourceTree = "<group>";
+		};
+		B75A6FD82BE0DF84001153ED /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				B75A6FD92BE0DFAE001153ED /* WaveProgressBarView.swift */,
+				B75A6FDB2BE0F03C001153ED /* ScrollableWaveformProgressView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		B75A6FDF2BE0F870001153ED /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				B75A6FE02BE0F882001153ED /* Int.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		B798989A2BCAAAAB0052C127 /* Services */ = {
 			isa = PBXGroup;
 			children = (
@@ -180,7 +225,9 @@
 		C39C87342BB0073B00EBF82C /* AmDm AI */ = {
 			isa = PBXGroup;
 			children = (
+				B75A6FDF2BE0F870001153ED /* Extensions */,
 				C34BCF562BD0409300729A7D /* test_audio.m4a */,
+				B75A6FDD2BE0F0E4001153ED /* splean.mp3 */,
 				C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
@@ -206,6 +253,7 @@
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				B75A6FCE2BE0DD18001153ED /* ItemDetail */,
 				C3DE80EB2BC1C2BE0063189D /* Settings */,
 				C376F5832BB1E67700826453 /* AllSongs */,
 				C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */,
@@ -260,6 +308,9 @@
 				B79898A22BCABA030052C127 /* AlamofireDynamic */,
 				B79898A52BCAC2930052C127 /* Realm */,
 				B79898A72BCAC2930052C127 /* RealmSwift */,
+				B75A6FD42BE0DEB9001153ED /* DSWaveformImage */,
+				B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */,
+				B75A6FE32BE1615E001153ED /* Waavform */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -293,6 +344,8 @@
 				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 				B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */,
+				B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -311,6 +364,7 @@
 				C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */,
 				C34BCF572BD0409400729A7D /* test_audio.m4a in Resources */,
 				C39C873C2BB0073D00EBF82C /* Assets.xcassets in Resources */,
+				B75A6FDE2BE0F0E4001153ED /* splean.mp3 in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -330,12 +384,17 @@
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
 				C34A9BF92BD5028100CFC08F /* AnimatedRecordButton.swift in Sources */,
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
+				B75A6FDC2BE0F03C001153ED /* ScrollableWaveformProgressView.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
+				B75A6FD02BE0DE00001153ED /* ItemDetailView.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
+				B75A6FDA2BE0DFAE001153ED /* WaveProgressBarView.swift in Sources */,
 				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
 				C357AB092BB7E41500440554 /* ChordsView.swift in Sources */,
+				B75A6FE12BE0F882001153ED /* Int.swift in Sources */,
+				B75A6FD22BE0DE1D001153ED /* ItemDetailViewModel.swift in Sources */,
 				C357AB102BB7E92E00440554 /* AudioPlayerView.swift in Sources */,
 				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
 				C361E82B2BB927A500F33B40 /* RecordButton.swift in Sources */,
@@ -498,7 +557,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -544,7 +603,7 @@
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 14.0;
@@ -585,6 +644,22 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmrschmidt/DSWaveformImage";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 14.0.0;
+			};
+		};
+		B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/nbrandes/Waavform.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -612,6 +687,21 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B75A6FD42BE0DEB9001153ED /* DSWaveformImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */;
+			productName = DSWaveformImage;
+		};
+		B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */;
+			productName = DSWaveformImageViews;
+		};
+		B75A6FE32BE1615E001153ED /* Waavform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */;
+			productName = Waavform;
+		};
 		B79898A02BCABA030052C127 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */;
