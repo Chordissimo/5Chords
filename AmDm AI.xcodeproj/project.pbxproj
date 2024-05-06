@@ -8,15 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71F3FD72BD42D63005C3606 /* YoutubeView.swift */; };
-		B75A6FD02BE0DE00001153ED /* ItemDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FCF2BE0DE00001153ED /* ItemDetailView.swift */; };
-		B75A6FD22BE0DE1D001153ED /* ItemDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FD12BE0DE1D001153ED /* ItemDetailViewModel.swift */; };
-		B75A6FD52BE0DEB9001153ED /* DSWaveformImage in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FD42BE0DEB9001153ED /* DSWaveformImage */; };
-		B75A6FD72BE0DEB9001153ED /* DSWaveformImageViews in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */; };
-		B75A6FDA2BE0DFAE001153ED /* WaveProgressBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FD92BE0DFAE001153ED /* WaveProgressBarView.swift */; };
-		B75A6FDC2BE0F03C001153ED /* ScrollableWaveformProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FDB2BE0F03C001153ED /* ScrollableWaveformProgressView.swift */; };
-		B75A6FDE2BE0F0E4001153ED /* splean.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = B75A6FDD2BE0F0E4001153ED /* splean.mp3 */; };
 		B75A6FE12BE0F882001153ED /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FE02BE0F882001153ED /* Int.swift */; };
-		B75A6FE42BE1615E001153ED /* Waavform in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FE32BE1615E001153ED /* Waavform */; };
 		B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989B2BCAAADB0052C127 /* RecordingService.swift */; };
 		B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989D2BCAB9930052C127 /* RecognitionApiService.swift */; };
 		B79898A12BCABA030052C127 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A02BCABA030052C127 /* Alamofire */; };
@@ -40,21 +32,20 @@
 		C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */; };
 		C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */; };
 		C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */; };
+		C3B3AD342BE787E4000EB30F /* splean.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3B3AD332BE787E4000EB30F /* splean.wav */; };
+		C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */; };
 		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
 		C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3C7F4D42BBDC72D00E83503 /* SwiftyChords */; };
 		C3C7F4D92BC10FB300E83503 /* SongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4D82BC10FB300E83503 /* SongList.swift */; };
+		C3DB08982BE7A669001CB372 /* 2.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3DB08972BE7A669001CB372 /* 2.wav */; };
 		C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EC2BC1C3010063189D /* Settings.swift */; };
 		C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */; };
+		C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */; };
 		C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873B2BB0073D00EBF82C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		B71F3FD72BD42D63005C3606 /* YoutubeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YoutubeView.swift; sourceTree = "<group>"; };
-		B75A6FCF2BE0DE00001153ED /* ItemDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailView.swift; sourceTree = "<group>"; };
-		B75A6FD12BE0DE1D001153ED /* ItemDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemDetailViewModel.swift; sourceTree = "<group>"; };
-		B75A6FD92BE0DFAE001153ED /* WaveProgressBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveProgressBarView.swift; sourceTree = "<group>"; };
-		B75A6FDB2BE0F03C001153ED /* ScrollableWaveformProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScrollableWaveformProgressView.swift; sourceTree = "<group>"; };
-		B75A6FDD2BE0F0E4001153ED /* splean.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = splean.mp3; sourceTree = "<group>"; };
 		B75A6FE02BE0F882001153ED /* Int.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Int.swift; sourceTree = "<group>"; };
 		B798989B2BCAAADB0052C127 /* RecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingService.swift; sourceTree = "<group>"; };
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
@@ -80,11 +71,15 @@
 		C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* DataModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataModel.swift; sourceTree = "<group>"; };
+		C3B3AD332BE787E4000EB30F /* splean.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = splean.wav; sourceTree = "<group>"; };
+		C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackTimelineView.swift; sourceTree = "<group>"; };
 		C3C7F4A62BBB273A00E83503 /* SongDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetails.swift; sourceTree = "<group>"; };
 		C3C7F4D82BC10FB300E83503 /* SongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList.swift; sourceTree = "<group>"; };
+		C3DB08972BE7A669001CB372 /* 2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2.wav; sourceTree = "<group>"; };
 		C3DE80EC2BC1C3010063189D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "AmDm-AI-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedVersionLabel.swift; sourceTree = "<group>"; };
+		C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunked.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,11 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B75A6FD52BE0DEB9001153ED /* DSWaveformImage in Frameworks */,
 				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
 				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
-				B75A6FD72BE0DEB9001153ED /* DSWaveformImageViews in Frameworks */,
-				B75A6FE42BE1615E001153ED /* Waavform in Frameworks */,
 				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
 				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
 				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
@@ -106,29 +98,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		B75A6FCE2BE0DD18001153ED /* ItemDetail */ = {
+		B75A6FCE2BE0DD18001153ED /* SongDetails */ = {
 			isa = PBXGroup;
 			children = (
-				B75A6FD82BE0DF84001153ED /* Components */,
-				B75A6FCF2BE0DE00001153ED /* ItemDetailView.swift */,
-				B75A6FD12BE0DE1D001153ED /* ItemDetailViewModel.swift */,
+				C3DF0AB92BE93B9D00F69AFB /* Components */,
+				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
 			);
-			path = ItemDetail;
-			sourceTree = "<group>";
-		};
-		B75A6FD82BE0DF84001153ED /* Components */ = {
-			isa = PBXGroup;
-			children = (
-				B75A6FD92BE0DFAE001153ED /* WaveProgressBarView.swift */,
-				B75A6FDB2BE0F03C001153ED /* ScrollableWaveformProgressView.swift */,
-			);
-			path = Components;
+			path = SongDetails;
 			sourceTree = "<group>";
 		};
 		B75A6FDF2BE0F870001153ED /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
 				B75A6FE02BE0F882001153ED /* Int.swift */,
+				C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -152,23 +135,12 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		C357AB032BB7D4CC00440554 /* Views */ = {
+		C357AB032BB7D4CC00440554 /* SharedComponents */ = {
 			isa = PBXGroup;
 			children = (
 				C357AB132BB7EB4B00440554 /* ActionButton.swift */,
-				C357AB0F2BB7E92E00440554 /* AudioPlayerView.swift */,
-				C357AB042BB7D50900440554 /* EditableText.swift */,
-				C357AB062BB7E30A00440554 /* DateLabel.swift */,
-				C357AB082BB7E41500440554 /* ChordsView.swift */,
-				C357AB0C2BB7E6B200440554 /* PlaybackSlider.swift */,
-				C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */,
-				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
-				C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */,
-				B71F3FD72BD42D63005C3606 /* YoutubeView.swift */,
-				C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */,
-				C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */,
 			);
-			path = Views;
+			path = SharedComponents;
 			sourceTree = "<group>";
 		};
 		C361E8252BB860C200F33B40 /* Helpers */ = {
@@ -182,8 +154,8 @@
 		C376F5832BB1E67700826453 /* AllSongs */ = {
 			isa = PBXGroup;
 			children = (
+				C3DF0ABA2BE93BF000F69AFB /* Components */,
 				C37DCF0F2BDE338F00DD38A0 /* AllSongs.swift */,
-				C3C7F4D82BC10FB300E83503 /* SongList.swift */,
 			);
 			path = AllSongs;
 			sourceTree = "<group>";
@@ -208,18 +180,17 @@
 		C39C87342BB0073B00EBF82C /* AmDm AI */ = {
 			isa = PBXGroup;
 			children = (
-
-				B75A6FDF2BE0F870001153ED /* Extensions */,
-				B75A6FDD2BE0F0E4001153ED /* splean.mp3 */,
 				C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
 				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
-				B798989A2BCAAAAB0052C127 /* Services */,
-				C361E8252BB860C200F33B40 /* Helpers */,
-				C357AB032BB7D4CC00440554 /* Views */,
 				C3B54DFE2BB1AB0A000DCF15 /* Model */,
+				B75A6FDF2BE0F870001153ED /* Extensions */,
+				C361E8252BB860C200F33B40 /* Helpers */,
+				B798989A2BCAAAAB0052C127 /* Services */,
+				C357AB032BB7D4CC00440554 /* SharedComponents */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
+				C3DF0ABD2BE93D2F00F69AFB /* TestAudio */,
 				C39C873E2BB0073D00EBF82C /* Preview Content */,
 			);
 			path = "AmDm AI";
@@ -236,21 +207,23 @@
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
-				B75A6FCE2BE0DD18001153ED /* ItemDetail */,
+				B75A6FCE2BE0DD18001153ED /* SongDetails */,
 				C3DE80EB2BC1C2BE0063189D /* Settings */,
 				C376F5832BB1E67700826453 /* AllSongs */,
-				C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */,
+				C3B54DFB2BB1AA9F000DCF15 /* Paywall */,
 			);
 			path = Screens;
 			sourceTree = "<group>";
 		};
-		C3B54DFB2BB1AA9F000DCF15 /* SubscriptionPlans */ = {
+		C3B54DFB2BB1AA9F000DCF15 /* Paywall */ = {
 			isa = PBXGroup;
 			children = (
+				C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */,
+				C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */,
 				C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */,
 				C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */,
 			);
-			path = SubscriptionPlans;
+			path = Paywall;
 			sourceTree = "<group>";
 		};
 		C3B54DFE2BB1AB0A000DCF15 /* Model */ = {
@@ -267,6 +240,39 @@
 				C3DE80EC2BC1C3010063189D /* Settings.swift */,
 			);
 			path = Settings;
+			sourceTree = "<group>";
+		};
+		C3DF0AB92BE93B9D00F69AFB /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C357AB082BB7E41500440554 /* ChordsView.swift */,
+				C357AB0C2BB7E6B200440554 /* PlaybackSlider.swift */,
+				C357AB0F2BB7E92E00440554 /* AudioPlayerView.swift */,
+				C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		C3DF0ABA2BE93BF000F69AFB /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C357AB062BB7E30A00440554 /* DateLabel.swift */,
+				B71F3FD72BD42D63005C3606 /* YoutubeView.swift */,
+				C357AB042BB7D50900440554 /* EditableText.swift */,
+				C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */,
+				C3C7F4D82BC10FB300E83503 /* SongList.swift */,
+				C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
+		C3DF0ABD2BE93D2F00F69AFB /* TestAudio */ = {
+			isa = PBXGroup;
+			children = (
+				C3B3AD332BE787E4000EB30F /* splean.wav */,
+				C3DB08972BE7A669001CB372 /* 2.wav */,
+			);
+			path = TestAudio;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -290,9 +296,6 @@
 				B79898A02BCABA030052C127 /* Alamofire */,
 				B79898A52BCAC2930052C127 /* Realm */,
 				B79898A72BCAC2930052C127 /* RealmSwift */,
-				B75A6FD42BE0DEB9001153ED /* DSWaveformImage */,
-				B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */,
-				B75A6FE32BE1615E001153ED /* Waavform */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -326,8 +329,6 @@
 				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 				B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
-				B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */,
-				B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -344,8 +345,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */,
-				B75A6FDE2BE0F0E4001153ED /* splean.mp3 in Resources */,
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
+				C3B3AD342BE787E4000EB30F /* splean.wav in Resources */,
+				C3DB08982BE7A669001CB372 /* 2.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -361,24 +363,22 @@
 				C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */,
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
-				B75A6FDC2BE0F03C001153ED /* ScrollableWaveformProgressView.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
-				B75A6FD02BE0DE00001153ED /* ItemDetailView.swift in Sources */,
 				C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
-				B75A6FDA2BE0DFAE001153ED /* WaveProgressBarView.swift in Sources */,
+				C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */,
 				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
 				C357AB092BB7E41500440554 /* ChordsView.swift in Sources */,
 				B75A6FE12BE0F882001153ED /* Int.swift in Sources */,
-				B75A6FD22BE0DE1D001153ED /* ItemDetailViewModel.swift in Sources */,
 				C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */,
 				C357AB102BB7E92E00440554 /* AudioPlayerView.swift in Sources */,
 				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
 				B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */,
 				C357AB052BB7D50900440554 /* EditableText.swift in Sources */,
+				C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */,
 				B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */,
 				C361E8272BB860D300F33B40 /* Helpers.swift in Sources */,
 				C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */,
@@ -630,22 +630,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/dmrschmidt/DSWaveformImage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 14.0.0;
-			};
-		};
-		B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nbrandes/Waavform.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -673,21 +657,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B75A6FD42BE0DEB9001153ED /* DSWaveformImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */;
-			productName = DSWaveformImage;
-		};
-		B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */;
-			productName = DSWaveformImageViews;
-		};
-		B75A6FE32BE1615E001153ED /* Waavform */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */;
-			productName = Waavform;
-		};
 		B79898A02BCABA030052C127 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */;
