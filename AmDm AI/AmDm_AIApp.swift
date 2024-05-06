@@ -11,8 +11,7 @@ import SwiftUI
 struct AmDm_AIApp: App {
     var body: some Scene {
         WindowGroup {
-//            AllSongs()
-            PlaybackTimelineView()
+            AllSongs()
         }
     }
 }

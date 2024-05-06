@@ -90,7 +90,7 @@ struct PlaybackTimelineView: View {
                         .padding(.leading,5)
                         .zIndex(1.0)
                     
-                    ScrollView(.horizontal) {
+                    ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 0) {
                             Rectangle()
                                 .foregroundColor(.clear)
