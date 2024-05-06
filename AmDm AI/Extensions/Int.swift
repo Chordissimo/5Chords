@@ -7,8 +7,6 @@
 
 import Foundation
 
-
-
 extension Int {
     func secondsToTimeString() -> String {
         let minutes = self / 60
