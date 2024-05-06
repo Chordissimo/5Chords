@@ -8,10 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71F3FD72BD42D63005C3606 /* YoutubeView.swift */; };
-		B75A6FD52BE0DEB9001153ED /* DSWaveformImage in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FD42BE0DEB9001153ED /* DSWaveformImage */; };
-		B75A6FD72BE0DEB9001153ED /* DSWaveformImageViews in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */; };
 		B75A6FE12BE0F882001153ED /* Int.swift in Sources */ = {isa = PBXBuildFile; fileRef = B75A6FE02BE0F882001153ED /* Int.swift */; };
-		B75A6FE42BE1615E001153ED /* Waavform in Frameworks */ = {isa = PBXBuildFile; productRef = B75A6FE32BE1615E001153ED /* Waavform */; };
 		B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989B2BCAAADB0052C127 /* RecordingService.swift */; };
 		B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B798989D2BCAB9930052C127 /* RecognitionApiService.swift */; };
 		B79898A12BCABA030052C127 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A02BCABA030052C127 /* Alamofire */; };
@@ -90,11 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B75A6FD52BE0DEB9001153ED /* DSWaveformImage in Frameworks */,
 				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
 				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
-				B75A6FD72BE0DEB9001153ED /* DSWaveformImageViews in Frameworks */,
-				B75A6FE42BE1615E001153ED /* Waavform in Frameworks */,
 				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
 				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
 				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
@@ -302,9 +296,6 @@
 				B79898A02BCABA030052C127 /* Alamofire */,
 				B79898A52BCAC2930052C127 /* Realm */,
 				B79898A72BCAC2930052C127 /* RealmSwift */,
-				B75A6FD42BE0DEB9001153ED /* DSWaveformImage */,
-				B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */,
-				B75A6FE32BE1615E001153ED /* Waavform */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -338,8 +329,6 @@
 				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 				B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
-				B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */,
-				B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -641,22 +630,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/dmrschmidt/DSWaveformImage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 14.0.0;
-			};
-		};
-		B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/nbrandes/Waavform.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Alamofire/Alamofire";
@@ -684,21 +657,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B75A6FD42BE0DEB9001153ED /* DSWaveformImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */;
-			productName = DSWaveformImage;
-		};
-		B75A6FD62BE0DEB9001153ED /* DSWaveformImageViews */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B75A6FD32BE0DEB9001153ED /* XCRemoteSwiftPackageReference "DSWaveformImage" */;
-			productName = DSWaveformImageViews;
-		};
-		B75A6FE32BE1615E001153ED /* Waavform */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B75A6FE22BE1615E001153ED /* XCRemoteSwiftPackageReference "Waavform" */;
-			productName = Waavform;
-		};
 		B79898A02BCABA030052C127 /* Alamofire */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */;
