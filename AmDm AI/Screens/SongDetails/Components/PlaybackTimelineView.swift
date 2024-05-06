@@ -27,9 +27,9 @@ func readBuffer() -> [CGFloat] {
             let frameLength = Int(buf.frameLength)
             let samples = Array(UnsafeBufferPointer(start:floatChannelData[0], count:frameLength))
             
-            let numberOfFramesInOneBar = Int((Double(samples.count) / file.fileFormat.sampleRate) * 10)
+            let numberOfBarsInOneSecond = Int((Double(samples.count) / file.fileFormat.sampleRate) * 10)
             var result = [CGFloat]()
-            let chunked = samples.chunked(into: samples.count / numberOfFramesInOneBar)
+            let chunked = samples.chunked(into: samples.count / numberOfBarsInOneSecond)
             
             for i in 0..<chunked.count {
                 let powerValues = chunked[i].map { $0 * $0 }
@@ -52,6 +52,49 @@ func readBuffer() -> [CGFloat] {
         print(error)
     }
     return [CGFloat(0)]
+}
+
+
+struct BarView: View {
+    var magnitude: CGFloat
+    var index: Int
+    var isClear: Bool = false
+
+
+    var body: some View {
+        VStack(alignment: .leading)  {
+            VStack {
+                Rectangle()
+                    .frame(width: 1, height: 1)
+                    .foregroundColor(.clear)
+            }
+            .overlay {
+                if index % 10 == 0 && !isClear {
+                    Text(formatTime(TimeInterval(index / 10), precision: TimePrecision.seconds))
+                        .font(.system(size: 12))
+                        .frame(width: 50)
+                        .padding(.leading,4)
+                }
+            }
+            
+            VStack {
+                Rectangle()
+                    .frame(width: 1, height: index % 10 == 0 ? 10 : 7)
+                    .foregroundColor(index % 5 == 0 && !isClear ? .white : .clear)
+                    .padding(.leading,2)
+            }
+            
+            Spacer()
+            
+            VStack {
+                Rectangle()
+                    .frame(width: 5, height: magnitude)
+                    .foregroundColor(isClear ? .clear : .yellow)
+                    .padding(.trailing, 0)
+            }
+        }
+        .frame(minHeight: 100, maxHeight: 100)
+    }
 }
 
 
@@ -95,40 +138,14 @@ struct PlaybackTimelineView: View {
                             Rectangle()
                                 .foregroundColor(.clear)
                                 .frame(width: geometry.size.width / 2)
-                            ForEach(0..<bars.count, id: \.self) { i in
-                                VStack(alignment: .leading)  {
-                                    VStack {
-                                        Rectangle()
-                                            .frame(width: 1, height: 1)
-                                            .foregroundColor(.clear)
-                                    }
-                                    .overlay {
-                                        if i % 10 == 0 {
-                                            Text(formatTime(TimeInterval(i / 10), precision: TimePrecision.seconds))
-                                                .font(.system(size: 12))
-                                                .frame(width: 50)
-                                                .padding(.leading,4)
-                                        }
-                                    }
-                                    
-                                    VStack {
-                                        Rectangle()
-                                            .frame(width: 1, height: i % 10 == 0 ? 10 : 7)
-                                            .foregroundColor(i % 5 == 0 ? .white : .clear)
-                                            .padding(.leading,2)
-                                    }
-                                    
-                                    Spacer()
-                                    
-                                    VStack {
-                                        Rectangle()
-                                            .frame(width: 5, height: bars[i].magnitude)
-                                            .foregroundColor(.yellow)
-                                            .padding(.trailing, 5)
-                                    }
-                                }
-                                .frame(minHeight: 100, maxHeight: 100)
-                                .id(i)
+                            ForEach(0..<bars.count, id: \.self) { index in
+                                
+                                BarView(magnitude: bars[index], index: index)
+                                .id(index * 2)
+                                
+                                BarView(magnitude: bars[index], index: index, isClear: true)
+                                .id(index * 2 + 1)
+                                
                             }
                             .frame(minHeight: 100, alignment: .bottom)
                         }
@@ -137,7 +154,7 @@ struct PlaybackTimelineView: View {
                         self.stopTimer()
                     }
                     .onReceive(timer) { time in
-                        if counter == 500 {
+                        if counter == bars.count * 2 {
                             timer.upstream.connect().cancel()
                             isStarted = false
                             counter = 0
@@ -157,7 +174,7 @@ struct PlaybackTimelineView: View {
     }
     
     func startTimer() {
-        self.timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+        self.timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
     }
 }
 
