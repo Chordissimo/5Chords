@@ -12,13 +12,13 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
     var audioRecorder: AVAudioRecorder?
     var recordingURL: URL?
     var recordingCallback: ((URL?) -> Void)?
-    var recordingTimeCallback: ((TimeInterval) -> Void)?
+    var recordingTimeCallback: ((TimeInterval, Float) -> Void)?
     var timer: Timer?
     var startTime: Date?
 
 
     func startRecording() {
-        print("matg", "startRecording")
+        // print("matg", "startRecording")
         let audioSession = AVAudioSession.sharedInstance()
         
         do {
@@ -63,7 +63,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
             if let startTime = self.startTime {
                 let currentTime = Date()
                 let elapsedTime = currentTime.timeIntervalSince(startTime)
-                self.recordingTimeCallback?(elapsedTime)
+                self.recordingTimeCallback?(elapsedTime, self.audioRecorder.averagePower(forChannel: 0))
             }
         }
     }

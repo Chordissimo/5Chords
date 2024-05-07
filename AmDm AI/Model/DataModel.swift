@@ -190,9 +190,10 @@ final class SongsList: ObservableObject {
     
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
+    @Published var decibels = [Float]()
     
     private let recordingService = RecordingService()
-    private let recognitioaApiService = RecognitionApiService()
+    private let recognitionApiService = RecognitionApiService()
     private let databaseService = DatabaseService()
     private var cancellables = Set<AnyCancellable>()
     
@@ -202,7 +203,7 @@ final class SongsList: ObservableObject {
         recordingService.recordingCallback = { [weak self] url in
             guard let self = self else { return }
             guard let url = url else { return }
-            self.recognitioaApiService.recognizeAudio(url: url) { result in
+            self.recognitionApiService.recognizeAudio(url: url) { result in
                 switch result {
                 case .success(let response):
                     let song = self.databaseService.writeSong(
@@ -221,9 +222,10 @@ final class SongsList: ObservableObject {
             }
         }
         
-        recordingService.recordingTimeCallback = { [weak self] time in
+        recordingService.recordingTimeCallback = { [weak self] time, decibels in
             guard let self = self else { return }
             self.duration = time
+            self.decibels.append(decibels)
         }
         
         $songs
@@ -241,7 +243,7 @@ final class SongsList: ObservableObject {
     }
     
     func processYoutubeVideo(by resultUrl: String) {
-        recognitioaApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
+        recognitionApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
             switch result {
             case .success(let response):
                 let song = self.databaseService.writeSong(
@@ -264,6 +266,7 @@ final class SongsList: ObservableObject {
     func startRecording() {
         recordingService.startRecording()
         recordStarted = true
+        decibels = [Float]()
     }
     
     func stopRecording() {
