@@ -37,8 +37,10 @@ struct SongDetails: View {
                 
                 ChordsView(chords: song.chords, style: .pictogram_large)
 
-                AudioPlayerView(scale: .large, song: $song, songsList: songsList)
-                    .padding(.horizontal,20)
+                PlaybackTimelineView(song: $song, songsList: songsList)
+
+                // AudioPlayerView(scale: .large, song: $song, songsList: songsList)
+                //     .padding(.horizontal,20)
                 
             }
         }

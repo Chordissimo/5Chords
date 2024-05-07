@@ -8,10 +8,10 @@
 import SwiftUI
 import AVKit
 
-func readBuffer() -> [CGFloat] {
+func readBuffer(url: URL) -> [CGFloat] {
     do {
-        let cur_url = Bundle.main.url(forResource: "splean", withExtension: "wav")!
-        let file = try AVAudioFile(forReading: cur_url)
+        // let cur_url = Bundle.main.url(forResource: "splean", withExtension: "wav")!
+        let file = try AVAudioFile(forReading: url)
         if let format = AVAudioFormat(
             commonFormat: .pcmFormatFloat32,
             sampleRate: file.fileFormat.sampleRate,
@@ -99,33 +99,41 @@ struct BarView: View {
 
 
 struct PlaybackTimelineView: View {
-    let bars: [CGFloat] = readBuffer()
+    private var bars: [CGFloat]
+    @Binding var song: Song
+    @ObservedObject var songsList: SongsList
+    @ObservedObject var player: Player = Player()
     @State private var timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-    @State var counter = 0
-    @State var isStarted: Bool = false
+    @State var currentItemID = 0
+    
+    init(song: Binding<Song>, songsList: Binding<SongsList>) {
+        self._song = song
+        self._songsList = songsList
+        self.bars = readBuffer(song.url)
+    }
     
     var body: some View {
         GeometryReader { geometry in
             ScrollViewReader { proxy in
                 
                 Button {
-                    if isStarted {
-                        self.stopTimer()
+                    if player.isPlaying {
+                        stopTimer()
+                        player.stop()
                     } else {
-                        self.startTimer()
+                        if player.audioPlayer == nil {
+                            player.setupAudio(url: song.url)
+                        }
+                        if player.currentTime != currentItemID / 2 {
+                            player.seekAudio(to: currentItemID / 2)
+                        }
+                        startTimer()
+                        player.play()
                     }
-                    isStarted.toggle()
                 } label: {
-                    Text(isStarted ? "Stop" : "Start")
+                    Text(isStarted ? "Stop" : "Play")
                 }
                 
-                Button {
-                    withAnimation {
-                        proxy.scrollTo(2, anchor: .center)
-                    }
-                } label: {
-                    Text("ScrollTo")
-                }
                 ZStack {
                     Rectangle()
                         .foregroundColor(.red)
@@ -138,30 +146,28 @@ struct PlaybackTimelineView: View {
                             Rectangle()
                                 .foregroundColor(.clear)
                                 .frame(width: geometry.size.width / 2)
+
                             ForEach(0..<bars.count, id: \.self) { index in
-                                
                                 BarView(magnitude: bars[index], index: index)
                                 .id(index * 2)
                                 
                                 BarView(magnitude: bars[index], index: index, isClear: true)
                                 .id(index * 2 + 1)
-                                
                             }
                             .frame(minHeight: 100, alignment: .bottom)
                         }
+                        .scrollTargetLayout()
                     }
+                    .scrollPosition(id: self.$currentItemID)
                     .onAppear() {
                         self.stopTimer()
                     }
                     .onReceive(timer) { time in
                         if counter == bars.count * 2 {
                             timer.upstream.connect().cancel()
-                            isStarted = false
-                            counter = 0
                         } else {
-                            proxy.scrollTo(counter, anchor: .center)
+                            proxy.scrollTo(player.currentTime * 2, anchor: .center)
                         }
-                        counter += 1
                     }
                 }
             }
