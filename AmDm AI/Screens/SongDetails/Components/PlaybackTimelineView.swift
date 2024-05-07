@@ -104,12 +104,12 @@ struct PlaybackTimelineView: View {
     @ObservedObject var songsList: SongsList
     @ObservedObject var player: Player = Player()
     @State private var timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
-    @State var currentItemID = 0
+    @State var currentItemID: Int?
     
-    init(song: Binding<Song>, songsList: Binding<SongsList>) {
+    init(song: Binding<Song>, songsList: ObservedObject<SongsList>) {
         self._song = song
         self._songsList = songsList
-        self.bars = readBuffer(song.url)
+        self.bars = readBuffer(url: song.url.wrappedValue)
     }
     
     var body: some View {
@@ -124,14 +124,14 @@ struct PlaybackTimelineView: View {
                         if player.audioPlayer == nil {
                             player.setupAudio(url: song.url)
                         }
-                        if player.currentTime != currentItemID / 2 {
-                            player.seekAudio(to: currentItemID / 2)
+                        if player.currentTime != Double(currentItemID! / 2) {
+                            player.seekAudio(to: Double(currentItemID! / 2))
                         }
                         startTimer()
                         player.play()
                     }
                 } label: {
-                    Text(isStarted ? "Stop" : "Play")
+                    Text(player.isPlaying ? "Stop" : "Play")
                 }
                 
                 ZStack {
@@ -158,12 +158,12 @@ struct PlaybackTimelineView: View {
                         }
                         .scrollTargetLayout()
                     }
-                    .scrollPosition(id: self.$currentItemID)
+                    .scrollPosition(id: $currentItemID)
                     .onAppear() {
                         self.stopTimer()
                     }
                     .onReceive(timer) { time in
-                        if counter == bars.count * 2 {
+                        if player.currentTime == song.duration {
                             timer.upstream.connect().cancel()
                         } else {
                             proxy.scrollTo(player.currentTime * 2, anchor: .center)
@@ -184,6 +184,6 @@ struct PlaybackTimelineView: View {
     }
 }
 
-#Preview {
-    PlaybackTimelineView()
-}
+//#Preview {
+//    PlaybackTimelineView()
+//}

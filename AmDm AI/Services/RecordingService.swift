@@ -63,7 +63,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
             if let startTime = self.startTime {
                 let currentTime = Date()
                 let elapsedTime = currentTime.timeIntervalSince(startTime)
-                self.recordingTimeCallback?(elapsedTime, self.audioRecorder.averagePower(forChannel: 0))
+                self.recordingTimeCallback?(elapsedTime, (self.audioRecorder?.averagePower(forChannel: 0))!)
             }
         }
     }

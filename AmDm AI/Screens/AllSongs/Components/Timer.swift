@@ -11,13 +11,13 @@ import SwiftUI
 struct TimerView: View {
     private var timerState: Bool
     private var duration: Double
-    @ObservedObject songsList: SongsList
+    @ObservedObject var songsList: SongsList
     var songName: String
 
     init(songsList: SongsList) {
         self.timerState = songsList.recordStarted
         self.duration = songsList.duration
-        self songName = songsList.getNewSongName()
+        self.songName = songsList.getNewSongName()
     }
     
     var body: some View {
@@ -50,13 +50,13 @@ struct TimerView: View {
     
 }
 
-#Preview {
-    @State var started: Bool = true
-    @State var duration: Double = TimeInterval(0)
-    return VStack {
-        TimerView(timerState: $started, duration: $duration, songName: "New recording")
-        Button("stop") {
-            started = false
-        }
-    }
-}
+//#Preview {
+//    @State var started: Bool = true
+//    @State var duration: Double = TimeInterval(0)
+//    return VStack {
+//        TimerView(timerState: $started, duration: $duration, songName: "New recording")
+//        Button("stop") {
+//            started = false
+//        }
+//    }
+//}
