@@ -190,7 +190,8 @@ final class SongsList: ObservableObject {
     
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
-    @Published var decibels = [Float]()
+    private var lastDecibel: Float = -1
+    @Published var decibelChanges = [Float]()
     
     private let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
@@ -222,10 +223,15 @@ final class SongsList: ObservableObject {
             }
         }
         
-        recordingService.recordingTimeCallback = { [weak self] time, decibels in
+        recordingService.recordingTimeCallback = { [weak self] time, signal in
             guard let self = self else { return }
             self.duration = time
-            self.decibels.append(decibels)
+            let ds = Int(time * 100)
+            if self.lastDecibel > 0 {
+                let diff = round(pow(self.lastDecibel - abs(signal), 3))
+                self.decibelChanges.append(diff > 70 ? 70 : diff)
+            }
+            self.lastDecibel = abs(signal)
         }
         
         $songs
@@ -266,7 +272,7 @@ final class SongsList: ObservableObject {
     func startRecording() {
         recordingService.startRecording()
         recordStarted = true
-        decibels = [Float]()
+        decibelChanges = [Float]()
     }
     
     func stopRecording() {

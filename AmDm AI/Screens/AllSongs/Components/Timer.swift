@@ -9,16 +9,10 @@ import Foundation
 import SwiftUI
 
 struct TimerView: View {
-    private var timerState: Bool
-    private var duration: Double
+    @Binding var timerState: Bool
+    @Binding var duration: Double
     @ObservedObject var songsList: SongsList
     var songName: String
-
-    init(songsList: SongsList) {
-        self.timerState = songsList.recordStarted
-        self.duration = songsList.duration
-        self.songName = songsList.getNewSongName()
-    }
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -37,6 +31,7 @@ struct TimerView: View {
                     Text("Recording...")
                         .foregroundStyle(Color.customGray1)
                         .padding(.top, 20)
+                    
                     LiveWaveform(songsList: songsList)
                     
                 }

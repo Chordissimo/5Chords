@@ -38,6 +38,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
             
             audioRecorder = try AVAudioRecorder(url: recordingURL!, settings: settings)
             audioRecorder?.delegate = self
+            audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
             
             startTime = Date()
@@ -63,7 +64,11 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
             if let startTime = self.startTime {
                 let currentTime = Date()
                 let elapsedTime = currentTime.timeIntervalSince(startTime)
-                self.recordingTimeCallback?(elapsedTime, (self.audioRecorder?.averagePower(forChannel: 0))!)
+                self.audioRecorder?.updateMeters()
+//                let dec = (self.audioRecorder?.peakPower(forChannel: 0))! + 160
+//                print(dec)
+//                print((self.audioRecorder?.peakPower(forChannel: 0))!,(self.audioRecorder?.averagePower(forChannel: 0))!)
+                self.recordingTimeCallback?(elapsedTime, (self.audioRecorder?.peakPower(forChannel: 0))!)
             }
         }
     }
