@@ -27,17 +27,16 @@ struct TimerView: View {
                         .foregroundStyle(Color.white)
                         .font(.system(size: 18))
                     Text(formatTime(duration,precision: TimePrecision.santiseconds))
-                        .foregroundStyle(Color.customGray1)
-                    Text("Recording...")
-                        .foregroundStyle(Color.customGray1)
-                        .padding(.top, 20)
+                        .foregroundStyle(Color.customGray1)                        
                     
                     LiveWaveform(songsList: songsList)
+                        .padding(.top, 20)
                     
                 }
                 .transition(.asymmetric(insertion: .opacity, removal: .identity))
                 .ignoresSafeArea()
-                .padding()
+                .padding(.horizontal, 20)
+                .padding(.vertical, 20)
             }
             
         }

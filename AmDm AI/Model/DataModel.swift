@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 import SwiftyChords
 import Combine
+import SwiftUI
 
 
 enum SongType {
@@ -190,12 +191,11 @@ final class SongsList: ObservableObject {
     
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
-    private var lastDecibel: Float = -1
     @Published var decibelChanges = [Float]()
     
     private let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
-    private let databaseService = DatabaseService()
+     let databaseService = DatabaseService()
     private var cancellables = Set<AnyCancellable>()
     
     init() {
@@ -226,12 +226,16 @@ final class SongsList: ObservableObject {
         recordingService.recordingTimeCallback = { [weak self] time, signal in
             guard let self = self else { return }
             self.duration = time
-            let ds = Int(time * 100)
-            if self.lastDecibel > 0 {
-                let diff = round(pow(self.lastDecibel - abs(signal), 3))
-                self.decibelChanges.append(diff > 70 ? 70 : diff)
+            if Int(time * 100) % 5 == 0 {
+                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
+                    self.decibelChanges.remove(at: 0)
+                }
+                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
+                    self.decibelChanges.append(0)
+                } else {
+                    self.decibelChanges.append(max(1,min(signal,120)))
+                }
             }
-            self.lastDecibel = abs(signal)
         }
         
         $songs

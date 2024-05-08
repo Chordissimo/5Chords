@@ -185,5 +185,17 @@ struct PlaybackTimelineView: View {
 }
 
 //#Preview {
-//    PlaybackTimelineView()
+//    @ObservedObject var songsList = SongsList()
+//    let url = Bundle.main.url(forResource: "splean", withExtension: "wav")
+//    
+//    @State var song = songsList.databaseService.writeSong(
+//        name: "сплин",
+//        url: url!.absoluteString,
+//        duration: songsList.duration,
+//        chords: [Chord(id: "0", chord: "A:min", start: 0, end: 12),Chord(id: "1", chord: "D:min", start: 13, end: 15)],
+//        text: [AlignedText(id:"uuid", text: "text text text", start: 0, end: 12)],
+//        tempo: 120.0
+//    )
+//    
+//    return PlaybackTimelineView(song: $song, songsList: _songsList)
 //}

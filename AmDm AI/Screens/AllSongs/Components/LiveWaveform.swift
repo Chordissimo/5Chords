@@ -11,26 +11,24 @@ struct LiveWaveform: View {
     @ObservedObject var songsList: SongsList
     
     var body: some View {
-        VStack {
-            ScrollView {
-                LazyHStack(spacing: 5) {
+        GeometryReader { geometry in
+            VStack(alignment: .trailing) {
+                HStack(spacing: 0) {
                     ForEach(0..<songsList.decibelChanges.count, id: \.self) { i in
                         if songsList.decibelChanges[i] == 0 {
                             Rectangle()
-                                .foregroundColor(.gray)
-                                .frame(width: 1, height: 1)
+                                .foregroundColor(.clear)
+                                .frame(width: 2, height: 1)
                         } else {
-                            RoundedRectangle(cornerSize: 5)
+                            RoundedRectangle(cornerRadius: 3)
                                 .foregroundColor(.yellow)
                                 .frame(width: 2, height: CGFloat(songsList.decibelChanges[i]))
                         }
                     }
                 }
-                .frame(height: 80)
-                .border(Color.blue, width: 1)
+                .frame(width: geometry.size.width, height: 120, alignment: .trailing)
+                //                                .border(Color.blue, width: 1)
             }
-
         }
-
     }
 }
