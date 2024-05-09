@@ -99,10 +99,17 @@ struct BarView: View {
 
 
 struct PlaybackTimelineView: View {
-    let bars: [CGFloat] = readBuffer()
-    @State private var timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
+    private let bars: [CGFloat] = readBuffer()
+    @Binding var song: Song
+    @ObservedObject var songsList: SongsList
+    @ObservedObject var player: Player = Player()
+    @State private var timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
     @State var counter = 0
     @State var isStarted: Bool = false
+
+    init() {
+        
+    }
     
     var body: some View {
         GeometryReader { geometry in
