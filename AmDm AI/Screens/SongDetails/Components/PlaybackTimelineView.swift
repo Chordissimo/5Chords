@@ -9,9 +9,19 @@ import SwiftUI
 import AVKit
 
 func readBuffer(url: URL) -> [CGFloat] {
+    var _url: URL
     do {
+        let isReachable = (try? url.checkResourceIsReachable()) ?? false
+        if !isReachable {
+            let filename = String(url.absoluteString.split(separator: "/").last ?? "")
+            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            _url = documentsPath.appendingPathComponent(filename)
+        } else {
+            _url = url
+        }
+        
         // let cur_url = Bundle.main.url(forResource: "splean", withExtension: "wav")!
-        let file = try AVAudioFile(forReading: url)
+        let file = try AVAudioFile(forReading: _url)
         if let format = AVAudioFormat(
             commonFormat: .pcmFormatFloat32,
             sampleRate: file.fileFormat.sampleRate,
@@ -59,8 +69,8 @@ struct BarView: View {
     var magnitude: CGFloat
     var index: Int
     var isClear: Bool = false
-
-
+    
+    
     var body: some View {
         VStack(alignment: .leading)  {
             VStack {
@@ -78,7 +88,7 @@ struct BarView: View {
             }
             
             VStack {
-                Rectangle()
+                RoundedRectangle(cornerRadius: 3)
                     .frame(width: 1, height: index % 10 == 0 ? 10 : 7)
                     .foregroundColor(index % 5 == 0 && !isClear ? .white : .clear)
                     .padding(.leading,2)
@@ -103,7 +113,6 @@ struct PlaybackTimelineView: View {
     @Binding var song: Song
     @ObservedObject var songsList: SongsList
     @ObservedObject var player: Player = Player()
-    @State private var timer = Timer.publish(every: 0.1, on: .main, in: .common).autoconnect()
     @State var currentItemID: Int?
     
     init(song: Binding<Song>, songsList: ObservedObject<SongsList>) {
@@ -114,88 +123,63 @@ struct PlaybackTimelineView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            ScrollViewReader { proxy in
-                
-                Button {
-                    if player.isPlaying {
-                        stopTimer()
-                        player.stop()
-                    } else {
-                        if player.audioPlayer == nil {
-                            player.setupAudio(url: song.url)
-                        }
-                        if player.currentTime != Double(currentItemID! / 2) {
-                            player.seekAudio(to: Double(currentItemID! / 2))
-                        }
-                        startTimer()
-                        player.play()
-                    }
-                } label: {
-                    Text(player.isPlaying ? "Stop" : "Play")
-                }
-                
+            VStack {
                 ZStack {
                     Rectangle()
                         .foregroundColor(.red)
                         .frame(width: 3, height: 120)
                         .padding(.leading,5)
                         .zIndex(1.0)
-                    
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        LazyHStack(spacing: 0) {
-                            Rectangle()
-                                .foregroundColor(.clear)
-                                .frame(width: geometry.size.width / 2)
-
-                            ForEach(0..<bars.count, id: \.self) { index in
-                                BarView(magnitude: bars[index], index: index)
-                                .id(index * 2)
+                    ScrollViewReader { proxy in
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 0) {
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: geometry.size.width / 2)
+                                    .id(-1)
                                 
-                                BarView(magnitude: bars[index], index: index, isClear: true)
-                                .id(index * 2 + 1)
+                                ForEach(0..<bars.count, id: \.self) { index in
+                                    BarView(magnitude: bars[index], index: index)
+                                        .id(index * 2 * 5)
+                                    
+                                    BarView(magnitude: bars[index], index: index, isClear: true)
+                                        .id((index * 2 + 1) * 5)
+                                }
+                                .frame(minHeight: 100, alignment: .bottom)
+                                
+                                Rectangle()
+                                    .foregroundColor(.clear)
+                                    .frame(width: geometry.size.width / 2)
+                                    .id((bars.count * 2 + 2) * 5)
                             }
-                            .frame(minHeight: 100, alignment: .bottom)
                         }
-                        .scrollTargetLayout()
-                    }
-                    .scrollPosition(id: $currentItemID)
-                    .onAppear() {
-                        self.stopTimer()
-                    }
-                    .onReceive(timer) { time in
-                        if player.currentTime == song.duration {
-                            timer.upstream.connect().cancel()
-                        } else {
-                            proxy.scrollTo(player.currentTime * 2, anchor: .center)
+                        .onTapGesture {
+                            if player.isPlaying {
+                                player.stop()
+                            } else {
+                                if player.audioPlayer == nil {
+                                    player.setupAudio(url: song.url)
+                                }
+                                if Int(player.currentTime * 100) != currentItemID ?? 0 {
+                                    let time = (currentItemID ?? 0) == -1 ? 0 : TimeInterval((currentItemID ?? 0) / 100)
+                                    player.seekAudio(to: time)
+                                }
+                                player.play()
+                            }
+                        }
+                        .onAppear {
+                            currentItemID = -1
+                        }
+                        .onChange(of: player.currentTime) { oldValue, newValue in
+                            if newValue < player.duration {
+                                if Int(newValue * 100) % 5 == 0 {
+                                    proxy.scrollTo(Int(newValue * 100), anchor: .center)
+                                }
+                            }
                         }
                     }
                 }
             }
         }
-        
-    }
-    
-    func stopTimer() {
-        self.timer.upstream.connect().cancel()
-    }
-    
-    func startTimer() {
-        self.timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
     }
 }
-
-//#Preview {
-//    @ObservedObject var songsList = SongsList()
-//    let url = Bundle.main.url(forResource: "splean", withExtension: "wav")
-//    
-//    @State var song = songsList.databaseService.writeSong(
-//        name: "сплин",
-//        url: url!.absoluteString,
-//        duration: songsList.duration,
-//        chords: [Chord(id: "0", chord: "A:min", start: 0, end: 12),Chord(id: "1", chord: "D:min", start: 13, end: 15)],
-//        text: [AlignedText(id:"uuid", text: "text text text", start: 0, end: 12)],
-//        tempo: 120.0
-//    )
-//    
-//    return PlaybackTimelineView(song: $song, songsList: _songsList)
-//}

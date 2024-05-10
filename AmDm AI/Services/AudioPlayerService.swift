@@ -11,6 +11,7 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     @Published var isPlaying: Bool = false
     @Published var duration: TimeInterval = 0.0
     @Published var currentTime: TimeInterval = 0.0
+    var timer: Timer?
     var audioPlayer: AVAudioPlayer? = nil
     
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
@@ -45,12 +46,14 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
         guard let player = audioPlayer else { return }
         player.play()
         isPlaying = true
+        startTimer()
     }
     
     func stop() {
         guard let player = audioPlayer else { return }
         player.pause()
         isPlaying = false
+        stopTimer()
     }
     
     func updateProgress() {
@@ -60,8 +63,20 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     
     func seekAudio(to time: TimeInterval) {
         guard let player = audioPlayer else { return }
-        player.currentTime = time
         currentTime = time >= duration ? duration : time
+        player.currentTime = currentTime
+    }
+    
+    func startTimer() {
+        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
+            guard let self = self else { return }
+            updateProgress()
+        }
+    }
+    
+    func stopTimer() {
+        timer?.invalidate()
+        timer = nil
     }
     
 }

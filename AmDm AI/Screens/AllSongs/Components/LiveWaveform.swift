@@ -18,11 +18,11 @@ struct LiveWaveform: View {
                         if songsList.decibelChanges[i] == 0 {
                             Rectangle()
                                 .foregroundColor(.clear)
-                                .frame(width: 2, height: 1)
+                                .frame(width: 4, height: 1)
                         } else {
-                            RoundedRectangle(cornerRadius: 3)
-                                .foregroundColor(.yellow)
-                                .frame(width: 2, height: CGFloat(songsList.decibelChanges[i]))
+                            Rectangle()
+                                .foregroundColor(.customRed)
+                                .frame(width: 1, height: CGFloat(songsList.decibelChanges[i]))
                         }
                     }
                 }
