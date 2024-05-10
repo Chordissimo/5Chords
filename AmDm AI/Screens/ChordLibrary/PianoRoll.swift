@@ -10,10 +10,10 @@ class PianoKey(): Indentifiable {
     var isWhite: Bool
 
     init(key: Int, isPressed: Bool = true, finger: Int = 0, isLeftHand: Bool = false) {
-        precondition([0..11].contains(key),"Piano roll: Key \(key) is out of range.")
+        precondition([0..23].contains(key),"Piano roll: Key \(key) is out of range.")
         self.key = key // the key number in the to octave chromatic scale from C1=0 to B2=23
         self.finger = finger
-        self.isWhite = [1,3,6,8,10].contains(self.key)
+        self.isWhite = ![1,3,6,8,10,13,15,18,20,22].contains(self.key)
         self.isLeftHand = isLeftHand
         self.isPressed = isPressed
     }
@@ -35,6 +35,7 @@ class PianoRollModel() {
             case 2:
                 rightHandFingerLayout = [1]
                 let distance = chord[1] - chord[0]
+            
                 if distance <= 4 {
                     leftHandFingerLayout = [1,2]
                 } else if distance > 4 && distance < 10 {
@@ -42,6 +43,7 @@ class PianoRollModel() {
                 } else {
                     rightHandFingerLayout = [1,5]
                 }
+
             case 3:
                 rightHandFingerLayout = [1]
                 leftHandFingerLayout = [1,3,5]
@@ -50,21 +52,21 @@ class PianoRollModel() {
                 leftHandFingerLayout = [1,3,5]
             
         }
-        for i in 0..<11 {
-            self.keys.append(PianoKey[id: i])
-        }
-        for i in 0..<11 {
+        for i in 0..<23 {
             self.keys.append(PianoKey[id: i])
         }
     }
 }
 
 
-
 struct PianoRoll: View {
     var numberOfOctaves: Int
+    var model: PianoRollModel([0,2,4,6])
 
     var body: some View {
+        let whites = model.keys.filter{ $0.isWhite }
+        let blacks = model.keys.filter{ !$0.isWhite }
+        
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             GeometryReader { geometry in
                 let whiteHeight = geometry.size.height
@@ -77,7 +79,7 @@ struct PianoRoll: View {
                 let blackOffset = whiteWidth - Int(blackWidth / 2)
 
                 HStack(spacing: 0) {
-                    ForEach(1..<14, id: \.self) { i in
+                    ForEach(whites, id: \.self) { key in
                         RoundedRectangle(cornerRadius: 5)
                             .foregroundColor(.white)
                             .frame(width: whiteWidth, height: whiteHeight)
@@ -85,11 +87,17 @@ struct PianoRoll: View {
                     }
                 }
                 HStack(spacing: 0) {
-                    ForEach(1..<10, id: \.self) { i in
+                    ForEach(whites, id: \.self) { key in
                         RoundedRectangle(cornerRadius: 10)
-                            .foregroundColor([3 ? .clear : .black)
+                            .foregroundColor(.black)
                             .frame(width: blackWidth, height: blackHeight)
                             .padding(.trailing, blackHorizontalSpacing)
+                        if [3,10,13,22].contains(key.key) {
+                            RoundedRectangle(cornerRadius: 10)
+                                .foregroundColor(.cleat)
+                                .frame(width: blackWidth, height: blackHeight)
+                                .padding(.trailing, blackHorizontalSpacing)
+                        }
                     }
                 }
             }
