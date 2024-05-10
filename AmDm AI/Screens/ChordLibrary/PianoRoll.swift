@@ -21,14 +21,28 @@ class PianoKey(): Indentifiable {
 class PianoRollModel() {
     var chord: MusicTheory.Chord
     private var keys: [PianoKey]
+    private var rightHandFingerLayout: [Int]
+    private var leftHandFingerLayout: [Int]
+    private var sortedKeys: [Int]
 
     init(chord: MusicTheory.Chord) {
         self.chord = chord
+        self.sortedKeys = MusicTheory.Chord.Keys
+        switch self.chord.Keys.count {
+            case 2:
+                rightHandFingerLayout = [1]
+                leftHandFingerLayout = []
+            case 3
+        }
+        for i in 0..<11 {
+            self.keys.append(PianoKey[id: i])
+        }
         for i in 0..<11 {
             self.keys.append(PianoKey[id: i])
         }
     }
 }
+
 
 
 struct PianoRoll: View {
