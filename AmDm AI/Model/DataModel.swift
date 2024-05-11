@@ -9,6 +9,7 @@ import Foundation
 import SwiftData
 import SwiftyChords
 import Combine
+import SwiftUI
 
 
 enum SongType {
@@ -190,10 +191,11 @@ final class SongsList: ObservableObject {
     
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
+    @Published var decibelChanges = [Float]()
     
     private let recordingService = RecordingService()
-    private let recognitioaApiService = RecognitionApiService()
-    private let databaseService = DatabaseService()
+    private let recognitionApiService = RecognitionApiService()
+     let databaseService = DatabaseService()
     private var cancellables = Set<AnyCancellable>()
     
     init() {
@@ -202,7 +204,7 @@ final class SongsList: ObservableObject {
         recordingService.recordingCallback = { [weak self] url in
             guard let self = self else { return }
             guard let url = url else { return }
-            self.recognitioaApiService.recognizeAudio(url: url) { result in
+            self.recognitionApiService.recognizeAudio(url: url) { result in
                 switch result {
                 case .success(let response):
                     let song = self.databaseService.writeSong(
@@ -221,9 +223,19 @@ final class SongsList: ObservableObject {
             }
         }
         
-        recordingService.recordingTimeCallback = { [weak self] time in
+        recordingService.recordingTimeCallback = { [weak self] time, signal in
             guard let self = self else { return }
             self.duration = time
+            if Int(time * 100) % 5 == 0 {
+                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
+                    self.decibelChanges.remove(at: 0)
+                }
+                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
+                    self.decibelChanges.append(0)
+                } else {
+                    self.decibelChanges.append(max(1,min(signal,120)))
+                }
+            }
         }
         
         $songs
@@ -241,7 +253,7 @@ final class SongsList: ObservableObject {
     }
     
     func processYoutubeVideo(by resultUrl: String) {
-        recognitioaApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
+        recognitionApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
             switch result {
             case .success(let response):
                 let song = self.databaseService.writeSong(
@@ -264,6 +276,7 @@ final class SongsList: ObservableObject {
     func startRecording() {
         recordingService.startRecording()
         recordStarted = true
+        decibelChanges = [Float]()
     }
     
     func stopRecording() {

@@ -104,7 +104,7 @@ struct AllSongs: View {
                         if recordPanelPresented {
                             Color.white.opacity(0.01)
                             VStack {
-                                TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songName: songsList.getNewSongName())
+                                TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songsList: songsList, songName: songsList.getNewSongName())
                                     .padding(.top, 20)
                             }
                             .transition(.move(edge: .bottom))

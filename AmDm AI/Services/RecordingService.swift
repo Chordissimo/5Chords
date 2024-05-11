@@ -12,13 +12,13 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
     var audioRecorder: AVAudioRecorder?
     var recordingURL: URL?
     var recordingCallback: ((URL?) -> Void)?
-    var recordingTimeCallback: ((TimeInterval) -> Void)?
+    var recordingTimeCallback: ((TimeInterval, Float) -> Void)?
     var timer: Timer?
     var startTime: Date?
 
 
     func startRecording() {
-        print("matg", "startRecording")
+        // print("matg", "startRecording")
         let audioSession = AVAudioSession.sharedInstance()
         
         do {
@@ -38,6 +38,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
             
             audioRecorder = try AVAudioRecorder(url: recordingURL!, settings: settings)
             audioRecorder?.delegate = self
+            audioRecorder?.isMeteringEnabled = true
             audioRecorder?.record()
             
             startTime = Date()
@@ -63,10 +64,24 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
             if let startTime = self.startTime {
                 let currentTime = Date()
                 let elapsedTime = currentTime.timeIntervalSince(startTime)
-                self.recordingTimeCallback?(elapsedTime)
+                self.audioRecorder?.updateMeters()
+                let dec = (self.audioRecorder?.averagePower(forChannel: 0))!
+                self.recordingTimeCallback?(elapsedTime, pow(10.0, dec / 20.0) * 1000)
             }
         }
     }
+    
+    func averagePowerFromAllChannels() -> Float {
+        var power: Float = 0.0
+        guard let channels = self.audioRecorder?.channelAssignments else {
+            print("no channels")
+            return 0
+        }
+        for channel in channels {
+            power = power + (self.audioRecorder?.averagePower(forChannel: channel.channelNumber))!
+        }
+        return power / Float(channels.count)
+        }
     
     func stopTimer() {
         timer?.invalidate()

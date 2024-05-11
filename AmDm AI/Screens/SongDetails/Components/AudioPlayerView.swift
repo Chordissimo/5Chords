@@ -144,13 +144,3 @@ struct AudioPlayerView: View {
         return (maxWidth) * CGFloat(value)
     }
 }
-
-
-//#Preview {
-//    return ZStack {
-//        Color.black
-//        HStack {
-//            AudioPlayerView(scale: .small)
-//        }
-//    }
-//}
