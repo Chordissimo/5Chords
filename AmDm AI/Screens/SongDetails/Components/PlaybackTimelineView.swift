@@ -108,73 +108,115 @@ struct BarView: View {
 }
 
 
-struct PlaybackTimelineView: View {
-    private var bars: [CGFloat]
-    @Binding var song: Song
-    @ObservedObject var songsList: SongsList
-    @ObservedObject var player: Player = Player()
-    @State var currentItemID: Int?
+struct ScrollViewOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: Int = 0
     
-    init(song: Binding<Song>, songsList: ObservedObject<SongsList>) {
-        self._song = song
-        self._songsList = songsList
-        self.bars = readBuffer(url: song.url.wrappedValue)
+    static func reduce(value: inout Int, nextValue: () -> Int) {
+        value = nextValue()
+    }
+    
+    typealias Value = Int
+
+}
+
+struct ScrollViewOffsetModifier: ViewModifier {
+    let coordinateSpace: String
+    @Binding var offset: Int
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+            GeometryReader { proxy in
+                let x = abs(proxy.frame(in: .named(coordinateSpace)).minX)
+                let currentItemID = Int(x / 5) * 5
+                Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: currentItemID)
+            }
+        }
+        .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
+            offset = value
+        }
+    }
+}
+
+extension View {
+    func readingScrollView(from coordinateSpace: String, into binding: Binding<Int>) -> some View {
+        modifier(ScrollViewOffsetModifier(coordinateSpace: coordinateSpace, offset: binding))
+    }
+}
+
+
+struct PlaybackTimelineView: View {
+    var url: URL
+    private var bars: [CGFloat]
+    @ObservedObject var player: Player = Player()
+    @State var currentItemID: Int = 0
+    @State var offset: Int = 0
+
+    init(url: URL) {
+        self.url = url
+        self.bars = readBuffer(url: url)
     }
     
     var body: some View {
         GeometryReader { geometry in
-            VStack {
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.red)
-                        .frame(width: 3, height: 120)
-                        .padding(.leading,5)
-                        .zIndex(1.0)
-                    ScrollViewReader { proxy in
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 0) {
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: geometry.size.width / 2)
-                                    .id(-1)
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.red)
+                    .frame(width: 3, height: 120)
+                    .padding(.leading,5)
+                    .zIndex(1.0)
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        LazyHStack(spacing: 0) {
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: geometry.size.width / 2)
+                                .id(-1)
+                            
+                            ForEach(0..<bars.count, id: \.self) { index in
+                                BarView(magnitude: bars[index], index: index)
+                                    .id(index * 2 * 5)
                                 
-                                ForEach(0..<bars.count, id: \.self) { index in
-                                    BarView(magnitude: bars[index], index: index)
-                                        .id(index * 2 * 5)
-                                    
-                                    BarView(magnitude: bars[index], index: index, isClear: true)
-                                        .id((index * 2 + 1) * 5)
-                                }
-                                .frame(minHeight: 100, alignment: .bottom)
-                                
-                                Rectangle()
-                                    .foregroundColor(.clear)
-                                    .frame(width: geometry.size.width / 2)
-                                    .id((bars.count * 2 + 2) * 5)
+                                BarView(magnitude: bars[index], index: index, isClear: true)
+                                    .id((index * 2 + 1) * 5)
                             }
+                            .frame(minHeight: 100, alignment: .bottom)
+                            
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: geometry.size.width / 2)
+                                .id((bars.count * 2 + 2) * 5)
                         }
-                        .onTapGesture {
+                        .readingScrollView(from: "scroll", into: $offset)
+                    }
+                    .coordinateSpace(name: "scroll")
+                    .gesture(DragGesture()
+                        .onChanged { gesture in
                             if player.isPlaying {
                                 player.stop()
-                            } else {
-                                if player.audioPlayer == nil {
-                                    player.setupAudio(url: song.url)
-                                }
-                                if Int(player.currentTime * 100) != currentItemID ?? 0 {
-                                    let time = (currentItemID ?? 0) == -1 ? 0 : TimeInterval((currentItemID ?? 0) / 100)
-                                    player.seekAudio(to: time)
-                                }
-                                player.play()
+                                player.isPlaying = false
                             }
                         }
-                        .onAppear {
-                            currentItemID = -1
+                    )
+                    .onTapGesture {
+                        if player.isPlaying {
+                            player.stop()
+                            currentItemID = Int(player.currentTime * 100 / 5) * 5
+                        } else {
+                            if player.audioPlayer == nil {
+                                player.setupAudio(url: url)
+                            }
+                            if offset != currentItemID {
+                                player.seekAudio(to: TimeInterval(Float(offset) / 100))
+                            }
+                            player.play()
                         }
-                        .onChange(of: player.currentTime) { oldValue, newValue in
-                            if newValue < player.duration {
-                                if Int(newValue * 100) % 5 == 0 {
-                                    proxy.scrollTo(Int(newValue * 100), anchor: .center)
-                                }
+                    }
+                    .onChange(of: player.currentTime) { oldValue, newValue in
+                        if newValue < player.duration {
+                            if Int(newValue * 100) % 5 == 0 {
+                                proxy.scrollTo(Int(newValue * 100), anchor: .center)
+                                currentItemID = Int(newValue * 100 / 5) * 5
                             }
                         }
                     }

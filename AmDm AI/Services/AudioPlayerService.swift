@@ -46,6 +46,7 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
         guard let player = audioPlayer else { return }
         player.play()
         isPlaying = true
+//        print(player.currentTime)
         startTimer()
     }
     
