@@ -28,6 +28,10 @@
 		C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */; };
 		C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */; };
 		C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37DCF0F2BDE338F00DD38A0 /* AllSongs.swift */; };
+		C39B6D892BEFA520002279E3 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = C39B6D882BEFA520002279E3 /* AudioKit */; };
+		C39B6D8C2BEFA6DF002279E3 /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */; };
+		C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39B6D902BEFC873002279E3 /* TunerView.swift */; };
+		C39B6D932BEFE3F6002279E3 /* TunerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39B6D922BEFE3F6002279E3 /* TunerModel.swift */; };
 		C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */; };
 		C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */; };
 		C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */; };
@@ -65,6 +69,8 @@
 		C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionPlanCard.swift; sourceTree = "<group>"; };
 		C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWaveform.swift; sourceTree = "<group>"; };
 		C37DCF0F2BDE338F00DD38A0 /* AllSongs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSongs.swift; sourceTree = "<group>"; };
+		C39B6D902BEFC873002279E3 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
+		C39B6D922BEFE3F6002279E3 /* TunerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerModel.swift; sourceTree = "<group>"; };
 		C39C87322BB0073B00EBF82C /* AmDm AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AmDm AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmDm_AIApp.swift; sourceTree = "<group>"; };
 		C39C873B2BB0073D00EBF82C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -89,10 +95,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C39B6D892BEFA520002279E3 /* AudioKit in Frameworks */,
 				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
 				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
 				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
 				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
+				C39B6D8C2BEFA6DF002279E3 /* SoundpipeAudioKit in Frameworks */,
 				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -162,6 +170,15 @@
 			path = AllSongs;
 			sourceTree = "<group>";
 		};
+		C39B6D822BEFA47F002279E3 /* Tuner */ = {
+			isa = PBXGroup;
+			children = (
+				C39B6D902BEFC873002279E3 /* TunerView.swift */,
+				C39B6D922BEFE3F6002279E3 /* TunerModel.swift */,
+			);
+			path = Tuner;
+			sourceTree = "<group>";
+		};
 		C39C87292BB0073B00EBF82C = {
 			isa = PBXGroup;
 			children = (
@@ -209,6 +226,7 @@
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				C39B6D822BEFA47F002279E3 /* Tuner */,
 				B75A6FCE2BE0DD18001153ED /* SongDetails */,
 				C3DE80EB2BC1C2BE0063189D /* Settings */,
 				C376F5832BB1E67700826453 /* AllSongs */,
@@ -299,6 +317,8 @@
 				B79898A02BCABA030052C127 /* Alamofire */,
 				B79898A52BCAC2930052C127 /* Realm */,
 				B79898A72BCAC2930052C127 /* RealmSwift */,
+				C39B6D882BEFA520002279E3 /* AudioKit */,
+				C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -332,6 +352,8 @@
 				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 				B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
+				C39B6D872BEFA520002279E3 /* XCRemoteSwiftPackageReference "AudioKit" */,
+				C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -369,8 +391,10 @@
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
 				C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
+				C39B6D932BEFE3F6002279E3 /* TunerModel.swift in Sources */,
 				C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */,
 				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,
+				C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */,
 				C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* DataModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
@@ -529,6 +553,7 @@
 				INFOPLIST_FILE = "AmDm-AI-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Pro Chords";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -579,6 +604,7 @@
 				INFOPLIST_FILE = "AmDm-AI-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Pro Chords";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
@@ -650,6 +676,22 @@
 				kind = branch;
 			};
 		};
+		C39B6D872BEFA520002279E3 /* XCRemoteSwiftPackageReference "AudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/AudioKit/";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.4;
+			};
+		};
+		C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/AudioKit/SoundpipeAudioKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.6.1;
+			};
+		};
 		C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/antm677/SwiftyGuitarChords.git";
@@ -675,6 +717,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		C39B6D882BEFA520002279E3 /* AudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C39B6D872BEFA520002279E3 /* XCRemoteSwiftPackageReference "AudioKit" */;
+			productName = AudioKit;
+		};
+		C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
+			productName = SoundpipeAudioKit;
 		};
 		C3C7F4D42BBDC72D00E83503 /* SwiftyChords */ = {
 			isa = XCSwiftPackageProductDependency;

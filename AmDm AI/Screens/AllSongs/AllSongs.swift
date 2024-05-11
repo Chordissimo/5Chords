@@ -14,6 +14,7 @@ struct AllSongs: View {
     @State var showUpload = false
     @State var youtubeViewPresented = false
     @State var recordPanelPresented = false
+    @State var isTunerPresented = false
     @State var initialAnimationStep = 0
     @ObservedObject var songsList = SongsList()
     
@@ -85,7 +86,7 @@ struct AllSongs: View {
                                         }
                                         .frame(width: 50, height: 50)
                                         NavigationSecondaryButton(imageName: "custom.tuningfork") {
-                                            print("custom.tuningfork")
+                                            isTunerPresented = true
                                         }
                                         .frame(width: 50, height: 50)
                                     }
@@ -164,6 +165,9 @@ struct AllSongs: View {
                 .fullScreenCover(isPresented: $user.accessDisallowed) {  Subscription(user: user)  }
                 .fullScreenCover(isPresented: $showSettings) {
                     Settings(user: user, showSettings: $showSettings)
+                }
+                .fullScreenCover(isPresented: $isTunerPresented) {
+                    TunerView(isTunerPresented: $isTunerPresented)
                 }
                 .fullScreenCover(isPresented: $youtubeViewPresented) {
                     YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
