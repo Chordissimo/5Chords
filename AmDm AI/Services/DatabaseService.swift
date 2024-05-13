@@ -67,7 +67,7 @@ class DatabaseService {
         //        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
-    private func writeChords(chords: [Chord]) -> List<ChordModel> {
+    private func writeChords(chords: [APIChord]) -> List<ChordModel> {
         let dbChords = chords.map { ch in
             ChordModel(id: ch.id, chord: ch.chord, start: ch.start, end: ch.end)
         }
@@ -95,7 +95,7 @@ class DatabaseService {
         name: String,
         url: String,
         duration: TimeInterval,
-        chords: [Chord],
+        chords: [APIChord],
         text: [AlignedText],
         tempo: Float,
         songType: SongType = .localFile
@@ -179,7 +179,7 @@ class DatabaseService {
                 duration: $0.duration,
                 created: $0.created,
                 chords: $0.chords.sorted{ x1, x2 in x1.start < x2.start }.map {
-                    Chord(
+                    APIChord(
                         id: $0.id,
                         chord: $0.chord,
                         start: $0.start,

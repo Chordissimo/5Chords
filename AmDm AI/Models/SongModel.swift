@@ -1,16 +1,13 @@
 //
-//  UserDataModel.swift
+//  SongModel.swift
 //  AmDm AI
 //
-//  Created by Anton on 25/03/2024.
+//  Created by Anton on 13/05/2024.
 //
 
 import Foundation
-import SwiftData
-import SwiftyChords
-import Combine
 import SwiftUI
-
+import Combine
 
 enum SongType {
     case localFile
@@ -26,69 +23,6 @@ enum SongType {
     }
 }
 
-final class User: ObservableObject {
-    var registrationDate: Date?
-    var subscriptionPlanId: Int = 0
-    var accessDisallowed: Bool = false
-    
-    init() {}
-    
-    func selectPlan(registrationDate: Date, subscriptionPlanId: Int) {
-        self.registrationDate = registrationDate
-        self.subscriptionPlanId = subscriptionPlanId
-        self.accessDisallowed = false
-    }
-    
-}
-
-
-struct SubscriptionPlan: Identifiable, Hashable {
-    let id = UUID()
-    let planId: Int
-    let title: String
-    let description: String
-    let price: Float
-}
-
-struct MockData: Hashable {
-    static let plans = [
-        SubscriptionPlan(planId: 0, title: "Limited version", description: "Description", price: 0.0),
-        SubscriptionPlan(planId: 1, title: "Plan A", description: "Description", price: 1.0),
-        SubscriptionPlan(planId: 2, title: "Plan B", description: "Description", price: 4.99),
-        SubscriptionPlan(planId: 3, title: "Plan C", description: "Description", price: 9.99)
-    ]
-}
-
-struct UIChord: Identifiable, Hashable {
-    let id = UUID()
-    var key: Chords.Key
-    var suffix: Chords.Suffix
-    
-    static func getKey(from string: String) -> Chords.Key? {
-        switch string {
-        case "c": return .c
-        case "c#": return .cSharp
-        case "db": return .dFlat
-        case "d": return .d
-        case "d#": return .dSharp
-        case "eb": return .eFlat
-        case "e": return .e
-        case "f": return .f
-        case "f#": return .fSharp
-        case "gb": return .gFlat
-        case "g": return .g
-        case "g#": return .gSharp
-        case "ab": return .aFlat
-        case "a": return .a
-        case "a#": return .aSharp
-        case "bb": return .bFlat
-        case "b": return .b
-        default: return nil
-        }
-    }
-}
-
-
 struct Song: Identifiable, Equatable {
     static func == (lhs: Song, rhs: Song) -> Bool {
         lhs.id == rhs.id
@@ -96,7 +30,7 @@ struct Song: Identifiable, Equatable {
     
     var name: String
     var url: URL
-    var chords: [Chord]
+    var chords: [APIChord]
     var text: [AlignedText]
     var id: String
     var isExpanded = false
@@ -106,7 +40,7 @@ struct Song: Identifiable, Equatable {
     var songType: SongType = .localFile
     var tempo: Float
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [Chord], text: [AlignedText], tempo: Float, songType: SongType = .localFile) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .localFile) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -118,73 +52,6 @@ struct Song: Identifiable, Equatable {
         self.tempo = tempo
     }
 }
-
-
-class AlignedText: Codable, Identifiable {
-    var text: String
-    var start: Int?
-    var end: Int?
-    var id = UUID().uuidString
-    
-    enum CodingKeys: String, CodingKey {
-        case text
-        case start
-        case end
-    }
-    
-    init(id: String, text: String, start: Int?, end: Int?) {
-        self.text = text
-        self.start = start
-        self.end = end
-        self.id = id
-    }
-    
-    required init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        text = try values.decode(String.self, forKey: .text)
-        start = try? values.decode(Int.self, forKey: .start)
-        end = try? values.decode(Int.self, forKey: .end)
-    }
-}
-
-
-class Chord: Codable, Identifiable {
-    var chord: String
-    var start: Int
-    var end: Int
-    var uiChord: UIChord {
-        if chord.uppercased() != "N" {
-            let parts = chord.uppercased().split(separator: ":")
-            return UIChord(
-                key: UIChord.getKey(from: String(parts[0].lowercased()))!,
-                suffix: String(parts[1]) == "MIN" ? Chords.Suffix.minor : Chords.Suffix.major
-            )
-        }
-        return UIChord(key: .a, suffix: .minor) // fix this !!!
-    }
-    var id = UUID().uuidString
-    
-    enum CodingKeys: String, CodingKey {
-        case chord
-        case start
-        case end
-    }
-    
-    init(id: String, chord: String, start: Int, end: Int) {
-        self.chord = chord
-        self.start = start
-        self.end = end
-        self.id = id
-    }
-    
-    required init(from decoder: Decoder) throws {
-        let values = try decoder.container(keyedBy: CodingKeys.self)
-        chord = try values.decode(String.self, forKey: .chord)
-        start = try values.decode(Int.self, forKey: .start)
-        end = try values.decode(Int.self, forKey: .end)
-    }
-}
-
 
 final class SongsList: ObservableObject {
     @Published var songs: [Song]
@@ -335,4 +202,32 @@ final class SongsList: ObservableObject {
         }
     }
     
+}
+
+
+class AlignedText: Codable, Identifiable {
+    var text: String
+    var start: Int?
+    var end: Int?
+    var id = UUID().uuidString
+    
+    enum CodingKeys: String, CodingKey {
+        case text
+        case start
+        case end
+    }
+    
+    init(id: String, text: String, start: Int?, end: Int?) {
+        self.text = text
+        self.start = start
+        self.end = end
+        self.id = id
+    }
+    
+    required init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        text = try values.decode(String.self, forKey: .text)
+        start = try? values.decode(Int.self, forKey: .start)
+        end = try? values.decode(Int.self, forKey: .end)
+    }
 }
