@@ -11,6 +11,8 @@ import SwiftyChords
 struct SongDetails: View {
     @Binding var song: Song
     @ObservedObject var songsList: SongsList
+    @State var bpm: Double = 120.0
+    @State var beats: Int = 4
     @Binding var isSongDetailsPresented: Bool
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
     
@@ -36,9 +38,12 @@ struct SongDetails: View {
                 }.padding(.bottom,30)
                 
                 ChordsView(chords: song.chords, style: .pictogram_large)
+                MetronomeView(bpm: $bpm, beats: $beats)
+                PlaybackTimelineView(url: song.url)
+                    .frame(height: 130)
 
-                AudioPlayerView(scale: .large, song: $song, songsList: songsList)
-                    .padding(.horizontal,20)
+                // AudioPlayerView(scale: .large, song: $song, songsList: songsList)
+                //     .padding(.horizontal,20)
                 
             }
         }

@@ -8,10 +8,20 @@
 import SwiftUI
 import AVKit
 
-func readBuffer() -> [CGFloat] {
+func readBuffer(url: URL) -> [CGFloat] {
+    var _url: URL
     do {
-        let cur_url = Bundle.main.url(forResource: "splean", withExtension: "wav")!
-        let file = try AVAudioFile(forReading: cur_url)
+        let isReachable = (try? url.checkResourceIsReachable()) ?? false
+        if !isReachable {
+            let filename = String(url.absoluteString.split(separator: "/").last ?? "")
+            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            _url = documentsPath.appendingPathComponent(filename)
+        } else {
+            _url = url
+        }
+        
+        // let cur_url = Bundle.main.url(forResource: "splean", withExtension: "wav")!
+        let file = try AVAudioFile(forReading: _url)
         if let format = AVAudioFormat(
             commonFormat: .pcmFormatFloat32,
             sampleRate: file.fileFormat.sampleRate,
@@ -59,8 +69,8 @@ struct BarView: View {
     var magnitude: CGFloat
     var index: Int
     var isClear: Bool = false
-
-
+    
+    
     var body: some View {
         VStack(alignment: .leading)  {
             VStack {
@@ -78,7 +88,7 @@ struct BarView: View {
             }
             
             VStack {
-                Rectangle()
+                RoundedRectangle(cornerRadius: 3)
                     .frame(width: 1, height: index % 10 == 0 ? 10 : 7)
                     .foregroundColor(index % 5 == 0 && !isClear ? .white : .clear)
                     .padding(.leading,2)
@@ -98,93 +108,120 @@ struct BarView: View {
 }
 
 
-struct PlaybackTimelineView: View {
-    private let bars: [CGFloat] = readBuffer()
-    @Binding var song: Song
-    @ObservedObject var songsList: SongsList
-    @ObservedObject var player: Player = Player()
-    @State private var timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
-    @State var counter = 0
-    @State var isStarted: Bool = false
+struct ScrollViewOffsetPreferenceKey: PreferenceKey {
+    static var defaultValue: Int = 0
+    
+    static func reduce(value: inout Int, nextValue: () -> Int) {
+        value = nextValue()
+    }
+    
+    typealias Value = Int
 
-    init() {
-        
+}
+
+struct ScrollViewOffsetModifier: ViewModifier {
+    let coordinateSpace: String
+    @Binding var offset: Int
+    
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+            GeometryReader { proxy in
+                let x = abs(proxy.frame(in: .named(coordinateSpace)).minX)
+                let currentItemID = Int(x / 5) * 5
+                Color.clear.preference(key: ScrollViewOffsetPreferenceKey.self, value: currentItemID)
+            }
+        }
+        .onPreferenceChange(ScrollViewOffsetPreferenceKey.self) { value in
+            offset = value
+        }
+    }
+}
+
+extension View {
+    func readingScrollView(from coordinateSpace: String, into binding: Binding<Int>) -> some View {
+        modifier(ScrollViewOffsetModifier(coordinateSpace: coordinateSpace, offset: binding))
+    }
+}
+
+
+struct PlaybackTimelineView: View {
+    var url: URL
+    private var bars: [CGFloat]
+    @ObservedObject var player: Player = Player()
+    @State var currentItemID: Int = 0
+    @State var offset: Int = 0
+
+    init(url: URL) {
+        self.url = url
+        self.bars = readBuffer(url: url)
     }
     
     var body: some View {
         GeometryReader { geometry in
-            ScrollViewReader { proxy in
-                
-                Button {
-                    if isStarted {
-                        self.stopTimer()
-                    } else {
-                        self.startTimer()
-                    }
-                    isStarted.toggle()
-                } label: {
-                    Text(isStarted ? "Stop" : "Start")
-                }
-                
-                Button {
-                    withAnimation {
-                        proxy.scrollTo(2, anchor: .center)
-                    }
-                } label: {
-                    Text("ScrollTo")
-                }
-                ZStack {
-                    Rectangle()
-                        .foregroundColor(.red)
-                        .frame(width: 3, height: 120)
-                        .padding(.leading,5)
-                        .zIndex(1.0)
-                    
+            ZStack {
+                Rectangle()
+                    .foregroundColor(.red)
+                    .frame(width: 3, height: 120)
+                    .padding(.leading,5)
+                    .zIndex(1.0)
+                ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 0) {
                             Rectangle()
                                 .foregroundColor(.clear)
                                 .frame(width: geometry.size.width / 2)
+                                .id(-1)
+                            
                             ForEach(0..<bars.count, id: \.self) { index in
-                                
                                 BarView(magnitude: bars[index], index: index)
-                                .id(index * 2)
+                                    .id(index * 2 * 5)
                                 
                                 BarView(magnitude: bars[index], index: index, isClear: true)
-                                .id(index * 2 + 1)
-                                
+                                    .id((index * 2 + 1) * 5)
                             }
                             .frame(minHeight: 100, alignment: .bottom)
+                            
+                            Rectangle()
+                                .foregroundColor(.clear)
+                                .frame(width: geometry.size.width / 2)
+                                .id((bars.count * 2 + 2) * 5)
                         }
+                        .readingScrollView(from: "scroll", into: $offset)
                     }
-                    .onAppear() {
-                        self.stopTimer()
-                    }
-                    .onReceive(timer) { time in
-                        if counter == bars.count * 2 {
-                            timer.upstream.connect().cancel()
-                            isStarted = false
-                            counter = 0
+                    .coordinateSpace(name: "scroll")
+                    .gesture(DragGesture()
+                        .onChanged { gesture in
+                            if player.isPlaying {
+                                player.stop()
+                                player.isPlaying = false
+                            }
+                        }
+                    )
+                    .onTapGesture {
+                        if player.isPlaying {
+                            player.stop()
+                            currentItemID = Int(player.currentTime * 100 / 5) * 5
                         } else {
-                            proxy.scrollTo(counter, anchor: .center)
+                            if player.audioPlayer == nil {
+                                player.setupAudio(url: url)
+                            }
+                            if offset != currentItemID {
+                                player.seekAudio(to: TimeInterval(Float(offset) / 100))
+                            }
+                            player.play()
                         }
-                        counter += 1
+                    }
+                    .onChange(of: player.currentTime) { oldValue, newValue in
+                        if newValue < player.duration {
+                            if Int(newValue * 100) % 5 == 0 {
+                                proxy.scrollTo(Int(newValue * 100), anchor: .center)
+                                currentItemID = Int(newValue * 100 / 5) * 5
+                            }
+                        }
                     }
                 }
             }
         }
-        
     }
-    
-    func stopTimer() {
-        self.timer.upstream.connect().cancel()
-    }
-    
-    func startTimer() {
-        self.timer = Timer.publish(every: 0.05, on: .main, in: .common).autoconnect()
-    }
-}
-
-#Preview {
-    PlaybackTimelineView()
 }
