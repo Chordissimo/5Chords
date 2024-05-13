@@ -13,7 +13,7 @@ class RecognitionApiService {
     @AppStorage("server_ip") private var server_ip: String = ""
     
     struct Response: Codable {
-        var chords: [Chord]
+        var chords: [APIChord]
         var text: [AlignedText]?
         var tempo: Float
     }

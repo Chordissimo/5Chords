@@ -16,7 +16,7 @@ enum ChordDisplayStyle: Int {
 
 @available(iOS 16.4, *)
 struct ChordsView: View {
-    var chords = [Chord]()
+    var chords = [APIChord]()
     var style: ChordDisplayStyle
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 3)
 
