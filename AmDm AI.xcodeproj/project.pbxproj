@@ -16,6 +16,8 @@
 		B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A72BCAC2930052C127 /* RealmSwift */; };
 		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
 		C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C308C43E2BC5B35A00762643 /* StoreKit.framework */; };
+		C30F659D2BF23E870078DA32 /* PianoRoll.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30F659C2BF23E870078DA32 /* PianoRoll.swift */; };
+		C30F65A02BF23ECC0078DA32 /* MusicTheory in Frameworks */ = {isa = PBXBuildFile; productRef = C30F659F2BF23ECC0078DA32 /* MusicTheory */; };
 		C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C357AB052BB7D50900440554 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB042BB7D50900440554 /* EditableText.swift */; };
@@ -60,6 +62,7 @@
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		C308C43E2BC5B35A00762643 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
+		C30F659C2BF23E870078DA32 /* PianoRoll.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PianoRoll.swift; sourceTree = "<group>"; };
 		C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
@@ -110,6 +113,7 @@
 				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
 				C39B6D8C2BEFA6DF002279E3 /* SoundpipeAudioKit in Frameworks */,
 				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
+				C30F65A02BF23ECC0078DA32 /* MusicTheory in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -152,6 +156,14 @@
 				C308C43E2BC5B35A00762643 /* StoreKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		C30F659B2BF23E870078DA32 /* ChordLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				C30F659C2BF23E870078DA32 /* PianoRoll.swift */,
+			);
+			path = ChordLibrary;
 			sourceTree = "<group>";
 		};
 		C357AB032BB7D4CC00440554 /* SharedComponents */ = {
@@ -235,6 +247,7 @@
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				C30F659B2BF23E870078DA32 /* ChordLibrary */,
 				C39B6D822BEFA47F002279E3 /* Tuner */,
 				B75A6FCE2BE0DD18001153ED /* SongDetails */,
 				C3DE80EB2BC1C2BE0063189D /* Settings */,
@@ -347,6 +360,7 @@
 				B79898A72BCAC2930052C127 /* RealmSwift */,
 				C39B6D882BEFA520002279E3 /* AudioKit */,
 				C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */,
+				C30F659F2BF23ECC0078DA32 /* MusicTheory */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -382,6 +396,7 @@
 				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				C39B6D872BEFA520002279E3 /* XCRemoteSwiftPackageReference "AudioKit" */,
 				C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
+				C30F659E2BF23ECC0078DA32 /* XCRemoteSwiftPackageReference "MusicTheory" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -413,6 +428,7 @@
 			files = (
 				C3C7F4D92BC10FB300E83503 /* SongList.swift in Sources */,
 				C3F0B6232BF21EBA00866D2B /* MusicModel.swift in Sources */,
+				C30F659D2BF23E870078DA32 /* PianoRoll.swift in Sources */,
 				C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */,
 				C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */,
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
@@ -708,6 +724,14 @@
 				kind = branch;
 			};
 		};
+		C30F659E2BF23ECC0078DA32 /* XCRemoteSwiftPackageReference "MusicTheory" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/cemolcay/MusicTheory";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.4.0;
+			};
+		};
 		C39B6D872BEFA520002279E3 /* XCRemoteSwiftPackageReference "AudioKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/AudioKit/AudioKit/";
@@ -749,6 +773,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */;
 			productName = RealmSwift;
+		};
+		C30F659F2BF23ECC0078DA32 /* MusicTheory */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C30F659E2BF23ECC0078DA32 /* XCRemoteSwiftPackageReference "MusicTheory" */;
+			productName = MusicTheory;
 		};
 		C39B6D882BEFA520002279E3 /* AudioKit */ = {
 			isa = XCSwiftPackageProductDependency;
