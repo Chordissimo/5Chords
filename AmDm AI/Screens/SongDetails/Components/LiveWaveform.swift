@@ -27,7 +27,6 @@ struct LiveWaveform: View {
                     }
                 }
                 .frame(width: geometry.size.width, height: 120, alignment: .trailing)
-                //                                .border(Color.blue, width: 1)
             }
         }
     }
