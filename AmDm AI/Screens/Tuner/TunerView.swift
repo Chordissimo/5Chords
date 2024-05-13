@@ -10,48 +10,61 @@ import SwiftUI
 struct TunerView: View {
     @Binding var isTunerPresented: Bool
     @StateObject var conductor = TunerConductor()
-
+    
     var body: some View {
-        VStack {
-            HStack {
-                ActionButton(imageName: "chevron.left", title: "Back") {
-                    isTunerPresented = false
+        GeometryReader { geometry in
+//            let imageWidth = geometry.size.width * 0.7
+//            let imageHeight = geometry.size.height * 0.5
+            ZStack {
+//                VStack {
+//                    Image("g.string")
+//                        .frame(width: 100, height: 100)
+//                        .aspectRatio(contentMode: .fit)
+//                }
+//                .border(Color.blue, width: 1)
+//                .frame(width: imageWidth, height: imageHeight)
+                VStack {
+                    HStack {
+                        ActionButton(imageName: "chevron.left", title: "Back") {
+                            isTunerPresented = false
+                        }
+                        .frame(height: 18)
+                        .font(.system(size: 18))
+                        .padding(.vertical, 10)
+                        .padding(.horizontal,5)
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity)
+                    Spacer()
+                    HStack {
+                        Text("Frequency")
+                        Spacer()
+                        Text("\(conductor.data.pitch, specifier: "%0.1f")")
+                    }
+                    .padding()
+                    
+                    HStack {
+                        Text("Amplitude")
+                        Spacer()
+                        Text("\(conductor.data.amplitude, specifier: "%0.1f")")
+                    }
+                    .padding()
+                    
+                    HStack {
+                        Text("Note Name")
+                        Spacer()
+                        Text("\(conductor.data.noteNameWithSharps) / \(conductor.data.noteNameWithFlats)")
+                    }
+                    .padding()
+                    Spacer()
                 }
-                .frame(height: 18)
-                .font(.system(size: 18))
-                .padding(.vertical, 10)
-                .padding(.horizontal,5)
-                Spacer()
+                .onAppear {
+                    conductor.start()
+                }
+                .onDisappear {
+                    conductor.stop()
+                }
             }
-            .frame(maxWidth: .infinity)
-            Spacer()
-            HStack {
-                Text("Frequency")
-                Spacer()
-                Text("\(conductor.data.pitch, specifier: "%0.1f")")
-            }
-            .padding()
-
-            HStack {
-                Text("Amplitude")
-                Spacer()
-                Text("\(conductor.data.amplitude, specifier: "%0.1f")")
-            }
-            .padding()
-
-            HStack {
-                Text("Note Name")
-                Spacer()
-                Text("\(conductor.data.noteNameWithSharps) / \(conductor.data.noteNameWithFlats)")
-            }
-            .padding()
-            Spacer()
-        }
-        .onAppear {
-            conductor.start()
-        }
-        .onDisappear {
-            conductor.stop()
         }
     }
 }

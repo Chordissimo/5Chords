@@ -8,7 +8,6 @@
 import Foundation
 import AudioKit
 import AudioKitEX
-import AudioKitUI
 import AudioToolbox
 import SoundpipeAudioKit
 
