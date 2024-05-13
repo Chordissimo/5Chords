@@ -62,8 +62,8 @@ class PianoRollModel() {
     private var leftHandFingerLayout: [Int]
 
     init(root: Int, chordKeys: [Int) {
-        precondition(![0..23].contains(root),"PianoRollModel: Root rey \(key) is out of range.")
-        precondition(chordKeys.count < 23 && chordKeys.filter { $0 < 0 || $0 > 23 }.count == 0,"PianoRollModel: Root rey \(key) is out of range.")
+        precondition(![0..23].contains(root),"PianoRollModel: Root key \(key) is out of range.")
+        precondition(chordKeys.count < 23 && chordKeys.filter { $0 < 0 || $0 > 23 }.count == 0,"PianoRollModel: On of Chord keys \(key) is out of range.")
         self.chordKeys = Array(Set(chordKeys))
         self.root = root
         switch self.chord.count {
