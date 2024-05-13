@@ -46,10 +46,10 @@
 		C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EC2BC1C3010063189D /* Settings.swift */; };
 		C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */; };
 		C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */; };
+		C3F0B61C2BF0AC4F00866D2B /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B61B2BF0AC4F00866D2B /* MetronomeView.swift */; };
 		C3F0B6232BF21EBA00866D2B /* MusicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B6222BF21EBA00866D2B /* MusicModel.swift */; };
 		C3F0B6252BF21FC500866D2B /* SongModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B6242BF21FC500866D2B /* SongModel.swift */; };
-		C3F0B61C2BF0AC4F00866D2B /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B61B2BF0AC4F00866D2B /* MetronomeView.swift */; };
-		C3F0B61F2BF0AC8300866D2B /* MetronomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B61E2BF0AC8300866D2B /* MetronomeModel.swift */; };
+		C3F0B62A2BF2258100866D2B /* MetronomeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B6292BF2258100866D2B /* MetronomeModel.swift */; };
 		C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873B2BB0073D00EBF82C /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
@@ -92,10 +92,10 @@
 		C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "AmDm-AI-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedVersionLabel.swift; sourceTree = "<group>"; };
 		C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunked.swift; sourceTree = "<group>"; };
+		C3F0B61B2BF0AC4F00866D2B /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		C3F0B6222BF21EBA00866D2B /* MusicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicModel.swift; sourceTree = "<group>"; };
 		C3F0B6242BF21FC500866D2B /* SongModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongModel.swift; sourceTree = "<group>"; };
-		C3F0B61B2BF0AC4F00866D2B /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
-		C3F0B61E2BF0AC8300866D2B /* MetronomeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeModel.swift; sourceTree = "<group>"; };
+		C3F0B6292BF2258100866D2B /* MetronomeModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetronomeModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -119,7 +119,7 @@
 		B75A6FCE2BE0DD18001153ED /* SongDetails */ = {
 			isa = PBXGroup;
 			children = (
-				C3F0B61D2BF0AC7300866D2B /* Models */,
+				C3F0B6282BF2258100866D2B /* Models */,
 				C3DF0AB92BE93B9D00F69AFB /* Components */,
 				C3C7F4A62BBB273A00E83503 /* SongDetails.swift */,
 			);
@@ -312,7 +312,14 @@
 			children = (
 				C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */,
 				C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */,
-				C3F0B61E2BF0AC8300866D2B /* MetronomeModel.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		C3F0B6282BF2258100866D2B /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C3F0B6292BF2258100866D2B /* MetronomeModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -411,7 +418,6 @@
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
-				C3F0B61F2BF0AC8300866D2B /* MetronomeModel.swift in Sources */,
 				C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
 				C39B6D932BEFE3F6002279E3 /* TunerModel.swift in Sources */,
@@ -420,6 +426,7 @@
 				C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */,
 				C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */,
+				C3F0B62A2BF2258100866D2B /* MetronomeModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
 				C357AB092BB7E41500440554 /* ChordsView.swift in Sources */,
 				B75A6FE12BE0F882001153ED /* Int.swift in Sources */,
