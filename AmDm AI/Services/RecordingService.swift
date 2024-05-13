@@ -66,22 +66,22 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
                 let elapsedTime = currentTime.timeIntervalSince(startTime)
                 self.audioRecorder?.updateMeters()
                 let dec = (self.audioRecorder?.averagePower(forChannel: 0))!
-                self.recordingTimeCallback?(elapsedTime, pow(10.0, dec / 20.0) * 1000)
+                self.recordingTimeCallback?(elapsedTime, pow(10.0, dec / 20.0) * 500)
             }
         }
     }
     
-    func averagePowerFromAllChannels() -> Float {
-        var power: Float = 0.0
-        guard let channels = self.audioRecorder?.channelAssignments else {
-            print("no channels")
-            return 0
-        }
-        for channel in channels {
-            power = power + (self.audioRecorder?.averagePower(forChannel: channel.channelNumber))!
-        }
-        return power / Float(channels.count)
-        }
+//    func averagePowerFromAllChannels() -> Float {
+//        var power: Float = 0.0
+//        guard let channels = self.audioRecorder?.channelAssignments else {
+//            print("no channels")
+//            return 0
+//        }
+//        for channel in channels {
+//            power = power + (self.audioRecorder?.averagePower(forChannel: channel.channelNumber))!
+//        }
+//        return power / Float(channels.count)
+//    }
     
     func stopTimer() {
         timer?.invalidate()
