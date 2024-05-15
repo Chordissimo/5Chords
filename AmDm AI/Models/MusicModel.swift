@@ -48,9 +48,15 @@ class APIChord: Codable, Identifiable {
 
 struct UIChord: Identifiable, Hashable {
     let id = UUID()
+    var guitarChord: GuitarChord
+    var pianoChord: Chord
     var key: Chords.Key
     var suffix: Chords.Suffix
-    
+
+    init(key: String, suffix: String) {
+        self.guitarChord = GuitarChord(key: key, suffix: suffix)
+    }
+
     static func getKey(from string: String) -> Chords.Key? {
         switch string {
         case "c": return .c
@@ -73,4 +79,35 @@ struct UIChord: Identifiable, Hashable {
         default: return nil
         }
     }
+}
+
+struct GuitarChord {
+    var key: Chords.Key
+    var suffix: Chords.Suffix
+    var chordCollection: [ChordPosition]
+
+    init(key: String, suffix: String) {
+        self.key = getKey(key: key)
+        self.suffix = getSuffix(suffix: suffix)
+        self.chordCollection = Chords.guitar.matching(key: ch.uiChord.key).matching(suffix: ch.uiChord.suffix)
+    }
+
+    private func getKey(from key: String) -> Chords.Key? {
+        return Chords.Key.allCases.filter { $0.rawValue.lowercased() == key.lowercased() }.first!
+    }
+
+    private func getSuffix(from suffix: String) -> Chords.Suffix {
+        return Chords.Suffix.allCases.filter { $0.rawValue.lowercased() == suffix.lowercased() }.first!
+    }
+}
+
+struct PianoChord {
+    let m13 = ChordType(
+        third: .minor,
+        seventh: .dominant,
+        extensions: [
+            ChordExtensionType(type: .thirteenth)
+        ]
+    )
+    let cm13 = Chord(type: m13, key: Key(type: .c))
 }
