@@ -102,13 +102,12 @@ struct GuitarChord {
 }
 
 struct PianoChord {
-    var root: Key
-    var accidential: Accidental
     var chord: Chord
 
-    init(root: String) {
+    init(root: String, suffix: String) {
         self.root = Key(value: getRoot(root: root))
-        self.accidential = Accidental(value: getAccidental(root: root))
+        self.root.accidential = Accidental(value: getAccidental(root: root))
+
     }
 
     private func getRoot(root: String) -> String {
@@ -119,6 +118,69 @@ struct PianoChord {
     private func getAccidental(root: String) -> String {
         guard let accidental = root.map { String($0) } else { return "" }
         return key.count >= 2 ? key[1].lowercased() : ""
+    }
+
+    private func parseSuffix(suffix: String) -> ChordType {
+        switch suffix {
+            case "maj" :
+                return ChordType(third: .major)
+            case "min" :
+                return ChordType(third: .minor)
+            case "dim" :
+                return ChordType(third: .minor, fifth: .diminished)
+            case "dim7" :
+                return ChordType(third: .minor, fifth: .diminished, seventh: .diminished)
+            case "sus2" :
+            case "sus4" :
+            case "7sus4" :
+            case "5" :
+            case "alt" :
+            case "aug" :
+            case "6" :
+                return ChordType(third: .minor, fifth: .perfect, sixth: .init())
+            case "6/9" :
+            case "7" :
+                return ChordType(third: .major, fifth: .perfect, seventh: .dominant)
+            case "7b5" :
+                return ChordType(third: .major, fifth: .diminished, seventh: .dominant)
+            case "aug7" :
+            case "9" :
+            case "9b5" :
+            case "aug9" :
+            case "7b9" :
+            case "7#9" :
+            case "11" :
+            case "9#11" :
+            case "13" :
+            case "maj7" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .major)
+            case "maj7b5" :
+                return ChordType(third: .minor, fifth: .diminished, seventh: .major)
+            case "maj7#5" :
+                return ChordType(third: .minor, fifth: .augmented, seventh: .major)
+            case "7#5" :
+            case "maj9" :
+            case "maj11" :
+            case "maj13" :
+            case "m6" :
+                return ChordType(third: .minor, fifth: .perfect, sixth: .init())
+            case "m6/9" :
+            case "m7" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .dominant)            
+            case "m7b5" :
+            case "m9" :
+            case "m11" :
+            case "mmaj7" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .major)            
+            case "mmaj7b5" :
+                return ChordType(third: .minor, fifth: .augmented, seventh: .major)            
+            case "mmaj9" :
+            case "mmaj11" :
+            case "add9" :
+            case "madd9" :
+            default:
+                return ChordType(third: .major)
+        }
     }
     
     // let m13 = ChordType(
