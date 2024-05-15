@@ -131,27 +131,69 @@ struct PianoChord {
             case "dim7" :
                 return ChordType(third: .minor, fifth: .diminished, seventh: .diminished)
             case "sus2" :
+                return ChordType(third: .major, fifth: .perfect, suspended: [
+                    ChordSuspendedType(type: .sus2)
+                ])
             case "sus4" :
+                return ChordType(third: .major, suspended: [
+                    ChordSuspendedType(type: .sus4)
+                ])
             case "7sus4" :
+                return ChordType(third: .major, fifth: .perfect, seventh: .dominant, suspended: [
+                    ChordSuspendedType(type: .sus4)
+                ])
             case "5" :
-            case "alt" :
+                return ChordType(third: .major) // how to exclude the third
             case "aug" :
+                return ChordType(third: .minor, fifth: .augmented)
             case "6" :
                 return ChordType(third: .minor, fifth: .perfect, sixth: .init())
             case "6/9" :
+                return ChordType(third: .major, fifth: .perfect, sixth: .init(), extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "7" :
                 return ChordType(third: .major, fifth: .perfect, seventh: .dominant)
             case "7b5" :
                 return ChordType(third: .major, fifth: .diminished, seventh: .dominant)
             case "aug7" :
+                return ChordType(third: .major, fifth: .augmented, seventh: .dominant)
             case "9" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "9b5" :
+                return ChordType(third: .minor, fifth: .diminished, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "aug9" :
+                return ChordType(third: .major, fifth: .augmented, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth, accidental: .flat)
+                ])
             case "7b9" :
+                return ChordType(third: .major, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth, accidental: .flat)
+                ])
             case "7#9" :
+                return ChordType(third: .major, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth, accidental: .sharp)
+                ])
             case "11" :
+                return ChordType(third: .major, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth),
+                    ChordExtensionType(type: .eleventh)
+                ])
             case "9#11" :
+                return ChordType(third: .major, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth),
+                    ChordExtensionType(type: .eleventh, accidental: .sharp)
+                ])
             case "13" :
+                return ChordType(third: .major, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth),
+                    ChordExtensionType(type: .eleventh),
+                    ChordExtensionType(type: .thirteenth)
+                ])
             case "maj7" :
                 return ChordType(third: .minor, fifth: .perfect, seventh: .major)
             case "maj7b5" :
@@ -159,25 +201,62 @@ struct PianoChord {
             case "maj7#5" :
                 return ChordType(third: .minor, fifth: .augmented, seventh: .major)
             case "7#5" :
+                return ChordType(third: .major, fifth: .augmented, seventh: .major)
             case "maj9" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .major, extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "maj11" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .major, extension: [
+                    ChordExtensionType(type: .ninth),
+                    ChordExtensionType(type: .eleventh)
+                ])
             case "maj13" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .major, extension: [
+                    ChordExtensionType(type: .ninth),
+                    ChordExtensionType(type: .eleventh),
+                    ChordExtensionType(type: .thirteenth)
+                ])
             case "m6" :
                 return ChordType(third: .minor, fifth: .perfect, sixth: .init())
             case "m6/9" :
+                return ChordType(third: .minor, fifth: .perfect, sixth: .init(), extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "m7" :
                 return ChordType(third: .minor, fifth: .perfect, seventh: .dominant)            
             case "m7b5" :
+                return ChordType(third: .minor, fifth: .diminished, seventh: .dominant)
             case "m9" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "m11" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .dominant, extension: [
+                    ChordExtensionType(type: .ninth),
+                    ChordExtensionType(type: .eleventh)
+                ])
             case "mmaj7" :
                 return ChordType(third: .minor, fifth: .perfect, seventh: .major)            
             case "mmaj7b5" :
                 return ChordType(third: .minor, fifth: .augmented, seventh: .major)            
             case "mmaj9" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .major, extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "mmaj11" :
+                return ChordType(third: .minor, fifth: .perfect, seventh: .major, extension: [
+                    ChordExtensionType(type: .ninth),
+                    ChordExtensionType(type: .eleventh)
+                ])
             case "add9" :
+                return ChordType(third: .major, fifth: .perfect, extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             case "madd9" :
+                return ChordType(third: .minor, fifth: .perfect, extension: [
+                    ChordExtensionType(type: .ninth)
+                ])
             default:
                 return ChordType(third: .major)
         }
