@@ -82,17 +82,17 @@ struct UIChord: Identifiable, Hashable {
 }
 
 struct GuitarChord {
-    var key: Chords.Key
+    var root: Chords.Key
     var suffix: Chords.Suffix
     var chordCollection: [ChordPosition]
 
-    init(key: String, suffix: String) {
-        self.key = getKey(key: key)
+    init(root: String, suffix: String) {
+        self.root = getRoot(key: root)
         self.suffix = getSuffix(suffix: suffix)
-        self.chordCollection = Chords.guitar.matching(key: ch.uiChord.key).matching(suffix: ch.uiChord.suffix)
+        self.chordCollection = Chords.guitar.matching(key: self.root).matching(suffix: self.suffix)
     }
 
-    private func getKey(from key: String) -> Chords.Key? {
+    private func getRoot(from key: String) -> Chords.Key? {
         return Chords.Key.allCases.filter { $0.rawValue.lowercased() == key.lowercased() }.first!
     }
 
@@ -102,12 +102,31 @@ struct GuitarChord {
 }
 
 struct PianoChord {
-    let m13 = ChordType(
-        third: .minor,
-        seventh: .dominant,
-        extensions: [
-            ChordExtensionType(type: .thirteenth)
-        ]
-    )
-    let cm13 = Chord(type: m13, key: Key(type: .c))
+    var root: Key
+    var accidential: Accidental
+    var chord: Chord
+
+    init(root: String) {
+        self.root = Key(value: getRoot(root: root))
+        self.accidential = Accidental(value: getAccidental(root: root))
+    }
+
+    private func getRoot(root: String) -> String {
+        guard let key = root.map { String($0) } else { return "" }
+        return key.count > 0 ? key[0].lowercased() : ""
+    }
+
+    private func getAccidental(root: String) -> String {
+        guard let accidental = root.map { String($0) } else { return "" }
+        return key.count >= 2 ? key[1].lowercased() : ""
+    }
+    
+    // let m13 = ChordType(
+    //     third: .minor,
+    //     seventh: .dominant,
+    //     extensions: [
+    //         ChordExtensionType(type: .thirteenth)
+    //     ]
+    // )
+    // let cm13 = Chord(type: m13, key: Key(type: .c))
 }
