@@ -22,11 +22,12 @@ struct AllSongs: View {
         GeometryReader { proxy in
             NavigationStack {
                 ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                    
+                    Color.gray5
                     //Layer 1: song list + limited version label
                     VStack {
                         VStack {
-                            SongsListView(songsList: songsList)
+//                            SongsListView(songsList: songsList)
+                            SongList1(songsList: songsList)
                         }
                         .frame(minHeight: proxy.size.height - 140)
                         
@@ -147,20 +148,28 @@ struct AllSongs: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
+                    ToolbarItem(placement: .principal) {
                         VStack {
-                            Text("Pro Chords").font(.system(size: 32)).fontWeight(.semibold)
+                            Text("COLLECTION")
+                                .foregroundStyle(.prochordsLightGray)
+                                .font(.system(size: 20))
+                                .fontWeight(.semibold)
                         }
+                        .frame(height: 20)
                     }
                 }
-                .toolbarBackground(Color.black, for: .navigationBar)
+                .toolbarBackground(Color.gray10, for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbarColorScheme(.dark)
                 .navigationBarItems(
-                    trailing:
-                        ActionButton(imageName: "slider.horizontal.3") {
+                    leading:
+                        ActionButton(imageName: "hexagon") {
                             showSettings = true
-                        }.foregroundColor(.purple)
+                        }.foregroundColor(.white),
+                    trailing:
+                        ActionButton(imageName: "magnifyingglass") {
+                            print("")
+                        }.foregroundColor(.white)
                 )
                 .fullScreenCover(isPresented: $user.accessDisallowed) {  Subscription(user: user)  }
                 .fullScreenCover(isPresented: $showSettings) {

@@ -9,18 +9,10 @@ import Foundation
 import SwiftUI
 import Combine
 
-enum SongType {
-    case localFile
-    case youtube
-    
-    func toString() -> String {
-        switch self {
-        case .localFile:
-            return "localFile"
-        case .youtube:
-            return "youtube"
-        }
-    }
+enum SongType: String {
+    case localFile = "localFile"
+    case youtube = "youtube"
+    case recorded = "recorded"
 }
 
 struct Song: Identifiable, Equatable {
@@ -37,10 +29,10 @@ struct Song: Identifiable, Equatable {
     var duration: TimeInterval
     var created: Date
     var playbackPosition = 0.0
-    var songType: SongType = .localFile
+    var songType: SongType = .recorded
     var tempo: Float
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .localFile) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -80,7 +72,8 @@ final class SongsList: ObservableObject {
                         duration: self.duration,
                         chords: response.chords,
                         text: response.text ?? [],
-                        tempo: response.tempo
+                        tempo: response.tempo,
+                        songType: .recorded
                     )
                     self.songs.insert(song, at: 0)
                     self.expand(song: song)

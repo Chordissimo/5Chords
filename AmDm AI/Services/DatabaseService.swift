@@ -98,7 +98,7 @@ class DatabaseService {
         chords: [APIChord],
         text: [AlignedText],
         tempo: Float,
-        songType: SongType = .localFile
+        songType: SongType = .recorded
     ) -> Song {
         
         let realmChordList = writeChords(chords: chords)
@@ -112,7 +112,7 @@ class DatabaseService {
         song.chords = realmChordList
         song.text = realmTextList
         song.created = Date()
-        song.songType = songType.toString()
+        song.songType = songType.rawValue
         song.tempo = tempo
         
         try! realm.write {
@@ -195,7 +195,7 @@ class DatabaseService {
                     )
                 },
                 tempo: $0.tempo,
-                songType: $0.songType == "localFile" ? .localFile : .youtube
+                songType: $0.songType == "localFile" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube)
             )
         }
     }

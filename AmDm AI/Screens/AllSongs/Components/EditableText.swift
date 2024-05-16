@@ -47,7 +47,7 @@ struct EditableText: View  {
                     }
                     .foregroundStyle(Color.white)
                     .fontWeight(.semibold)
-                    .font(.system(size: 17))
+                    .font(.system(size: 18))
                     .onTapGesture { isFocused = true }
             }
         } else {
@@ -55,7 +55,7 @@ struct EditableText: View  {
                 Text(sourceText)
                     .foregroundStyle(Color.white)
                     .fontWeight(.semibold)
-                    .font(.system(size: 17))
+                    .font(.system(size: 18))
             }
         }
     }
