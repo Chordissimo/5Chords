@@ -55,3 +55,17 @@ func getSafeImage(named: String) -> Image {
         return Image(systemName: "questionmark")
     }
 }
+
+func combine<T>(lists: [[T]], partial: [T] = []) -> [[T]] {
+    if lists.isEmpty {
+        return [partial]
+    } else {
+        var lists = lists
+        let first = lists.removeFirst()
+        var result = [[T]]()
+        for n in first {
+            result += combine(lists: lists, partial: partial + [n])
+        }
+        return result
+    }
+}

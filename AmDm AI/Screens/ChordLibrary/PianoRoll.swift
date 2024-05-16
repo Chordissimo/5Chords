@@ -73,15 +73,20 @@ class PianoRollModel {
     }
 }
 
-struct PianoRoll: View {
-    var numberOfOctaves: Int
+struct ChordVariation: Identifiable {
+    var id = UUID()
+    var bassTones: [Int]
+    var trebleTones: [Int]
+}
+
+struct PianoChordView: View {
     var chordTones: [Int]
     var model: PianoRollModel
+    var numberOfOctaves: Int = 2
     
-    init(numberOfOctaves: Int, chordTones: [Int]) {
-        self.numberOfOctaves = numberOfOctaves
-        self.chordTones = chordTones
-        self.model = PianoRollModel(numberOfOctaves: numberOfOctaves)
+    init(bassTones: [Int], trebleTones: [Int]) {
+        self.model = PianoRollModel(numberOfOctaves: 2)
+        self.chordTones = bassTones + trebleTones.map { return $0 + 12}
     }
     
     var body: some View {
@@ -89,7 +94,7 @@ struct PianoRoll: View {
             GeometryReader { geometry in
                 let whiteHeight = geometry.size.height
                 let whiteHorizontalSpacing = geometry.size.width * 0.01
-                let whiteWidth = (geometry.size.width - (whiteHorizontalSpacing * CGFloat(numberOfOctaves))) / CGFloat(numberOfOctaves * 7)
+                let whiteWidth = (geometry.size.width - 50 - (whiteHorizontalSpacing * CGFloat(numberOfOctaves))) / CGFloat(numberOfOctaves * 7)
                 
                 let blackHeight = whiteHeight * 0.7
                 let blackWidth = whiteWidth * 0.5
@@ -116,7 +121,6 @@ struct PianoRoll: View {
                         }
                     }
                 }
-
                 
                 HStack(spacing: 0) {
                     Rectangle()
@@ -152,10 +156,54 @@ struct PianoRoll: View {
     }
 }
 
+struct PianoChordVariationsView: View {
+    var chord: Chord
+    var chordVariations: [ChordVariation]
+    
+    init(chord: Chord) {
+        self.chord = chord
+        
+        var tones = chord.keys.map { $0.type.rawValue }.sorted()
+        let bassTonesCount = tones.count % 2 == 0 ? tones.count / 2 : (tones.count - 1) / 2
+        tones.remove(at: 0)
+        var result = [ChordVariation]()
+        
+        var bassTones = combine(lists: [Array(tones[..<(bassTonesCount - 1)]), Array(tones[(bassTonesCount - 1)...])])
+        for b in bassTones {
+            let t = tones.filter { !b.contains($0)}
+            var bb = b
+            bb.insert(chord.key.type.rawValue, at: 0)
+            result.append(ChordVariation(bassTones: bb, trebleTones: t))
+        }
+        self.chordVariations = result
+    }
+    
+    var body: some View {
+        ZStack {
+            ScrollView(.vertical) {
+                VStack {
+                    ForEach(chordVariations) { ch in
+                        PianoChordView(bassTones: ch.bassTones, trebleTones: ch.trebleTones)
+                            .frame(width: 250, height: 70)
+                    }
+                }
+            }
+        }
+//        .frame(maxWidth: .infinity, maxHeight: .infinity)
+//        .padding()
+    }
+}
+
 
 #Preview {
-    PianoRoll(numberOfOctaves: 2, chordTones: [2,6,9,12])
-        .frame(width: 300, height: 100)
+    let m13 = ChordType(
+      third: .minor,
+      seventh: .dominant,
+      extensions: [
+        ChordExtensionType(type: .thirteenth)
+      ])
+    let cm13 = Chord(type: m13, key: Key(type: .c))
+    return PianoChordVariationsView(chord: cm13)
 }
 
 //    private var rightHandFingerLayout: [Int]
