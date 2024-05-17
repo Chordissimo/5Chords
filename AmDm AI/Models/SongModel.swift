@@ -25,15 +25,17 @@ struct Song: Identifiable, Equatable {
     var chords: [APIChord]
     var text: [AlignedText]
     var id: String
-    var isExpanded = false
+    var isExpanded = false // remove that after merging feature/new-song-list
+    var isVisible = true
     var duration: TimeInterval
     var created: Date
     var playbackPosition = 0.0
     var songType: SongType = .recorded
     var thumbnailUrl: URL
     var tempo: Float
+    var isProcessing: Bool = false
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, isProcessing: Bool = false) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -43,15 +45,14 @@ struct Song: Identifiable, Equatable {
         self.created = created
         self.songType = songType
         self.tempo = tempo
+        self.isProcessing = isProcessing
         self.thumbnailUrl = URL(string: "local")!
         if self.songType == .youtube {
             if self.url.absoluteString != "" {
                 let index = self.url.absoluteString.range(of: "?v=")?.upperBound ?? nil
                 if index != nil {
-//                    let start = self.url.absoluteString.index(index!, offsetBy: 1)
                     let id = String(self.url.absoluteString[index!...])
                     self.thumbnailUrl = URL(string: "http://img.youtube.com/vi/\(id)/default.jpg")!
-                    print(self.url, self.thumbnailUrl.absoluteString)
                 } else {
                     self.thumbnailUrl = URL(string: "")!
                 }
@@ -78,10 +79,23 @@ final class SongsList: ObservableObject {
         recordingService.recordingCallback = { [weak self] url in
             guard let self = self else { return }
             guard let url = url else { return }
+            var song = Song(
+                id: UUID().uuidString,
+                name: "Extracting chords and lyrics...",
+                url: url.absoluteString,
+                duration: 0.0,
+                created: Date(),
+                chords: [],
+                text: [],
+                tempo: 0,
+                songType: .recorded,
+                isProcessing: true
+            )
+            self.songs.insert(song, at: 0)
             self.recognitionApiService.recognizeAudio(url: url) { result in
                 switch result {
                 case .success(let response):
-                    let song = self.databaseService.writeSong(
+                    song = self.databaseService.writeSong(
                         name: self.getNewSongName(),
                         url: url.absoluteString,
                         duration: self.duration,
@@ -90,8 +104,8 @@ final class SongsList: ObservableObject {
                         tempo: response.tempo,
                         songType: .recorded
                     )
-                    self.songs.insert(song, at: 0)
-                    self.expand(song: song)
+                    song.isProcessing = false
+                    self.songs[0] = song
                 case .failure(let failure):
                     print(failure)
                 }
@@ -189,19 +203,19 @@ final class SongsList: ObservableObject {
             }
         }
     }
-    
+    // remove this after merging feature/new-song-list
     func expand(index: Int) {
         for i in songs.indices {
             songs[i].isExpanded = i == index
         }
     }
-    
+    // remove this after merging feature/new-song-list
     func expand(song: Song) {
         for i in songs.indices {
             songs[i].isExpanded = songs[i] == song
         }
     }
-    
+    // remove this after merging feature/new-song-list
     func getExpanded() -> Song? {
         if let i = self.songs.firstIndex(where: { $0.isExpanded == true }) {
             return self.songs[i]
@@ -210,6 +224,12 @@ final class SongsList: ObservableObject {
         }
     }
     
+    func filterSongs(searchText: String) {
+        for i in songs.indices {
+            songs[i].isVisible = searchText == "" ? true : songs[i].name.contains(searchText)
+        }
+    }
+
 }
 
 
