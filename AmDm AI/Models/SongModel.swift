@@ -30,6 +30,7 @@ struct Song: Identifiable, Equatable {
     var created: Date
     var playbackPosition = 0.0
     var songType: SongType = .recorded
+    var thumbnailUrl: URL
     var tempo: Float
     
     init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType) {
@@ -42,6 +43,20 @@ struct Song: Identifiable, Equatable {
         self.created = created
         self.songType = songType
         self.tempo = tempo
+        self.thumbnailUrl = URL(string: "local")!
+        if self.songType == .youtube {
+            if self.url.absoluteString != "" {
+                let index = self.url.absoluteString.range(of: "?v=")?.upperBound ?? nil
+                if index != nil {
+//                    let start = self.url.absoluteString.index(index!, offsetBy: 1)
+                    let id = String(self.url.absoluteString[index!...])
+                    self.thumbnailUrl = URL(string: "http://img.youtube.com/vi/\(id)/default.jpg")!
+                    print(self.url, self.thumbnailUrl.absoluteString)
+                } else {
+                    self.thumbnailUrl = URL(string: "")!
+                }
+            }
+        }
     }
 }
 

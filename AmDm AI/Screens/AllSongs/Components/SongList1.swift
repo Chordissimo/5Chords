@@ -15,10 +15,23 @@ struct SongList1: View {
             List($songsList.songs) { song in
                 VStack(alignment: .leading) {
                     HStack {
-                        Image("test.image")
-                            .resizable()
-                            .frame(width: 60, height: 60)
-                            .aspectRatio(contentMode: .fit)
+                        if song.songType.wrappedValue == .youtube && song.thumbnailUrl.wrappedValue.absoluteString != "" {
+                            AsyncImage(url: URL(string: song.thumbnailUrl.wrappedValue.absoluteString)) { image in
+                                image
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 60, height: 60)
+                                    .clipShape(.rect(cornerRadius: 12))
+                            } placeholder: {
+                                Color.gray5
+                            }
+                            
+                        } else {
+                            Image(song.songType.wrappedValue == .localFile ? "test.image" : "custom.mic.circle.fill")
+                                .resizable()
+                                .frame(width: 60, height: 60)
+                                .aspectRatio(contentMode: .fill)
+                        }
                         
                         VStack(alignment: .leading, spacing: 0) {
                             EditableText(text: song.name, isEditable: true)
