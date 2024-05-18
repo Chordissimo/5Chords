@@ -92,6 +92,7 @@ class DatabaseService {
     }
     
     func writeSong(
+        id: String,
         name: String,
         url: String,
         duration: TimeInterval,
@@ -105,7 +106,7 @@ class DatabaseService {
         let realmTextList = writeText(text: text)
         
         let song = SongModel()
-        song.id = UUID().uuidString
+        song.id = id
         song.name = name
         song.url = url
         song.duration = duration

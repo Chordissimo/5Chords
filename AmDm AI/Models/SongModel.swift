@@ -15,7 +15,7 @@ enum SongType: String {
     case recorded = "recorded"
 }
 
-struct Song: Identifiable, Equatable {
+class Song: ObservableObject, Identifiable, Equatable {
     static func == (lhs: Song, rhs: Song) -> Bool {
         lhs.id == rhs.id
     }
@@ -25,17 +25,21 @@ struct Song: Identifiable, Equatable {
     var chords: [APIChord]
     var text: [AlignedText]
     var id: String
-    var isExpanded = false // remove that after merging feature/new-song-list
     var isVisible = true
     var duration: TimeInterval
     var created: Date
     var playbackPosition = 0.0
     var songType: SongType = .recorded
-    var thumbnailUrl: URL
+    var thumbnailUrl: URL = URL(string: "local")!
     var tempo: Float
-    var isProcessing: Bool = false
+    @Published var isProcessing: Bool = false
+    @Published var isFakeLoaderVisible: Bool = false
+    @Published private var timer: Timer?
+    @Published private var startTime: Date?
+    @Published var elapsedTime: TimeInterval = 0
+    @Published var progress: Float = 0.0
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, isProcessing: Bool = false) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, isProcessing: Bool = false, isFakeLoaderVisible: Bool = false) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -46,7 +50,8 @@ struct Song: Identifiable, Equatable {
         self.songType = songType
         self.tempo = tempo
         self.isProcessing = isProcessing
-        self.thumbnailUrl = URL(string: "local")!
+        self.isFakeLoaderVisible = isFakeLoaderVisible
+
         if self.songType == .youtube {
             if self.url.absoluteString != "" {
                 let index = self.url.absoluteString.range(of: "?v=")?.upperBound ?? nil
@@ -59,14 +64,30 @@ struct Song: Identifiable, Equatable {
             }
         }
     }
+    
+    func startTimer() {
+        self.startTime = Date()
+        self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] _ in
+            guard let self = self else { return }
+            if let startTime = self.startTime {
+                let currentTime = Date()
+                self.elapsedTime = currentTime.timeIntervalSince(startTime)
+            }
+        }
+    }
+    
+    func stopTimer() {
+        self.timer?.invalidate()
+        self.timer = nil
+    }
 }
 
 final class SongsList: ObservableObject {
     @Published var songs: [Song]
-    
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
     @Published var decibelChanges = [Float]()
+    @Published var showSearch: Bool = false
     
     private let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
@@ -79,7 +100,7 @@ final class SongsList: ObservableObject {
         recordingService.recordingCallback = { [weak self] url in
             guard let self = self else { return }
             guard let url = url else { return }
-            var song = Song(
+            let song = Song(
                 id: UUID().uuidString,
                 name: "Extracting chords and lyrics...",
                 url: url.absoluteString,
@@ -89,25 +110,38 @@ final class SongsList: ObservableObject {
                 text: [],
                 tempo: 0,
                 songType: .recorded,
-                isProcessing: true
+                isProcessing: true,
+                isFakeLoaderVisible: true
             )
+            song.startTimer()
             self.songs.insert(song, at: 0)
+            self.objectWillChange.send()
+            
             self.recognitionApiService.recognizeAudio(url: url) { result in
                 switch result {
                 case .success(let response):
-                    song = self.databaseService.writeSong(
+                    let dbSong = self.databaseService.writeSong(
+                        id: song.id,
                         name: self.getNewSongName(),
-                        url: url.absoluteString,
+                        url: song.url.absoluteString,
                         duration: self.duration,
                         chords: response.chords,
                         text: response.text ?? [],
                         tempo: response.tempo,
                         songType: .recorded
                     )
-                    song.isProcessing = false
-                    self.songs[0] = song
+                    let i = self.getSongIndexByID(id: song.id)
+                    self.songs[i].name = dbSong.name
+                    self.songs[i].duration = dbSong.duration
+                    self.songs[i].chords = dbSong.chords
+                    self.songs[i].text = dbSong.text
+                    self.songs[i].tempo = dbSong.tempo
+                    self.songs[i].isProcessing = false
+                    self.songs[i].stopTimer()
+                    self.objectWillChange.send()
+
                 case .failure(let failure):
-                    print(failure)
+                    print("API failure: ",failure)
                 }
             }
         }
@@ -129,11 +163,12 @@ final class SongsList: ObservableObject {
         
         $songs
             .sink { [weak self] value in
+                guard let self = self else { return }
                 // don't need to do anything in case new song is added, i.e. value.count > self?.songs.count
-                if value.count == self?.songs.count {
+                if value.count == self.songs.count {
                     for i in value.indices {
-                        if value[i].name != self?.songs[i].name {
-                            self?.databaseService.updateSong(song: value[i])
+                        if value[i].name != self.songs[i].name {
+                            self.databaseService.updateSong(song: value[i])
                         }
                     }
                 }
@@ -142,20 +177,46 @@ final class SongsList: ObservableObject {
     }
     
     func processYoutubeVideo(by resultUrl: String) {
+        let song = Song(
+            id: UUID().uuidString,
+            name: "Extracting chords and lyrics...",
+            url: resultUrl,
+            duration: 0.0,
+            created: Date(),
+            chords: [],
+            text: [],
+            tempo: 0,
+            songType: .recorded,
+            isProcessing: true,
+            isFakeLoaderVisible: true
+        )
+        song.startTimer()
+        self.songs.insert(song, at: 0)
+        self.objectWillChange.send()
+        
         recognitionApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
             switch result {
             case .success(let response):
-                let song = self.databaseService.writeSong(
+                let dbSong = self.databaseService.writeSong(
+                    id: song.id,
                     name: self.getNewSongName(),
-                    url: resultUrl,
+                    url: song.url.absoluteString,
                     duration: self.duration,
                     chords: response.chords,
                     text: response.text ?? [],
                     tempo: response.tempo,
                     songType: .youtube
                 )
-                self.songs.insert(song, at: 0)
-                self.expand(song: song)
+                let i = self.getSongIndexByID(id: song.id)
+                self.songs[i].name = dbSong.name
+                self.songs[i].duration = dbSong.duration
+                self.songs[i].chords = dbSong.chords
+                self.songs[i].text = dbSong.text
+                self.songs[i].tempo = dbSong.tempo
+                self.songs[i].isProcessing = false
+                self.songs[i].stopTimer()
+                self.objectWillChange.send()
+
             case .failure(let failure):
                 print(failure)
             }
@@ -173,6 +234,13 @@ final class SongsList: ObservableObject {
         recordStarted = false
     }
     
+    func getSongIndexByID(id: String) -> Int {
+        let s = songs.filter { song in
+            song.id == id
+        }
+        return s.count > 0 ? Int(songs.firstIndex(of: s[0])!) : -1
+    }
+    
     func getNewSongName() -> String {
         let songs = self.songs.filter { s in
             s.name.contains("New recording")
@@ -188,39 +256,21 @@ final class SongsList: ObservableObject {
         if let i = self.songs.firstIndex(of: song) {
             self.databaseService.deleteSong(song: song)
             self.songs.remove(at: i)
-
-            var _url = song.url
-            let isReachable = (try? song.url.checkResourceIsReachable()) ?? false
-            do {
-                if !isReachable {
-                    let filename = String(song.url.absoluteString.split(separator: "/").last ?? "")
-                    let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                    _url = documentsPath.appendingPathComponent(filename)
+            
+            if song.songType != .youtube {
+                var _url = song.url
+                let isReachable = (try? song.url.checkResourceIsReachable()) ?? false
+                do {
+                    if !isReachable {
+                        let filename = String(song.url.absoluteString.split(separator: "/").last ?? "")
+                        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                        _url = documentsPath.appendingPathComponent(filename)
+                    }
+                    try FileManager.default.removeItem(at: _url)
+                } catch {
+                    print(error)
                 }
-                try FileManager.default.removeItem(at: _url)
-            } catch {
-                print(error)
             }
-        }
-    }
-    // remove this after merging feature/new-song-list
-    func expand(index: Int) {
-        for i in songs.indices {
-            songs[i].isExpanded = i == index
-        }
-    }
-    // remove this after merging feature/new-song-list
-    func expand(song: Song) {
-        for i in songs.indices {
-            songs[i].isExpanded = songs[i] == song
-        }
-    }
-    // remove this after merging feature/new-song-list
-    func getExpanded() -> Song? {
-        if let i = self.songs.firstIndex(where: { $0.isExpanded == true }) {
-            return self.songs[i]
-        } else {
-            return nil
         }
     }
     

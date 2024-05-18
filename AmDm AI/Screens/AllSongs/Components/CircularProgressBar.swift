@@ -7,43 +7,77 @@
 
 import SwiftUI
 
-struct CircularProgressBar: View {
-    @Binding var progress: Float
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(lineWidth: 20.0)
-                .opacity(0.20)
-                .foregroundColor(.gray)
-            Circle()
-                .trim(from: 0.0, to: CGFloat(min(self.progress, 1.0)))
-                .stroke(style: StrokeStyle(lineWidth: 12.0, lineCap: .round, lineJoin: .round))
-                .rotationEffect(Angle(degrees: 270))
-        }
-    }
-}
+//class ProgressTimer: ObservableObject, Equatable {
+//    static func == (lhs: ProgressTimer, rhs: ProgressTimer) -> Bool {
+//        lhs.id == rhs.id
+//    }
+//    var id = UUID()
+//    private var startTime: Date?
+//    @Published private var timer: Timer?
+//    @Published var elapsedTime: TimeInterval = 0.0
+//    
+//    func startTimer() {
+//        self.startTime = Date()
+//        self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] _ in
+//            guard let self = self else { return }
+//            if let startTime = self.startTime {
+//                let currentTime = Date()
+//                self.elapsedTime = currentTime.timeIntervalSince(startTime)
+//            }
+//        }
+//    }
+//    
+//    func stopTimer() {
+//        self.timer?.invalidate()
+//        self.timer = nil
+//    }
+//}
+
 
 
 struct CircularProgressBarView: View {
-    @Binding var song: Song
-    @State var progress: Float = 0.0
-    @State var timer = Timer.publish(every: 0.5, on: .main, in: .common).autoconnect()
-
+    @ObservedObject var song: Song
+    @ObservedObject var songsList: SongsList
+    
     var body: some View {
-        VStack {
-            CircularProgressBar(progress: $progress)
-//                .frame(width: 160, height: 160)
-                .padding(20)
-                .onReceive(timer, perform: { _ in
+        GeometryReader { geometry in
+            VStack {
+                ZStack {
+                    Circle()
+                        .stroke(lineWidth: 2.0)
+                        .opacity(0.20)
+                        .foregroundColor(.gray)
+                    
+                    Image("stars")
+                        .resizable()
+                        .frame(width: 28, height: 28)
+                        .foregroundColor(.progressCircle)
+                        .glow()
+                    
+                    Circle()
+                        .trim(from: 0.0, to: CGFloat(min(song.progress, 1.0)))
+                        .stroke(style: StrokeStyle(lineWidth: 2.0, lineCap: .round, lineJoin: .round))
+                        .foregroundColor(.progressCircle)
+                        .rotationEffect(Angle(degrees: 270))
+                }
+                .frame(width: geometry.size.width, height: geometry.size.height)
+            }
+            .onChange(of: song.elapsedTime) {
+                if song.isProcessing {
+                    song.progress = song.progress <= 0.9 ? song.progress + 0.0005 : song.progress
+                }
+            }
+            .onChange(of: song.isProcessing) {
+                if !song.isProcessing {
                     withAnimation(.easeInOut(duration: 1.0)) {
-                        if song.isProcessing {
-                            progress = progress <= 0.9 ? progress + 0.1 : progress
-                        } else {
-                            progress = 1
+                        song.progress = 1
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                            song.isFakeLoaderVisible = false
                         }
                     }
-                })
+                }
+            }
+
         }
     }
 }

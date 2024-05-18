@@ -17,7 +17,6 @@ struct AllSongs: View {
     @State var isTunerPresented = false
     @State var initialAnimationStep = 0
     @ObservedObject var songsList = SongsList()
-    @State var showSearch: Bool = false
     
     var body: some View {
         GeometryReader { proxy in
@@ -28,7 +27,7 @@ struct AllSongs: View {
                     VStack {
                         VStack {
 //                            SongsListView(songsList: songsList)
-                            SongList1(showSearch: $showSearch, songsList: songsList)
+                            SongList1(songsList: songsList)
                         }
                         .frame(minHeight: proxy.size.height - 140)
                         
@@ -64,6 +63,7 @@ struct AllSongs: View {
                                     HStack(spacing: 20) {
                                         NavigationSecondaryButton(imageName: "folder.fill") {
                                             showUpload = true
+                                            songsList.showSearch = false
                                         }
                                         .frame(width: 45, height: 45)
                                         NavigationSecondaryButton(imageName: "mic.fill") {
@@ -71,6 +71,7 @@ struct AllSongs: View {
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                                 withAnimation {
                                                     if !songsList.recordStarted {
+                                                        songsList.showSearch = false
                                                         songsList.startRecording()
                                                     }
                                                 }
@@ -172,7 +173,7 @@ struct AllSongs: View {
                     trailing:
                         ActionButton(imageName: "magnifyingglass") {
                             withAnimation {
-                                showSearch = true
+                                songsList.showSearch.toggle()
                             }
                         }.foregroundColor(.white)
                 )

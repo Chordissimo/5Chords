@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct SongList1: View {
-    @Binding var showSearch: Bool
+//    @Binding var showSearch: Bool
     @ObservedObject var songsList: SongsList
     @State var searchText: String = ""
     
@@ -19,37 +19,25 @@ struct SongList1: View {
                     if $songsList.songs.count == 0 {
                         EmptyListView1()
                     } else {
-                        List($songsList.songs) { song in
-                            if showSearch && songsList.songs.firstIndex(of: song.wrappedValue) == 0 {
+                        List($songsList.songs, id: \.id) { song in
+                            if songsList.showSearch && songsList.songs.firstIndex(of: song.wrappedValue) == 0 {
                                 SearchSongView(searchText: $searchText, songsList: songsList)
                                     .listRowBackground(Color.gray5)
                                     .id(0)
-//                                    .onDisappear {
-//                                        showSearch = false
-//                                    }
+
                             }
                             if song.isVisible.wrappedValue {
-                                if song.isProcessing.wrappedValue {
-                                    ProcessingSongView(song: song)
-                                        .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
-                                        .padding(.top,5)
-                                        .listRowSeparator(.automatic)
-                                        .listRowBackground(Color.gray5)
-                                } else {
-                                    RecognizedSongView(songsList: songsList, song: song)
-                                        .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
-                                        .padding(.top,5)
-                                        .listRowSeparator(.automatic)
-                                        .listRowBackground(Color.gray5)
-                                    //                NavigationLink(destination: DetailView(item: item)) {
-                                    //                }
-                                }
+                                RecognizedSongView(songsList: songsList, song: song.wrappedValue)
+                                    .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
+                                    .padding(.top,5)
+                                    .listRowSeparator(.automatic)
+                                    .listRowBackground(Color.gray5)
                             }
                         }
                         .scrollIndicators(.hidden)
                         .listStyle(.plain)
                         .onDisappear {
-                            showSearch = false
+                            songsList.showSearch = false
                         }
                     }
                 }
@@ -58,9 +46,9 @@ struct SongList1: View {
                         proxy.scrollTo(1, anchor: .top)
                     }
                 }
-                .onChange(of: showSearch) {
+                .onChange(of: songsList.showSearch) {
                     withAnimation {
-                        if showSearch {
+                        if songsList.showSearch {
                             proxy.scrollTo(0, anchor: .top)
                         }
                     }
@@ -72,95 +60,93 @@ struct SongList1: View {
 
 struct RecognizedSongView: View {
     @ObservedObject var songsList: SongsList
-    @Binding var song: Song
+    @ObservedObject var song: Song
     
     var body: some View {
         VStack(alignment: .leading) {
-            HStack {
-                if song.songType == .youtube && song.thumbnailUrl.absoluteString != "" {
-                    AsyncImage(url: URL(string: song.thumbnailUrl.absoluteString)) { image in
-                        image
+            if song.isFakeLoaderVisible {
+                VStack(alignment: .leading) {
+                    HStack {
+                        CircularProgressBarView(song: song, songsList: songsList)
                             .frame(width: 60, height: 60)
-                            .clipShape(.rect(cornerRadius: 12))
-                    } placeholder: {
-                        Color.gray5.frame(width: 60, height: 60)
+                        
+                        VStack(alignment: .leading, spacing: 0) {
+                            Text("Extracting chords and lyrics")
+                                .font(.system(size: 18))
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.white)
+                                .padding(.bottom, 3)
+                                .opacityAnimaion()
+                            
+                            RoundedRectangle(cornerRadius: 4)
+                                .frame(width: 40, height: 12)
+                                .foregroundColor(.disabledText)
+                                .padding(.bottom, 5)
+                                .opacityAnimaion()
+                            
+                            RoundedRectangle(cornerRadius: 4)
+                                .frame(width: 140, height: 12)
+                                .foregroundColor(.disabledText)
+                                .opacityAnimaion()
+                        }
+                        .padding(.leading, 10)
                     }
-                    
-                } else if song.songType == .recorded {
-                    Image(systemName: "mic.circle.fill")
-                        .resizable()
-                        .frame(width: 60, height: 60)
-                        .aspectRatio(contentMode: .fill)
-                        .foregroundColor(.disabledText)
-                } else {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 12)
+                }
+            } else {
+                HStack {
+                    if song.songType == .youtube && song.thumbnailUrl.absoluteString != "" {
+                        AsyncImage(url: URL(string: song.thumbnailUrl.absoluteString)) { image in
+                            image
+                                .frame(width: 60, height: 60)
+                                .clipShape(.rect(cornerRadius: 12))
+                        } placeholder: {
+                            Color.gray5.frame(width: 60, height: 60)
+                        }
+                    } else if song.songType == .recorded {
+                        Image(systemName: "mic.circle.fill")
+                            .resizable()
                             .frame(width: 60, height: 60)
+                            .aspectRatio(contentMode: .fill)
                             .foregroundColor(.disabledText)
-                        Text("MP3")
-                            .font(.system(size: 16))
-                            .foregroundColor(.secondaryText)
+                    } else {
+                        ZStack {
+                            RoundedRectangle(cornerRadius: 12)
+                                .frame(width: 60, height: 60)
+                                .foregroundColor(.disabledText)
+                            Text("MP3")
+                                .font(.system(size: 16))
+                                .foregroundColor(.gray10)
+                        }
                     }
-                }
-                
-                VStack(alignment: .leading, spacing: 0) {
-                    EditableText(text: $song.name, isEditable: true)
                     
-                    Text(formatTime(song.duration, precision: .seconds))
-                        .font(.system(size: 14))
-                        .fontWeight(.bold)
-                        .foregroundStyle(.secondaryText)
-                    
-                    Text(song.songType.rawValue + " · " + dateToString(song.created))
-                        .font(.system(size: 14))
-                        .fontWeight(.regular)
-                        .foregroundStyle(.disabledText)
-                }
-                .padding(.leading, 10)
-            }
-            .swipeActions(allowsFullSwipe: false) {
-                Button(role: .destructive) {
-                    withAnimation {
-                        songsList.del(song: song)
+                    VStack(alignment: .leading, spacing: 0) {
+                        EditableText(text: $song.name, isEditable: true)
+                        
+                        Text(formatTime(song.duration, precision: .seconds))
+                            .font(.system(size: 14))
+                            .fontWeight(.bold)
+                            .foregroundStyle(.secondaryText)
+                        
+                        Text(song.songType.rawValue + " · " + dateToString(song.created))
+                            .font(.system(size: 14))
+                            .fontWeight(.regular)
+                            .foregroundStyle(.disabledText)
                     }
-                } label: {
-                    Label("Delete", systemImage: "trash.fill")
+                    .padding(.leading, 10)
+                }
+                .swipeActions(allowsFullSwipe: false) {
+                    Button(role: .destructive) {
+                        withAnimation {
+                            songsList.del(song: song)
+                        }
+                    } label: {
+                        Label("Delete", systemImage: "trash.fill")
+                    }
                 }
             }
         }
     }
 }
-
-
-struct ProcessingSongView: View {
-    @Binding var song: Song
-    
-    var body: some View {
-        VStack(alignment: .leading) {
-            HStack {
-                CircularProgressBarView(song: $song)
-                    .frame(width: 60, height: 60)
-                
-                VStack(alignment: .leading, spacing: 0) {
-                    Text(formatTime(song.duration, precision: .seconds))
-                        .font(.system(size: 18))
-                        .fontWeight(.semibold)
-                        .foregroundStyle(.white)
-                    
-                    Rectangle()
-                        .frame(width: 30, height: 14)
-                        .foregroundColor(.disabledText)
-
-                    Rectangle()
-                        .frame(width: 30, height: 14)
-                        .foregroundColor(.disabledText)
-                }
-                .padding(.leading, 10)
-            }
-        }
-    }
-}
-
 
 
 struct SearchSongView: View {
@@ -173,11 +159,16 @@ struct SearchSongView: View {
                 HStack {
                     Image(systemName: "magnifyingglass")
                         .padding(.leading,10)
+                    
                     TextField("Search", text: $searchText)
                         .onChange(of: searchText) {
                             withAnimation {
                                 songsList.filterSongs(searchText: searchText)
+                                songsList.objectWillChange.send()
                             }
+                        }
+                        .onChange(of: songsList.showSearch) {
+                            searchText = ""
                         }
                     if searchText != "" {
                         Button {
@@ -219,5 +210,46 @@ struct EmptyListView1: View {
             }
             .frame(maxHeight: .infinity)
         }
+    }
+}
+
+struct OpacityAnimation: ViewModifier {
+    @State private var throb: Bool = false
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+                .opacity(throb ? 0.7 : 1)
+                .animation(.easeOut(duration: 1.0).repeatForever(), value: throb)
+                .onAppear {
+                    throb.toggle()
+                }
+        }
+    }
+}
+
+extension View {
+    func opacityAnimaion() -> some View {
+        modifier(OpacityAnimation())
+    }
+}
+
+struct Glow: ViewModifier {
+    @State private var throb: Bool = false
+    func body(content: Content) -> some View {
+        ZStack {
+            content
+                .blur(radius: throb ? 5 : 20)
+                .animation(.easeOut(duration: 2.0).repeatForever(), value: throb)
+                .onAppear {
+                    throb.toggle()
+                }
+            content
+        }
+    }
+}
+
+extension View {
+    func glow() -> some View {
+        modifier(Glow())
     }
 }
