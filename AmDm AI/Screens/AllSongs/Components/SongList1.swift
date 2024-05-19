@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct SongList1: View {
-//    @Binding var showSearch: Bool
+    //    @Binding var showSearch: Bool
     @ObservedObject var songsList: SongsList
     @State var searchText: String = ""
+    @State var focusedField: String = ""
     
     var body: some View {
         NavigationStack {
@@ -24,14 +25,14 @@ struct SongList1: View {
                                 SearchSongView(searchText: $searchText, songsList: songsList)
                                     .listRowBackground(Color.gray5)
                                     .id(0)
-
+                                
                             }
                             if song.isVisible.wrappedValue {
-                                RecognizedSongView(songsList: songsList, song: song.wrappedValue)
-                                    .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
+                                RecognizedSongView(songsList: songsList, song: song.wrappedValue, focusedField: $focusedField)
                                     .padding(.top,5)
                                     .listRowSeparator(.automatic)
                                     .listRowBackground(Color.gray5)
+                                    .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
                             }
                         }
                         .scrollIndicators(.hidden)
@@ -61,6 +62,17 @@ struct SongList1: View {
 struct RecognizedSongView: View {
     @ObservedObject var songsList: SongsList
     @ObservedObject var song: Song
+    @Binding var focusedField: String
+    
+    @FocusState var isFocused: Bool
+    @State var songName: String
+    
+    init(songsList: SongsList, song: Song, focusedField: Binding<String>) {
+        self.songsList = songsList
+        self.song = song
+        songName = song.name
+        self._focusedField = focusedField
+    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -113,14 +125,48 @@ struct RecognizedSongView: View {
                             RoundedRectangle(cornerRadius: 12)
                                 .frame(width: 60, height: 60)
                                 .foregroundColor(.disabledText)
-                            Text("MP3")
+                            Text(song.ext.uppercased())
+                                .fontWeight(.bold)
                                 .font(.system(size: 16))
                                 .foregroundColor(.gray10)
                         }
                     }
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        EditableText(text: $song.name, isEditable: true)
+                        TextField(song.name, text: $songName, onEditingChanged: { edit in
+                            if edit {
+                                focusedField = song.id
+                            }
+                        })
+                        .onSubmit {
+                            if songName == "" {
+                                songName = song.name
+                            } else {
+                                song.name = songName
+                                songsList.databaseService.updateSong(song: song)
+                            }
+                        }
+                        .foregroundStyle(Color.white)
+                        .fontWeight(.semibold)
+                        .font(.system(size: 18))
+                        .focused($isFocused)
+                        .onChange(of: focusedField, { oldValue, newValue in
+                            if focusedField != song.id {
+                                isFocused = false
+                                if songName == "" {
+                                    songName = song.name
+                                } else {
+                                    song.name = songName
+                                    songsList.databaseService.updateSong(song: song)
+                                }
+                            }
+                        })
+                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+                            if let textField = obj.object as? UITextField {
+                                textField.selectAll(nil)
+                            }
+                        }
+                        
                         
                         Text(formatTime(song.duration, precision: .seconds))
                             .font(.system(size: 14))
@@ -133,6 +179,10 @@ struct RecognizedSongView: View {
                             .foregroundStyle(.disabledText)
                     }
                     .padding(.leading, 10)
+
+                }
+                .onTapGesture {
+                    focusedField = focusedField != song.id ? "" : focusedField
                 }
                 .swipeActions(allowsFullSwipe: false) {
                     Button(role: .destructive) {
@@ -152,6 +202,7 @@ struct RecognizedSongView: View {
 struct SearchSongView: View {
     @Binding var searchText: String
     @ObservedObject var songsList: SongsList
+    @FocusState private var isFocused: Bool
     
     var body: some View {
         VStack {
@@ -169,6 +220,15 @@ struct SearchSongView: View {
                         }
                         .onChange(of: songsList.showSearch) {
                             searchText = ""
+                        }
+                        .focused($isFocused)
+                        .onAppear {
+                            isFocused = true
+                        }
+                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
+                            if let textField = obj.object as? UITextField {
+                                textField.selectAll(nil)
+                            }
                         }
                     if searchText != "" {
                         Button {

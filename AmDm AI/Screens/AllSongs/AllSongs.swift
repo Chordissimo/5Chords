@@ -185,15 +185,15 @@ struct AllSongs: View {
                     TunerView(isTunerPresented: $isTunerPresented)
                 }
                 .fullScreenCover(isPresented: $youtubeViewPresented) {
-                    YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
+                    YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl, title in
                         youtubeViewPresented = false
-                        songsList.processYoutubeVideo(by: resultUrl)
+                        songsList.processYoutubeVideo(by: resultUrl, title: title)
                     })
                 }
-                .fileImporter(isPresented: $showUpload, allowedContentTypes: [.plainText]) { result in
+                .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf]) { result in
                     switch result {
                     case .success(let file):
-                        print(file.absoluteString)
+                        songsList.importFile(url: file)
                     case .failure(let error):
                         print(error.localizedDescription)
                     }

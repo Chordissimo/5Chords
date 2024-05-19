@@ -10,7 +10,7 @@ import SwiftUI
 import Combine
 
 enum SongType: String {
-    case localFile = "localFile"
+    case localFile = "uploaded"
     case youtube = "youtube"
     case recorded = "recorded"
 }
@@ -20,7 +20,7 @@ class Song: ObservableObject, Identifiable, Equatable {
         lhs.id == rhs.id
     }
     
-    var name: String
+    @Published var name: String
     var url: URL
     var chords: [APIChord]
     var text: [AlignedText]
@@ -30,6 +30,7 @@ class Song: ObservableObject, Identifiable, Equatable {
     var created: Date
     var playbackPosition = 0.0
     var songType: SongType = .recorded
+    var ext: String = ""
     var thumbnailUrl: URL = URL(string: "local")!
     var tempo: Float
     @Published var isProcessing: Bool = false
@@ -39,7 +40,7 @@ class Song: ObservableObject, Identifiable, Equatable {
     @Published var elapsedTime: TimeInterval = 0
     @Published var progress: Float = 0.0
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, isProcessing: Bool = false, isFakeLoaderVisible: Bool = false) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -48,6 +49,7 @@ class Song: ObservableObject, Identifiable, Equatable {
         self.duration = duration
         self.created = created
         self.songType = songType
+        self.ext = ext
         self.tempo = tempo
         self.isProcessing = isProcessing
         self.isFakeLoaderVisible = isFakeLoaderVisible
@@ -91,25 +93,28 @@ final class SongsList: ObservableObject {
     
     private let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
-     let databaseService = DatabaseService()
+    let databaseService = DatabaseService()
     private var cancellables = Set<AnyCancellable>()
     
     init() {
         songs = self.databaseService.getSongs()
         
-        recordingService.recordingCallback = { [weak self] url in
+        recordingService.recordingCallback = { [weak self] url, songName, ext in
             guard let self = self else { return }
             guard let url = url else { return }
+            guard let songName = songName else { return }
+            guard let ext = ext else { return }
             let song = Song(
                 id: UUID().uuidString,
-                name: "Extracting chords and lyrics...",
+                name: songName,
                 url: url.absoluteString,
                 duration: 0.0,
                 created: Date(),
                 chords: [],
                 text: [],
                 tempo: 0,
-                songType: .recorded,
+                songType: songName == "" ? .recorded : .localFile,
+                ext: ext,
                 isProcessing: true,
                 isFakeLoaderVisible: true
             )
@@ -122,13 +127,14 @@ final class SongsList: ObservableObject {
                 case .success(let response):
                     let dbSong = self.databaseService.writeSong(
                         id: song.id,
-                        name: self.getNewSongName(),
+                        name: songName == "" ? self.getNewSongName() : songName,
                         url: song.url.absoluteString,
                         duration: self.duration,
                         chords: response.chords,
                         text: response.text ?? [],
                         tempo: response.tempo,
-                        songType: .recorded
+                        songType: songName == "" ? .recorded : .localFile,
+                        ext: ext
                     )
                     let i = self.getSongIndexByID(id: song.id)
                     self.songs[i].name = dbSong.name
@@ -161,32 +167,33 @@ final class SongsList: ObservableObject {
             }
         }
         
-        $songs
-            .sink { [weak self] value in
-                guard let self = self else { return }
-                // don't need to do anything in case new song is added, i.e. value.count > self?.songs.count
-                if value.count == self.songs.count {
-                    for i in value.indices {
-                        if value[i].name != self.songs[i].name {
-                            self.databaseService.updateSong(song: value[i])
-                        }
-                    }
-                }
-            }
-            .store(in: &cancellables)
+//        $songs
+//            .sink { [weak self] value in
+//                print(value)
+//                guard let self = self else { return }
+//                // don't need to do anything in case new song is added, i.e. value.count > self?.songs.count
+//                if value.count == self.songs.count {
+//                    for i in value.indices {
+//                        if value[i].name != self.songs[i].name {
+//                            self.databaseService.updateSong(song: value[i])
+//                        }
+//                    }
+//                }
+//            }
+//            .store(in: &cancellables)
     }
     
-    func processYoutubeVideo(by resultUrl: String) {
+    func processYoutubeVideo(by resultUrl: String, title: String) {
         let song = Song(
             id: UUID().uuidString,
-            name: "Extracting chords and lyrics...",
+            name: title,
             url: resultUrl,
             duration: 0.0,
             created: Date(),
             chords: [],
             text: [],
             tempo: 0,
-            songType: .recorded,
+            songType: .youtube,
             isProcessing: true,
             isFakeLoaderVisible: true
         )
@@ -199,13 +206,14 @@ final class SongsList: ObservableObject {
             case .success(let response):
                 let dbSong = self.databaseService.writeSong(
                     id: song.id,
-                    name: self.getNewSongName(),
+                    name: title == "" ? self.getNewSongName() : title,
                     url: song.url.absoluteString,
                     duration: self.duration,
                     chords: response.chords,
                     text: response.text ?? [],
                     tempo: response.tempo,
-                    songType: .youtube
+                    songType: .youtube,
+                    ext: ""
                 )
                 let i = self.getSongIndexByID(id: song.id)
                 self.songs[i].name = dbSong.name
@@ -232,6 +240,10 @@ final class SongsList: ObservableObject {
     func stopRecording() {
         recordingService.stopRecording()
         recordStarted = false
+    }
+    
+    func importFile(url: URL) {
+        recordingService.importFile(url: url)
     }
     
     func getSongIndexByID(id: String) -> Int {
@@ -279,7 +291,6 @@ final class SongsList: ObservableObject {
             songs[i].isVisible = searchText == "" ? true : songs[i].name.contains(searchText)
         }
     }
-
 }
 
 
