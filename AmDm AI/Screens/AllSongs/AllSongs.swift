@@ -26,8 +26,7 @@ struct AllSongs: View {
                     //Layer 1: song list + limited version label
                     VStack {
                         VStack {
-//                            SongsListView(songsList: songsList)
-                            SongList1(songsList: songsList)
+                            SongList(songsList: songsList)
                         }
                         .frame(minHeight: proxy.size.height - 140)
                         

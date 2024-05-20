@@ -200,7 +200,7 @@ class DatabaseService {
                     )
                 },
                 tempo: $0.tempo,
-                songType: $0.songType == "localFile" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
+                songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
                 ext: $0.ext
             )
         }

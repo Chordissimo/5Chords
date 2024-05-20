@@ -61,7 +61,7 @@ class Song: ObservableObject, Identifiable, Equatable {
                     let id = String(self.url.absoluteString[index!...])
                     self.thumbnailUrl = URL(string: "http://img.youtube.com/vi/\(id)/default.jpg")!
                 } else {
-                    self.thumbnailUrl = URL(string: "")!
+                    self.thumbnailUrl = URL(string: "local")!
                 }
             }
         }
@@ -106,7 +106,7 @@ final class SongsList: ObservableObject {
             guard let ext = ext else { return }
             let song = Song(
                 id: UUID().uuidString,
-                name: songName,
+                name: songName == "" ? self.getNewSongName() : songName,
                 url: url.absoluteString,
                 duration: 0.0,
                 created: Date(),
@@ -166,21 +166,6 @@ final class SongsList: ObservableObject {
                 }
             }
         }
-        
-//        $songs
-//            .sink { [weak self] value in
-//                print(value)
-//                guard let self = self else { return }
-//                // don't need to do anything in case new song is added, i.e. value.count > self?.songs.count
-//                if value.count == self.songs.count {
-//                    for i in value.indices {
-//                        if value[i].name != self.songs[i].name {
-//                            self.databaseService.updateSong(song: value[i])
-//                        }
-//                    }
-//                }
-//            }
-//            .store(in: &cancellables)
     }
     
     func processYoutubeVideo(by resultUrl: String, title: String) {
