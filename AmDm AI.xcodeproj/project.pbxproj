@@ -32,7 +32,13 @@
 		C37D58362BFB1855001DA8E1 /* EmptySongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58352BFB1855001DA8E1 /* EmptySongList.swift */; };
 		C37D58392BFB18A3001DA8E1 /* Glow+Opacity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58382BFB18A3001DA8E1 /* Glow+Opacity.swift */; };
 		C37D583B2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D583A2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift */; };
+		C37D583D2BFB2052001DA8E1 /* SplashScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D583C2BFB2052001DA8E1 /* SplashScreen.swift */; };
+		C37D58402BFB25E4001DA8E1 /* OnboardingPage1.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D583F2BFB25E4001DA8E1 /* OnboardingPage1.swift */; };
+		C37D58442BFB3D39001DA8E1 /* OnboardingPage2.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58432BFB3D39001DA8E1 /* OnboardingPage2.swift */; };
+		C37D58462BFB491E001DA8E1 /* OnboardingPage3.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58452BFB491E001DA8E1 /* OnboardingPage3.swift */; };
+		C37D58482BFB536B001DA8E1 /* OnboardingPage4.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58472BFB536B001DA8E1 /* OnboardingPage4.swift */; };
 		C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37DCF0F2BDE338F00DD38A0 /* AllSongs.swift */; };
+		C394DAA02BFB9EBF00EE019F /* FromYoutubeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C394DA9F2BFB9EBF00EE019F /* FromYoutubeLabel.swift */; };
 		C39B6D892BEFA520002279E3 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = C39B6D882BEFA520002279E3 /* AudioKit */; };
 		C39B6D8C2BEFA6DF002279E3 /* SoundpipeAudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */; };
 		C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39B6D902BEFC873002279E3 /* TunerView.swift */; };
@@ -48,6 +54,7 @@
 		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
 		C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3C7F4D42BBDC72D00E83503 /* SwiftyChords */; };
 		C3DB08982BE7A669001CB372 /* 2.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3DB08972BE7A669001CB372 /* 2.wav */; };
+		C3DC6FCF2BFBB40000EA0095 /* FileFormatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FCE2BFBB40000EA0095 /* FileFormatsView.swift */; };
 		C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EC2BC1C3010063189D /* Settings.swift */; };
 		C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */; };
 		C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */; };
@@ -82,7 +89,13 @@
 		C37D58352BFB1855001DA8E1 /* EmptySongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptySongList.swift; sourceTree = "<group>"; };
 		C37D58382BFB18A3001DA8E1 /* Glow+Opacity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Glow+Opacity.swift"; sourceTree = "<group>"; };
 		C37D583A2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RecognizedSong+Loader.swift"; sourceTree = "<group>"; };
+		C37D583C2BFB2052001DA8E1 /* SplashScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreen.swift; sourceTree = "<group>"; };
+		C37D583F2BFB25E4001DA8E1 /* OnboardingPage1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPage1.swift; sourceTree = "<group>"; };
+		C37D58432BFB3D39001DA8E1 /* OnboardingPage2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPage2.swift; sourceTree = "<group>"; };
+		C37D58452BFB491E001DA8E1 /* OnboardingPage3.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPage3.swift; sourceTree = "<group>"; };
+		C37D58472BFB536B001DA8E1 /* OnboardingPage4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPage4.swift; sourceTree = "<group>"; };
 		C37DCF0F2BDE338F00DD38A0 /* AllSongs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSongs.swift; sourceTree = "<group>"; };
+		C394DA9F2BFB9EBF00EE019F /* FromYoutubeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FromYoutubeLabel.swift; sourceTree = "<group>"; };
 		C39B6D902BEFC873002279E3 /* TunerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerView.swift; sourceTree = "<group>"; };
 		C39B6D922BEFE3F6002279E3 /* TunerModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TunerModel.swift; sourceTree = "<group>"; };
 		C39C87322BB0073B00EBF82C /* AmDm AI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "AmDm AI.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +111,7 @@
 		C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackTimelineView.swift; sourceTree = "<group>"; };
 		C3C7F4A62BBB273A00E83503 /* SongDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetails.swift; sourceTree = "<group>"; };
 		C3DB08972BE7A669001CB372 /* 2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2.wav; sourceTree = "<group>"; };
+		C3DC6FCE2BFBB40000EA0095 /* FileFormatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFormatsView.swift; sourceTree = "<group>"; };
 		C3DE80EC2BC1C3010063189D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "AmDm-AI-Info.plist"; sourceTree = SOURCE_ROOT; };
 		C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedVersionLabel.swift; sourceTree = "<group>"; };
@@ -199,6 +213,28 @@
 			path = ViewModifiers;
 			sourceTree = "<group>";
 		};
+		C37D583E2BFB20AE001DA8E1 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				C394DAA12BFB9ECC00EE019F /* Components */,
+				C37D583C2BFB2052001DA8E1 /* SplashScreen.swift */,
+				C37D583F2BFB25E4001DA8E1 /* OnboardingPage1.swift */,
+				C37D58432BFB3D39001DA8E1 /* OnboardingPage2.swift */,
+				C37D58452BFB491E001DA8E1 /* OnboardingPage3.swift */,
+				C37D58472BFB536B001DA8E1 /* OnboardingPage4.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		C394DAA12BFB9ECC00EE019F /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C394DA9F2BFB9EBF00EE019F /* FromYoutubeLabel.swift */,
+				C3DC6FCE2BFBB40000EA0095 /* FileFormatsView.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		C39B6D822BEFA47F002279E3 /* Tuner */ = {
 			isa = PBXGroup;
 			children = (
@@ -254,6 +290,7 @@
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				C37D583E2BFB20AE001DA8E1 /* Onboarding */,
 				C39B6D822BEFA47F002279E3 /* Tuner */,
 				B75A6FCE2BE0DD18001153ED /* SongDetails */,
 				C3DE80EB2BC1C2BE0063189D /* Settings */,
@@ -436,6 +473,7 @@
 			files = (
 				C3F0B6232BF21EBA00866D2B /* MusicModel.swift in Sources */,
 				C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */,
+				C394DAA02BFB9EBF00EE019F /* FromYoutubeLabel.swift in Sources */,
 				C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */,
 				C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */,
 				C37D58392BFB18A3001DA8E1 /* Glow+Opacity.swift in Sources */,
@@ -455,19 +493,25 @@
 				C3F0B62A2BF2258100866D2B /* MetronomeModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
 				C357AB092BB7E41500440554 /* ChordsView.swift in Sources */,
+				C37D583D2BFB2052001DA8E1 /* SplashScreen.swift in Sources */,
+				C3DC6FCF2BFBB40000EA0095 /* FileFormatsView.swift in Sources */,
 				C3693C082BF6371D00DC137B /* SongList.swift in Sources */,
 				B75A6FE12BE0F882001153ED /* Int.swift in Sources */,
 				C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */,
+				C37D58402BFB25E4001DA8E1 /* OnboardingPage1.swift in Sources */,
 				C357AB102BB7E92E00440554 /* AudioPlayerView.swift in Sources */,
 				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
 				C3F0B6252BF21FC500866D2B /* SongModel.swift in Sources */,
 				C3F0B61C2BF0AC4F00866D2B /* MetronomeView.swift in Sources */,
+				C37D58462BFB491E001DA8E1 /* OnboardingPage3.swift in Sources */,
+				C37D58482BFB536B001DA8E1 /* OnboardingPage4.swift in Sources */,
 				B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */,
 				C357AB052BB7D50900440554 /* EditableText.swift in Sources */,
 				C37D583B2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift in Sources */,
 				C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */,
 				B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */,
+				C37D58442BFB3D39001DA8E1 /* OnboardingPage2.swift in Sources */,
 				C361E8272BB860D300F33B40 /* Helpers.swift in Sources */,
 				C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */,
 				B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */,
