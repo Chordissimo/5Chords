@@ -49,6 +49,7 @@ class SongModel: Object {
     @Persisted var chords: List<ChordModel>
     @Persisted var text: List<AlignedTextModel>
     @Persisted var songType: String
+    @Persisted var ext: String
     @Persisted var tempo: Float
     
     
@@ -64,7 +65,7 @@ class DatabaseService {
     lazy var realm = try! Realm()
     
     init() {
-        //        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
     private func writeChords(chords: [APIChord]) -> List<ChordModel> {
@@ -92,28 +93,31 @@ class DatabaseService {
     }
     
     func writeSong(
+        id: String,
         name: String,
         url: String,
         duration: TimeInterval,
         chords: [APIChord],
         text: [AlignedText],
         tempo: Float,
-        songType: SongType = .localFile
+        songType: SongType = .recorded,
+        ext: String
     ) -> Song {
         
         let realmChordList = writeChords(chords: chords)
         let realmTextList = writeText(text: text)
         
         let song = SongModel()
-        song.id = UUID().uuidString
+        song.id = id
         song.name = name
         song.url = url
         song.duration = duration
         song.chords = realmChordList
         song.text = realmTextList
         song.created = Date()
-        song.songType = songType.toString()
+        song.songType = songType.rawValue
         song.tempo = tempo
+        song.ext = ext
         
         try! realm.write {
             realm.add(song)
@@ -128,7 +132,8 @@ class DatabaseService {
             chords: chords,
             text: text,
             tempo: song.tempo,
-            songType: songType
+            songType: songType,
+            ext: song.ext
         )
     }
     
@@ -178,7 +183,7 @@ class DatabaseService {
                 url: $0.url,
                 duration: $0.duration,
                 created: $0.created,
-                chords: $0.chords.sorted{ x1, x2 in x1.start < x2.start }.map {
+                chords: $0.chords.sorted { x1, x2 in x1.start < x2.start }.map {
                     APIChord(
                         id: $0.id,
                         chord: $0.chord,
@@ -186,7 +191,7 @@ class DatabaseService {
                         end: $0.end
                     )
                 },
-                text:  $0.text.sorted{ x1, x2 in x1.start ?? 0 < x2.start ?? 0 }.map {
+                text:  $0.text.sorted { x1, x2 in x1.start ?? 0 < x2.start ?? 0 }.map {
                     AlignedText(
                         id: $0.id,
                         text: $0.text,
@@ -195,7 +200,8 @@ class DatabaseService {
                     )
                 },
                 tempo: $0.tempo,
-                songType: $0.songType == "localFile" ? .localFile : .youtube
+                songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
+                ext: $0.ext
             )
         }
     }

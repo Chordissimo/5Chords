@@ -11,14 +11,13 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
     
     var audioRecorder: AVAudioRecorder?
     var recordingURL: URL?
-    var recordingCallback: ((URL?) -> Void)?
+    var recordingCallback: ((URL?, String?, String?) -> Void)?
     var recordingTimeCallback: ((TimeInterval, Float) -> Void)?
     var timer: Timer?
     var startTime: Date?
 
 
     func startRecording() {
-        // print("matg", "startRecording")
         let audioSession = AVAudioSession.sharedInstance()
         
         do {
@@ -55,7 +54,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        recordingCallback?(recordingURL)
+        recordingCallback?(recordingURL,"","")
     }
     
     func startTimer() {
@@ -71,20 +70,30 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
         }
     }
     
-//    func averagePowerFromAllChannels() -> Float {
-//        var power: Float = 0.0
-//        guard let channels = self.audioRecorder?.channelAssignments else {
-//            print("no channels")
-//            return 0
-//        }
-//        for channel in channels {
-//            power = power + (self.audioRecorder?.averagePower(forChannel: channel.channelNumber))!
-//        }
-//        return power / Float(channels.count)
-//    }
-    
     func stopTimer() {
         timer?.invalidate()
         timer = nil
+    }
+    
+    func importFile(url: URL) {
+        var _url: URL
+        var result: Bool = true
+        var songName: String = ""
+        var ext: String = ""
+        do {
+            let filenameWithExt = String(url.absoluteString.split(separator: "/").last ?? "")
+            songName = String(filenameWithExt.split(separator: ".").first ?? "")
+            ext = String(filenameWithExt.split(separator: ".").last ?? "")
+            let filename = UUID().uuidString
+            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+            _url = documentsPath.appendingPathComponent(filename + "." + ext)
+            try FileManager.default.copyItem(at: url, to: _url)
+        } catch {
+            print(error)
+            result = false
+        }
+        if result {
+            recordingCallback?(_url, songName, ext)
+        }
     }
 }

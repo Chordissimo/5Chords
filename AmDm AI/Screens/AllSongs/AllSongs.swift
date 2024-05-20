@@ -22,17 +22,17 @@ struct AllSongs: View {
         GeometryReader { proxy in
             NavigationStack {
                 ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                    
+                    Color.gray5
                     //Layer 1: song list + limited version label
                     VStack {
                         VStack {
-                            SongsListView(songsList: songsList)
+                            SongList(songsList: songsList)
                         }
                         .frame(minHeight: proxy.size.height - 140)
                         
                         VStack {
                             if initialAnimationStep >= 1 {
-                                LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 0)
+                                LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 1)
                             }
                         }
                         .ignoresSafeArea()
@@ -60,35 +60,37 @@ struct AllSongs: View {
                             ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                                 HStack {
                                     HStack(spacing: 20) {
-                                        NavigationSecondaryButton(imageName: "folder.circle.fill") {
+                                        NavigationSecondaryButton(imageName: "folder.fill") {
                                             showUpload = true
+                                            songsList.showSearch = false
                                         }
-                                        .frame(width: 50, height: 50)
-                                        NavigationSecondaryButton(imageName: "mic.circle.fill") {
+                                        .frame(width: 45, height: 45)
+                                        NavigationSecondaryButton(imageName: "mic.fill") {
                                             recordPanelPresented.toggle()
                                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                                 withAnimation {
                                                     if !songsList.recordStarted {
+                                                        songsList.showSearch = false
                                                         songsList.startRecording()
                                                     }
                                                 }
                                             }
                                         }
-                                        .frame(width: 50, height: 50)
+                                        .frame(width: 45, height: 45)
                                     }
                                     .padding(.top,20)
                                     
                                     Spacer()
                                     
                                     HStack(spacing: 20)  {
-                                        NavigationSecondaryButton(imageName: "custom.sound.cloud") {
-                                            print("custom.sound.cloud")
+                                        NavigationSecondaryButton(imageName: "book.fill") {
+                                            print("library")
                                         }
-                                        .frame(width: 50, height: 50)
-                                        NavigationSecondaryButton(imageName: "custom.tuningfork") {
+                                        .frame(width: 45, height: 45)
+                                        NavigationSecondaryButton(imageName: "custom.tuningfork.2") {
                                             isTunerPresented = true
                                         }
-                                        .frame(width: 50, height: 50)
+                                        .frame(width: 38, height: 38)
                                     }
                                     .padding(.top,20)
                                 }
@@ -147,20 +149,32 @@ struct AllSongs: View {
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .toolbar {
-                    ToolbarItem(placement: .topBarLeading) {
+                    ToolbarItem(placement: .principal) {
                         VStack {
-                            Text("Pro Chords").font(.system(size: 32)).fontWeight(.semibold)
+                            Text("COLLECTION")
+                                .foregroundStyle(.secondaryText)
+                                .font(.system(size: 20))
+                                .fontWeight(.semibold)
                         }
+                        .frame(height: 20)
                     }
                 }
-                .toolbarBackground(Color.black, for: .navigationBar)
+                .toolbarBackground(Color.gray10, for: .navigationBar)
                 .toolbarBackground(.visible, for: .navigationBar)
                 .toolbarColorScheme(.dark)
                 .navigationBarItems(
-                    trailing:
-                        ActionButton(imageName: "slider.horizontal.3") {
+                    leading:
+                        ActionButton(imageName: "custom.hexagon.fill") {
                             showSettings = true
-                        }.foregroundColor(.purple)
+                        }
+                        .frame(height: 22)
+                        .foregroundColor(.white),
+                    trailing:
+                        ActionButton(imageName: "magnifyingglass") {
+                            withAnimation {
+                                songsList.showSearch.toggle()
+                            }
+                        }.foregroundColor(.white)
                 )
                 .fullScreenCover(isPresented: $user.accessDisallowed) {  Subscription(user: user)  }
                 .fullScreenCover(isPresented: $showSettings) {
@@ -170,15 +184,15 @@ struct AllSongs: View {
                     TunerView(isTunerPresented: $isTunerPresented)
                 }
                 .fullScreenCover(isPresented: $youtubeViewPresented) {
-                    YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
+                    YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl, title in
                         youtubeViewPresented = false
-                        songsList.processYoutubeVideo(by: resultUrl)
+                        songsList.processYoutubeVideo(by: resultUrl, title: title)
                     })
                 }
-                .fileImporter(isPresented: $showUpload, allowedContentTypes: [.plainText]) { result in
+                .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf]) { result in
                     switch result {
                     case .success(let file):
-                        print(file.absoluteString)
+                        songsList.importFile(url: file)
                     case .failure(let error):
                         print(error.localizedDescription)
                     }
