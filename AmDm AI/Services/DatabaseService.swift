@@ -65,7 +65,7 @@ class DatabaseService {
     lazy var realm = try! Realm()
     
     init() {
-        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+//        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
     private func writeChords(chords: [APIChord]) -> List<ChordModel> {

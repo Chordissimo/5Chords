@@ -32,6 +32,7 @@ struct SplashScreen: View {
                     .font(.system(size: 11))
             }
         }
+        .ignoresSafeArea()
     }
 }
 
