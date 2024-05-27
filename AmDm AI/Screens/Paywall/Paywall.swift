@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct Paywall: View {
+    @AppStorage("subscriptionPlan") private var subscriptionPlan: Int = -1
     @State var selectedPlan = 1
     @Binding var showPaywall: Bool
     
@@ -115,6 +116,7 @@ struct Paywall: View {
                 VStack {
                     Spacer()
                     Button {
+                        subscriptionPlan = selectedPlan
                         showPaywall = false
                     } label: {
                         Text(selectedPlan == 1 ? "Start 7 days Free Trial" : "Subscribe")

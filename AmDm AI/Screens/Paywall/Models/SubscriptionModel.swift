@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import StoreKit
 
 final class User: ObservableObject {
     var registrationDate: Date?
@@ -38,3 +39,20 @@ struct MockData: Hashable {
         SubscriptionPlan(planId: 3, title: "Plan C", description: "Description", price: 9.99)
     ]
 }
+
+
+// tutorial https://www.youtube.com/watch?v=jLA0r7cvePo
+//class StorekitManager: ObservableObject {
+//    @Published var products: [Product] = []
+//    @Published var activeSubscription: Product
+    
+//    private let productList: [String : String]
+//    
+//    init() {
+//        
+//    }
+//    
+//    subscribe(productId: Int) {
+//
+//    }
+//}
