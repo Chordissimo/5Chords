@@ -9,6 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct AllSongs: View {
+    @AppStorage("subscriptionPlan") private var subscriptionPlan: Int = -1
     @ObservedObject var user = User()
     @State var showSettings = false
     @State var showUpload = false
@@ -28,7 +29,6 @@ struct AllSongs: View {
                     VStack {
                         SongList(songsList: songsList)
                     }
-                    .frame(minHeight: proxy.size.height - 140)
                     
                     VStack {
                         if initialAnimationStep >= 1 {
@@ -143,7 +143,9 @@ struct AllSongs: View {
                         withAnimation(.linear(duration: 0.1)) {
                             initialAnimationStep = 2
                         }
-                        showPaywall = true
+                        if subscriptionPlan < 0 {
+                            showPaywall = true
+                        }
                     }
                 }
             }

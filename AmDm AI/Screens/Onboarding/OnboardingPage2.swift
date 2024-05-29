@@ -15,6 +15,7 @@ struct OnboardingChords: Identifiable {
 }
 
 struct OnboardingPage2: View {
+    @AppStorage("showOnboarding") private var showOnboarding: Bool = true
     @State var animationStage = 0
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 1)
     var chords = [OnboardingChords]()
@@ -116,11 +117,11 @@ struct OnboardingPage2: View {
                                     .fontWidth(.expanded)
                                     .font(.system(size: 30))
                                 VStack {
-                                    Text("Explore different options")
+                                    Text("Stay in tune")
                                         .fontWeight(.semibold)
                                         .font(.system(size: 16))
                                         .foregroundStyle(.secondaryText)
-                                    Text("of playing any chord.")
+                                    Text("with our easy-to-use chromatic tuner")
                                         .fontWeight(.semibold)
                                         .font(.system(size: 16))
                                         .foregroundStyle(.secondaryText)
@@ -199,6 +200,7 @@ struct OnboardingPage2: View {
                             if animationStage == 2 {
                                 withAnimation(.bouncy(duration: 0.7)) {
                                     animationStage = 3
+                                    showOnboarding = false
                                 }
                             }
                         } label: {

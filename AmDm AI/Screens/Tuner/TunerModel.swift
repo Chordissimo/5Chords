@@ -11,14 +11,20 @@ import AudioKitEX
 import AudioToolbox
 import SoundpipeAudioKit
 
-struct TunerData {
+struct TunerData: Equatable {
     var pitch: Float = 0.0
     var amplitude: Float = 0.0
     var noteNameWithSharps = "-"
     var noteNameWithFlats = "-"
+    var stringName = ""
+    var stringIndex = 0
+    var distance: Float = 0.0
+    var semitoneRange: Float = 0.0
 }
 
-class TunerConductor: ObservableObject, HasAudioEngine {
+class TunerModel: ObservableObject, HasAudioEngine {
+    
+    
     @Published var data = TunerData()
 
     let engine = AudioEngine()
@@ -26,20 +32,28 @@ class TunerConductor: ObservableObject, HasAudioEngine {
     let silence: Fader
 
     var tracker: PitchTap!
+    var tuningsCollection = TuningsColection()
+    @Published var tuning: Tuning
+    private var flag: Int = 0
 
-    let noteFrequencies = [16.35, 17.32, 18.35, 19.45, 20.6, 21.83, 23.12, 24.5, 25.96, 27.5, 29.14, 30.87]
-    let noteNamesWithSharps = ["C", "C♯", "D", "D♯", "E", "F", "F♯", "G", "G♯", "A", "A♯", "B"]
-    let noteNamesWithFlats = ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"]
+    let scaleIntervals = Array(0..<31)
 
-    init() {
+    init(tuningType: TuningType) {
         guard let input = engine.input else { fatalError() }
-        mic = input
-        silence = Fader(input, gain: 0)
-        engine.output = silence
+        self.mic = input
+        self.silence = Fader(input, gain: 0)
+        self.engine.output = silence
+        
+        self.tuning = tuningsCollection.getTuning(tuningType)
 
-        tracker = PitchTap(mic) { pitch, amp in
+        tracker = PitchTap(self.mic) { pitch, amp in
             DispatchQueue.main.async {
-                self.update(pitch[0], amp[0])
+                if self.flag == 3 {
+                    self.update(pitch[0], amp[0])
+                    self.flag = 0
+                } else {
+                    self.flag += 1
+                }
             }
         }
         tracker.start()
@@ -52,26 +66,86 @@ class TunerConductor: ObservableObject, HasAudioEngine {
         data.pitch = pitch
         data.amplitude = amp
 
-        var frequency = pitch
-        while frequency > Float(noteFrequencies[noteFrequencies.count - 1]) {
-            frequency /= 2.0
+        let stringIdx = tuning.notes.filter { note in
+            data.pitch >= note.frequency
         }
-        while frequency < Float(noteFrequencies[0]) {
-            frequency *= 2.0
+        
+        let lowerIndex = stringIdx.count == 0 ? 0 : stringIdx.last!.id
+        let higherIndex = lowerIndex == tuning.notes.count - 1 ? tuning.notes.count - 1 : lowerIndex + 1
+        
+        if higherIndex == lowerIndex {
+            data.stringName = tuning.notes[lowerIndex].name
+            data.stringIndex = lowerIndex + 1
+            data.distance = data.pitch - tuning.notes[lowerIndex].frequency
+        } else {
+            let avg = (tuning.notes[higherIndex].frequency + tuning.notes[lowerIndex].frequency) / 2
+            let resultIndex = data.pitch >= avg ? higherIndex : lowerIndex
+            data.stringName = tuning.notes[resultIndex].name
+            data.stringIndex = resultIndex + 1
+            data.distance = data.pitch - tuning.notes[resultIndex].frequency
         }
-
-        var minDistance: Float = 10000.0
-        var index = 0
-
-        for possibleIndex in 0 ..< noteFrequencies.count {
-            let distance = fabsf(Float(noteFrequencies[possibleIndex]) - frequency)
-            if distance < minDistance {
-                index = possibleIndex
-                minDistance = distance
-            }
+        
+        let semitoneIdx = tuningsCollection.semitonesFrequencies.filter { frequency in
+            data.pitch >= frequency
         }
-        let octave = Int(log2f(pitch / frequency))
-        data.noteNameWithSharps = "\(noteNamesWithSharps[index])\(octave)"
-        data.noteNameWithFlats = "\(noteNamesWithFlats[index])\(octave)"
+        
+        let lowerSemitone = semitoneIdx.count == 0 ? 0 : semitoneIdx.firstIndex(of: semitoneIdx.last!)!
+        let higherSemitone = semitoneIdx.count == tuningsCollection.semitonesFrequencies.count ? 0 : lowerSemitone + 1
+        
+        if higherSemitone != lowerSemitone {
+            data.semitoneRange = tuningsCollection.semitonesFrequencies[higherSemitone] - tuningsCollection.semitonesFrequencies[lowerSemitone]
+        } else {
+            data.semitoneRange = 0
+        }
     }
+    
+    func switchTuning(tuningIndex: Int) {
+        self.tuning = self.tuningsCollection.tunings[tuningIndex]
+        self.data = TunerData()
+    }
+    
+//    func selfTest() {
+//        print("Frequencies:", self.guitarStandardTuning)
+//        
+//        print("Test 1 -------------------------")
+//        self.update(400.00, 1)
+//        print("semitoneRange", data.semitoneRange, "expected:", 415.3 - 392)
+//        print("distance:", data.distance)
+
+        
+        
+//        print("pitch:", data.pitch)
+//        print("stringName:", data.stringName, "expected: E")
+//        print("stringIndex:", data.stringIndex, "expected: 5")
+//        print("distance:", data.distance, "expected:", 400 - 329.63)
+        
+//        print("Test 2 -------------------------")
+//        self.update(290.00, 1)
+//        print("pitch:", data.pitch)
+//        print("stringName:", data.stringName, "expected: E")
+//        print("stringIndex:", data.stringIndex, "expected: 5")
+//        print("distance:", data.distance, "expected:", 290 - 329.63)
+        
+//        print("Test 3 -------------------------")
+//        self.update(260.00, 1)
+//        print("pitch:", data.pitch)
+//        print("stringName:", data.stringName, "expected: B")
+//        print("stringIndex:", data.stringIndex, "expected: 4")
+//        print("distance:", data.distance, "expected:", 260 - 246.94)
+
+//        print("Test 4 -------------------------")
+//        self.update(288.285, 1)
+//        print("pitch:", data.pitch)
+//        print("stringName:", data.stringName, "expected: E")
+//        print("stringIndex:", data.stringIndex, "expected: 5")
+//        print("distance:", data.distance, "expected:", 288.285 - 329.63)
+
+//        print("Test 5 -------------------------")
+//        self.update(109.4, 1)
+//        print("pitch:", data.pitch)
+//        print("stringName:", data.stringName, "expected: A")
+//        print("stringIndex:", data.stringIndex, "expected: 1")
+//        print("distance:", data.distance, "expected:", 109.4 - 110.0)
+//    }
+
 }

@@ -9,8 +9,9 @@ import Foundation
 import AVFoundation
 
 class MetronomeModel: ObservableObject {
-    var bpm: Double?
+    var bpm: Float?
     var beats: Int?
+    var accent: Bool = false
     @Published var beatCounter: Int = -1
     var timer: Timer?
     @Published var isStarted = false
@@ -24,14 +25,19 @@ class MetronomeModel: ObservableObject {
         self.isStarted = false
     }
     
-    func start(bpm: Double, beats: Int) {
+    func start(bpm: Float, beats: Int, accent: Bool) {
         self.bpm = bpm
         self.beats = beats
+        self.accent = accent
         self.isStarted = true
-        timer = Timer.scheduledTimer(withTimeInterval: 60 / self.bpm!, repeats: true) { [weak self] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 60 / Double(self.bpm!), repeats: true) { [weak self] timer in
             guard let self = self else { return }
-            beatCounter = beatCounter < beats - 1 ? beatCounter + 1 : 0
-            AudioServicesPlaySystemSound(beatCounter == 0 ? firstBeatSound : beatSound)
+            if self.accent {
+                beatCounter = beatCounter < beats - 1 ? beatCounter + 1 : 0
+                AudioServicesPlaySystemSound(beatCounter == 0 ? firstBeatSound : beatSound)
+            } else {
+                AudioServicesPlaySystemSound(beatSound)
+            }
         }
     }
 }

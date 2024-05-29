@@ -33,6 +33,8 @@ class Song: ObservableObject, Identifiable, Equatable {
     var ext: String = ""
     var thumbnailUrl: URL = URL(string: "local")!
     var tempo: Float
+    var beats: Int = 4
+    var bars: [CGFloat] = []
     @Published var isProcessing: Bool = false
     @Published var isFakeLoaderVisible: Bool = false
     @Published private var timer: Timer?

@@ -69,41 +69,41 @@ struct BarView: View {
     var magnitude: CGFloat
     var index: Int
     var isClear: Bool = false
+    var showTimeScale: Bool = false
     
     
     var body: some View {
         VStack(alignment: .leading)  {
-            VStack {
-                Rectangle()
-                    .frame(width: 1, height: 1)
-                    .foregroundColor(.clear)
-            }
-            .overlay {
-                if index % 10 == 0 && !isClear {
-                    Text(formatTime(TimeInterval(index / 10), precision: TimePrecision.seconds))
-                        .font(.system(size: 12))
-                        .frame(width: 50)
-                        .padding(.leading,4)
+            if showTimeScale {
+                VStack {
+                    Rectangle()
+                        .frame(width: 1, height: 1)
+                        .foregroundColor(.clear)
+                }
+                .overlay {
+                    if index % 10 == 0 && !isClear {
+                        Text(formatTime(TimeInterval(index / 10), precision: TimePrecision.seconds))
+                            .font(.system(size: 12))
+                            .frame(width: 50)
+                    }
+                }
+                
+                VStack {
+                    RoundedRectangle(cornerRadius: 3)
+                        .frame(width: 1, height: index % 10 == 0 ? 10 : 7)
+                        .foregroundColor(index % 5 == 0 && !isClear ? .white : .clear)
                 }
             }
             
-            VStack {
-                RoundedRectangle(cornerRadius: 3)
-                    .frame(width: 1, height: index % 10 == 0 ? 10 : 7)
-                    .foregroundColor(index % 5 == 0 && !isClear ? .white : .clear)
-                    .padding(.leading,2)
-            }
-            
             Spacer()
+                .frame(width: 5)
             
             VStack {
                 Rectangle()
+                    .fill(isClear ? Color.clear : Color.progressCircle)
                     .frame(width: 5, height: magnitude)
-                    .foregroundColor(isClear ? .clear : .yellow)
-                    .padding(.trailing, 0)
             }
         }
-        .frame(minHeight: 100, maxHeight: 100)
     }
 }
 
@@ -116,7 +116,7 @@ struct ScrollViewOffsetPreferenceKey: PreferenceKey {
     }
     
     typealias Value = Int
-
+    
 }
 
 struct ScrollViewOffsetModifier: ViewModifier {
@@ -148,31 +148,43 @@ extension View {
 struct PlaybackTimelineView: View {
     var url: URL
     private var bars: [CGFloat]
-    @ObservedObject var player: Player = Player()
+    @ObservedObject var player: Player
     @State var currentItemID: Int = 0
     @State var offset: Int = 0
-
-    init(url: URL) {
-        self.url = url
-        self.bars = readBuffer(url: url)
+    
+    init(song: Song, player: Player) {
+        self.url = song.url
+        self.player = player
+        if song.songType == .youtube {
+            self.bars = song.bars
+        } else {
+            self.bars = readBuffer(url: song.url)
+        }
     }
     
     var body: some View {
         GeometryReader { geometry in
+            let height = geometry.size.height
+            let width = geometry.size.width
+            
             ZStack {
-                Rectangle()
-                    .foregroundColor(.red)
-                    .frame(width: 3, height: 120)
-                    .padding(.leading,5)
-                    .zIndex(1.0)
+//                HStack {
+//                    Rectangle()
+//                        .foregroundColor(.white)
+//                        .opacity(0.2)
+//                        .frame(width: width / 2, height: height)
+//                    //                    .padding(.leading,5)
+//                        .zIndex(1.0)
+//                    Spacer()
+//                }
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         LazyHStack(spacing: 0) {
                             Rectangle()
                                 .foregroundColor(.clear)
-                                .frame(width: geometry.size.width / 2)
+                                .frame(width: width / 2)
                                 .id(-1)
-                            
+
                             ForEach(0..<bars.count, id: \.self) { index in
                                 BarView(magnitude: bars[index], index: index)
                                     .id(index * 2 * 5)
@@ -180,11 +192,11 @@ struct PlaybackTimelineView: View {
                                 BarView(magnitude: bars[index], index: index, isClear: true)
                                     .id((index * 2 + 1) * 5)
                             }
-                            .frame(minHeight: 100, alignment: .bottom)
+                            .frame(minHeight: height - 20)
                             
                             Rectangle()
                                 .foregroundColor(.clear)
-                                .frame(width: geometry.size.width / 2)
+                                .frame(width: width / 2)
                                 .id((bars.count * 2 + 2) * 5)
                         }
                         .readingScrollView(from: "scroll", into: $offset)

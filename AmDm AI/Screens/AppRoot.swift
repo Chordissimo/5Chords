@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct AppRoot: View {
-    @State var showOnboarding = true
     @State var loadingStage = 0
+    @AppStorage("showOnboarding") private var showOnboarding: Bool = true
+    
     var body: some View {
         NavigationStack {
             if loadingStage == 0 {
@@ -23,7 +24,7 @@ struct AppRoot: View {
             }
         }
         .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 loadingStage = 1
             }
         }

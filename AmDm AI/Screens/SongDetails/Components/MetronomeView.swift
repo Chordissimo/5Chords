@@ -8,9 +8,10 @@
 import SwiftUI
 
 struct MetronomeView: View {
-    @Binding var bpm: Double
+    @Binding var bpm: Float
     @Binding var beats: Int
-    @ObservedObject var metronome = MetronomeModel()
+    @State var showBeats: Bool = false
+    @ObservedObject private var metronome = MetronomeModel()
     
     var body: some View {
         VStack {
@@ -19,28 +20,31 @@ struct MetronomeView: View {
                     if metronome.isStarted {
                         metronome.stop()
                     } else {
-                        metronome.start(bpm: bpm, beats: beats)
+                        metronome.start(bpm: bpm, beats: beats, accent: false)
                     }
                 } label: {
-                    Image(systemName: metronome.isStarted ? "metronome.fill" : "metronome")
-                        .frame(height: 18)
-                        .aspectRatio(contentMode: .fit)
+                    VStack {
+                        Image(systemName: metronome.isStarted ? "metronome.fill" : "metronome")
+                            .resizable()
+                            .frame(width: 24, height: 24)
+                            .aspectRatio(contentMode: .fit)
+                            .foregroundStyle(.secondaryText)
+                        Text(String(Int(round(bpm))) + " bpm")
+                            .font(.system(size: 14))
+                            .foregroundStyle(.secondaryText)
+                    }
                 }
-                .padding(.trailing, 10)
-                ForEach(0..<beats, id: \.self) { beat in
-                    ZStack {
-                        Circle()
-                            .frame(height: 5)
-                            .foregroundColor(metronome.beatCounter == beat ? .white : .customGray)
+
+                if showBeats {
+                    ForEach(0..<beats, id: \.self) { beat in
+                        ZStack {
+                            Circle()
+                                .frame(height: 5)
+                                .foregroundColor(metronome.beatCounter == beat ? .white : .customGray)
+                        }
                     }
                 }
             }
         }
     }
-}
-
-#Preview {
-    @State var bpm = 120.0
-    @State var beats = 4
-    return MetronomeView(bpm: $bpm, beats: $beats)
 }
