@@ -32,9 +32,9 @@ struct AudioPlayerView: View {
                 }
                 HStack {
                     PlaybackSlider(width: $width)
-                        .onChange(of: player.currentTime, perform: { newValue in
+                        .onChange(of: player.currentTime) { _ , _ in
                             width = getWidth(geometry.size.width)
-                        })
+                        }
                         .onTapGesture { location in
                             player.seekAudio(to: getPlaybackPosition(location.x,geometry.size.width))
                         }

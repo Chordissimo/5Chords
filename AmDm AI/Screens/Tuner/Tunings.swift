@@ -23,13 +23,26 @@ enum InstrumentType: String {
     case ukulele = "Ukulele"
 }
 
-struct Tuning: Identifiable {
+struct Instrument: Identifiable, Equatable, Hashable {
     var id = UUID()
-    var instrument: InstrumentType = .guitar
+    var name: String = "Guitar"
+    var imageAssets: [String] = []
+    var noteLabelOffsets: [CGFloat] = []
+    var instrumentType: InstrumentType = .guitar
+}
+
+struct StringNote: Identifiable, Equatable, Hashable {
+    var name: String = ""
+    var frequency: Float
+    var id: Int
+}
+
+struct Tuning: Identifiable, Equatable {
+    var id = UUID()
+    var instrumentType: InstrumentType = .guitar
     var type: TuningType = .guitarStandard
     var name: String = ""
-    var notes: [String] = []
-    var frequencies: [Float] = []
+    var notes: [StringNote] = []
 }
 
 struct TuningsColection {
@@ -49,62 +62,112 @@ struct TuningsColection {
     let noteNamesWithFlats = ["C", "D♭", "D", "E♭", "E", "F", "G♭", "G", "A♭", "A", "B♭", "B"]
 
     var tunings: [Tuning] = []
-    var instruments: [String] = []
+    var instruments: [Instrument] = []
     
     init() {
         self.tunings.append(Tuning(
-            instrument: .guitar,
+            instrumentType: .guitar,
             type: .guitarStandard,
             name: "Standard Tuning",
-            notes: ["E", "A", "D", "G", "B", "E"],
-            frequencies: [82.41, 110.0, 146.83, 196.0, 246.94, 329.63].map { Float($0) }
+            notes: [
+                StringNote(name: "E", frequency: 82.41, id: 0),
+                StringNote(name: "A", frequency: 110.0, id: 1),
+                StringNote(name: "D", frequency: 146.83, id: 2),
+                StringNote(name: "G", frequency: 196.0, id: 3),
+                StringNote(name: "B", frequency: 246.94, id: 4),
+                StringNote(name: "E", frequency: 329.63, id: 5)
+            ]
         ))
         self.tunings.append(Tuning(
-            instrument: .guitar,
+            instrumentType: .guitar,
             type: .guitarHalfStepDown,
             name: "Half Step Down",
-            notes: ["E♭", "A♭", "D♭", "G♭", "B♭", "E♭"],
-            frequencies: [311.13,233.08,185,138.59,103.83,77.78].map { Float($0) }
+            notes: [
+                StringNote(name: "E♭", frequency: 311.13, id: 0),
+                StringNote(name: "A♭", frequency: 233.08, id: 1),
+                StringNote(name: "D♭", frequency: 185, id: 2),
+                StringNote(name: "G♭", frequency: 138.59, id: 3),
+                StringNote(name: "B♭", frequency: 103.83, id: 4),
+                StringNote(name: "E♭", frequency: 77.78, id: 5)
+            ]
         ))
         self.tunings.append(Tuning(
-            instrument: .guitar,
+            instrumentType: .guitar,
             type: .guitarDropD,
             name: "Drop D",
-            notes: ["D", "A", "D", "G", "B", "E"],
-            frequencies: [73.42, 110.0, 146.83, 196.0, 246.94, 329.63].map { Float($0) }
+            notes: [
+                StringNote(name: "D", frequency: 73.42, id: 0),
+                StringNote(name: "A", frequency: 110.0, id: 1),
+                StringNote(name: "D", frequency: 146.83, id: 2),
+                StringNote(name: "G", frequency: 196.0, id: 3),
+                StringNote(name: "B", frequency: 246.94, id: 4),
+                StringNote(name: "E", frequency: 329.63, id: 5)
+            ]
         ))
         self.tunings.append(Tuning(
-            instrument: .ukulele,
+            instrumentType: .ukulele,
             type: .ukuleleStandard,
             name: "Standard",
-            notes: ["G", "C", "E", "A"],
-            frequencies: [392.0, 261.63, 329.63, 440.0].map { Float($0) }
+            notes: [
+                StringNote(name: "G", frequency: 392.0, id: 0),
+                StringNote(name: "C", frequency: 261.63, id: 1),
+                StringNote(name: "E", frequency: 329.63, id: 2),
+                StringNote(name: "A", frequency: 440.0, id: 3)
+            ]
         ))
         self.tunings.append(Tuning(
-            instrument: .ukulele,
-            type: .ukuleleStandard,
+            instrumentType: .ukulele,
+            type: .ukuleleAlternative,
             name: "Alternative",
-            notes: ["D", "G", "B", "E"],
-            frequencies: [146.83, 196.0, 246.94, 329.63].map { Float($0) }
+            notes: [
+                StringNote(name: "D", frequency: 146.83, id: 0),
+                StringNote(name: "G", frequency: 196.0, id: 1),
+                StringNote(name: "B", frequency: 246.94, id: 2),
+                StringNote(name: "E", frequency: 329.63, id: 3)
+            ]
         ))
         self.tunings.append(Tuning(
-            instrument: .bass,
+            instrumentType: .bass,
             type: .bassStandard,
             name: "Standard",
-            notes: ["E", "A", "D", "G"],
-            frequencies: [41.2, 55.0, 73.42, 98].map { Float($0) }
+            notes: [
+                StringNote(name: "E", frequency: 41.2, id: 0),
+                StringNote(name: "A", frequency: 55.0, id: 1),
+                StringNote(name: "D", frequency: 73.42, id: 2),
+                StringNote(name: "G", frequency: 98, id: 3)
+            ]
         ))
         self.tunings.append(Tuning(
-            instrument: .bass,
+            instrumentType: .bass,
             type: .bassDropD,
             name: "Drop D",
-            notes: ["E", "A", "D", "G"],
-            frequencies: [36.71, 55.0, 73.42, 98].map { Float($0) }
+            notes: [
+                StringNote(name: "D", frequency: 36.71, id: 0),
+                StringNote(name: "A", frequency: 55.0, id: 1),
+                StringNote(name: "D", frequency: 73.42, id: 2),
+                StringNote(name: "G", frequency: 98, id: 3)
+            ]
         ))
+        
         self.instruments = [
-            InstrumentType.guitar.rawValue,
-            InstrumentType.ukulele.rawValue,
-            InstrumentType.bass.rawValue
+            Instrument(
+                name: "Guitar",
+                imageAssets: ["Guitar","g1","g2","g3","g4","g5","g6"],
+                noteLabelOffsets: [0.597,0.424,0.25,0.25,0.424,0.597],
+                instrumentType: .guitar
+            ),
+            Instrument(
+                name: "Ukulele",
+                imageAssets: ["Ukulele","u1","u2","u3","u4"],
+                noteLabelOffsets: [0.548,0.272,0.272,0.548],
+                instrumentType: .ukulele
+            ),
+            Instrument(
+                name: "Bass",
+                imageAssets: ["Bass","b1","b2","b3","b4"],
+                noteLabelOffsets: [0.478,0.199,0.285,0.517],
+                instrumentType: .bass
+            )
         ]
     }
     
@@ -113,8 +176,14 @@ struct TuningsColection {
         return t.count > 0 ? t.first! : Tuning()
     }
     
-    func getAllTunings(for instrument: InstrumentType) -> [Tuning] {
-        let t = tunings.filter { $0.instrument == instrument }
+    func getAllTunings(for instrumentType: InstrumentType) -> [Tuning] {
+        let t = tunings.filter { $0.instrumentType == instrumentType }
         return t.count > 0 ? t : [Tuning()]
     }
+    
+    func getInstrumentBy(type instrumentType: InstrumentType) -> Instrument {
+        let i = instruments.filter { $0.instrumentType == instrumentType }
+        return i.count > 0 ? i.first! : Instrument()
+    }
+    
 }

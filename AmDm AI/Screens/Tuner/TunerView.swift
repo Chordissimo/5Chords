@@ -9,26 +9,29 @@ import SwiftUI
 
 struct TunerView: View {
     @Binding var isTunerPresented: Bool
-    @StateObject var tunerModel = TunerModel(tuningType: .guitarStandard)
+    @ObservedObject var tunerModel = TunerModel(tuningType: .guitarStandard)
     @State var showString: Int = 0
     @State var leftIndicator: CGFloat = 1
     @State var rightIndicator: CGFloat = 1
     @State var selectedInstrument: Int = 0
     @State var selectedTuning: Int = 0
+    @State var actualImageHeight: CGFloat = 0
+    @State var actualImageWidth: CGFloat = 0
 
     var body: some View {
         VStack {
             GeometryReader { geometry in
                 let smallSegmentHeight = geometry.size.height * 0.04
                 let tallSegmentHeight = geometry.size.height * 0.07
-                let guitarImageOriginalHeight = 737.0
-                let guitarScaleFactor = geometry.size.height * 0.6 / guitarImageOriginalHeight
+                let instrumentImageOriginalWidth = 412.0
+                let scaleFactor = geometry.size.width * 0.6 / instrumentImageOriginalWidth
                 let tunerSegmentsSpacing = (geometry.size.width - 31) / 30
 
                 ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                     Color.gray5
-
+                    
                     VStack {
+                        // Close button on top
                         HStack {
                             Spacer()
                             Button {
@@ -44,14 +47,22 @@ struct TunerView: View {
                             .padding(.trailing, 20)
                             .padding(.bottom, 5)
                         }
+                        
                         VStack {
+                            // Instruments menu
                             HStack {
-                                ForEach($tunerModel.tuningsCollection.instruments.wrappedValue, id: \.self) { instrument in
+                                ForEach(tunerModel.tuningsCollection.instruments, id: \.self) { instrument in
                                     Button {
                                         selectedInstrument = tunerModel.tuningsCollection.instruments.firstIndex(of: instrument)!
+                                        
+                                        let tunings = tunerModel.tuningsCollection.tunings.filter { $0.instrumentType == tunerModel.tuningsCollection.instruments[selectedInstrument].instrumentType }
+
+                                        selectedTuning = tunings.count > 0 ? tunerModel.tuningsCollection.tunings.firstIndex(where: { $0 == tunings[0] })! : 0
+                                        
+                                        tunerModel.switchTuning(tuningIndex: selectedTuning)
                                     } label: {
                                         VStack {
-                                            Text(instrument.uppercased())
+                                            Text(instrument.name.uppercased())
                                                 .font(.system(size: 14))
                                                 .fontWeight(.semibold)
                                                 .fontWidth(.expanded)
@@ -66,20 +77,24 @@ struct TunerView: View {
                             }
                             .frame(height: 50)
                         }
+                        
+                        // Tunings menu
                         VStack {
-                            ScrollView(.horizontal) {
-                                LazyHStack {
-                                    ForEach($tunerModel.tuningsCollection.tunings.wrappedValue) { tuning in
-                                        if tuning.instrument.rawValue == tunerModel.tuningsCollection.instruments[selectedInstrument] {
-                                            Text(tuning.name)
-                                        }
-                                    }
-                                }
-                            }
-                            .defaultScrollAnchor(.center)
-                            .frame(height: 50)
-                        }
+                            let tunings = tunerModel.tuningsCollection.tunings.filter { $0.instrumentType == tunerModel.tuningsCollection.instruments[selectedInstrument].instrumentType }
 
+                            if tunings.count > 0 && tunings.count <= 3 {
+                                TuningsMenuView(tunerModel: tunerModel, selectedInstrument: $selectedInstrument, selectedTuning: $selectedTuning)
+                                    .frame(height: 50)
+                            } else {
+                                ScrollView(.horizontal) {
+                                    TuningsMenuView(tunerModel: tunerModel, selectedInstrument: $selectedInstrument, selectedTuning: $selectedTuning)
+                                }
+                                .scrollIndicators(.hidden)
+                                .frame(height: 50)
+                            }
+                        }.padding(.bottom, 10)
+
+                        // Tuning scale: center indicator
                         VStack {
                             Image(systemName: "triangle.fill")
                                 .resizable()
@@ -89,6 +104,7 @@ struct TunerView: View {
                                 .frame(width: 28, height: 28)
                         }
                         
+                        // Tuning scale: segments
                         VStack {
                             HStack(spacing: tunerSegmentsSpacing) {
                                 ForEach(tunerModel.scaleIntervals, id: \.self) { interval in
@@ -119,44 +135,165 @@ struct TunerView: View {
                                 }
                             }
                         }
+                        
+                        // Tuneup, tune down, and checkmark
                         VStack {
-                            Text("\(tunerModel.data.stringName)")
-                                .font(.system(size: 50))
-                                .fontWeight(.semibold)
+                            let percentageDiff = abs(tunerModel.data.distance) / (tunerModel.data.semitoneRange / 2)
+                            let segmentWeight = ((tunerModel.data.semitoneRange / 2) / 15) / (tunerModel.data.semitoneRange / 2)
+                            ZStack {
+                                HStack(spacing: 0) {
+                                    Text("Tune up")
+                                        .font(.system(size: 16))
+                                        .foregroundStyle(tunerModel.data.distance < 0 && percentageDiff > segmentWeight / 2 ? .gray40 : .clear)
+                                        .frame(width: geometry.size.width / 2, alignment: .center)
+                                                                        
+                                    Text("Tune down")
+                                        .font(.system(size: 16))
+                                        .foregroundStyle(tunerModel.data.distance > 0 && percentageDiff > segmentWeight / 2 ? .gray40 : .clear)
+                                        .frame(width: geometry.size.width / 2, alignment: .center)
+                                }
+                                
+                                Image(systemName: "checkmark")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 30)
+                                    .foregroundStyle(percentageDiff <= segmentWeight / 2 ? .progressCircle : .clear)
+                            }
+                            
+//                            Text("\(tunerModel.data.stringName)")
+//                                .font(.system(size: 50))
+//                                .fontWeight(.semibold)
                         }
+                        
                         Spacer()
                     }
                     
-                    if tunerModel.data.stringIndex < 0 {
-                        Image("Guitar").scaleEffect(guitarScaleFactor, anchor: .bottom)
-                            .frame(width: geometry.size.width)
-                    } else {
-                        Image("g\(tunerModel.data.stringIndex)").scaleEffect(guitarScaleFactor, anchor: .bottom)
-                            .frame(width: geometry.size.width)
+                    // Instrument image
+                    let asset = tunerModel.tuningsCollection.instruments[selectedInstrument].imageAssets[tunerModel.data.stringIndex]
+                    Image(asset)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: geometry.size.width)
+                        .scaleEffect(scaleFactor, anchor: .bottom)
+                        .background {
+                            GeometryReader { imageGeo in
+                                Color.clear.onAppear {
+                                    actualImageHeight = imageGeo.size.height
+                                    actualImageWidth = imageGeo.size.width
+                                }
+                                .onChange(of: selectedInstrument) { _, _ in
+                                    actualImageHeight = imageGeo.size.height
+                                    actualImageWidth = imageGeo.size.width
+                                }
+                            }
+                        }
+                    
+                    // String labels on sides of insturument image
+                    HStack {
+                        let stringsCount = tunerModel.tuningsCollection.tunings[selectedTuning].notes.count / 2
+                        let leftStrings = tunerModel.tuningsCollection.tunings[selectedTuning].notes[0..<stringsCount]
+                        let rightStrings = tunerModel.tuningsCollection.tunings[selectedTuning].notes[stringsCount...]
+                        
+                        ZStack {
+                            ForEach(leftStrings.reversed(), id: \.id) { string in
+                                let offsetY = tunerModel.tuningsCollection.instruments[selectedInstrument].noteLabelOffsets[string.id]
+                                let posX = (geometry.size.width - actualImageWidth * scaleFactor) / 4
+                                let posY = actualImageHeight * offsetY * scaleFactor
+                                CircleView(
+                                    isSelected: string.id == tunerModel.data.stringIndex - 1,
+                                    label: string.name
+                                )
+                                .offset(x: 0, y: actualImageHeight * scaleFactor / -2 + 25)
+                                .position(x: posX, y: posY)
+                                .frame(height: 50)
+                            }
+                        }
+                        .frame(width: (geometry.size.width - actualImageWidth * scaleFactor) / 2, height: actualImageHeight * scaleFactor)
+
+                        Spacer()
+
+                        ZStack {
+                            ForEach(rightStrings, id: \.id) { string in
+                                let offsetY = tunerModel.tuningsCollection.instruments[selectedInstrument].noteLabelOffsets[string.id]
+                                let posX = (geometry.size.width - actualImageWidth * scaleFactor) / 4
+                                let posY = actualImageHeight * offsetY * scaleFactor
+                                CircleView(
+                                    isSelected: string.id == tunerModel.data.stringIndex - 1,
+                                    label: string.name
+                                )
+                                .offset(x: 0, y: actualImageHeight * scaleFactor / -2 + 25)
+                                .position(x: posX, y: posY)
+                                .frame(height: 50)
+                            }
+                        }
+                        .frame(width: (geometry.size.width - actualImageWidth * scaleFactor) / 2, height: actualImageHeight * scaleFactor)
                     }
+                    .frame(height: actualImageHeight * scaleFactor)
                 }
                 .ignoresSafeArea()
                 .onAppear {
-//                    tunerModel.selfTest()
                     tunerModel.start()
                 }
                 .onDisappear {
                     tunerModel.stop()
                 }
-                .onChange(of: tunerModel.data) { oldValue, newValue in
-                    let percentage = newValue.semitoneRange > abs(newValue.distance) ? newValue.semitoneRange / Float(geometry.size.width) / 2 : 1
-                    let step = newValue.semitoneRange > 0 ? Float(geometry.size.width) / 2 / newValue.semitoneRange : 0
-                    if newValue.semitoneRange > abs(newValue.distance) && step > 0 {
-                        if newValue.distance < 0 {
-                            leftIndicator = CGFloat(abs(newValue.distance) * step)
+                .onChange(of: tunerModel.data) { _, data in
+                    let step = data.semitoneRange > 0 ? Float(geometry.size.width) / 2 / data.semitoneRange : 0
+                    if data.semitoneRange > abs(data.distance) && step > 0 {
+                        if data.distance < 0 {
+                            leftIndicator = CGFloat(abs(data.distance) * step)
                             rightIndicator = 1
                         } else {
-                            rightIndicator = CGFloat(newValue.distance * step)
+                            rightIndicator = CGFloat(data.distance * step)
                             leftIndicator = 1
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+struct TuningsMenuView: View {
+    @ObservedObject var tunerModel: TunerModel
+    @Binding var selectedInstrument: Int
+    @Binding var selectedTuning: Int
+    
+    var body: some View {
+        LazyHStack(spacing: 15) {
+            ForEach($tunerModel.tuningsCollection.tunings.wrappedValue) { tuning in
+                if tuning.instrumentType == tunerModel.tuningsCollection.instruments[selectedInstrument].instrumentType {
+                    let tuningIndex = tunerModel.tuningsCollection.tunings.firstIndex(where: { $0 == tuning })!
+                    Button {
+                        selectedTuning = tuningIndex
+                        tunerModel.switchTuning(tuningIndex: selectedTuning)
+                    } label: {
+                        Text(tuning.name)
+                            .font(.system(size: 14))
+                            .fontWeight(.semibold)
+                            .foregroundStyle(selectedTuning == tuningIndex ? .white : .gray40)
+                    }
+                }
+            }
+        }
+    }
+}
+
+struct CircleView: View {
+    var isSelected: Bool
+    var label: String
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .strokeBorder(isSelected ? Color.clear : Color.gray40, lineWidth: 2)
+                .fill(isSelected ? Color.progressCircle : Color.clear)
+                .frame(height: 50)
+            Text(label)
+                .foregroundStyle(.gray40)
+                .font(.system(size: 14))
+                .fontWeight(.semibold)
+                .fontWidth(.expanded)
         }
     }
 }

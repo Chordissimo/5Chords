@@ -29,7 +29,6 @@ struct AllSongs: View {
                     VStack {
                         SongList(songsList: songsList)
                     }
-                    .frame(minHeight: proxy.size.height - 140)
                     
                     VStack {
                         if initialAnimationStep >= 1 {

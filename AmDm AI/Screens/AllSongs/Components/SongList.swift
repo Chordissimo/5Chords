@@ -29,9 +29,9 @@ struct SongList: View {
                                 RecognizedSongView(songsList: songsList, song: song.wrappedValue, focusedField: $focusedField)
                                     .padding(.top,5)
                                     .listRowSeparator(.automatic)
-                                    .listRowBackground(Color.gray5)
                                     .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
                             }
+                            .listRowBackground(Color.gray5)
                         }
                     }
                     .scrollIndicators(.hidden)
