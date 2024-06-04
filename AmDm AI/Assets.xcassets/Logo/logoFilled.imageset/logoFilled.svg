@@ -1,0 +1,20 @@
+<svg width="139" height="153" viewBox="0 0 139 153" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="logo">
+<path id="Vector" d="M0.72998 43.22C0.72998 16.82 18.14 0.220001 69.63 0.220001C121.12 0.220001 138.54 16.79 138.54 43.22C138.54 87.88 88.71 152.41 69.63 152.41C50.55 152.41 0.72998 87.88 0.72998 43.22Z" fill="#19C63E"/>
+<path id="Vector_2" d="M0.72998 43.22C0.72998 16.82 18.14 0.220001 69.63 0.220001C121.12 0.220001 138.54 16.79 138.54 43.22C138.54 87.88 88.71 152.41 69.63 152.41C50.55 152.41 0.72998 87.88 0.72998 43.22Z" fill="url(#paint0_radial_20_7071)"/>
+<path id="Vector_3" d="M60 75.38C66.78 82.16 69.53 111.78 69.66 123.12C69.66 112.12 72.52 82.19 79.3 75.4C86.08 68.61 117.75 65.74 117.75 65.74C117.75 65.74 86.09 62.88 79.31 56.1C72.53 49.32 69.77 19.71 69.64 8.37C69.64 19.37 66.8001 49.31 60.0201 56.09C53.24 62.87 21.54 65.74 21.54 65.74C21.54 65.74 53.2 68.6 60 75.38Z" fill="#005313"/>
+</g>
+<defs>
+<radialGradient id="paint0_radial_20_7071" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(162.04 149.43) scale(90.51 90.51)">
+<stop stop-color="white"/>
+<stop offset="0.09" stop-color="white" stop-opacity="0.98"/>
+<stop offset="0.19" stop-color="white" stop-opacity="0.92"/>
+<stop offset="0.31" stop-color="white" stop-opacity="0.82"/>
+<stop offset="0.43" stop-color="white" stop-opacity="0.69"/>
+<stop offset="0.56" stop-color="white" stop-opacity="0.51"/>
+<stop offset="0.69" stop-color="white" stop-opacity="0.3"/>
+<stop offset="0.83" stop-color="white" stop-opacity="0.05"/>
+<stop offset="0.85" stop-color="white" stop-opacity="0"/>
+</radialGradient>
+</defs>
+</svg>
