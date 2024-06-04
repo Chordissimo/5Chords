@@ -16,6 +16,7 @@ struct AllSongs: View {
     @State var youtubeViewPresented = false
     @State var recordPanelPresented = false
     @State var isTunerPresented = false
+    @State var isLibraryPresented = false
     @State var showPaywall = false
     @State var initialAnimationStep = 0
     @ObservedObject var songsList = SongsList()
@@ -84,7 +85,7 @@ struct AllSongs: View {
                                 
                                 HStack(spacing: 20)  {
                                     NavigationSecondaryButton(imageName: "book.fill") {
-                                        print("library")
+                                        isLibraryPresented = true
                                     }
                                     .frame(width: 45, height: 45)
                                     NavigationSecondaryButton(imageName: "custom.tuningfork.2") {
@@ -185,6 +186,9 @@ struct AllSongs: View {
             }
             .fullScreenCover(isPresented: $isTunerPresented) {
                 TunerView(isTunerPresented: $isTunerPresented)
+            }
+            .fullScreenCover(isPresented: $isLibraryPresented) {
+                ChordLibrary(isLibraryPresented: $isLibraryPresented)
             }
             .fullScreenCover(isPresented: $youtubeViewPresented) {
                 YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl, title in

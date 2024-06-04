@@ -28,6 +28,10 @@
 		C3693C082BF6371D00DC137B /* SongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3693C072BF6371D00DC137B /* SongList.swift */; };
 		C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */; };
 		C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */; };
+		C37996E02C0757BF00DA3556 /* CircleOf5th.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37996DF2C0757BF00DA3556 /* CircleOf5th.swift */; };
+		C37996E32C0853C500DA3556 /* ChordLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37996E22C0853C500DA3556 /* ChordLibrary.swift */; };
+		C37996E52C08580600DA3556 /* ChordSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37996E42C08580600DA3556 /* ChordSearch.swift */; };
+		C37996E72C089B9E00DA3556 /* ChordLibraryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37996E62C089B9E00DA3556 /* ChordLibraryModel.swift */; };
 		C37D58342BFB181B001DA8E1 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58332BFB181B001DA8E1 /* SearchView.swift */; };
 		C37D58362BFB1855001DA8E1 /* EmptySongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58352BFB1855001DA8E1 /* EmptySongList.swift */; };
 		C37D58392BFB18A3001DA8E1 /* Glow+Opacity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37D58382BFB18A3001DA8E1 /* Glow+Opacity.swift */; };
@@ -44,6 +48,8 @@
 		C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */; };
 		C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */; };
 		C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */; };
+		C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */; };
+		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
 		C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */; };
 		C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */; };
 		C3B3AD342BE787E4000EB30F /* splean.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3B3AD332BE787E4000EB30F /* splean.wav */; };
@@ -87,6 +93,10 @@
 		C3693C072BF6371D00DC137B /* SongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList.swift; sourceTree = "<group>"; };
 		C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionPlanCard.swift; sourceTree = "<group>"; };
 		C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWaveform.swift; sourceTree = "<group>"; };
+		C37996DF2C0757BF00DA3556 /* CircleOf5th.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleOf5th.swift; sourceTree = "<group>"; };
+		C37996E22C0853C500DA3556 /* ChordLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordLibrary.swift; sourceTree = "<group>"; };
+		C37996E42C08580600DA3556 /* ChordSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSearch.swift; sourceTree = "<group>"; };
+		C37996E62C089B9E00DA3556 /* ChordLibraryModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordLibraryModel.swift; sourceTree = "<group>"; };
 		C37D58332BFB181B001DA8E1 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		C37D58352BFB1855001DA8E1 /* EmptySongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptySongList.swift; sourceTree = "<group>"; };
 		C37D58382BFB18A3001DA8E1 /* Glow+Opacity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Glow+Opacity.swift"; sourceTree = "<group>"; };
@@ -104,6 +114,8 @@
 		C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBar.swift; sourceTree = "<group>"; };
+		C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappingHStack.swift; sourceTree = "<group>"; };
+		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
 		C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionModel.swift; sourceTree = "<group>"; };
 		C3B3AD332BE787E4000EB30F /* splean.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = splean.wav; sourceTree = "<group>"; };
@@ -209,6 +221,16 @@
 			path = AllSongs;
 			sourceTree = "<group>";
 		};
+		C37996E12C0847B200DA3556 /* ChordLibrary */ = {
+			isa = PBXGroup;
+			children = (
+				C3AC1B782C0AF714000DE8E5 /* Model */,
+				C3AC1B7B2C0B1B10000DE8E5 /* Components */,
+				C37996E22C0853C500DA3556 /* ChordLibrary.swift */,
+			);
+			path = ChordLibrary;
+			sourceTree = "<group>";
+		};
 		C37D58372BFB1871001DA8E1 /* ViewModifiers */ = {
 			isa = PBXGroup;
 			children = (
@@ -289,10 +311,30 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		C3AC1B782C0AF714000DE8E5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				C37996E62C089B9E00DA3556 /* ChordLibraryModel.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		C3AC1B7B2C0B1B10000DE8E5 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */,
+				C37996DF2C0757BF00DA3556 /* CircleOf5th.swift */,
+				C37996E42C08580600DA3556 /* ChordSearch.swift */,
+				C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
 			isa = PBXGroup;
 			children = (
 				C3DC6FD22BFCDB2E00EA0095 /* AppRoot.swift */,
+				C37996E12C0847B200DA3556 /* ChordLibrary */,
 				C37D583E2BFB20AE001DA8E1 /* Onboarding */,
 				C39B6D822BEFA47F002279E3 /* Tuner */,
 				B75A6FCE2BE0DD18001153ED /* SongDetails */,
@@ -494,11 +536,16 @@
 				C37D58362BFB1855001DA8E1 /* EmptySongList.swift in Sources */,
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
+				C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
 				C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */,
+				C37996E52C08580600DA3556 /* ChordSearch.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
+				C37996E72C089B9E00DA3556 /* ChordLibraryModel.swift in Sources */,
 				C39B6D932BEFE3F6002279E3 /* TunerModel.swift in Sources */,
+				C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */,
 				C37D58342BFB181B001DA8E1 /* SearchView.swift in Sources */,
+				C37996E02C0757BF00DA3556 /* CircleOf5th.swift in Sources */,
 				C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */,
 				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,
 				C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */,
@@ -519,6 +566,7 @@
 				C357AB102BB7E92E00440554 /* AudioPlayerView.swift in Sources */,
 				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
+				C37996E32C0853C500DA3556 /* ChordLibrary.swift in Sources */,
 				C3F0B6252BF21FC500866D2B /* SongModel.swift in Sources */,
 				C3F0B61C2BF0AC4F00866D2B /* MetronomeView.swift in Sources */,
 				C37D58462BFB491E001DA8E1 /* OnboardingPage2.swift in Sources */,

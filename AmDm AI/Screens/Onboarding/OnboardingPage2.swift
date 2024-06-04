@@ -223,19 +223,6 @@ struct OnboardingPage2: View {
         }
     }
     
-    func createShapeLayer(chordPosition: ChordPosition, width: CGFloat, height: CGFloat) -> CAShapeLayer {
-        var frame: CGRect
-        frame = CGRect(x: 0, y: 0, width: width, height: height)
-        
-        let shapeLayer = chordPosition.chordLayer(
-            rect: frame,
-            chordName:.init(show: false, key: .symbol, suffix: .symbolized),
-            forPrint: false
-        )
-        
-        return shapeLayer
-    }
-    
 }
     
 struct NextButton: View {
