@@ -25,7 +25,7 @@ struct ChordLibrary: View {
                 let twoThirdsScreenHeight = geometry.size.height / 3 * 2
                 let oneThirdsScreenHeight = geometry.size.height / 3
                 let circleOf5thSize = geometry.size.height * 0.4
-                let chordHeight = oneThirdsScreenHeight * 0.65
+                let chordHeight = oneThirdsScreenHeight * 0.75
                 let chordWidth = chordHeight / 6 * 5
                 
                 VStack(spacing: 0) {
@@ -70,6 +70,7 @@ struct ChordLibrary: View {
                             }
                             .padding(.trailing, 20)
                         }
+                        .padding(.top, 5)
                         
                         // Titile
                         VStack {
@@ -110,12 +111,11 @@ struct ChordLibrary: View {
                             .frame(height: 35)
                             .background(Color.search)
                             .clipShape(.rect(cornerRadius: 10))
-//                            ChordSearchView() { searchString in
-//                                model.searchChords(searchString: searchString)
-//                            }
                             .onTapGesture {
                                 if !showSearchResults {
                                     showSearchResults = true
+                                    chords = []
+                                    model.clearSearchResults()
                                 }
                             }
                         }
@@ -138,9 +138,6 @@ struct ChordLibrary: View {
                                     ChordSuffixes(model: model) { selectedKey, selectedSuffix in
                                         chords = Chords.guitar.matching(key: selectedKey).matching(suffix: selectedSuffix)
                                     }
-//                                    .transition(.asymmetric(
-//                                        insertion: .move(edge: .trailing),
-//                                        removal: .move(edge: .trailing))
                                     .transition(.asymmetric(
                                         insertion: .push(from: .trailing),
                                         removal: .push(from: .leading))
@@ -158,9 +155,6 @@ struct ChordLibrary: View {
                                             showMoreShapes = true
                                         }
                                     }
-//                                    .transition(.asymmetric(
-//                                        insertion: .move(edge: .leading),
-//                                        removal: .move(edge: .leading))
                                     .transition(.asymmetric(
                                         insertion: .push(from: .leading),
                                         removal: .push(from: .trailing))
@@ -275,7 +269,6 @@ struct ChordLibrary: View {
 struct Triangle: Shape {
     func path(in rect: CGRect) -> Path {
         var path = Path()
-        
         path.move(to: CGPoint(x: rect.midX, y: rect.minY))
         path.addLine(to: CGPoint(x: rect.minX, y: rect.maxY))
         path.addLine(to: CGPoint(x: rect.maxX, y: rect.maxY))

@@ -15,7 +15,6 @@
 		B79898A62BCAC2930052C127 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A52BCAC2930052C127 /* Realm */; };
 		B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A72BCAC2930052C127 /* RealmSwift */; };
 		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
-		C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C308C43E2BC5B35A00762643 /* StoreKit.framework */; };
 		C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C357AB052BB7D50900440554 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB042BB7D50900440554 /* EditableText.swift */; };
@@ -50,12 +49,12 @@
 		C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */; };
 		C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */; };
 		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
+		C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */; };
 		C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */; };
 		C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */; };
 		C3B3AD342BE787E4000EB30F /* splean.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3B3AD332BE787E4000EB30F /* splean.wav */; };
 		C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */; };
 		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
-		C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3C7F4D42BBDC72D00E83503 /* SwiftyChords */; };
 		C3DB08982BE7A669001CB372 /* 2.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3DB08972BE7A669001CB372 /* 2.wav */; };
 		C3DC6FCF2BFBB40000EA0095 /* FileFormatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FCE2BFBB40000EA0095 /* FileFormatsView.swift */; };
 		C3DC6FD32BFCDB2E00EA0095 /* AppRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FD22BFCDB2E00EA0095 /* AppRoot.swift */; };
@@ -79,7 +78,6 @@
 		B798989B2BCAAADB0052C127 /* RecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingService.swift; sourceTree = "<group>"; };
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
-		C308C43E2BC5B35A00762643 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
 		C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
@@ -142,12 +140,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */,
 				C39B6D892BEFA520002279E3 /* AudioKit in Frameworks */,
 				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
 				C3DC6FDD2BFE1E3F00EA0095 /* YouTubePlayerKit in Frameworks */,
 				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
-				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
-				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
 				C39B6D8C2BEFA6DF002279E3 /* SoundpipeAudioKit in Frameworks */,
 				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
 			);
@@ -184,14 +181,6 @@
 				C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		C308C43D2BC5B35A00762643 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				C308C43E2BC5B35A00762643 /* StoreKit.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C357AB032BB7D4CC00440554 /* SharedComponents */ = {
@@ -273,7 +262,6 @@
 			children = (
 				C39C87342BB0073B00EBF82C /* AmDm AI */,
 				C39C87332BB0073B00EBF82C /* Products */,
-				C308C43D2BC5B35A00762643 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -456,13 +444,13 @@
 			);
 			name = "AmDm AI";
 			packageProductDependencies = (
-				C3C7F4D42BBDC72D00E83503 /* SwiftyChords */,
 				B79898A02BCABA030052C127 /* Alamofire */,
 				B79898A52BCAC2930052C127 /* Realm */,
 				B79898A72BCAC2930052C127 /* RealmSwift */,
 				C39B6D882BEFA520002279E3 /* AudioKit */,
 				C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */,
 				C3DC6FDC2BFE1E3F00EA0095 /* YouTubePlayerKit */,
+				C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -493,12 +481,12 @@
 			);
 			mainGroup = C39C87292BB0073B00EBF82C;
 			packageReferences = (
-				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 				B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				C39B6D872BEFA520002279E3 /* XCRemoteSwiftPackageReference "AudioKit" */,
 				C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
 				C3DC6FDB2BFE1E3F00EA0095 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */,
+				C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -860,7 +848,7 @@
 				minimumVersion = 5.6.1;
 			};
 		};
-		C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
+		C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/antm677/SwiftyGuitarChords.git";
 			requirement = {
@@ -904,9 +892,9 @@
 			package = C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
 			productName = SoundpipeAudioKit;
 		};
-		C3C7F4D42BBDC72D00E83503 /* SwiftyChords */ = {
+		C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */;
+			package = C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */;
 			productName = SwiftyChords;
 		};
 		C3DC6FDC2BFE1E3F00EA0095 /* YouTubePlayerKit */ = {
