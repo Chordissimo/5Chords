@@ -10,6 +10,7 @@ import SwiftUI
 struct AppRoot: View {
     @State var loadingStage = 0
     @AppStorage("showOnboarding") private var showOnboarding: Bool = true
+    @StateObject var store = StorekitManager()
     
     var body: some View {
         NavigationStack {
@@ -28,6 +29,7 @@ struct AppRoot: View {
                 loadingStage = 1
             }
         }
+        .environmentObject(store)
     }
 }
 

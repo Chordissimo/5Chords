@@ -9,8 +9,8 @@ import SwiftUI
 import AVFoundation
 
 struct AllSongs: View {
-    @AppStorage("subscriptionPlan") private var subscriptionPlan: Int = -1
-    @ObservedObject var user = User()
+    @AppStorage("isLimited") private var isLimited: Bool = false
+    @EnvironmentObject var store: StorekitManager
     @State var showSettings = false
     @State var showUpload = false
     @State var youtubeViewPresented = false
@@ -33,7 +33,7 @@ struct AllSongs: View {
                     
                     VStack {
                         if initialAnimationStep >= 1 {
-                            LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 1)
+                            LimitedVersionLabel(isLimitedVersion: isLimited)
                         }
                     }
                     .ignoresSafeArea()
@@ -144,7 +144,8 @@ struct AllSongs: View {
                         withAnimation(.linear(duration: 0.1)) {
                             initialAnimationStep = 2
                         }
-                        if subscriptionPlan < 0 {
+                        let product = store.productConfig.first(where: { $0.isPurchased }) ?? nil
+                        if product == nil {
                             showPaywall = true
                         }
                     }
@@ -182,7 +183,7 @@ struct AllSongs: View {
             )
             .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
             .fullScreenCover(isPresented: $showSettings) {
-                Settings(user: user, showSettings: $showSettings)
+                Settings(showSettings: $showSettings)
             }
             .fullScreenCover(isPresented: $isTunerPresented) {
                 TunerView(isTunerPresented: $isTunerPresented)

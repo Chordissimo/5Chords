@@ -50,7 +50,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <StoreKitConfigurationFileReference
-         identifier = "../../AmDm AI/Views/Pro Chords.storekit">
+         identifier = "../../AmDm AI/Screens/Paywall/Models/Pro Chords.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct Settings: View {
-    @ObservedObject var user: User
     @Binding var showSettings: Bool
     @AppStorage("server_ip") private var server_ip: String = ""
     
@@ -60,10 +59,4 @@ struct Settings: View {
             }
         }
     }
-}
-
-#Preview {
-    @State var showSettings = true
-    @ObservedObject var user = User()
-    return Settings(user: user, showSettings: $showSettings)
 }

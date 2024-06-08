@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct Paywall: View {
-    @AppStorage("subscriptionPlan") private var subscriptionPlan: Int = -1
-    @State var selectedPlan = 1
+    @AppStorage("isLimited") private var isLimited: Bool = false
+    @EnvironmentObject var store: StorekitManager
+    @State var selectedPlan = ""
     @Binding var showPaywall: Bool
     
     var body: some View {
@@ -38,64 +39,45 @@ struct Paywall: View {
                     .padding(.top, 100 + geometry.safeAreaInsets.top)
                     .padding(.bottom, 50)
                     
-                    VStack(spacing: 10) {
-                        HStack {
-                            Text("Save 50%")
-                                .foregroundStyle(.progressCircle)
-                                .fontWeight(.bold)
-                            Spacer()
+                    ForEach(self.store.productConfig, id: \.self.id) { product in
+                        VStack(spacing: 10) {
+                            if product.isPreferable {
+                                HStack {
+                                    Text(product.tagLine)
+                                        .foregroundStyle(.progressCircle)
+                                        .fontWeight(.bold)
+                                    Spacer()
+                                }
+                            }
+                            HStack {
+                                Text(product.title)
+                                    .foregroundStyle(.white)
+                                    .fontWeight(.bold)
+                                Spacer()
+                                Text(product.displayPrice)
+                                    .foregroundStyle(.white)
+                                    .fontWeight(.bold)
+                            }
+                            if product.isPreferable {
+                                HStack {
+                                    Text(product.description)
+                                        .foregroundStyle(.white)
+                                        .opacity(0.3)
+                                    Spacer()
+                                }
+                            }
                         }
-                        HStack {
-                            Text("Yearly plan")
-                                .foregroundStyle(.white)
-                                .fontWeight(.bold)
-                            Spacer()
-                            Text("$10 / month")
-                                .foregroundStyle(.white)
-                                .fontWeight(.bold)
-                            
+                        .padding(20)
+                        .background(selectedPlan == product.planId ? Color.clear : Color.paywallInactive)
+                        .cornerRadius(25)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 25)
+                                .stroke(selectedPlan == product.planId ? Color.progressCircle : Color.clear, lineWidth: 2)
+                                .fill(selectedPlan == product.planId ? Color.progressCircle.opacity(0.1) : Color.clear)
+                        )
+                        .onTapGesture {
+                            selectedPlan = product.planId
                         }
-                        HStack {
-                            Text("12 month • $100")
-                                .foregroundStyle(.white)
-                                .opacity(0.3)
-                            Spacer()
-                        }
-                    }
-                    .padding(20)
-                    .background(selectedPlan == 1 ? Color.clear : Color.paywallInactive)
-                    .cornerRadius(25)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25)
-                            .stroke(selectedPlan == 1 ? Color.progressCircle : Color.clear, lineWidth: 2)
-                            .fill(selectedPlan == 1 ? Color.progressCircle.opacity(0.1) : Color.clear)
-                    )
-                    .onTapGesture {
-                        selectedPlan = 1
-                    }
-                    
-                    VStack(spacing: 10) {
-                        HStack {
-                            Text("Monthly plan")
-                                .foregroundStyle(.white)
-                                .fontWeight(.bold)
-                            Spacer()
-                            Text("$10 / month")
-                                .foregroundStyle(.white)
-                                .fontWeight(.bold)
-                            
-                        }
-                    }
-                    .padding(20)
-                    .background(selectedPlan == 2 ? Color.clear : Color.paywallInactive)
-                    .cornerRadius(25)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 25)
-                            .stroke(selectedPlan == 2 ? Color.progressCircle : Color.clear, lineWidth: 2)
-                            .fill(selectedPlan == 2 ? Color.progressCircle.opacity(0.1) : Color.clear)
-                    )
-                    .onTapGesture {
-                        selectedPlan = 2
                     }
                     Spacer()
                     
@@ -116,16 +98,22 @@ struct Paywall: View {
                 VStack {
                     Spacer()
                     Button {
-                        subscriptionPlan = selectedPlan
-                        showPaywall = false
+                        Task {
+                            let transaction = try await store.purchase(selectedPlan)
+                            if transaction != nil {
+                                isLimited = false
+                                showPaywall = false
+                            }
+                        }
                     } label: {
-                        Text(selectedPlan == 1 ? "Start 7 days Free Trial" : "Subscribe")
+                        let product = store.productConfig.first(where: { $0.isPreferable })
+                        Text(selectedPlan == product?.planId ? "Start 7 days Free Trial" : "Subscribe")
                             .fontWeight(.semibold)
                             .font(.system(size: 20))
                             .padding(20)
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.black)
-                            .background(selectedPlan == 1 ? Color.progressCircle : .white, in: Capsule())
+                            .background(selectedPlan == product?.planId ? Color.progressCircle : .white, in: Capsule())
                     }
                     
                 }
@@ -135,6 +123,7 @@ struct Paywall: View {
                 VStack {
                     HStack {
                         Button {
+                            isLimited = true
                             showPaywall = false
                         } label: {
                             Image(systemName: "xmark")
@@ -166,6 +155,10 @@ struct Paywall: View {
             }
             .navigationBarBackButtonHidden(true)
             .ignoresSafeArea()
+            .onAppear {
+                let product = store.productConfig.first(where: { $0.isPreferable })
+                selectedPlan = product?.planId ?? ""
+            }
         }
     }
 }
