@@ -49,7 +49,9 @@ struct ProductConfiguration: Identifiable, Equatable {
     let tagLine: String
     let displayPrice: String
     let isPreferable: Bool
-    var isPurchased: Bool = false
+    var isActive: Bool = false
+    let productPriority: Int
+    let billingPeriod: String
 }
 
 public enum StoreError: Error {
@@ -104,7 +106,9 @@ class StorekitManager: ObservableObject {
                 description: "12 month • " + productOne.displayPrice,
                 tagLine: "Save 36%",
                 displayPrice: String(format: "%.2f", (productOne.price as CVarArg) as! Double / 12.0) + " / month",
-                isPreferable: true
+                isPreferable: true,
+                productPriority: 1,
+                billingPeriod: "billed annually"
             ))
         }
         
@@ -115,7 +119,9 @@ class StorekitManager: ObservableObject {
                 description: "",
                 tagLine: "",
                 displayPrice: productTwo.displayPrice + " / month",
-                isPreferable: false
+                isPreferable: false,
+                productPriority: 0,
+                billingPeriod: "billed monthly"
             ))
         }
     }
@@ -127,8 +133,8 @@ class StorekitManager: ObservableObject {
         switch result {
         case .success(let verificationResult):
             let transaction = try checkVerified(verificationResult)
-            await updateCustomerProductStatus()
             await transaction.finish()
+            await updateCustomerProductStatus()
             return transaction
         case .userCancelled, .pending:
             return nil
@@ -148,16 +154,28 @@ class StorekitManager: ObservableObject {
     
     @MainActor
     func updateCustomerProductStatus() async {
+        var transactions: [Transaction] = []
+        
         for await result in Transaction.currentEntitlements {
             do {
                 let transaction = try checkVerified(result)
-                if let productIndex = productConfig.firstIndex(where: { $0.planId == transaction.productID}) {
-                    self.productConfig[productIndex].isPurchased = true
-                }
+                transactions.append(transaction)
             } catch {
                 print("Transaction failed verification")
             }
         }
+        
+        if transactions.count > 0 {
+            let activeTransaction = transactions.sorted { a, b in
+                a.expirationDate ?? Date() > b.expirationDate ?? Date()
+            }.sorted { a, b in
+                a.id > b.id
+            }[0]
+            if let productIndex = productConfig.firstIndex(where: { $0.planId == activeTransaction.productID}) {
+                for i in 0..<productConfig.count {
+                    self.productConfig[i].isActive = productIndex == i
+                }
+            }
+        }
     }
-
 }

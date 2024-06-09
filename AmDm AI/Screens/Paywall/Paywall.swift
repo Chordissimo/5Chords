@@ -54,9 +54,17 @@ struct Paywall: View {
                                     .foregroundStyle(.white)
                                     .fontWeight(.bold)
                                 Spacer()
-                                Text(product.displayPrice)
-                                    .foregroundStyle(.white)
-                                    .fontWeight(.bold)
+                                if !product.isActive {
+                                    Text(product.displayPrice)
+                                        .foregroundStyle(.white)
+                                        .fontWeight(.bold)
+                                } else {
+                                    Image(systemName: "checkmark")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: 20)
+                                        .foregroundStyle(.progressCircle)
+                                }
                             }
                             if product.isPreferable {
                                 HStack {
@@ -76,7 +84,9 @@ struct Paywall: View {
                                 .fill(selectedPlan == product.planId ? Color.progressCircle.opacity(0.1) : Color.clear)
                         )
                         .onTapGesture {
-                            selectedPlan = product.planId
+                            if !product.isActive {
+                                selectedPlan = product.planId
+                            }
                         }
                     }
                     Spacer()

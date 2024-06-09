@@ -22,22 +22,43 @@ struct AllSongs: View {
     @ObservedObject var songsList = SongsList()
     
     var body: some View {
-        GeometryReader { proxy in
+        GeometryReader { geometry in
             ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                 Color.gray5
                 //Layer 1: song list + limited version label
                 VStack {
-                    VStack {
-                        SongList(songsList: songsList)
+                    if isLimited {
+                        VStack {
+                            HStack {
+                                Image(systemName: "crown.fill")
+                                    .resizable()
+                                    .foregroundColor(.crown)
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 20)
+                                Text("Get the unlimited version")
+                                    .foregroundStyle(.white)
+                                    .fontWeight(.semibold)
+                                    .font(.system(size: 18))
+                            }
+                        }
+                        .frame(width: geometry.size.width, height: 50)
+                        .background(
+                            LinearGradient(gradient: Gradient(colors: [.grad1, .grad2, .grad3]), startPoint: .leading, endPoint: .trailing)
+                        )
                     }
                     
                     VStack {
-                        if initialAnimationStep >= 1 {
-                            LimitedVersionLabel(isLimitedVersion: isLimited)
-                        }
+                        SongList(songsList: songsList)
                     }
+           
+//                    VStack {
+//                        if initialAnimationStep >= 1 {
+//                            LimitedVersionLabel(isLimitedVersion: isLimited)
+//                        }
+//                    }
+                    Color.customDarkGray
                     .ignoresSafeArea()
-                    .frame(height: 100)
+                    .frame(width: geometry.size.width, height: 100)
                 }
                 
                 // Layer 2: Circles around the primary button
@@ -144,7 +165,7 @@ struct AllSongs: View {
                         withAnimation(.linear(duration: 0.1)) {
                             initialAnimationStep = 2
                         }
-                        let product = store.productConfig.first(where: { $0.isPurchased }) ?? nil
+                        let product = store.productConfig.first(where: { $0.isActive }) ?? nil
                         if product == nil {
                             showPaywall = true
                         }
