@@ -15,8 +15,6 @@
 		B79898A62BCAC2930052C127 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A52BCAC2930052C127 /* Realm */; };
 		B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A72BCAC2930052C127 /* RealmSwift */; };
 		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
-		C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C308C43E2BC5B35A00762643 /* StoreKit.framework */; };
-		C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C357AB052BB7D50900440554 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB042BB7D50900440554 /* EditableText.swift */; };
 		C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB062BB7E30A00440554 /* DateLabel.swift */; };
@@ -26,7 +24,6 @@
 		C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB132BB7EB4B00440554 /* ActionButton.swift */; };
 		C361E8272BB860D300F33B40 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C361E8262BB860D300F33B40 /* Helpers.swift */; };
 		C3693C082BF6371D00DC137B /* SongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3693C072BF6371D00DC137B /* SongList.swift */; };
-		C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */; };
 		C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */; };
 		C37996E02C0757BF00DA3556 /* CircleOf5th.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37996DF2C0757BF00DA3556 /* CircleOf5th.swift */; };
 		C37996E32C0853C500DA3556 /* ChordLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C37996E22C0853C500DA3556 /* ChordLibrary.swift */; };
@@ -50,13 +47,10 @@
 		C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */; };
 		C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */; };
 		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
-		C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */; };
+		C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */; };
 		C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */; };
-		C3B3AD342BE787E4000EB30F /* splean.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3B3AD332BE787E4000EB30F /* splean.wav */; };
 		C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */; };
 		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
-		C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3C7F4D42BBDC72D00E83503 /* SwiftyChords */; };
-		C3DB08982BE7A669001CB372 /* 2.wav in Resources */ = {isa = PBXBuildFile; fileRef = C3DB08972BE7A669001CB372 /* 2.wav */; };
 		C3DC6FCF2BFBB40000EA0095 /* FileFormatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FCE2BFBB40000EA0095 /* FileFormatsView.swift */; };
 		C3DC6FD32BFCDB2E00EA0095 /* AppRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FD22BFCDB2E00EA0095 /* AppRoot.swift */; };
 		C3DC6FD52BFCDEFC00EA0095 /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FD42BFCDEFC00EA0095 /* Paywall.swift */; };
@@ -64,7 +58,6 @@
 		C3DC6FDD2BFE1E3F00EA0095 /* YouTubePlayerKit in Frameworks */ = {isa = PBXBuildFile; productRef = C3DC6FDC2BFE1E3F00EA0095 /* YouTubePlayerKit */; };
 		C3DC6FDF2C02EF6400EA0095 /* Tunings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FDE2C02EF6400EA0095 /* Tunings.swift */; };
 		C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EC2BC1C3010063189D /* Settings.swift */; };
-		C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */; };
 		C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */; };
 		C3F0B61C2BF0AC4F00866D2B /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B61B2BF0AC4F00866D2B /* MetronomeView.swift */; };
 		C3F0B6232BF21EBA00866D2B /* MusicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B6222BF21EBA00866D2B /* MusicModel.swift */; };
@@ -79,8 +72,6 @@
 		B798989B2BCAAADB0052C127 /* RecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingService.swift; sourceTree = "<group>"; };
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
-		C308C43E2BC5B35A00762643 /* StoreKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = StoreKit.framework; path = System/Library/Frameworks/StoreKit.framework; sourceTree = SDKROOT; };
-		C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftUIView.swift; sourceTree = "<group>"; };
 		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		C357AB042BB7D50900440554 /* EditableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableText.swift; sourceTree = "<group>"; };
@@ -91,7 +82,6 @@
 		C357AB132BB7EB4B00440554 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		C361E8262BB860D300F33B40 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		C3693C072BF6371D00DC137B /* SongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList.swift; sourceTree = "<group>"; };
-		C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionPlanCard.swift; sourceTree = "<group>"; };
 		C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWaveform.swift; sourceTree = "<group>"; };
 		C37996DF2C0757BF00DA3556 /* CircleOf5th.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleOf5th.swift; sourceTree = "<group>"; };
 		C37996E22C0853C500DA3556 /* ChordLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordLibrary.swift; sourceTree = "<group>"; };
@@ -116,12 +106,9 @@
 		C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBar.swift; sourceTree = "<group>"; };
 		C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappingHStack.swift; sourceTree = "<group>"; };
 		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
-		C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionModel.swift; sourceTree = "<group>"; };
-		C3B3AD332BE787E4000EB30F /* splean.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = splean.wav; sourceTree = "<group>"; };
 		C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackTimelineView.swift; sourceTree = "<group>"; };
 		C3C7F4A62BBB273A00E83503 /* SongDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetails.swift; sourceTree = "<group>"; };
-		C3DB08972BE7A669001CB372 /* 2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = 2.wav; sourceTree = "<group>"; };
 		C3DC6FCE2BFBB40000EA0095 /* FileFormatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileFormatsView.swift; sourceTree = "<group>"; };
 		C3DC6FD22BFCDB2E00EA0095 /* AppRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoot.swift; sourceTree = "<group>"; };
 		C3DC6FD42BFCDEFC00EA0095 /* Paywall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paywall.swift; sourceTree = "<group>"; };
@@ -129,7 +116,6 @@
 		C3DC6FDE2C02EF6400EA0095 /* Tunings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tunings.swift; sourceTree = "<group>"; };
 		C3DE80EC2BC1C3010063189D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "AmDm-AI-Info.plist"; sourceTree = SOURCE_ROOT; };
-		C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LimitedVersionLabel.swift; sourceTree = "<group>"; };
 		C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunked.swift; sourceTree = "<group>"; };
 		C3F0B61B2BF0AC4F00866D2B /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		C3F0B6222BF21EBA00866D2B /* MusicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicModel.swift; sourceTree = "<group>"; };
@@ -142,12 +128,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */,
 				C39B6D892BEFA520002279E3 /* AudioKit in Frameworks */,
 				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
 				C3DC6FDD2BFE1E3F00EA0095 /* YouTubePlayerKit in Frameworks */,
 				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
-				C3C7F4D52BBDC72D00E83503 /* SwiftyChords in Frameworks */,
-				C308C43F2BC5B35A00762643 /* StoreKit.framework in Frameworks */,
 				C39B6D8C2BEFA6DF002279E3 /* SoundpipeAudioKit in Frameworks */,
 				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
 			);
@@ -184,14 +169,6 @@
 				C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		C308C43D2BC5B35A00762643 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				C308C43E2BC5B35A00762643 /* StoreKit.framework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C357AB032BB7D4CC00440554 /* SharedComponents */ = {
@@ -273,7 +250,6 @@
 			children = (
 				C39C87342BB0073B00EBF82C /* AmDm AI */,
 				C39C87332BB0073B00EBF82C /* Products */,
-				C308C43D2BC5B35A00762643 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -297,7 +273,6 @@
 				B798989A2BCAAAAB0052C127 /* Services */,
 				C357AB032BB7D4CC00440554 /* SharedComponents */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
-				C3DF0ABD2BE93D2F00F69AFB /* TestAudio */,
 				C39C873E2BB0073D00EBF82C /* Preview Content */,
 			);
 			path = "AmDm AI";
@@ -350,9 +325,6 @@
 			isa = PBXGroup;
 			children = (
 				C3F0B6262BF2213B00866D2B /* Models */,
-				C32C77352BE5EADD00A197E3 /* SwiftUIView.swift */,
-				C36BC35B2BB1E4770041971C /* SubscriptionPlanCard.swift */,
-				C3AD8ECF2BB12BC200D94DB5 /* Subscription.swift */,
 				C3DC6FD42BFCDEFC00EA0095 /* Paywall.swift */,
 			);
 			path = Paywall;
@@ -402,7 +374,6 @@
 				C357AB062BB7E30A00440554 /* DateLabel.swift */,
 				B71F3FD72BD42D63005C3606 /* YoutubeView.swift */,
 				C357AB042BB7D50900440554 /* EditableText.swift */,
-				C3DE80EF2BC46C270063189D /* LimitedVersionLabel.swift */,
 				C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */,
 				C3693C072BF6371D00DC137B /* SongList.swift */,
 				C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */,
@@ -411,15 +382,6 @@
 				C37D583A2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift */,
 			);
 			path = Components;
-			sourceTree = "<group>";
-		};
-		C3DF0ABD2BE93D2F00F69AFB /* TestAudio */ = {
-			isa = PBXGroup;
-			children = (
-				C3B3AD332BE787E4000EB30F /* splean.wav */,
-				C3DB08972BE7A669001CB372 /* 2.wav */,
-			);
-			path = TestAudio;
 			sourceTree = "<group>";
 		};
 		C3F0B6262BF2213B00866D2B /* Models */ = {
@@ -456,13 +418,13 @@
 			);
 			name = "AmDm AI";
 			packageProductDependencies = (
-				C3C7F4D42BBDC72D00E83503 /* SwiftyChords */,
 				B79898A02BCABA030052C127 /* Alamofire */,
 				B79898A52BCAC2930052C127 /* Realm */,
 				B79898A72BCAC2930052C127 /* RealmSwift */,
 				C39B6D882BEFA520002279E3 /* AudioKit */,
 				C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */,
 				C3DC6FDC2BFE1E3F00EA0095 /* YouTubePlayerKit */,
+				C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -493,12 +455,12 @@
 			);
 			mainGroup = C39C87292BB0073B00EBF82C;
 			packageReferences = (
-				C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 				B798989F2BCABA030052C127 /* XCRemoteSwiftPackageReference "Alamofire" */,
 				B79898A42BCAC2930052C127 /* XCRemoteSwiftPackageReference "realm-swift" */,
 				C39B6D872BEFA520002279E3 /* XCRemoteSwiftPackageReference "AudioKit" */,
 				C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
 				C3DC6FDB2BFE1E3F00EA0095 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */,
+				C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -516,8 +478,6 @@
 			files = (
 				C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */,
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
-				C3B3AD342BE787E4000EB30F /* splean.wav in Resources */,
-				C3DB08982BE7A669001CB372 /* 2.wav in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -538,7 +498,6 @@
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
 				C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
-				C32C77362BE5EADD00A197E3 /* SwiftUIView.swift in Sources */,
 				C37996E52C08580600DA3556 /* ChordSearch.swift in Sources */,
 				C357AB0D2BB7E6B200440554 /* PlaybackSlider.swift in Sources */,
 				C37996E72C089B9E00DA3556 /* ChordLibraryModel.swift in Sources */,
@@ -547,7 +506,6 @@
 				C37D58342BFB181B001DA8E1 /* SearchView.swift in Sources */,
 				C37996E02C0757BF00DA3556 /* CircleOf5th.swift in Sources */,
 				C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */,
-				C3DE80F02BC46C270063189D /* LimitedVersionLabel.swift in Sources */,
 				C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */,
 				C3DC6FD52BFCDEFC00EA0095 /* Paywall.swift in Sources */,
 				C3DC6FD32BFCDB2E00EA0095 /* AppRoot.swift in Sources */,
@@ -564,7 +522,6 @@
 				C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */,
 				C37D58402BFB25E4001DA8E1 /* OnboardingPage1.swift in Sources */,
 				C357AB102BB7E92E00440554 /* AudioPlayerView.swift in Sources */,
-				C3AD8ED02BB12BC200D94DB5 /* Subscription.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
 				C37996E32C0853C500DA3556 /* ChordLibrary.swift in Sources */,
 				C3F0B6252BF21FC500866D2B /* SongModel.swift in Sources */,
@@ -579,7 +536,6 @@
 				C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */,
 				B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */,
 				C3DC6FDA2BFDF2B300EA0095 /* PlaybackView.swift in Sources */,
-				C36BC35C2BB1E4770041971C /* SubscriptionPlanCard.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -860,7 +816,7 @@
 				minimumVersion = 5.6.1;
 			};
 		};
-		C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
+		C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/antm677/SwiftyGuitarChords.git";
 			requirement = {
@@ -904,9 +860,9 @@
 			package = C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
 			productName = SoundpipeAudioKit;
 		};
-		C3C7F4D42BBDC72D00E83503 /* SwiftyChords */ = {
+		C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C3C7F4D32BBDC72D00E83503 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */;
+			package = C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */;
 			productName = SwiftyChords;
 		};
 		C3DC6FDC2BFE1E3F00EA0095 /* YouTubePlayerKit */ = {

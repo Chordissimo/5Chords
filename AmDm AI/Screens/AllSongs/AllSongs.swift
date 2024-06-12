@@ -9,64 +9,94 @@ import SwiftUI
 import AVFoundation
 
 struct AllSongs: View {
-    @AppStorage("subscriptionPlan") private var subscriptionPlan: Int = -1
-    @ObservedObject var user = User()
+    @AppStorage("isLimited") var isLimited: Bool = false
+    @AppStorage("songCounter") var songCounter: Int = 0
+    @EnvironmentObject var store: StorekitManager
     @State var showSettings = false
     @State var showUpload = false
+    @State var showPaywall = false
     @State var youtubeViewPresented = false
     @State var recordPanelPresented = false
     @State var isTunerPresented = false
     @State var isLibraryPresented = false
-    @State var showPaywall = false
     @State var initialAnimationStep = 0
     @ObservedObject var songsList = SongsList()
+    let width: CGFloat
+    
+    init() {
+        self.width = UIScreen.main.bounds.width
+    }
     
     var body: some View {
-        GeometryReader { proxy in
-            ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                Color.gray5
-                //Layer 1: song list + limited version label
-                VStack {
+        ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+            Color.gray5
+            //Layer 1: song list + limited version label
+            VStack {
+                if isLimited {
                     VStack {
-                        SongList(songsList: songsList)
-                    }
-                    
-                    VStack {
-                        if initialAnimationStep >= 1 {
-                            LimitedVersionLabel(isLimitedVersion: user.subscriptionPlanId == 1)
+                        HStack {
+                            Image(systemName: "crown.fill")
+                                .resizable()
+                                .foregroundColor(.crown)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 20)
+                            Text("Get the unlimited version")
+                                .foregroundStyle(.white)
+                                .fontWeight(.semibold)
+                                .font(.system(size: 18))
                         }
                     }
+                    .frame(width: width, height: 50)
+                    .background(
+                        LinearGradient(gradient: Gradient(colors: [.grad1, .grad2, .grad3]), startPoint: .leading, endPoint: .trailing)
+                    )
+                    .onTapGesture {
+                        showPaywall = true
+                    }
+                }
+                
+                VStack {
+                    SongList(songsList: songsList)
+                }
+                Color.customDarkGray
                     .ignoresSafeArea()
-                    .frame(height: 100)
-                }
-                
-                // Layer 2: Circles around the primary button
-                VStack {
-                    if initialAnimationStep >= 1 {
-                        ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                            Circle()
-                                .frame(width: 121, height: 121)
-                                .foregroundColor(.customGray)
-                            Ellipse()
-                                .frame(width: 121, height: 120)
-                                .foregroundColor(.customDarkGray)
-                        }
-                        .transition(.move(edge: .bottom))
+                    .frame(width: width, height: 100)
+            }
+            
+            // Layer 2: Circles around the primary button
+            VStack {
+                if initialAnimationStep >= 1 {
+                    ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+                        Circle()
+                            .frame(width: 121, height: 121)
+                            .foregroundColor(.customGray)
+                        Ellipse()
+                            .frame(width: 121, height: 120)
+                            .foregroundColor(.customDarkGray)
                     }
+                    .transition(.move(edge: .bottom))
                 }
-                
-                // Layer 3: Secondary buttons
-                VStack {
-                    if initialAnimationStep >= 1 {
-                        ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                            HStack {
-                                HStack(spacing: 20) {
-                                    NavigationSecondaryButton(imageName: "folder.fill") {
+            }
+            
+            // Layer 3: Secondary buttons
+            VStack {
+                if initialAnimationStep >= 1 {
+                    ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+                        HStack {
+                            HStack(spacing: 20) {
+                                NavigationSecondaryButton(imageName: "folder.fill") {
+                                    if isLimited && songCounter == 3 {
+                                        showPaywall = true
+                                    } else {
                                         showUpload = true
                                         songsList.showSearch = false
                                     }
-                                    .frame(width: 45, height: 45)
-                                    NavigationSecondaryButton(imageName: "mic.fill") {
+                                }
+                                .frame(width: 45, height: 45)
+                                NavigationSecondaryButton(imageName: "mic.fill") {
+                                    if isLimited && songCounter == 3 {
+                                        showPaywall = true
+                                    } else {
                                         recordPanelPresented.toggle()
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                                             withAnimation {
@@ -77,49 +107,53 @@ struct AllSongs: View {
                                             }
                                         }
                                     }
-                                    .frame(width: 45, height: 45)
                                 }
-                                .padding(.top,20)
-                                
-                                Spacer()
-                                
-                                HStack(spacing: 20)  {
-                                    NavigationSecondaryButton(imageName: "book.fill") {
-                                        isLibraryPresented = true
-                                    }
-                                    .frame(width: 45, height: 45)
-                                    NavigationSecondaryButton(imageName: "custom.tuningfork.2") {
-                                        isTunerPresented = true
-                                    }
-                                    .frame(width: 38, height: 38)
-                                }
-                                .padding(.top,20)
+                                .frame(width: 45, height: 45)
                             }
+                            .padding(.top,20)
+                            
+                            Spacer()
+                            
+                            HStack(spacing: 20)  {
+                                NavigationSecondaryButton(imageName: "book.fill") {
+                                    isLibraryPresented = true
+                                }
+                                .frame(width: 45, height: 45)
+                                NavigationSecondaryButton(imageName: "custom.tuningfork.2") {
+                                    isTunerPresented = true
+                                }
+                                .frame(width: 38, height: 38)
+                            }
+                            .padding(.top,20)
                         }
-                        .padding(.horizontal,10)
-                        .transition(.move(edge: .bottom))
                     }
+                    .padding(.horizontal,10)
+                    .transition(.move(edge: .bottom))
                 }
-                .ignoresSafeArea()
-                .frame(height: 120)
-                
-                // Layer 4: Sliding recording panel with timer
-                VStack {
-                    if recordPanelPresented {
-                        Color.white.opacity(0.01)
-                        VStack {
-                            TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songsList: songsList, songName: songsList.getNewSongName())
-                                .padding(.top, 20)
-                        }
-                        .transition(.move(edge: .bottom))
-                        .ignoresSafeArea()
+            }
+            .ignoresSafeArea()
+            .frame(height: 120)
+            
+            // Layer 4: Sliding recording panel with timer
+            VStack {
+                if recordPanelPresented {
+                    Color.white.opacity(0.01)
+                    VStack {
+                        TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songsList: songsList, songName: songsList.getNewSongName())
+                            .padding(.top, 20)
                     }
+                    .transition(.move(edge: .bottom))
+                    .ignoresSafeArea()
                 }
-                
-                // Layer 5: Primary button
-                VStack {
-                    if initialAnimationStep == 2 {
-                        NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted) {
+            }
+            
+            // Layer 5: Primary button
+            VStack {
+                if initialAnimationStep == 2 {
+                    NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted) {
+                        if isLimited && songCounter == 3 {
+                            showPaywall = true
+                        } else {
                             if recordPanelPresented {
                                 recordPanelPresented = false
                                 if songsList.recordStarted {
@@ -129,80 +163,85 @@ struct AllSongs: View {
                                 youtubeViewPresented = true
                             }
                         }
-                        .padding(.bottom,20)
-                        .transition(.scale(scale: 0, anchor: .center))
                     }
-                }.frame(height: 100)
-                
+                    .padding(.bottom,20)
+                    .transition(.scale(scale: 0, anchor: .center))
+                }
+            }.frame(height: 100)
+            
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                withAnimation {
+                    initialAnimationStep = 1
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    withAnimation(.linear(duration: 0.1)) {
+                        initialAnimationStep = 2
+                    }
+                    let product = store.productConfig.first(where: { $0.isActive }) ?? nil
+                    if product == nil {
+                        showPaywall = true
+                    }
+                }
             }
-            .onAppear {
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                VStack {
+                    Text("COLLECTION")
+                        .foregroundStyle(.secondaryText)
+                        .font(.system(size: 20))
+                        .fontWeight(.semibold)
+                }
+                .frame(height: 20)
+            }
+        }
+        .navigationBarBackButtonHidden(true)
+        .toolbarBackground(Color.gray10, for: .navigationBar)
+        .toolbarBackground(.visible, for: .navigationBar)
+        .toolbarColorScheme(.dark)
+        .navigationBarItems(
+            leading:
+                ActionButton(imageName: "custom.hexagon.fill") {
+                    showSettings = true
+                }
+                .frame(height: 22)
+                .foregroundColor(.white),
+            trailing:
+                ActionButton(imageName: "magnifyingglass") {
                     withAnimation {
-                        initialAnimationStep = 1
+                        songsList.showSearch.toggle()
                     }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                        withAnimation(.linear(duration: 0.1)) {
-                            initialAnimationStep = 2
-                        }
-                        if subscriptionPlan < 0 {
-                            showPaywall = true
-                        }
-                    }
+                }.foregroundColor(.white)
+        )
+        .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
+        .fullScreenCover(isPresented: $showSettings) {
+            Settings(showSettings: $showSettings) { showPaywall in
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                    self.showPaywall = showPaywall
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .principal) {
-                    VStack {
-                        Text("COLLECTION")
-                            .foregroundStyle(.secondaryText)
-                            .font(.system(size: 20))
-                            .fontWeight(.semibold)
-                    }
-                    .frame(height: 20)
-                }
-            }
-            .navigationBarBackButtonHidden(true)
-            .toolbarBackground(Color.gray10, for: .navigationBar)
-            .toolbarBackground(.visible, for: .navigationBar)
-            .toolbarColorScheme(.dark)
-            .navigationBarItems(
-                leading:
-                    ActionButton(imageName: "custom.hexagon.fill") {
-                        showSettings = true
-                    }
-                    .frame(height: 22)
-                    .foregroundColor(.white),
-                trailing:
-                    ActionButton(imageName: "magnifyingglass") {
-                        withAnimation {
-                            songsList.showSearch.toggle()
-                        }
-                    }.foregroundColor(.white)
-            )
-            .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
-            .fullScreenCover(isPresented: $showSettings) {
-                Settings(user: user, showSettings: $showSettings)
-            }
-            .fullScreenCover(isPresented: $isTunerPresented) {
-                TunerView(isTunerPresented: $isTunerPresented)
-            }
-            .fullScreenCover(isPresented: $isLibraryPresented) {
-                ChordLibrary(isLibraryPresented: $isLibraryPresented)
-            }
-            .fullScreenCover(isPresented: $youtubeViewPresented) {
-                YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl, title in
-                    youtubeViewPresented = false
-                    songsList.processYoutubeVideo(by: resultUrl, title: title)
-                })
-            }
-            .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf]) { result in
-                switch result {
-                case .success(let file):
-                    songsList.importFile(url: file)
-                case .failure(let error):
-                    print(error.localizedDescription)
-                }
+        }
+        .fullScreenCover(isPresented: $isTunerPresented) {
+            TunerView(isTunerPresented: $isTunerPresented)
+        }
+        .fullScreenCover(isPresented: $isLibraryPresented) {
+            ChordLibrary(isLibraryPresented: $isLibraryPresented)
+        }
+        .fullScreenCover(isPresented: $youtubeViewPresented) {
+            YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl, title in
+                youtubeViewPresented = false
+                songsList.processYoutubeVideo(by: resultUrl, title: title)
+            })
+        }
+        .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf]) { result in
+            switch result {
+            case .success(let file):
+                songsList.importFile(url: file)
+            case .failure(let error):
+                print(error.localizedDescription)
             }
         }
     }
@@ -307,9 +346,4 @@ struct NavigationSecondaryButton: View {
             .frame(width: geometry.size.width)
         }
     }
-}
-
-
-#Preview {
-    AllSongs()
 }

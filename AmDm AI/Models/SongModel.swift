@@ -92,7 +92,7 @@ final class SongsList: ObservableObject {
     @Published var duration: TimeInterval = 0
     @Published var decibelChanges = [Float]()
     @Published var showSearch: Bool = false
-    
+
     private let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
     let databaseService = DatabaseService()
@@ -106,6 +106,9 @@ final class SongsList: ObservableObject {
             guard let url = url else { return }
             guard let songName = songName else { return }
             guard let ext = ext else { return }
+            @AppStorage("isLimited") var isLimited: Bool = false
+            @AppStorage("songCounter") var songCounter: Int = 0
+
             let song = Song(
                 id: UUID().uuidString,
                 name: songName == "" ? self.getNewSongName() : songName,
@@ -122,6 +125,7 @@ final class SongsList: ObservableObject {
             )
             song.startTimer()
             self.songs.insert(song, at: 0)
+            songCounter = isLimited ? songCounter + 1 : songCounter
             self.objectWillChange.send()
             
             self.recognitionApiService.recognizeAudio(url: url) { result in
@@ -171,6 +175,9 @@ final class SongsList: ObservableObject {
     }
     
     func processYoutubeVideo(by resultUrl: String, title: String) {
+        @AppStorage("isLimited") var isLimited: Bool = false
+        @AppStorage("songCounter") var songCounter: Int = 0
+
         let song = Song(
             id: UUID().uuidString,
             name: title,
@@ -186,6 +193,7 @@ final class SongsList: ObservableObject {
         )
         song.startTimer()
         self.songs.insert(song, at: 0)
+        songCounter = isLimited ? songCounter + 1 : songCounter
         self.objectWillChange.send()
         
         recognitionApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in

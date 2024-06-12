@@ -11,7 +11,7 @@
     "_billingGracePeriodEnabled" : true,
     "_developerTeamID" : "YLUV9GUS77",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 736508700.17899096,
+    "_lastSynchronizedDate" : 739868023.05464494,
     "_locale" : "en_US",
     "_storefront" : "USA",
     "_storeKitErrors" : [
@@ -91,7 +91,7 @@
           ],
           "displayPrice" : "99.99",
           "familyShareable" : false,
-          "groupNumber" : 2,
+          "groupNumber" : 1,
           "internalID" : "6502232792",
           "introductoryOffer" : null,
           "localizations" : [
@@ -116,7 +116,7 @@
           ],
           "displayPrice" : "12.99",
           "familyShareable" : false,
-          "groupNumber" : 1,
+          "groupNumber" : 2,
           "internalID" : "6502223936",
           "introductoryOffer" : null,
           "localizations" : [
