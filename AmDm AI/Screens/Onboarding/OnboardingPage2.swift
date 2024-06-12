@@ -239,7 +239,3 @@ struct NextButton: View {
         }
     }
 }
-
-#Preview {
-    OnboardingPage2()
-}

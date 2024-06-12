@@ -7,39 +7,7 @@
 
 import Foundation
 import StoreKit
-
-//final class User: ObservableObject {
-//    var registrationDate: Date?
-//    var subscriptionPlanId: Int = 0
-//    var accessDisallowed: Bool = false
-//    
-//    init() {}
-//    
-//    func selectPlan(registrationDate: Date, subscriptionPlanId: Int) {
-//        self.registrationDate = registrationDate
-//        self.subscriptionPlanId = subscriptionPlanId
-//        self.accessDisallowed = false
-//    }
-//    
-//}
-//
-//struct SubscriptionPlan: Identifiable, Hashable {
-//    let id = UUID()
-//    let planId: Int
-//    let title: String
-//    let description: String
-//    let price: Float
-//}
-//
-//struct MockData: Hashable {
-//    static let plans = [
-//        SubscriptionPlan(planId: 0, title: "Limited version", description: "Description", price: 0.0),
-//        SubscriptionPlan(planId: 1, title: "Plan A", description: "Description", price: 1.0),
-//        SubscriptionPlan(planId: 2, title: "Plan B", description: "Description", price: 4.99),
-//        SubscriptionPlan(planId: 3, title: "Plan C", description: "Description", price: 9.99)
-//    ]
-//}
-
+import SwiftUI
 
 struct ProductConfiguration: Identifiable, Equatable {
     let id = UUID()
@@ -51,7 +19,13 @@ struct ProductConfiguration: Identifiable, Equatable {
     let isPreferable: Bool
     var isActive: Bool = false
     let productPriority: Int
-    let billingPeriod: String
+    let billingPeriod: BillingPeriod
+    var startDate: Date? = nil
+    
+    enum BillingPeriod {
+        case year
+        case month
+    }
 }
 
 public enum StoreError: Error {
@@ -62,6 +36,7 @@ public enum StoreError: Error {
 class StorekitManager: ObservableObject {
     @Published var products: [Product] = []
     @Published var productConfig: [ProductConfiguration] = []
+    let productIds: [String] = ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
     var updateListenerTask: Task<Void, Error>? = nil
     
     init() {
@@ -94,12 +69,12 @@ class StorekitManager: ObservableObject {
     @MainActor
     func requestProducts() async {
         do {
-            self.products = try await Product.products(for: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"])
+            self.products = try await Product.products(for: self.productIds)
         } catch {
             print(error)
         }
         
-        if let productOne = products.first(where: { $0.id == "pro_chords_9999_1y_3d0" }) {
+        if let productOne = products.first(where: { $0.id == self.productIds[0] }) {
             self.productConfig.append(ProductConfiguration(
                 planId: "pro_chords_9999_1y_3d0",
                 title: productOne.displayName,
@@ -108,11 +83,11 @@ class StorekitManager: ObservableObject {
                 displayPrice: String(format: "%.2f", (productOne.price as CVarArg) as! Double / 12.0) + " / month",
                 isPreferable: true,
                 productPriority: 1,
-                billingPeriod: "billed annually"
+                billingPeriod: .year
             ))
         }
         
-        if let productTwo = products.first(where: { $0.id == "pro_chords_1299_1m_3d0" }) {
+        if let productTwo = products.first(where: { $0.id == self.productIds[1] }) {
             self.productConfig.append(ProductConfiguration(
                 planId: "pro_chords_1299_1m_3d0",
                 title: productTwo.displayName,
@@ -121,12 +96,12 @@ class StorekitManager: ObservableObject {
                 displayPrice: productTwo.displayPrice + " / month",
                 isPreferable: false,
                 productPriority: 0,
-                billingPeriod: "billed monthly"
+                billingPeriod: .month
             ))
         }
     }
     
-    func purchase(_ productId: String) async throws -> Transaction? {
+    func purchase(_ productId: String) async throws -> StoreKit.Transaction? {
         guard let product = products.first(where: { $0.id == productId }) else { return nil}
         let result = try await product.purchase()
         
@@ -154,8 +129,9 @@ class StorekitManager: ObservableObject {
     
     @MainActor
     func updateCustomerProductStatus() async {
-        var transactions: [Transaction] = []
-        
+        var transactions: [StoreKit.Transaction] = []
+        @AppStorage("isLimited") var isLimited: Bool = false
+
         for await result in Transaction.currentEntitlements {
             do {
                 let transaction = try checkVerified(result)
@@ -166,14 +142,29 @@ class StorekitManager: ObservableObject {
         }
         
         if transactions.count > 0 {
-            let activeTransaction = transactions.sorted { a, b in
-                a.expirationDate ?? Date() > b.expirationDate ?? Date()
-            }.sorted { a, b in
-                a.id > b.id
-            }[0]
-            if let productIndex = productConfig.firstIndex(where: { $0.planId == activeTransaction.productID}) {
-                for i in 0..<productConfig.count {
-                    self.productConfig[i].isActive = productIndex == i
+            let latestActiveTransactions = transactions.filter { t in
+                t.expirationDate ?? Date() > Date()
+            }
+
+            if latestActiveTransactions.count > 0 {
+                let status = await latestActiveTransactions[0].subscriptionStatus
+                do {
+                    if let activeProductIndex = productConfig.firstIndex(where: { $0.planId == latestActiveTransactions[0].productID}) {
+                        for i in 0..<productConfig.count {
+                            self.productConfig[i].isActive = activeProductIndex == i
+                            if activeProductIndex == i {
+                                isLimited = false
+                            }
+                        }
+                        let autoRenewProductId = try status?.renewalInfo.payloadValue.autoRenewPreference
+                        if autoRenewProductId != self.productConfig[activeProductIndex].planId {
+                            if let productIndex = productConfig.firstIndex(where: { $0.planId == autoRenewProductId}) {
+                                self.productConfig[productIndex].startDate = latestActiveTransactions[0].expirationDate
+                            }
+                        }
+                    }
+                } catch {
+                    print(error)
                 }
             }
         }

@@ -6,12 +6,15 @@
 //
 
 import SwiftUI
+import StoreKit
 
 struct Paywall: View {
-    @AppStorage("isLimited") private var isLimited: Bool = false
+    @AppStorage("isLimited") var isLimited: Bool = false
     @EnvironmentObject var store: StorekitManager
     @State var selectedPlan = ""
     @Binding var showPaywall: Bool
+    @State var monthlyPlan: ProductConfiguration?
+    @State var yearlyPlan: ProductConfiguration?
     
     var body: some View {
         GeometryReader { geometry in
@@ -38,57 +41,40 @@ struct Paywall: View {
                     }
                     .padding(.top, 100 + geometry.safeAreaInsets.top)
                     .padding(.bottom, 50)
-                    
-                    ForEach(self.store.productConfig, id: \.self.id) { product in
-                        VStack(spacing: 10) {
-                            if product.isPreferable {
-                                HStack {
-                                    Text(product.tagLine)
-                                        .foregroundStyle(.progressCircle)
-                                        .fontWeight(.bold)
-                                    Spacer()
+
+                    VStack(spacing: 10) {
+                        if yearlyPlan != nil {
+                            ProductButton(product: yearlyPlan)
+                                .background(selectedPlan == yearlyPlan!.planId ? Color.clear : Color.paywallInactive)
+                                .cornerRadius(25)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 25)
+                                        .stroke(selectedPlan == yearlyPlan!.planId ? Color.progressCircle : Color.clear, lineWidth: 2)
+                                        .fill(selectedPlan == yearlyPlan!.planId ? Color.progressCircle.opacity(0.1) : Color.clear)
+                                )
+                                .onTapGesture {
+                                    if !yearlyPlan!.isActive {
+                                        selectedPlan = yearlyPlan!.planId
+                                    }
                                 }
-                            }
-                            HStack {
-                                Text(product.title)
-                                    .foregroundStyle(.white)
-                                    .fontWeight(.bold)
-                                Spacer()
-                                if !product.isActive {
-                                    Text(product.displayPrice)
-                                        .foregroundStyle(.white)
-                                        .fontWeight(.bold)
-                                } else {
-                                    Image(systemName: "checkmark")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(height: 20)
-                                        .foregroundStyle(.progressCircle)
-                                }
-                            }
-                            if product.isPreferable {
-                                HStack {
-                                    Text(product.description)
-                                        .foregroundStyle(.white)
-                                        .opacity(0.3)
-                                    Spacer()
-                                }
-                            }
                         }
-                        .padding(20)
-                        .background(selectedPlan == product.planId ? Color.clear : Color.paywallInactive)
-                        .cornerRadius(25)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 25)
-                                .stroke(selectedPlan == product.planId ? Color.progressCircle : Color.clear, lineWidth: 2)
-                                .fill(selectedPlan == product.planId ? Color.progressCircle.opacity(0.1) : Color.clear)
-                        )
-                        .onTapGesture {
-                            if !product.isActive {
-                                selectedPlan = product.planId
-                            }
+                        if monthlyPlan != nil {
+                            ProductButton(product: monthlyPlan)
+                                .background(selectedPlan == monthlyPlan!.planId ? Color.clear : Color.paywallInactive)
+                                .cornerRadius(25)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 25)
+                                        .stroke(selectedPlan == monthlyPlan!.planId ? Color.progressCircle : Color.clear, lineWidth: 2)
+                                        .fill(selectedPlan == monthlyPlan!.planId ? Color.progressCircle.opacity(0.1) : Color.clear)
+                                )
+                                .onTapGesture {
+                                    if !monthlyPlan!.isActive && monthlyPlan!.startDate == nil {
+                                        selectedPlan = monthlyPlan!.planId
+                                    }
+                                }
                         }
                     }
+
                     Spacer()
                     
                     VStack {
@@ -107,24 +93,34 @@ struct Paywall: View {
                 
                 VStack {
                     Spacer()
+                    
+                    let label = yearlyPlan != nil && monthlyPlan != nil ?
+                    (yearlyPlan!.isActive || monthlyPlan!.isActive ? "Subscribe" : (selectedPlan == yearlyPlan!.planId ? "Start 7 days Free Trial" : "Subscribe")) :
+                    ""
+                    let color = yearlyPlan != nil && monthlyPlan != nil ?
+                    (yearlyPlan!.isActive || monthlyPlan!.isActive ? Color.white : (selectedPlan == yearlyPlan!.planId ? Color.progressCircle : Color.white)) :
+                    Color.white
+                    
+                    let isDisabled = yearlyPlan != nil && monthlyPlan != nil ? (yearlyPlan!.isActive && monthlyPlan!.startDate != nil) : false
+
                     Button {
                         Task {
                             let transaction = try await store.purchase(selectedPlan)
                             if transaction != nil {
-                                isLimited = false
                                 showPaywall = false
                             }
                         }
                     } label: {
-                        let product = store.productConfig.first(where: { $0.isPreferable })
-                        Text(selectedPlan == product?.planId ? "Start 7 days Free Trial" : "Subscribe")
+                        
+                        Text(label)
                             .fontWeight(.semibold)
                             .font(.system(size: 20))
                             .padding(20)
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.black)
-                            .background(selectedPlan == product?.planId ? Color.progressCircle : .white, in: Capsule())
+                            .background(isDisabled ? .gray20 : color, in: Capsule())
                     }
+                    .disabled(isDisabled)
                     
                 }
                 .padding(20)
@@ -132,15 +128,16 @@ struct Paywall: View {
                 
                 VStack {
                     HStack {
+                        let activeProduct = store.productConfig.first(where: { $0.isActive }) ?? nil
                         Button {
-                            isLimited = true
+                            isLimited = activeProduct == nil
                             showPaywall = false
                         } label: {
                             Image(systemName: "xmark")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 18, height: 18)
-                                .foregroundColor(.gray30)
+                                .foregroundColor(activeProduct != nil ? .white : .gray30)
                                 .opacity(0.5)
                         }
                         Spacer()
@@ -150,7 +147,14 @@ struct Paywall: View {
                             .font(.system(size: 20))
                         Spacer()
                         Button {
-                            print("")
+                            Task {
+                                do {
+                                    try await AppStore.sync()
+                                    await store.updateCustomerProductStatus()
+                                } catch {
+                                    print(error)
+                                }
+                            }
                         } label: {
                             Text("Restore")
                                 .foregroundStyle(.white)
@@ -160,15 +164,79 @@ struct Paywall: View {
                     }
                     .padding(.top, geometry.safeAreaInsets.top)
                     .padding(.horizontal, 10)
+                    
                     Spacer()
                 }
             }
             .navigationBarBackButtonHidden(true)
             .ignoresSafeArea()
             .onAppear {
-                let product = store.productConfig.first(where: { $0.isPreferable })
-                selectedPlan = product?.planId ?? ""
+                self.monthlyPlan = store.productConfig.first(where: { $0.billingPeriod == .month }) ?? nil
+                self.yearlyPlan = store.productConfig.first(where: { $0.billingPeriod == .year }) ?? nil
+
+                let plan = monthlyPlan != nil && yearlyPlan != nil ?
+                (!yearlyPlan!.isActive ? yearlyPlan!.planId : (monthlyPlan!.startDate == nil ? monthlyPlan!.planId : "")) :
+                ""
+                
+                selectedPlan = plan
             }
+        }
+    }
+}
+
+struct ProductButton: View {
+    var product: ProductConfiguration?
+    
+    var body: some View {
+        if product != nil {
+            VStack(spacing: 10) {
+                if product!.billingPeriod == .year {
+                    HStack {
+                        Text(product!.tagLine)
+                            .font(.system(size: 18))
+                            .foregroundStyle(.progressCircle)
+                            .fontWeight(.bold)
+                        Spacer()
+                    }
+                }
+                HStack {
+                    Text(product!.title)
+                        .font(.system(size: 18))
+                        .foregroundStyle(.white)
+                        .fontWeight(.bold)
+                    Spacer()
+                    if !product!.isActive {
+                        if product!.startDate == nil {
+                            Text(product!.displayPrice)
+                                .font(.system(size: 18))
+                                .foregroundStyle(.white)
+                                .fontWeight(.bold)
+                        } else {
+                            Text("Activates on: " + product!.startDate!.formatted(date: .abbreviated , time: .omitted))
+                                .font(.system(size: 14))
+                                .lineLimit(2)
+                                .foregroundStyle(.white)
+                                .frame(width: 110)
+                        }
+                    } else {
+                        Image(systemName: "checkmark")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 20)
+                            .foregroundStyle(.progressCircle)
+                    }
+                }
+                if product!.billingPeriod == .year {
+                    HStack {
+                        Text(product!.description)
+                            .font(.system(size: 16))
+                            .foregroundStyle(.white)
+                            .opacity(0.3)
+                        Spacer()
+                    }
+                }
+            }
+            .padding(20)
         }
     }
 }
