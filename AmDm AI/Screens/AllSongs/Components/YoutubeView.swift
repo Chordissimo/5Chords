@@ -11,12 +11,12 @@ import WebKit
 struct WebView: UIViewRepresentable {
     var url: URL
     @Binding var showWebView: Bool
-    var videoDidSelected: (_ resultUrl: String, _ title: String) -> Void
+    var videoDidSelected: (_ resultUrl: String) -> Void
     
     func makeUIView(context: Context) -> WKWebView {
         let wKWebView = WKWebView()
-        context.coordinator.updateState = { resultUrl, title in
-            videoDidSelected(resultUrl, title)
+        context.coordinator.updateState = { resultUrl in
+            videoDidSelected(resultUrl)
             showWebView = false
         }
         wKWebView.configuration.userContentController.add(context.coordinator, name: "clickHandler")
@@ -32,10 +32,11 @@ struct WebView: UIViewRepresentable {
                         currentElement = currentElement.parentNode;
                     }
 
-                    var c = window.document.getElementsByClassName('media-item-headline');
-                    var t = Array.from(c).filter(e => e.parentElement.href === currentElement.href)
-                    var title = t.length > 0 ? t[0].children[0].innerHTML : '';
-                    window.webkit.messageHandlers.clickHandler.postMessage(currentElement.href + '|||' + title);
+                    // var c = window.document.getElementsByClassName('media-item-headline');
+                    // var t = Array.from(c).filter(e => e.parentElement.href === currentElement.href)
+                    // var title = t.length > 0 ? t[0].children[0].innerHTML : '';
+                    // window.webkit.messageHandlers.clickHandler.postMessage(currentElement.href + '|||' + title);
+                    window.webkit.messageHandlers.clickHandler.postMessage(currentElement.href);
                 });
         """
         wKWebView.configuration.userContentController.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
@@ -54,7 +55,7 @@ struct WebView: UIViewRepresentable {
     
     class WebViewCoordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         var parent: WebView
-        var updateState: ((_ resultUrl: String, _ title: String) -> Void)?
+        var updateState: ((_ resultUrl: String) -> Void)?
         
         init(_ parent: WebView) {
             self.parent = parent
@@ -62,9 +63,7 @@ struct WebView: UIViewRepresentable {
         
         func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
             if message.name == "clickHandler", let urlString = message.body as? String, urlString.contains("watch?v=") {
-                let url = String(urlString.split(separator: "|||").first!)
-                let title = String(urlString.split(separator: "|||").last!)
-                self.updateState?(url, title)
+                self.updateState?(urlString)
             }
         }
         
@@ -73,8 +72,8 @@ struct WebView: UIViewRepresentable {
 
 struct YoutubeView: View {
     @Binding var showWebView: Bool
-    var videoDidSelected: (_ resultUrl: String, _ title: String) -> Void
-    
+    var videoDidSelected: (_ resultUrl: String) -> Void
+
     var body: some View {
         HStack {
             ActionButton(imageName: "chevron.left", title: "Back") {
