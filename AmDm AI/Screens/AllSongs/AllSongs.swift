@@ -231,9 +231,13 @@ struct AllSongs: View {
             ChordLibrary(isLibraryPresented: $isLibraryPresented)
         }
         .fullScreenCover(isPresented: $youtubeViewPresented) {
-            YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl, title in
+            YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
                 youtubeViewPresented = false
-                songsList.processYoutubeVideo(by: resultUrl, title: title)
+                let ytService = YouTubeAPIService()
+                let id = resultUrl != "" ? String(resultUrl.split(separator: "v=").last ?? "") : ""
+                ytService.getVideoData(videoId: id) { t in
+                    songsList.processYoutubeVideo(by: resultUrl, title: t)
+                }
             })
         }
         .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf]) { result in
