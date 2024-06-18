@@ -8,6 +8,34 @@
 import SwiftUI
 import YouTubePlayerKit
 
+struct LyricsLine: Identifiable {
+    var id: String
+    var text: String
+    var start: Int
+    var end: Int
+    var chords: [APIChord]
+}
+
+class LyricsViewModel: ObservableObject {
+    @Published var lines: [LyricsLine] = []
+    
+    init(song: Song) {
+        if song.text.count > 0 {
+            var result: [APIChord] = []
+            for line in song.text {
+                if let start = line.start, let end = line.end {
+                    for chord in song.chords {
+                        if chord.start >= start && chord.end <= end {
+                            result.append(chord)
+                        }
+                    }
+                    self.lines.append(LyricsLine(id: line.id, text: line.text, start: start, end: end, chords: result))
+                }
+            }
+        }
+    }
+}
+
 struct PlaybackView: View {
     @ObservedObject var song: Song
     @ObservedObject var songsList: SongsList
@@ -17,6 +45,13 @@ struct PlaybackView: View {
     @State var youTubePlayer: YouTubePlayer = ""
     @State var currentTime: TimeInterval = 0.0
     @ObservedObject var player: Player = Player()
+    @ObservedObject var lyricsModel: LyricsViewModel
+    
+    init(song: Song, songsList: SongsList) {
+        self.song = song
+        self.songsList = songsList
+        self.lyricsModel = LyricsViewModel(song: song)
+    }
         
     var body: some View {
         GeometryReader { geometry in
@@ -39,18 +74,29 @@ struct PlaybackView: View {
                         }
                         HStack(alignment: .top, spacing: 0) {
                             if song.songType == .youtube {
-                                YouTubePlayerView(self.youTubePlayer) { state in
-                                    switch state {
-                                    case .idle:
-                                        ProgressView()
-                                    case .ready:
-                                        EmptyView()
-                                    case .error(_):
-                                        Text(verbatim: "YouTube player couldn't be loaded")
+                                ZStack {
+                                    YouTubePlayerView(self.youTubePlayer) { state in
+                                        switch state {
+                                        case .idle:
+                                            ProgressView()
+                                        case .ready:
+                                            EmptyView()
+                                        case .error(_):
+                                            Text(verbatim: "YouTube player couldn't be loaded")
+                                        }
                                     }
+                                    .frame(width: videoPlayerWidth, height: videoPlayerHeight)
+                                    .padding(.trailing, 15)
+                                    Color.white.opacity(0.0001)
                                 }
                                 .frame(width: videoPlayerWidth, height: videoPlayerHeight)
-                                .padding(.trailing, 15)
+                                .onTapGesture {
+                                    if self.youTubePlayer.isPlaying {
+                                        self.youTubePlayer.pause()
+                                    } else {
+                                        self.youTubePlayer.play()
+                                    }
+                                }
                             } else {
                                 if song.songType == .youtube {
                                     RoundedRectangle(cornerRadius: 5)
@@ -127,13 +173,18 @@ struct PlaybackView: View {
                     Spacer()
                     
                     VStack(alignment: .leading) {
-                        List($song.text) { line in
-                            Text(line.text.wrappedValue)
-                                .id(line.start.wrappedValue)
-                                .listRowBackground(Color.gray5)
-                                .listRowSeparator(.hidden)
-                        }
-                        .listStyle(.plain)
+//                        List(lyricsModel.lines) { line in
+//                            VStack {
+////                                Text(chords)
+////                                    .listRowBackground(Color.gray5)
+////                                    .listRowSeparator(.hidden)
+//                                Text(line.text.wrappedValue)
+//                                    .listRowBackground(Color.gray5)
+//                                    .listRowSeparator(.hidden)
+//                            }
+//                            .id(line.start.wrappedValue)
+//                        }
+//                        .listStyle(.plain)
                     }
                     .frame(width: width)
                     
@@ -243,5 +294,19 @@ struct PlaybackView: View {
             )
             self.youTubePlayer.configuration = configuration
         }
+    }
+    
+    private func getChordsBetween(start: Int, end: Int) -> [APIChord] {
+        guard start >= 0 && end > 0 else { return [] }
+        var result: [APIChord] = []
+        for chord in self.song.chords {
+            if chord.start >= start && chord.end <= end {
+                result.append(chord)
+            }
+            if chord.start > end {
+                break
+            }
+        }
+        return result
     }
 }

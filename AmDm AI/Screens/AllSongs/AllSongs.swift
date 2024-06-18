@@ -234,9 +234,8 @@ struct AllSongs: View {
             YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
                 youtubeViewPresented = false
                 let ytService = YouTubeAPIService()
-                let id = resultUrl != "" ? String(resultUrl.split(separator: "v=").last ?? "") : ""
-                ytService.getVideoData(videoId: id) { t in
-                    songsList.processYoutubeVideo(by: resultUrl, title: t)
+                ytService.getVideoData(videoUrl: resultUrl) { title, thumbnail in
+                    songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
                 }
             })
         }

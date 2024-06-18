@@ -19,20 +19,27 @@ struct SongList: View {
                     EmptyListView()
                 } else {
                     List($songsList.songs, id: \.id) { song in
-                        if songsList.showSearch && songsList.songs.firstIndex(of: song.wrappedValue) == 0 {
-                            SearchSongView(searchText: $searchText, songsList: songsList)
-                                .listRowBackground(Color.gray5)
-                                .id(0)
-                        }
-                        if song.isVisible.wrappedValue {
-                            NavigationLink(destination: PlaybackView(song: song.wrappedValue, songsList: songsList)) {
-                                RecognizedSongView(songsList: songsList, song: song.wrappedValue, focusedField: $focusedField)
-                                    .padding(.top,5)
-                                    .listRowSeparator(.automatic)
-                                    .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
+                        VStack {
+                            if songsList.showSearch && songsList.songs.firstIndex(of: song.wrappedValue) == 0 {
+                                SearchSongView(searchText: $searchText, songsList: songsList)
+                                    .listRowBackground(Color.gray5)
+                                    .id(0)
                             }
-                            .listRowBackground(Color.gray5)
+                            if song.isVisible.wrappedValue {
+                                NavigationLink(destination: PlaybackView(song: song.wrappedValue, songsList: songsList)) {
+                                    RecognizedSongView(songsList: songsList, song: song.wrappedValue, focusedField: $focusedField)
+                                        .padding(.top,5)
+                                        .listRowSeparator(.automatic)
+                                        .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
+                                }
+                            }
                         }
+                        .listRowBackground(Color.gray5)
+                        .gesture(
+                            TapGesture().onEnded {
+                                focusedField = focusedField != song.id ? "" : focusedField
+                            }, including: focusedField == "" ? .subviews : .gesture
+                        )
                     }
                     .scrollIndicators(.hidden)
                     .listStyle(.plain)

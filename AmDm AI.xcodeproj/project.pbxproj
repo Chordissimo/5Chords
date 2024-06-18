@@ -49,7 +49,6 @@
 		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
 		C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */; };
 		C3AC1BA72C1AB52D000DE8E5 /* YouTubeAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */; };
-		C3AC1BA92C1AB5BB000DE8E5 /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1BA82C1AB5BB000DE8E5 /* APIKeys.swift */; };
 		C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */; };
 		C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */; };
 		C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3C7F4A62BBB273A00E83503 /* SongDetails.swift */; };
@@ -109,7 +108,6 @@
 		C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappingHStack.swift; sourceTree = "<group>"; };
 		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
 		C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAPIService.swift; sourceTree = "<group>"; };
-		C3AC1BA82C1AB5BB000DE8E5 /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionModel.swift; sourceTree = "<group>"; };
 		C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackTimelineView.swift; sourceTree = "<group>"; };
 		C3C7F4A62BBB273A00E83503 /* SongDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetails.swift; sourceTree = "<group>"; };
@@ -190,7 +188,6 @@
 			children = (
 				B75A6FDF2BE0F870001153ED /* Extensions */,
 				C361E8262BB860D300F33B40 /* Helpers.swift */,
-				C3AC1BA82C1AB5BB000DE8E5 /* APIKeys.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -520,7 +517,6 @@
 				C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */,
 				C3F0B62A2BF2258100866D2B /* MetronomeModel.swift in Sources */,
 				C3C7F4A72BBB273A00E83503 /* SongDetails.swift in Sources */,
-				C3AC1BA92C1AB5BB000DE8E5 /* APIKeys.swift in Sources */,
 				C357AB092BB7E41500440554 /* ChordsView.swift in Sources */,
 				C37D583D2BFB2052001DA8E1 /* SplashScreen.swift in Sources */,
 				C3DC6FDF2C02EF6400EA0095 /* Tunings.swift in Sources */,
