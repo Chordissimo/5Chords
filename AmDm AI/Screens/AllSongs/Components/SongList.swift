@@ -26,7 +26,7 @@ struct SongList: View {
                                     .id(0)
                             }
                             if song.isVisible.wrappedValue {
-                                NavigationLink(destination: PlaybackView(song: song.wrappedValue, songsList: songsList)) {
+                                NavigationLink(destination: PlaybackView(song: song.wrappedValue)) {
                                     RecognizedSongView(songsList: songsList, song: song.wrappedValue, focusedField: $focusedField)
                                         .padding(.top,5)
                                         .listRowSeparator(.automatic)

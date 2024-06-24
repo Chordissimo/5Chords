@@ -8,51 +8,18 @@
 import SwiftUI
 import YouTubePlayerKit
 
-struct LyricsLine: Identifiable {
-    var id: String
-    var text: String
-    var start: Int
-    var end: Int
-    var chords: [APIChord]
-}
-
-class LyricsViewModel: ObservableObject {
-    @Published var lines: [LyricsLine] = []
-    
-    init(song: Song) {
-        if song.text.count > 0 {
-            var result: [APIChord] = []
-            for line in song.text {
-                if let start = line.start, let end = line.end {
-                    for chord in song.chords {
-                        if chord.start >= start && chord.end <= end {
-                            result.append(chord)
-                        }
-                    }
-                    self.lines.append(LyricsLine(id: line.id, text: line.text, start: start, end: end, chords: result))
-                }
-            }
-        }
-    }
-}
-
 struct PlaybackView: View {
-    @ObservedObject var song: Song
-    @ObservedObject var songsList: SongsList
+    var song: Song
+//    @ObservedObject var songsList: SongsList
     
+    @State var model = IntervalModel()
     @State var isMuted: Bool = false
     @State var isPlaying: Bool = true
     @State var youTubePlayer: YouTubePlayer = ""
     @State var currentTime: TimeInterval = 0.0
     @ObservedObject var player: Player = Player()
-    @ObservedObject var lyricsModel: LyricsViewModel
-    
-    init(song: Song, songsList: SongsList) {
-        self.song = song
-        self.songsList = songsList
-        self.lyricsModel = LyricsViewModel(song: song)
-    }
-        
+    let lyricsfontSize = 16.0
+            
     var body: some View {
         GeometryReader { geometry in
             let width = geometry.size.width
@@ -171,20 +138,28 @@ struct PlaybackView: View {
                     .cornerRadius(panelCornerRadius)
                     
                     Spacer()
-                    
-                    VStack(alignment: .leading) {
-//                        List(lyricsModel.lines) { line in
-//                            VStack {
-////                                Text(chords)
-////                                    .listRowBackground(Color.gray5)
-////                                    .listRowSeparator(.hidden)
-//                                Text(line.text.wrappedValue)
-//                                    .listRowBackground(Color.gray5)
-//                                    .listRowSeparator(.hidden)
-//                            }
-//                            .id(line.start.wrappedValue)
-//                        }
-//                        .listStyle(.plain)
+
+                    VStack {
+                        Text(song.name)
+                            .font(.system(size: 20))
+                            .fontWeight(.semibold)
+                        ScrollView(.vertical, showsIndicators: true) {
+                            VStack(alignment: .leading) {
+                                ForEach(model.timeframes, id:\.self) { timeframe in
+                                    ZStack(alignment: .leading) {
+                                        Rectangle()
+                                            .foregroundStyle(.gray20)
+                                            .frame(width: width, height: 1)
+                                        Text(formatTime(Double(timeframe.start / 1000)))
+                                            .font(.system(size: 12))
+                                            .foregroundStyle(Color.gray40)
+                                            .padding(.trailing, 5)
+                                            .background(Color.gray5)
+                                    }
+                                    TimeFrame(timeframe: timeframe, lyricsfontSize: lyricsfontSize)
+                                }
+                            }.frame(width: width)
+                        }
                     }
                     .frame(width: width)
                     
@@ -192,7 +167,7 @@ struct PlaybackView: View {
                         Spacer()
                         VStack {
                             HStack(alignment: .center) {
-                                MetronomeView(bpm: $song.tempo, beats: $song.beats)
+//                                MetronomeView(bpm: song.tempo, beats: song.beats)
                                 
                                 Spacer()
                                 
@@ -216,8 +191,8 @@ struct PlaybackView: View {
                             .padding(.vertical, bottomPanelPadding - 10)
                         }
                         VStack {
-                            PlaybackTimelineView(song: song, player: player)
-                                .frame(height: 75)
+//                            PlaybackTimelineView(song: song, player: player)
+//                                .frame(height: 75)
                         }
                         VStack {
                             HStack(spacing: 20) {
@@ -265,6 +240,7 @@ struct PlaybackView: View {
                 self.currentTime = self.player.currentTime
             }
             .onAppear {
+                self.model.createTimeframes(song: song, maxWidth: floor(width * 0.9), fontSize: lyricsfontSize)
                 if song.songType == .youtube {
                     self.prepareToPlay()
                 }
@@ -295,18 +271,30 @@ struct PlaybackView: View {
             self.youTubePlayer.configuration = configuration
         }
     }
+}
+
+
+struct TimeFrame: View {
+    var timeframe: Timeframe
+    var lyricsfontSize: CGFloat
     
-    private func getChordsBetween(start: Int, end: Int) -> [APIChord] {
-        guard start >= 0 && end > 0 else { return [] }
-        var result: [APIChord] = []
-        for chord in self.song.chords {
-            if chord.start >= start && chord.end <= end {
-                result.append(chord)
-            }
-            if chord.start > end {
-                break
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(timeframe.intervals, id: \.self) { interval in
+                VStack(alignment: .leading) {
+                    let words = interval.words.map { $0.text }.joined()
+                    let chord = interval.chord.chord == "N" ? "" : interval.chord.chord
+                    Text(chord)
+                        .frame(minWidth: 50)
+                        .font(.system(size: lyricsfontSize))
+                    Spacer()
+                    Text(words)
+                        .font(.system(size: lyricsfontSize))
+                        .lineLimit(interval.limitLines)
+                }
+                .frame(minHeight: 50)
+                .padding(.bottom, 5)
             }
         }
-        return result
     }
 }

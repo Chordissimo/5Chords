@@ -221,7 +221,7 @@ final class SongsList: ObservableObject {
                     id: song.id,
                     name: title == "" ? self.getNewSongName() : title,
                     url: song.url.absoluteString,
-                    duration: self.duration,
+                    duration: TimeInterval(response.duration),
                     chords: response.chords,
                     text: response.text ?? [],
                     tempo: response.tempo,

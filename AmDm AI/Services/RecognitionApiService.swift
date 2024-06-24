@@ -16,6 +16,7 @@ class RecognitionApiService {
         var chords: [APIChord]
         var text: [AlignedText]?
         var tempo: Float
+        var duration: Float
     }
     
     private enum ServiceError: Error {
