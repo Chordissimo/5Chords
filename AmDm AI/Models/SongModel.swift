@@ -155,7 +155,8 @@ final class SongsList: ObservableObject {
                         text: response.text ?? [],
                         tempo: response.tempo,
                         songType: songName == "" ? .recorded : .localFile,
-                        ext: ext
+                        ext: ext,
+                        thumbnailUrl: ""
                     )
                     self.songs[i].name = dbSong.name
                     self.songs[i].duration = dbSong.duration
@@ -226,7 +227,8 @@ final class SongsList: ObservableObject {
                     text: response.text ?? [],
                     tempo: response.tempo,
                     songType: .youtube,
-                    ext: ""
+                    ext: "",
+                    thumbnailUrl: thumbnailUrl
                 )
                 self.songs[i].name = dbSong.name
                 self.songs[i].duration = dbSong.duration

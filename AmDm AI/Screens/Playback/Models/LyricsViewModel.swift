@@ -35,6 +35,7 @@ struct Interval: Identifiable, Hashable {
     var words: [Word] = []
     var chord: APIChord
     var limitLines: Int = 1
+    var width: CGFloat = 0.0
 }
 
 struct Timeframe: Identifiable, Hashable {
@@ -49,10 +50,12 @@ struct Timeframe: Identifiable, Hashable {
     var id = UUID()
     var start: Int
     var intervals: [Interval] = []
+    var width: CGFloat = 0.0
 }
 
 class IntervalModel {
     var timeframes: [Timeframe] = []
+    var chords: [APIChord] = []
     
     func createTimeframes(song: Song, maxWidth: CGFloat, fontSize: CGFloat) {
         guard song.chords.count > 0 && maxWidth > 0 && fontSize > 0 else { return }
@@ -60,31 +63,33 @@ class IntervalModel {
         let intervals = createIntervals(song: song, maxWidth: maxWidth, fontSize: fontSize)
         var line: [Interval] = []
         var width: Double = 0
-
+        
         for interval in intervals {
-            width += getWidth(for: interval, with: fontSize)
+            width += interval.width
             if width > maxWidth {
-                self.timeframes.append(Timeframe(start: line.first!.start, intervals: line))
+                self.timeframes.append(Timeframe(start: line.first!.start, intervals: line, width: width - interval.width))
                 line = []
-                width = getWidth(for: interval, with: fontSize)
+                width = interval.width
             }
             line.append(interval)
+            self.chords.append(interval.chord)
         }
         if line.count > 0 {
-            self.timeframes.append(Timeframe(start: line.first!.start, intervals: line))
+            self.timeframes.append(Timeframe(start: line.first!.start, intervals: line, width: width))
         }
     }
     
     private func createIntervals(song: Song, maxWidth: CGFloat, fontSize: CGFloat) -> [Interval] {
         guard song.chords.count > 0 else { return [] }
-
+        
         let compactedWords = compactWords(words: song.text)
+        let adjustedChords = adjustChordStartTime(chords: song.chords, adjustment: -1000)
         var result: [Interval] = []
         
         if compactedWords.count > 0 {
             let firstWord = compactedWords.first!
             if firstWord.start < song.chords.first!.start {
-                let chord = APIChord(id: UUID().uuidString, chord: "N", start: 0, end: song.chords.first!.start)
+                let chord = APIChord(id: UUID().uuidString, chord: "N", start: 0, end: song.chords.first!.start > 0 ? song.chords.first!.start : 0)
                 let words = compactedWords.filter {
                     $0.start < song.chords.first!.start
                 }
@@ -92,23 +97,23 @@ class IntervalModel {
             }
         }
         
-        for i in 0..<song.chords.count {
-            let timeAdjustment = song.chords[i].start == 0 ? 0 : 0
+        for i in 0..<adjustedChords.count {
             let words = compactedWords.filter {
                 var condition = false
                 if i == song.chords.count - 1 {
-                    condition = $0.start >= song.chords[i].start - timeAdjustment
+                    condition = $0.start >= adjustedChords[i].start
                 } else {
-                    condition = $0.start >= song.chords[i].start - timeAdjustment && $0.start < song.chords[i + 1].start - timeAdjustment
+                    condition = $0.start >= adjustedChords[i].start && $0.start < adjustedChords[i + 1].start
                 }
                 return condition
             }
-            var interval = Interval(start: song.chords[i].start - timeAdjustment, words: words, chord: song.chords[i])
-            let lineWidth = getWidth(for: interval, with: fontSize)
-            interval.limitLines = Int(ceil(lineWidth / maxWidth))
+            var interval = Interval(start: adjustedChords[i].start, words: words, chord: adjustedChords[i])
+            let intervalWidth = getWidth(for: interval, with: fontSize)
+            interval.limitLines = Int(ceil(intervalWidth / maxWidth))
+            interval.width = intervalWidth > maxWidth ? maxWidth : max(50, intervalWidth)
             result.append(interval)
         }
-                
+        
         return compactIntervals(intervals: result)
     }
     
@@ -130,7 +135,7 @@ class IntervalModel {
         
         return result
     }
-        
+    
     private func compactWords(words: [AlignedText]) -> [Word] {
         guard words.count > 0 else { return [] }
         
@@ -156,8 +161,31 @@ class IntervalModel {
         if index == nil {
             result.append(word)
         }
-                
+        
         return result
     }
+    
+    func adjustChordStartTime(chords: [APIChord], adjustment: Int) -> [APIChord] {
+        guard adjustment != 0 && chords.count > 0 else { return chords }
+
+        var result: [APIChord] = []
+        for chord in chords {
+            chord.start = (chord.start + adjustment) < 0 ? 0 : (chord.start + adjustment)
+            chord.end = (chord.end + adjustment) < 0 ? 0 : (chord.end + adjustment)
+            result.append(chord)
+        }
+        return result
+    }
+    
+    func getTimeframeIndex(time: Int) -> Int {
+        let filteredTimeframes = self.timeframes.filter { return $0.start < time }
+        return filteredTimeframes.count > 0 ? self.timeframes.firstIndex(of: filteredTimeframes.last!)! : -1
+    }
+
+    func getChordIndex(time: Int) -> Int {
+        let filteredChords = self.chords.filter { return $0.start < time }
+        return filteredChords.count > 0 ? self.chords.firstIndex(of: filteredChords.last!)! : -1
+    }
+
 }
 

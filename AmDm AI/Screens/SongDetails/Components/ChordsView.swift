@@ -26,8 +26,10 @@ struct ChordsView: View {
             ScrollView {
                 LazyVGrid(columns: columns, spacing: 30) {
                     ForEach(chords) { ch in
-                        ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: ch.uiChord.key).matching(suffix: ch.uiChord.suffix).first!))
-                            .frame(width: 100, height: 100)
+                        if let key = ch.uiChord?.key, let suffix = ch.uiChord?.suffix {
+                            ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: key).matching(suffix: suffix).first!))
+                                .frame(width: 100, height: 100)
+                        }
                     }
                 }
             }
@@ -37,13 +39,15 @@ struct ChordsView: View {
             ScrollView(.horizontal) {
                 HStack {
                     ForEach(chords) { ch in
-                        VStack {
-                            Text(ch.uiChord.key.display.symbol + ch.uiChord.suffix.display.symbolized)
-                                .foregroundStyle(Color.white)
-                                .font(.system(size: 15))
-                                .fontWeight(.semibold)
-                            ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: ch.uiChord.key).matching(suffix: ch.uiChord.suffix).first!))
-                                .frame(width: 50, height: 75)
+                        if let key = ch.uiChord?.key, let suffix = ch.uiChord?.suffix {
+                            VStack {
+                                Text(key.display.symbol + suffix.display.symbolized)
+                                    .foregroundStyle(Color.white)
+                                    .font(.system(size: 15))
+                                    .fontWeight(.semibold)
+                                ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: key).matching(suffix: suffix).first!))
+                                    .frame(width: 50, height: 75)
+                            }
                         }
                     }
                 }
@@ -55,10 +59,12 @@ struct ChordsView: View {
                 HStack {
                     Spacer()
                     ForEach(chords.indices, id: \.self) { index in
-                        Text(chords[index].uiChord.key.display.symbol + chords[index].uiChord.suffix.display.symbolized)
-                            .foregroundStyle(Color.customGray1)
-                            .font(.system(size: 15))
-                            .fontWeight(.semibold)
+                        if let key = chords[index].uiChord?.key, let suffix = chords[index].uiChord?.suffix {
+                            Text(key.display.symbol + suffix.display.symbolized)
+                                .foregroundStyle(Color.customGray1)
+                                .font(.system(size: 15))
+                                .fontWeight(.semibold)
+                        }
                     }
                     Spacer()
                 }.frame(minWidth: UIScreen.main.bounds.width * 0.9)
