@@ -11,31 +11,20 @@ import SwiftyChords
 
 struct PlaybackView: View {
     var song: Song
-    //    @ObservedObject var songsList: SongsList
-    @AppStorage("isPlaybackPanelMaximized") var isPlaybackPanelMaximized: Bool = false
+    @AppStorage("isPlaybackPanelMaximized") var isPlaybackPanelMaximized: Bool = true
     @State var model = IntervalModel()
     @State var isMuted: Bool = false
     @State var isPlaying: Bool = true
-    @StateObject var youTubePlayer = YouTubePlayerService()
     @State var currentTime: TimeInterval = 0.0
-    @ObservedObject var player: Player = Player()
+    @StateObject var player = UniPlayer()
     @State var currentTimeframeIndex: Int = -1
     @State var currentChordIndex: Int = -1
+    @State var bottomPanelHieght: CGFloat = LyricsViewModelConstants.minBottomPanelHeight
     let lyricsfontSize = 16.0
     
     var body: some View {
         GeometryReader { geometry in
             let width = geometry.size.width
-            let videoPlayerHeight = 120.0
-            let videoPlayerWidth = 180.0
-            let topPanelpadding = 20.0
-            let bottomPanelPadding = 20.0
-            let maxBottomPanelHeight = 250.0
-            let minBottomPanelHeight = 100.0
-            let panelCornerRadius = 16.0
-            let chordHeight = 135.0
-            let chordWidth = chordHeight / 6 * 5
-
             
             ZStack {
                 Color.gray5
@@ -66,37 +55,43 @@ struct PlaybackView: View {
                                 /// MARK: youtube player
                                 if song.songType == .youtube {
                                     ZStack {
-                                        YouTubePlayerView(self.youTubePlayer.player) { state in
+                                        YouTubePlayerView(self.player.youTubePlayer.player) { state in
                                             switch state {
                                             case .idle: ProgressView()
                                             case .ready: EmptyView()
                                             case .error(_): Text(verbatim: "YouTube player couldn't be loaded")
                                             }
                                         }
-                                        .frame(width: videoPlayerWidth, height: videoPlayerHeight)
+                                        .frame(width: LyricsViewModelConstants.videoPlayerWidth, height: LyricsViewModelConstants.videoPlayerHeight)
                                         .padding(.trailing, 15)
                                         Color.white.opacity(0.0001)
                                     }
-                                    .frame(width: videoPlayerWidth, height: videoPlayerHeight)
+                                    .frame(width: LyricsViewModelConstants.videoPlayerWidth, height: LyricsViewModelConstants.videoPlayerHeight)
                                     .clipShape(.rect(cornerRadius: 16))
                                     .onTapGesture {
-                                        if self.youTubePlayer.isPlaying {
-                                            self.youTubePlayer.pause()
+                                        if self.player.isPlaying {
+                                            self.player.pause()
                                         } else {
-                                            self.youTubePlayer.play()
+                                            self.player.jumpTo(miliseconds: self.model.chords[self.currentChordIndex < 0 ? 0 : self.currentChordIndex].chord.start) {
+                                                if self.isPlaybackPanelMaximized && self.bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
+                                                    withAnimation {
+                                                        self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 } else {
                                     /// MARK: icons for file uploads
-                                    if song.songType == .youtube {
+                                    if self.song.songType == .youtube {
                                         RoundedRectangle(cornerRadius: 5)
                                             .fill(Color.gray10)
-                                            .frame(width: videoPlayerWidth, height: videoPlayerHeight)
+                                            .frame(width: LyricsViewModelConstants.videoPlayerWidth, height: LyricsViewModelConstants.videoPlayerHeight)
                                             .padding(.trailing, 15)
-                                    } else if song.songType == .recorded {
+                                    } else if self.song.songType == .recorded {
                                         Image(systemName: "mic.circle.fill")
                                             .resizable()
-                                            .frame(width: videoPlayerHeight, height: videoPlayerHeight)
+                                            .frame(width: LyricsViewModelConstants.videoPlayerHeight, height: LyricsViewModelConstants.videoPlayerHeight)
                                             .aspectRatio(contentMode: .fill)
                                             .foregroundColor(.disabledText)
                                             .padding(.trailing, 15)
@@ -105,27 +100,27 @@ struct PlaybackView: View {
                                             RoundedRectangle(cornerRadius: 12)
                                                 .frame(width: 60, height: 60)
                                                 .foregroundColor(.disabledText)
-                                            Text(song.ext.uppercased())
+                                            Text(self.song.ext.uppercased())
                                                 .fontWeight(.bold)
                                                 .font(.system(size: 16))
                                                 .foregroundColor(.gray10)
                                         }
-                                        .frame(height: videoPlayerHeight)
+                                        .frame(height: LyricsViewModelConstants.videoPlayerHeight)
                                         .padding(.trailing, 15)
                                     }
                                     
                                 }
                             }
-                            .padding(.top, geometry.safeAreaInsets.top > 0 ? 0 : topPanelpadding)
+                            .padding(.top, geometry.safeAreaInsets.top > 0 ? 0 : 20)
                             .frame(width: width)
                         }
                         /// MARK: Song title
                         VStack {
-                            Text(song.name)
+                            Text(self.song.name)
                                 .font(.system(size: 20))
                                 .fontWeight(.semibold)
                                 .lineLimit(2)
-                            Text(song.songType.rawValue + " • " + dateToString(song.created))
+                            Text(self.song.songType.rawValue + " • " + dateToString(self.song.created))
                                 .font(.system(size: 14))
                                 .foregroundStyle(.white)
                                 .opacity(0.6)
@@ -139,13 +134,14 @@ struct PlaybackView: View {
                     
                     Spacer()
                     
+                    /// MARK: chords and lyrics
                     VStack {
-                        /// MARK: chords and lyrics
                         ScrollViewReader { proxy in
                             ScrollView(.vertical, showsIndicators: true) {
                                 VStack(alignment: .leading, spacing: 0) {
-                                    ForEach(model.timeframes, id:\.self) { timeframe in
-                                        let timeframeIndex = model.timeframes.firstIndex(where: {$0 == timeframe })!
+                                    ForEach(self.model.timeframes, id: \.self) { timeframe in
+                                        
+                                        let timeframeIndex = self.model.timeframes.firstIndex(where: {$0 == timeframe })!
                                         ZStack(alignment: .leading) {
                                             Rectangle()
                                                 .foregroundStyle(.gray20)
@@ -157,10 +153,11 @@ struct PlaybackView: View {
                                                 .background(Color.gray5)
                                         }
                                         .padding(0)
+                                        
                                         VStack{
                                             HStack(spacing: 0) {
                                                 ForEach(timeframe.intervals, id: \.self) { interval in
-                                                    let chordIndex = model.chords.firstIndex(where: {$0 == interval.chord })!
+                                                    let chordIndex = self.model.chords.firstIndex(where: {$0.chord == interval.chord })!
                                                     VStack(alignment: .leading) {
                                                         let words = interval.words.map { $0.text }.joined()
                                                         let chord = interval.chord.chord == "N" ? "" : interval.chord.chord
@@ -168,13 +165,13 @@ struct PlaybackView: View {
                                                             VStack {
                                                                 Text(chord)
                                                                     .font(.system(size: lyricsfontSize))
-                                                                    .fontWeight(chordIndex == currentChordIndex ? .bold : .semibold)
-                                                                    .foregroundStyle(chordIndex == currentChordIndex ? .progressCircle : .white)
+                                                                    .fontWeight(chordIndex == self.currentChordIndex ? .bold : .semibold)
+                                                                    .foregroundStyle(chordIndex == self.currentChordIndex ? .progressCircle : .white)
                                                                 Spacer()
                                                                 Text(words)
-                                                                    .font(.system(size: lyricsfontSize))
+                                                                    .font(.system(size: self.lyricsfontSize))
                                                                     .lineLimit(interval.limitLines)
-                                                                    .foregroundStyle(chordIndex == currentChordIndex ? .progressCircle : .white)
+                                                                    .foregroundStyle(chordIndex == self.currentChordIndex ? .progressCircle : .white)
                                                             }
                                                             if interval == timeframe.intervals.last {
                                                                 Spacer()
@@ -185,11 +182,17 @@ struct PlaybackView: View {
                                                     .frame(minHeight: 50)
                                                     .padding(.vertical, 5)
                                                     .padding(.horizontal, 0)
-                                                    .background(timeframeIndex == currentTimeframeIndex ? Color.gray20.opacity(0.3) : Color.gray5)
+                                                    .background(timeframeIndex == self.currentTimeframeIndex ? Color.gray20.opacity(0.3) : Color.gray5)
                                                     .onTapGesture {
-                                                        currentTimeframeIndex = timeframeIndex
-                                                        currentChordIndex = chordIndex
-                                                        self.youTubePlayer.jumpTo(miliseconds: interval.start)
+                                                        self.player.jumpTo(miliseconds: interval.start) {
+                                                            if self.isPlaybackPanelMaximized && self.bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
+                                                                withAnimation {
+                                                                    self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                                    self.currentTimeframeIndex = timeframeIndex
+                                                                    self.currentChordIndex = chordIndex
+                                                                }
+                                                            }
+                                                        }
                                                     }
                                                 }
                                             }
@@ -199,11 +202,11 @@ struct PlaybackView: View {
                                     }
                                 }
                                 .frame(width: width)
-                                .onChange(of: self.youTubePlayer.currentTime) { _, newTime in
-                                    currentTimeframeIndex = model.getTimeframeIndex(time: newTime)
-                                    currentChordIndex = model.getChordIndex(time: newTime)
+                                .onChange(of: self.player.currentTime) { _, newTime in
+                                    self.currentTimeframeIndex = model.getTimeframeIndex(time: newTime)
+                                    self.currentChordIndex = model.getChordIndex(time: newTime)
                                     withAnimation {
-                                        proxy.scrollTo(currentTimeframeIndex, anchor: .center)
+                                        proxy.scrollTo(self.currentTimeframeIndex, anchor: .center)
                                     }
                                 }
                             }
@@ -219,85 +222,18 @@ struct PlaybackView: View {
                                 .frame(width: 30, height: 5)
                         }
                         .padding(.vertical, 8)
-                        .gesture(
-                            DragGesture().onChanged { value in
-//                                viewState = value.translation
-                                print(value.translation.height)
-                            }
-                            .onEnded { value in
-                                print(isPlaybackPanelMaximized,value.location.y)
-                                if isPlaybackPanelMaximized && value.location.y < 0 {
-                                // ...
-                                } else if isPlaybackPanelMaximized && value.location.y >= 0 {
-                                    isPlaybackPanelMaximized = false
-                                } else if !isPlaybackPanelMaximized && value.location.y < 0 {
-                                    isPlaybackPanelMaximized = true
-                                    if currentTimeframeIndex < 0 && currentChordIndex < 0 {
-                                        currentTimeframeIndex = 0
-                                        currentChordIndex = 0
-                                    }
-                                }
-                            }
-                        )
                         
-                        if currentChordIndex >= 0 && isPlaybackPanelMaximized {
-                            Spacer()
-                            VStack {
-                                HStack(alignment: .center) {
-                                    ScrollViewReader { proxy in
-                                        ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack {
-                                                ForEach(model.chords, id: \.self) { chord in
-                                                    if let key = chord.uiChord?.key, let suffix = chord.uiChord?.suffix {
-                                                        let chordPosition = Chords.guitar.matching(key: key).matching(suffix: suffix).first!
-                                                        HStack {
-                                                            ShapeLayerView(shapeLayer: createShapeLayer(
-                                                                chordPosition: chordPosition,
-                                                                width: chordWidth,
-                                                                height: chordHeight
-                                                            ))
-                                                            .frame(width: chordWidth, height: chordHeight)
-                                                            
-                                                            VStack {
-                                                                Text(key.display.symbol + suffix.display.symbolized)
-                                                                    .foregroundStyle(.white)
-                                                                    .font(.system(size: 50))
-                                                                    .fontWeight(.semibold)
-                                                                    .padding(.bottom, 10)
-                                                                Text(key.display.accessible + suffix.display.accessible)
-                                                                    .foregroundStyle(.white)
-                                                                    .font(.system(size: 18))
-                                                                    .lineLimit(2)
-                                                            }
-                                                            .frame(width: chordWidth, height: chordHeight)
-                                                        }
-                                                        .id(model.chords.firstIndex(where: { $0 == chord })!)
-                                                        .scrollTransition(.animated, axis: .horizontal) { content, phase in
-                                                            content
-                                                                .opacity(phase.isIdentity ? 1.0 : 0.6)
-                                                                .scaleEffect(phase.isIdentity ? 1.0 : 0.6)
-                                                        }
-                                                        
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        .scrollDisabled(true)
-                                        .frame(width: chordWidth * 2, height: chordHeight)
-                                        .onChange(of: currentChordIndex) { _, newIndex in
-                                            withAnimation {
-                                                proxy.scrollTo(newIndex, anchor: .leading)
-                                            }
-                                        }
-                                    }
-                                }
-                                .padding(.horizontal, bottomPanelPadding)
-                            }
+                        Spacer()
+                        
+                        /// MARK: Chord shapes in a scrollview
+                        if self.currentChordIndex >= 0 && self.isPlaybackPanelMaximized {
+                            ChordShapesView(chords: model.chords, currentChordIndex: self.$currentChordIndex)
                         }
-                                                
+                        
+                        /// MARK: playback controls
                         VStack {
                             VStack {
-                                Text(formatTime(Double(self.youTubePlayer.currentTime / 1000)) + " / " + formatTime(song.duration))
+                                Text(formatTime(Double(self.player.currentTime / 1000)) + " / " + formatTime(song.duration))
                                     .font(.system(size: 16))
                                     .foregroundStyle(.secondaryText)
                             }
@@ -305,10 +241,16 @@ struct PlaybackView: View {
                                 Spacer()
                                 VStack {
                                     Button {
-                                        currentChordIndex -= 1
-                                        currentTimeframeIndex = model.getTimeframeIndex(time: model.chords[currentChordIndex].start)
-                                        if self.youTubePlayer.isPlaying {
-                                            self.youTubePlayer.jumpTo(miliseconds: model.chords[currentChordIndex].start)
+                                        self.currentChordIndex -= 1
+                                        self.currentTimeframeIndex = model.getTimeframeIndex(time: model.chords[currentChordIndex].chord.start)
+                                        if self.player.isPlaying {
+                                            self.player.jumpTo(miliseconds: model.chords[currentChordIndex].chord.start)
+                                        } else {
+                                            if self.isPlaybackPanelMaximized {
+                                                withAnimation {
+                                                    self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                }
+                                            }
                                         }
                                     } label: {
                                         Image(systemName: "arrow.uturn.left")
@@ -323,18 +265,24 @@ struct PlaybackView: View {
                                 Spacer()
                                 VStack {
                                     Button {
-                                        if self.youTubePlayer.isPlaying {
-                                            self.youTubePlayer.pause()
+                                        if self.player.isPlaying {
+                                            self.player.pause()
                                         } else {
-                                            self.youTubePlayer.jumpTo(miliseconds: model.chords[currentChordIndex < 0 ? 0 : currentChordIndex].start)
+                                            self.player.jumpTo(miliseconds: model.chords[currentChordIndex < 0 ? 0 : currentChordIndex].chord.start) {
+                                                if isPlaybackPanelMaximized {
+                                                    withAnimation {
+                                                        self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                    }
+                                                }
+                                            }
                                         }
                                     } label: {
-                                        Image(systemName: self.youTubePlayer.isPlaying ? "pause.fill" : "play.fill")
+                                        Image(systemName: self.player.isPlaying ? "pause.fill" : "play.fill")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .foregroundStyle(.white)
                                     }
-                                    .disabled(!self.youTubePlayer.isReady)
+                                    .disabled(!self.player.isReady)
                                 }
                                 .frame(width: 30, height: 30)
                                 .padding(.leading, 5)
@@ -343,11 +291,16 @@ struct PlaybackView: View {
                                 VStack {
                                     Button {
                                         currentChordIndex += 1
-                                        currentTimeframeIndex = model.getTimeframeIndex(time: model.chords[currentChordIndex].start)
-                                        if self.youTubePlayer.isPlaying {
-                                            self.youTubePlayer.jumpTo(miliseconds: model.chords[currentChordIndex].start)
+                                        currentTimeframeIndex = model.getTimeframeIndex(time: model.chords[currentChordIndex].chord.start)
+                                        if self.player.isPlaying {
+                                            self.player.jumpTo(miliseconds: model.chords[currentChordIndex].chord.start)
+                                        } else {
+                                            if isPlaybackPanelMaximized {
+                                                withAnimation {
+                                                    self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                }
+                                            }
                                         }
-
                                     } label: {
                                         Image(systemName: "arrow.uturn.right")
                                             .resizable()
@@ -363,10 +316,20 @@ struct PlaybackView: View {
                             .padding(.top, 5)
                         }
                     }
-                    .frame(width: width, height: isPlaybackPanelMaximized && currentChordIndex >= 0 ? maxBottomPanelHeight : minBottomPanelHeight)
+                    .frame(width: width, height: bottomPanelHieght)
                     .padding(.bottom, geometry.safeAreaInsets.bottom)
                     .background(Color.customDarkGray)
-                    .clipShape(.rect(cornerRadius: panelCornerRadius))
+                    .clipShape(.rect(cornerRadius: 16))
+                    .gesture(
+                        DragGesture().onChanged { value in
+                            if currentChordIndex >= 0 {
+                                self.isPlaybackPanelMaximized = value.translation.height <= 0
+                                withAnimation(.easeInOut(duration: 0.1)) {
+                                    self.bottomPanelHieght = value.translation.height <= 0 ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
+                                }
+                            }
+                        }
+                    )
                 }
             }
             .ignoresSafeArea()
@@ -374,10 +337,72 @@ struct PlaybackView: View {
             .onAppear {
                 self.model.createTimeframes(song: song, maxWidth: floor(width * 0.9), fontSize: lyricsfontSize)
                 if song.songType == .youtube {
-                    self.youTubePlayer.prepareToPlay(url: song.url.absoluteString)
+                    self.player.prepareToPlay(song: song)
                 }
+//                for chord in self.model.chords {
+//                    print(chord)
+//                }
             }
         }
         .padding(0)
+    }
+}
+
+
+struct ChordShapesView: View {
+    var chords: [ChordShape] = []
+    @Binding var currentChordIndex: Int
+
+    var body: some View {
+        VStack {
+            HStack(alignment: .center) {
+                ScrollViewReader { proxy in
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack {
+                            ForEach(chords, id: \.self) { chord in
+                                if let key = chord.chord.uiChord?.key, let suffix = chord.chord.uiChord?.suffix {
+                                    HStack {
+                                        chord.shape
+                                            .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
+                                        
+                                        VStack(alignment: .center, spacing: 10) {
+                                            Text(key.display.symbol + suffix.display.symbolized)
+                                                .foregroundStyle(.white)
+                                                .font(.system(size: 30))
+                                                .fontWeight(.semibold)
+                                            Text(key.display.accessible + suffix.display.accessible)
+                                                .foregroundStyle(.white)
+                                                .font(.system(size: 16))
+                                                .lineLimit(2)
+                                        }
+                                        .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
+                                    }
+                                    .id(chords.firstIndex(where: { $0.chord == chord.chord })!)
+                                    .scrollTransition(.animated, axis: .horizontal) { content, phase in
+                                        content
+                                            .opacity(phase.isIdentity ? 1.0 : 0.6)
+                                            .scaleEffect(phase.isIdentity ? 1.0 : 0.6)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .scrollDisabled(true)
+                    .frame(width: LyricsViewModelConstants.chordWidth * 2, height: LyricsViewModelConstants.chordHeight)
+                    .onChange(of: currentChordIndex) { _, newIndex in
+                        withAnimation {
+                            proxy.scrollTo(newIndex, anchor: .leading)
+                        }
+                    }
+                    .onAppear {
+                        if currentChordIndex >= 0 {
+                            proxy.scrollTo(currentChordIndex, anchor: .leading)
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 20)
+        }
+
     }
 }

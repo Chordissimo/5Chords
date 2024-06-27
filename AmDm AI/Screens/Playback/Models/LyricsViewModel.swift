@@ -7,6 +7,16 @@
 
 import Foundation
 import SwiftUI
+import SwiftyChords
+
+struct LyricsViewModelConstants {
+    static let chordHeight = 135.0
+    static let chordWidth = 135.0 / 6 * 5
+    static let videoPlayerHeight = 120.0
+    static let videoPlayerWidth = 180.0
+    static let maxBottomPanelHeight = 250.0
+    static let minBottomPanelHeight = 110.0
+}
 
 struct Word: Identifiable, Hashable {
     static func == (lhs: Word, rhs: Word) -> Bool {
@@ -19,6 +29,20 @@ struct Word: Identifiable, Hashable {
     var id = UUID()
     var start: Int
     var text: String
+}
+
+struct ChordShape: Identifiable, Hashable {
+    static func == (lhs: ChordShape, rhs: ChordShape) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id);
+    }
+
+    var id = UUID()
+    var chord: APIChord
+    var shape: ShapeLayerView?
 }
 
 struct Interval: Identifiable, Hashable {
@@ -55,7 +79,7 @@ struct Timeframe: Identifiable, Hashable {
 
 class IntervalModel {
     var timeframes: [Timeframe] = []
-    var chords: [APIChord] = []
+    var chords: [ChordShape] = []
     
     func createTimeframes(song: Song, maxWidth: CGFloat, fontSize: CGFloat) {
         guard song.chords.count > 0 && maxWidth > 0 && fontSize > 0 else { return }
@@ -72,7 +96,20 @@ class IntervalModel {
                 width = interval.width
             }
             line.append(interval)
-            self.chords.append(interval.chord)
+            if let uiChord = interval.chord.uiChord {
+                if uiChord.chordPositions.count > 0 {
+                    let position = uiChord.chordPositions.first!
+                    self.chords.append(ChordShape(
+                        chord: interval.chord,
+                        shape: ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: position, width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight))
+                        )
+                    )
+                } else {
+                    self.chords.append(ChordShape(chord: interval.chord))
+                }
+            } else {
+                self.chords.append(ChordShape(chord: interval.chord))
+            }
         }
         if line.count > 0 {
             self.timeframes.append(Timeframe(start: line.first!.start, intervals: line, width: width))
@@ -178,12 +215,12 @@ class IntervalModel {
     }
     
     func getTimeframeIndex(time: Int) -> Int {
-        let filteredTimeframes = self.timeframes.filter { return $0.start < time }
+        let filteredTimeframes = self.timeframes.filter { return $0.start <= time }
         return filteredTimeframes.count > 0 ? self.timeframes.firstIndex(of: filteredTimeframes.last!)! : -1
     }
 
     func getChordIndex(time: Int) -> Int {
-        let filteredChords = self.chords.filter { return $0.start < time }
+        let filteredChords = self.chords.filter { return $0.chord.start < time }
         return filteredChords.count > 0 ? self.chords.firstIndex(of: filteredChords.last!)! : -1
     }
 

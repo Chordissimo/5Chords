@@ -239,7 +239,7 @@ struct AllSongs: View {
                 }
             })
         }
-        .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf]) { result in
+        .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf, .mp3]) { result in
             switch result {
             case .success(let file):
                 songsList.importFile(url: file)

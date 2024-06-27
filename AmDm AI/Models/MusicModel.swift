@@ -39,9 +39,10 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
     
     required init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        chord = try values.decode(String.self, forKey: .chord)
-        start = try values.decode(Int.self, forKey: .start)
-        end = try values.decode(Int.self, forKey: .end)
+        self.chord = try values.decode(String.self, forKey: .chord)
+        self.start = try values.decode(Int.self, forKey: .start)
+        self.end = try values.decode(Int.self, forKey: .end)
+        self.uiChord = UIChord(chord: self.chord)
     }
 }
 
@@ -58,6 +59,7 @@ class UIChord: Identifiable, Hashable {
     let id = UUID()
     var key: Chords.Key?
     var suffix: Chords.Suffix?
+    var chordPositions: [ChordPosition] = []
     
     init?(chord: String) {
         guard chord != "" && chord != "N" else { return nil }
@@ -82,6 +84,9 @@ class UIChord: Identifiable, Hashable {
                 let s = String(suffix[..<slashIndex])
                 self.suffix = getSuffix(from: s)
             }
+        }
+        if let key = self.key, let suffix = self.suffix {
+            self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
         }
     }
 

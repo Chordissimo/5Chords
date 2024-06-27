@@ -10,7 +10,7 @@ import Alamofire
 import SwiftUI
 
 class RecognitionApiService {
-    @AppStorage("server_ip") private var server_ip: String = ""
+    @AppStorage("server_ip") private var server_ip: String = "64.226.99.83:80"
     
     struct Response: Codable {
         var chords: [APIChord]
@@ -60,7 +60,7 @@ class RecognitionApiService {
             parameters: ["url": url],
             encoding: JSONEncoding.default
         )
-        .validate() // Optional: Validate the response (status code, content type, etc.)
+        .validate()
         .responseDecodable(of: Response.self) { response in
             guard let result = response.value else {
                 completion(.failure(response.error ?? ServiceError.noResult))

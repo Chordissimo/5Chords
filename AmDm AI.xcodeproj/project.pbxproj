@@ -17,6 +17,7 @@
 		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C34D48732C298E810008E5CE /* YouTubePlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48722C298E810008E5CE /* YouTubePlayerService.swift */; };
+		C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48742C2DA6970008E5CE /* UniPlayer.swift */; };
 		C357AB052BB7D50900440554 /* EditableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB042BB7D50900440554 /* EditableText.swift */; };
 		C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB062BB7E30A00440554 /* DateLabel.swift */; };
 		C357AB092BB7E41500440554 /* ChordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB082BB7E41500440554 /* ChordsView.swift */; };
@@ -78,6 +79,7 @@
 		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		C34D48722C298E810008E5CE /* YouTubePlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayerService.swift; sourceTree = "<group>"; };
+		C34D48742C2DA6970008E5CE /* UniPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniPlayer.swift; sourceTree = "<group>"; };
 		C357AB042BB7D50900440554 /* EditableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditableText.swift; sourceTree = "<group>"; };
 		C357AB062BB7E30A00440554 /* DateLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateLabel.swift; sourceTree = "<group>"; };
 		C357AB082BB7E41500440554 /* ChordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordsView.swift; sourceTree = "<group>"; };
@@ -317,6 +319,7 @@
 			isa = PBXGroup;
 			children = (
 				C3AC1BBB2C22A33D000DE8E5 /* LyricsViewModel.swift */,
+				C34D48742C2DA6970008E5CE /* UniPlayer.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -540,6 +543,7 @@
 				B75A6FE12BE0F882001153ED /* Int.swift in Sources */,
 				C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */,
 				C37D58402BFB25E4001DA8E1 /* OnboardingPage1.swift in Sources */,
+				C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */,
 				C357AB102BB7E92E00440554 /* AudioPlayerView.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
 				C34D48732C298E810008E5CE /* YouTubePlayerService.swift in Sources */,

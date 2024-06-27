@@ -14,7 +14,7 @@ class YouTubePlayerService: ObservableObject {
     @Published var currentTime: Int = 0
     @Published var isPlaying: Bool = false
     @Published var isReady: Bool = false
-    var cancellables = Set<AnyCancellable>()
+//    var cancellables = Set<AnyCancellable>()
     
     func prepareToPlay(url: String) {
         var id = ""
@@ -38,38 +38,44 @@ class YouTubePlayerService: ObservableObject {
             showRelatedVideos: false
         )
         self.player.configuration = configuration
-        subscribe()
+//        subscribe()
     }
     
-    func subscribe() {
-        self.player
-            .currentTimePublisher()
-            .sink { time in
-                self.currentTime = Int(time.value * 1000)
-            }
-            .store(in: &self.cancellables)
-        self.player
-            .statePublisher
-            .sink { playerState in
-                self.isReady = playerState.isIdle || playerState.isReady
-            }
-            .store(in: &self.cancellables)
-    }
+//    func subscribe() {
+//        self.player
+//            .currentTimePublisher()
+//            .sink { time in
+//                self.currentTime = Int(time.value * 1000)
+//            }
+//            .store(in: &self.cancellables)
+//        self.player
+//            .statePublisher
+//            .sink { playerState in
+//                self.isReady = playerState.isIdle || playerState.isReady
+//            }
+//            .store(in: &self.cancellables)
+//    }
     
-    func play() {
-        player.play()
-        isPlaying = true
+    func play(completion: @escaping () -> Void = {}) {
+        player.play() { _ in
+            self.isPlaying = true
+            completion()
+        }
     }
     
     func pause() {
-        player.pause()
-        isPlaying = false
+        player.pause() { _ in
+            self.isPlaying = false
+        }
     }
     
-    func jumpTo(miliseconds: Int) {
+    func jumpTo(miliseconds: Int, completion: @escaping () -> Void = {}) {
         let target = Measurement(value: Double(miliseconds), unit: UnitDuration.milliseconds)
-        player.seek(to: target, allowSeekAhead: true)
-        isPlaying = true
+        player.seek(to: target, allowSeekAhead: true) { _ in
+            self.player.play()
+            self.isPlaying = true
+            completion()
+        }
     }
     
 }
