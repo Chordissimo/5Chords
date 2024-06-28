@@ -10,17 +10,7 @@ import SwiftUI
 struct RecognizedSongView: View {
     @ObservedObject var songsList: SongsList
     @ObservedObject var song: Song
-    @Binding var focusedField: String
-    
-    @FocusState var isFocused: Bool
-    @State var songName: String = ""
     @State var showError: Bool = false
-    
-    init(songsList: SongsList, song: Song, focusedField: Binding<String>) {
-        self.songsList = songsList
-        self.song = song
-        self._focusedField = focusedField
-    }
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -98,42 +88,10 @@ struct RecognizedSongView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        TextField(song.name, text: $songName, onEditingChanged: { edit in
-                            if edit {
-                                focusedField = song.id
-                            }
-                        })
-                        .onSubmit {
-                            if songName == "" {
-                                songName = song.name
-                            } else {
-                                song.name = songName
-                                songsList.databaseService.updateSong(song: song)
-                            }
-                        }
-                        .foregroundStyle(Color.white)
-                        .fontWeight(.semibold)
-                        .font(.system(size: 18))
-                        .focused($isFocused)
-                        .onAppear {
-                            self.songName = song.name
-                        }
-                        .onChange(of: focusedField, { oldValue, newValue in
-                            if focusedField != song.id {
-                                isFocused = false
-                                if songName == "" {
-                                    songName = song.name
-                                } else {
-                                    song.name = songName
-                                    songsList.databaseService.updateSong(song: song)
-                                }
-                            }
-                        })
-                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
-                            if let textField = obj.object as? UITextField {
-                                textField.selectAll(nil)
-                            }
-                        }
+                        Text(song.name)
+                            .foregroundStyle(Color.white)
+                            .fontWeight(.semibold)
+                            .font(.system(size: 18))
                         
                         Text(formatTime(song.duration, precision: .seconds))
                             .font(.system(size: 14))

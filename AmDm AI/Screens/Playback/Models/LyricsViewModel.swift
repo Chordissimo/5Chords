@@ -16,6 +16,7 @@ struct LyricsViewModelConstants {
     static let videoPlayerWidth = 180.0
     static let maxBottomPanelHeight = 250.0
     static let minBottomPanelHeight = 110.0
+    static let moreShapesPanelHeight = 350.0
 }
 
 struct Word: Identifiable, Hashable {
@@ -24,7 +25,7 @@ struct Word: Identifiable, Hashable {
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id);
+        hasher.combine(id)
     }
     var id = UUID()
     var start: Int
@@ -37,7 +38,7 @@ struct ChordShape: Identifiable, Hashable {
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id);
+        hasher.combine(id)
     }
 
     var id = UUID()
@@ -51,7 +52,7 @@ struct Interval: Identifiable, Hashable {
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id);
+        hasher.combine(id)
     }
     
     var id = UUID()
@@ -68,7 +69,7 @@ struct Timeframe: Identifiable, Hashable {
     }
     
     func hash(into hasher: inout Hasher) {
-        hasher.combine(id);
+        hasher.combine(id)
     }
     
     var id = UUID()

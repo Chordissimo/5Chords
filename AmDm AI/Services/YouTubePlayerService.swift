@@ -38,23 +38,7 @@ class YouTubePlayerService: ObservableObject {
             showRelatedVideos: false
         )
         self.player.configuration = configuration
-//        subscribe()
     }
-    
-//    func subscribe() {
-//        self.player
-//            .currentTimePublisher()
-//            .sink { time in
-//                self.currentTime = Int(time.value * 1000)
-//            }
-//            .store(in: &self.cancellables)
-//        self.player
-//            .statePublisher
-//            .sink { playerState in
-//                self.isReady = playerState.isIdle || playerState.isReady
-//            }
-//            .store(in: &self.cancellables)
-//    }
     
     func play(completion: @escaping () -> Void = {}) {
         player.play() { _ in

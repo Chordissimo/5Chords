@@ -242,7 +242,10 @@ struct AllSongs: View {
         .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf, .mp3]) { result in
             switch result {
             case .success(let file):
-                songsList.importFile(url: file)
+                if file.startAccessingSecurityScopedResource() {
+                    songsList.importFile(url: file)
+                }
+                file.stopAccessingSecurityScopedResource()
             case .failure(let error):
                 print(error.localizedDescription)
             }

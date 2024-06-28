@@ -10,7 +10,6 @@ import SwiftUI
 struct SongList: View {
     @ObservedObject var songsList: SongsList
     @State var searchText: String = ""
-    @State var focusedField: String = ""
     
     var body: some View {
         ScrollViewReader { proxy in
@@ -26,20 +25,15 @@ struct SongList: View {
                                     .id(0)
                             }
                             if song.isVisible.wrappedValue {
-                                NavigationLink(destination: PlaybackView(song: song.wrappedValue)) {
-                                    RecognizedSongView(songsList: songsList, song: song.wrappedValue, focusedField: $focusedField)
+                                NavigationLink(destination: PlaybackView(song: song.wrappedValue, songsList: songsList)) {
+                                    RecognizedSongView(songsList: songsList, song: song.wrappedValue)
                                         .padding(.top,5)
-                                        .listRowSeparator(.automatic)
                                         .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
                                 }
                             }
                         }
+                        .listRowSeparator(.automatic)
                         .listRowBackground(Color.gray5)
-                        .gesture(
-                            TapGesture().onEnded {
-                                focusedField = focusedField != song.id ? "" : focusedField
-                            }, including: focusedField == "" ? .subviews : .gesture
-                        )
                     }
                     .scrollIndicators(.hidden)
                     .listStyle(.plain)

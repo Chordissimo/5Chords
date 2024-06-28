@@ -22,7 +22,7 @@ class UniPlayer: ObservableObject {
         if self.songType == .youtube {
             self.youTubePlayer.prepareToPlay(url: song.url.absoluteString)
         } else {
-            self.audioPlayer.setupAudio(url: song.url)
+            self.isReady = self.audioPlayer.setupAudio(url: song.url)
         }
         subscribe()
     }

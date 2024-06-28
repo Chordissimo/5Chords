@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftyChords
+import SwiftUI
 
 class APIChord: Codable, Identifiable, Equatable, Hashable {
     static func == (lhs: APIChord, rhs: APIChord) -> Bool {
@@ -156,4 +157,31 @@ class UIChord: Identifiable, Hashable {
         default: return nil
         }
     }
+}
+
+struct ShapeLayerView: UIViewRepresentable {
+    let shapeLayer: CAShapeLayer
+    
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.layer.addSublayer(shapeLayer)
+        return view
+    }
+    
+    func updateUIView(_ uiView: UIView, context: Context) {
+        // Update shape layer properties if needed
+    }
+}
+
+func createShapeLayer(chordPosition: ChordPosition, width: CGFloat, height: CGFloat) -> CAShapeLayer {
+    var frame: CGRect
+    frame = CGRect(x: 0, y: 0, width: width, height: height)
+    
+    let shapeLayer = chordPosition.chordLayer(
+        rect: frame,
+        chordName:.init(show: false, key: .symbol, suffix: .symbolized),
+        forPrint: false
+    )
+    
+    return shapeLayer
 }
