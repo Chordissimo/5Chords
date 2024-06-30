@@ -11,7 +11,8 @@ import AVFoundation
 struct AllSongs: View {
     @AppStorage("isLimited") var isLimited: Bool = false
     @AppStorage("songCounter") var songCounter: Int = 0
-    @EnvironmentObject var store: StorekitManager
+//    @EnvironmentObject var store: StorekitManager
+    @EnvironmentObject var store: MockStore
     @State var showSettings = false
     @State var showUpload = false
     @State var showPaywall = false
@@ -102,6 +103,7 @@ struct AllSongs: View {
                                             withAnimation {
                                                 if !songsList.recordStarted {
                                                     songsList.showSearch = false
+                                                    songsList.recognitionInProgress = true
                                                     songsList.startRecording()
                                                 }
                                             }
@@ -167,7 +169,8 @@ struct AllSongs: View {
                     .padding(.bottom,20)
                     .transition(.scale(scale: 0, anchor: .center))
                 }
-            }.frame(height: 100)
+            }
+            .frame(height: 100)
             
         }
         .onAppear {
@@ -232,7 +235,8 @@ struct AllSongs: View {
         }
         .fullScreenCover(isPresented: $youtubeViewPresented) {
             YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
-                youtubeViewPresented = false
+                self.youtubeViewPresented = false
+                self.songsList.recognitionInProgress = true
                 let ytService = YouTubeAPIService()
                 ytService.getVideoData(videoUrl: resultUrl) { title, thumbnail in
                     songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
@@ -242,6 +246,7 @@ struct AllSongs: View {
         .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf, .mp3]) { result in
             switch result {
             case .success(let file):
+                self.songsList.recognitionInProgress = true
                 if file.startAccessingSecurityScopedResource() {
                     songsList.importFile(url: file)
                 }

@@ -44,12 +44,12 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
 //                    print("bookmarl url:",b,exists2,_url)
 //                }
             }
-            let audioSession = AVAudioSession.sharedInstance()
-            try audioSession.setCategory(.playback, mode: .default)
-            try audioSession.setActive(true)
+//            let audioSession = AVAudioSession.sharedInstance()
+//            try audioSession.setCategory(.playback, mode: .default)
+//            try audioSession.setActive(true)
             self.audioPlayer = try AVAudioPlayer(contentsOf: _url)
         } catch {
-            print("Audio player init:",error)
+            print("Audio player init:", error)
         }
         guard let player = self.audioPlayer else { return false }
         player.delegate = self
@@ -75,6 +75,9 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     func updateProgress() {
         guard let player = audioPlayer else { return }
         currentTime = isPlaying ? player.currentTime : currentTime
+        if currentTime == duration {
+            stop()
+        }
     }
     
     func seekAudio(to time: TimeInterval) {
@@ -84,7 +87,7 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     }
     
     func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] timer in
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { [weak self] timer in
             guard let self = self else { return }
             updateProgress()
         }

@@ -106,6 +106,7 @@ final class SongsList: ObservableObject {
     @Published var duration: TimeInterval = 0
     @Published var decibelChanges = [Float]()
     @Published var showSearch: Bool = false
+    @Published var recognitionInProgress: Bool = false
 
     private let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
@@ -165,10 +166,12 @@ final class SongsList: ObservableObject {
                     self.songs[i].tempo = dbSong.tempo
                     self.songs[i].isProcessing = false
                     self.songs[i].stopTimer()
+                    self.recognitionInProgress = false
                     self.objectWillChange.send()
 
                 case .failure(let failure):
                     self.songs[i].recognitionStatus = .serverError
+                    self.recognitionInProgress = false
                     self.objectWillChange.send()
                     print("API failure: ",failure)
                 }
@@ -178,16 +181,16 @@ final class SongsList: ObservableObject {
         recordingService.recordingTimeCallback = { [weak self] time, signal in
             guard let self = self else { return }
             self.duration = time
-            if Int(time * 100) % 5 == 0 {
-                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
-                    self.decibelChanges.remove(at: 0)
-                }
-                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
-                    self.decibelChanges.append(0)
-                } else {
-                    self.decibelChanges.append(max(1,min(signal,120)))
-                }
-            }
+//            if Int(time * 100) % 5 == 0 {
+//                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
+//                    self.decibelChanges.remove(at: 0)
+//                }
+//                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
+//                    self.decibelChanges.append(0)
+//                } else {
+//                    self.decibelChanges.append(max(1,min(signal,120)))
+//                }
+//            }
         }
     }
     
@@ -237,10 +240,12 @@ final class SongsList: ObservableObject {
                 self.songs[i].tempo = dbSong.tempo
                 self.songs[i].isProcessing = false
                 self.songs[i].stopTimer()
+                self.recognitionInProgress = false
                 self.objectWillChange.send()
 
             case .failure(let failure):
                 self.songs[i].recognitionStatus = .serverError
+                self.recognitionInProgress = false
                 self.objectWillChange.send()
                 print("API failure: ",failure)
             }

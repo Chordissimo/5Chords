@@ -302,8 +302,8 @@ struct PlaybackView: View {
                                                 if self.player.isPlaying {
                                                     self.player.pause()
                                                 } else {
-                                                    self.player.jumpTo(miliseconds: model.chords[currentChordIndex < 0 ? 0 : currentChordIndex].chord.start) {
-                                                        if isPlaybackPanelMaximized {
+                                                    self.player.jumpTo(miliseconds: self.model.chords[self.currentChordIndex < 0 ? 0 : self.currentChordIndex].chord.start) {
+                                                        if self.isPlaybackPanelMaximized {
                                                             withAnimation {
                                                                 self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
                                                             }
@@ -401,6 +401,11 @@ struct PlaybackView: View {
                 self.model.createTimeframes(song: song, maxWidth: floor(width * 0.9), fontSize: lyricsfontSize)
                 self.player.prepareToPlay(song: song)
                 self.songName = song.name
+            }
+            .onDisappear {
+                if self.song.songType != .youtube {
+                    self.player.pause()
+                }
             }
         }
         .padding(0)

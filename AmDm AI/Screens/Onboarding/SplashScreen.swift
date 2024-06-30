@@ -35,7 +35,3 @@ struct SplashScreen: View {
         .ignoresSafeArea()
     }
 }
-
-#Preview {
-    SplashScreen()
-}

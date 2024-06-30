@@ -10,7 +10,8 @@ import StoreKit
 
 struct Paywall: View {
     @AppStorage("isLimited") var isLimited: Bool = false
-    @EnvironmentObject var store: StorekitManager
+//    @EnvironmentObject var store: StorekitManager
+    @EnvironmentObject var store: MockStore
     @State var selectedPlan = ""
     @Binding var showPaywall: Bool
     @State var monthlyPlan: ProductConfiguration?
@@ -104,12 +105,16 @@ struct Paywall: View {
                     let isDisabled = yearlyPlan != nil && monthlyPlan != nil ? (yearlyPlan!.isActive && monthlyPlan!.startDate != nil) : false
 
                     Button {
-                        Task {
-                            let transaction = try await store.purchase(selectedPlan)
-                            if transaction != nil {
-                                showPaywall = false
-                            }
-                        }
+                        store.purchase(selectedPlan)
+                        showPaywall = false
+// ============================  Uncomment this before release ============
+//                        Task {
+//                            let transaction = try await store.purchase(selectedPlan)
+//                            if transaction != nil {
+//                                showPaywall = false
+//                            }
+//                        }
+//=========================================================================
                     } label: {
                         
                         Text(label)
@@ -147,14 +152,16 @@ struct Paywall: View {
                             .font(.system(size: 20))
                         Spacer()
                         Button {
-                            Task {
-                                do {
-                                    try await AppStore.sync()
-                                    await store.updateCustomerProductStatus()
-                                } catch {
-                                    print(error)
-                                }
-                            }
+// ============================  Uncomment this before release ============
+//                            Task {
+//                                do {
+//                                    try await AppStore.sync()
+//                                    await store.updateCustomerProductStatus()
+//                                } catch {
+//                                    print(error)
+//                                }
+//                            }
+//=========================================================================
                         } label: {
                             Text("Restore")
                                 .foregroundStyle(.white)

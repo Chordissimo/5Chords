@@ -10,6 +10,7 @@ import Combine
 
 class UniPlayer: ObservableObject {
     @Published var currentTime: Int = 0
+    @Published var duration: Int = 0
     @Published var isPlaying: Bool = false
     @Published var isReady: Bool = false
     var audioPlayer: Player = Player()
@@ -19,6 +20,7 @@ class UniPlayer: ObservableObject {
     
     func prepareToPlay(song: Song) {
         self.songType = song.songType
+        self.duration = Int(song.duration * 1000)
         if self.songType == .youtube {
             self.youTubePlayer.prepareToPlay(url: song.url.absoluteString)
         } else {
@@ -33,6 +35,9 @@ class UniPlayer: ObservableObject {
                 .currentTimePublisher()
                 .sink { time in
                     self.currentTime = Int(time.value * 1000)
+                    if self.currentTime == self.duration {
+                        self.pause()
+                    }
                 }
                 .store(in: &self.cancellables)
             self.youTubePlayer.player
@@ -41,9 +46,19 @@ class UniPlayer: ObservableObject {
                     self.isReady = playerState.isIdle || playerState.isReady
                 }
                 .store(in: &self.cancellables)
+            self.youTubePlayer.player
+                .playbackStatePublisher
+                .sink { value in
+                    self.isPlaying = value != .ended && value != .paused && value != .cued
+            }
+            .store(in: &self.cancellables)
         } else {
-            self.audioPlayer.objectWillChange.sink { player in
-                print(player)
+            self.audioPlayer.$currentTime.sink { value in
+                self.currentTime = Int(value * 1000)
+            }
+            .store(in: &self.cancellables)
+            self.audioPlayer.$isPlaying.sink { value in
+                self.isPlaying = value
             }
             .store(in: &self.cancellables)
         }
@@ -72,6 +87,8 @@ class UniPlayer: ObservableObject {
             self.youTubePlayer.jumpTo(miliseconds: miliseconds, completion: completion)
         } else {
             self.audioPlayer.seekAudio(to: Double(miliseconds / 1000))
+            self.audioPlayer.play()
+            completion()
         }
         self.isPlaying = true
     }
