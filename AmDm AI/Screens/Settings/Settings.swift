@@ -10,7 +10,7 @@ import SwiftUI
 struct Settings: View {
     @Binding var showSettings: Bool
     var action: (Bool) -> Void
-    @AppStorage("server_ip") private var server_ip: String = ""
+    @AppStorage("server_ip") private var server_ip: String = "64.226.99.83:80"
     @Environment(\.openURL) var openURL
     
     var body: some View {

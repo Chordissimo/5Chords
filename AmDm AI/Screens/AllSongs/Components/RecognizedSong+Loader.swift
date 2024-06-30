@@ -10,17 +10,7 @@ import SwiftUI
 struct RecognizedSongView: View {
     @ObservedObject var songsList: SongsList
     @ObservedObject var song: Song
-    @Binding var focusedField: String
-    
-    @FocusState var isFocused: Bool
-    @State var songName: String
-    
-    init(songsList: SongsList, song: Song, focusedField: Binding<String>) {
-        self.songsList = songsList
-        self.song = song
-        songName = song.name
-        self._focusedField = focusedField
-    }
+    @State var showError: Bool = false
     
     var body: some View {
         VStack(alignment: .leading) {
@@ -52,16 +42,33 @@ struct RecognizedSongView: View {
                         .padding(.leading, 10)
                     }
                 }
+                .onChange(of: song.recognitionStatus, { oldValue, newValue in
+                    if song.recognitionStatus == .serverError {
+                        showError = true
+                    }
+                })
+                .alert("Something went wrong", isPresented: $showError) {
+                    Button {
+                        songsList.del(song: song)
+                    } label: {
+                        Text("Ok")
+                    }
+                } message: {
+                    Text("Please try again later.")
+                }
             } else {
                 HStack {
                     if song.songType == .youtube && song.thumbnailUrl.absoluteString != "" {
                         AsyncImage(url: URL(string: song.thumbnailUrl.absoluteString)) { image in
                             image
-                                .frame(width: 60, height: 60)
-                                .clipShape(.rect(cornerRadius: 12))
+                                .resizable()
+                                .aspectRatio(contentMode: .fill)
+                                .frame(width: 90, height: 90, alignment: .center)
                         } placeholder: {
                             Color.gray5.frame(width: 60, height: 60)
                         }
+                        .frame(width: 60, height: 60, alignment: .center)
+                        .clipShape(.rect(cornerRadius: 12))
                     } else if song.songType == .recorded {
                         Image(systemName: "mic.circle.fill")
                             .resizable()
@@ -81,40 +88,10 @@ struct RecognizedSongView: View {
                     }
                     
                     VStack(alignment: .leading, spacing: 0) {
-                        TextField(song.name, text: $songName, onEditingChanged: { edit in
-                            if edit {
-                                focusedField = song.id
-                            }
-                        })
-                        .onSubmit {
-                            if songName == "" {
-                                songName = song.name
-                            } else {
-                                song.name = songName
-                                songsList.databaseService.updateSong(song: song)
-                            }
-                        }
-                        .foregroundStyle(Color.white)
-                        .fontWeight(.semibold)
-                        .font(.system(size: 18))
-                        .focused($isFocused)
-                        .onChange(of: focusedField, { oldValue, newValue in
-                            if focusedField != song.id {
-                                isFocused = false
-                                if songName == "" {
-                                    songName = song.name
-                                } else {
-                                    song.name = songName
-                                    songsList.databaseService.updateSong(song: song)
-                                }
-                            }
-                        })
-                        .onReceive(NotificationCenter.default.publisher(for: UITextField.textDidBeginEditingNotification)) { obj in
-                            if let textField = obj.object as? UITextField {
-                                textField.selectAll(nil)
-                            }
-                        }
-                        
+                        Text(song.name)
+                            .foregroundStyle(Color.white)
+                            .fontWeight(.semibold)
+                            .font(.system(size: 18))
                         
                         Text(formatTime(song.duration, precision: .seconds))
                             .font(.system(size: 14))
@@ -128,9 +105,6 @@ struct RecognizedSongView: View {
                     }
                     .padding(.leading, 10)
 
-                }
-                .onTapGesture {
-                    focusedField = focusedField != song.id ? "" : focusedField
                 }
                 .swipeActions(allowsFullSwipe: false) {
                     Button(role: .destructive) {

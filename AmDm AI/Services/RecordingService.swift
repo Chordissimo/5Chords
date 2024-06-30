@@ -6,6 +6,7 @@
 //
 
 import AVFoundation
+import SwiftUI
 
 class RecordingService: NSObject, AVAudioRecorderDelegate {
     
@@ -76,18 +77,22 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
     }
     
     func importFile(url: URL) {
+        @AppStorage("fileBookmark") var fileBookmark: Data?
         var _url: URL
         var result: Bool = true
         var songName: String = ""
         var ext: String = ""
         do {
-            let filenameWithExt = String(url.absoluteString.split(separator: "/").last ?? "")
+            let fn = String(url.absoluteString.split(separator: "/").last ?? "")
+            let filenameWithExt = fn.removingPercentEncoding ?? fn
             songName = String(filenameWithExt.split(separator: ".").first ?? "")
             ext = String(filenameWithExt.split(separator: ".").last ?? "")
             let filename = UUID().uuidString
             let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             _url = documentsPath.appendingPathComponent(filename + "." + ext)
-            try FileManager.default.copyItem(at: url, to: _url)
+            let res = try FileManager.default.copyItem(at: url, to: _url)
+            print("copy from:",url, "to:",_url,"result:",res)
+            fileBookmark = try _url.bookmarkData(options: .withoutImplicitSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
         } catch {
             print(error)
             result = false

@@ -192,7 +192,17 @@ struct OnboardingPage2: View {
                     Spacer()
                     if animationStage == 3 {
                         NavigationLink(destination: AllSongs()) {
-                            NextButton()
+//                            NextButton()
+                            Text("Next")
+                                .fontWeight(.semibold)
+                                .font(.system(size: 20))
+                                .padding(20)
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(.black)
+//                                .frame(height: 50)
+                                .background(.progressCircle, in: Capsule())
+                                .padding(20)
+                                .padding(.bottom, geometry.safeAreaInsets.bottom)
                         }
                         
                     } else {
@@ -204,7 +214,17 @@ struct OnboardingPage2: View {
                                 }
                             }
                         } label: {
-                            NextButton()
+//                            NextButton()
+                            Text("Next")
+                                .fontWeight(.semibold)
+                                .font(.system(size: 20))
+                                .padding(20)
+                                .frame(maxWidth: .infinity)
+                                .foregroundColor(.black)
+//                                .frame(height: 50)
+                                .background(.progressCircle, in: Capsule())
+                                .padding(20)
+                                .padding(.bottom, geometry.safeAreaInsets.bottom)
                         }
                     }
                 }
@@ -225,17 +245,17 @@ struct OnboardingPage2: View {
     
 }
     
-struct NextButton: View {
-    var body: some View {
-        ZStack {
-            Color.clear.frame(height: 150)
-            Circle()
-                .foregroundColor(.white)
-                .frame(height: 60)
-            Image(systemName: "arrow.right")
-                .resizable()
-                .frame(width: 25, height: 20)
-                .foregroundColor(.gray5)
-        }
-    }
-}
+//struct NextButton: View {
+//    var body: some View {
+//        ZStack {
+//            Color.clear.frame(height: 150)
+//            Circle()
+//                .foregroundColor(.white)
+//                .frame(height: 60)
+//            Image(systemName: "arrow.right")
+//                .resizable()
+//                .frame(width: 25, height: 20)
+//                .foregroundColor(.gray5)
+//        }
+//    }
+//}

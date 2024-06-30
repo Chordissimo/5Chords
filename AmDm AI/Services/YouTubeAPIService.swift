@@ -10,50 +10,35 @@ import Alamofire
 import Network
 
 struct Response: Decodable {
-    struct Item: Decodable {
-        struct Snippet: Decodable {
-            var title: String = ""
-        }
-        var snippet: Snippet
+    var title: String
+    var thumbnail_url: String
+    
+    enum CondingKeys: String, CodingKey {
+        case title, thumbnail_url
     }
     
-    var items: [Item]
-//    
-//    enum CodingKeys: String, CodingKey {
-//        case kind, etag, regionCode, pageInfo, items
-//    }
-//    
-//    init(from decoder: Decoder) throws {
-//        print("0")
-//        let container = try decoder.container(keyedBy: CodingKeys.self)
-//        print("1")
-//        print(container)
-//        self.items = try container.decode([Video].self, forKey: .items)
-//        print("2")
-//        
-//    }
 }
 
 class YouTubeAPIService {
-//    @Published var videoTitle = Video()
+    let YT_SEARCH_API_URL = "https://www.youtube.com/oembed?url="
     
-    func getVideoData(videoId: String, action: @escaping (String) -> Void) {
-        guard let url = URL(string: Constants.YT_SEARCH_API_URL) else { return}
-        guard videoId != "" else { return }
+    func getVideoData(videoUrl: String, action: @escaping (String, String) -> Void) {
+        guard let url = URL(string: YT_SEARCH_API_URL) else { return}
+        guard videoUrl != "" else { return }
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
         AF.request(
             url,
-            parameters: ["part": "snippet", "type": "video", "q": videoId, "key": Constants.YT_API_KEY]
+            parameters: ["url": videoUrl]
         )
         .validate()
         .responseDecodable(of: Response.self, decoder: decoder) { response in
             switch response.result {
             case .success:
                 if let resp = response.value {
-                    action(resp.items[0].snippet.title)
+                    action(resp.title, resp.thumbnail_url)
                 }
                 break
             case .failure(let error):

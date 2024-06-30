@@ -10,8 +10,9 @@ import SwiftUI
 struct AppRoot: View {
     @State var loadingStage = 0
     @AppStorage("showOnboarding") private var showOnboarding: Bool = true
-    @StateObject var store = StorekitManager()
-    
+//    @StateObject var store = StorekitManager()
+    @StateObject var store = MockStore()
+
     var body: some View {
         NavigationStack {
             if loadingStage == 0 {

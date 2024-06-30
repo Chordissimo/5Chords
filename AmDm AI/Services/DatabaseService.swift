@@ -51,6 +51,7 @@ class SongModel: Object {
     @Persisted var songType: String
     @Persisted var ext: String
     @Persisted var tempo: Float
+    @Persisted var thumbnailUrl: String
     
     
     convenience init(name: String, url: String) {
@@ -101,7 +102,8 @@ class DatabaseService {
         text: [AlignedText],
         tempo: Float,
         songType: SongType = .recorded,
-        ext: String
+        ext: String,
+        thumbnailUrl: String
     ) -> Song {
         
         let realmChordList = writeChords(chords: chords)
@@ -118,6 +120,7 @@ class DatabaseService {
         song.songType = songType.rawValue
         song.tempo = tempo
         song.ext = ext
+        song.thumbnailUrl = thumbnailUrl
         
         try! realm.write {
             realm.add(song)
@@ -201,7 +204,8 @@ class DatabaseService {
                 },
                 tempo: $0.tempo,
                 songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
-                ext: $0.ext
+                ext: $0.ext,
+                thumbnailUrl: $0.thumbnailUrl
             )
         }
     }

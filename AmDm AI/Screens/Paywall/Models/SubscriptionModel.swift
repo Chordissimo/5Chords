@@ -170,3 +170,44 @@ class StorekitManager: ObservableObject {
         }
     }
 }
+
+class MockStore: ObservableObject {
+    @Published var productConfig: [ProductConfiguration] = []
+
+    init() {
+        @AppStorage("activeProductId") var activeProductId: String?
+        let activeProduct = activeProductId ?? ""
+        self.productConfig.append(ProductConfiguration(
+            planId: "pro_chords_9999_1y_3d0",
+            title: "Best value",
+            description: "12 month • $99.99",
+            tagLine: "Save 36%",
+            displayPrice: "$8.33 / month",
+            isPreferable: true,
+            isActive: activeProduct == "pro_chords_9999_1y_3d0",
+            productPriority: 1,
+            billingPeriod: .year
+        ))
+        self.productConfig.append(ProductConfiguration(
+            planId: "pro_chords_1299_1m_3d0",
+            title: "Starter",
+            description: "",
+            tagLine: "",
+            displayPrice: "$12.99 / month",
+            isPreferable: false,
+            isActive: activeProduct == "pro_chords_1299_1m_3d0",
+            productPriority: 0,
+            billingPeriod: .month
+        ))
+    }
+    
+    func purchase(_ productId: String) {
+        @AppStorage("isLimited") var isLimited: Bool = false
+        for i in 0..<productConfig.count {
+            self.productConfig[i].isActive = productId == self.productConfig[i].planId
+            if productId == self.productConfig[i].planId {
+                isLimited = false
+            }
+        }
+    }
+}

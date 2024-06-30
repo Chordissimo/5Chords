@@ -15,9 +15,18 @@ enum SongType: String {
     case recorded = "recorded"
 }
 
-class Song: ObservableObject, Identifiable, Equatable {
+enum RecognitionStatus {
+    case ok
+    case serverError
+}
+
+class Song: ObservableObject, Identifiable, Equatable, Hashable {
     static func == (lhs: Song, rhs: Song) -> Bool {
         lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
     }
     
     @Published var name: String
@@ -41,8 +50,9 @@ class Song: ObservableObject, Identifiable, Equatable {
     @Published private var startTime: Date?
     @Published var elapsedTime: TimeInterval = 0
     @Published var progress: Float = 0.0
+    @Published var recognitionStatus: RecognitionStatus = .ok
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "") {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -58,12 +68,16 @@ class Song: ObservableObject, Identifiable, Equatable {
 
         if self.songType == .youtube {
             if self.url.absoluteString != "" {
-                let index = self.url.absoluteString.range(of: "?v=")?.upperBound ?? nil
-                if index != nil {
-                    let id = String(self.url.absoluteString[index!...])
-                    self.thumbnailUrl = URL(string: "http://img.youtube.com/vi/\(id)/default.jpg")!
+                if thumbnailUrl != "" {
+                    self.thumbnailUrl = URL(string: thumbnailUrl)!
                 } else {
-                    self.thumbnailUrl = URL(string: "local")!
+                    let index = self.url.absoluteString.range(of: "?v=")?.upperBound ?? nil
+                    if index != nil {
+                        let id = String(self.url.absoluteString[index!...])
+                        self.thumbnailUrl = URL(string: "http://img.youtube.com/vi/\(id)/default.jpg")!
+                    } else {
+                        self.thumbnailUrl = URL(string: "local")!
+                    }
                 }
             }
         }
@@ -86,12 +100,13 @@ class Song: ObservableObject, Identifiable, Equatable {
     }
 }
 
-final class SongsList: ObservableObject {
+final class SongsList: ObservableObject {    
     @Published var songs: [Song]
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
     @Published var decibelChanges = [Float]()
     @Published var showSearch: Bool = false
+    @Published var recognitionInProgress: Bool = false
 
     private let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
@@ -129,6 +144,7 @@ final class SongsList: ObservableObject {
             self.objectWillChange.send()
             
             self.recognitionApiService.recognizeAudio(url: url) { result in
+                let i = self.getSongIndexByID(id: song.id)
                 switch result {
                 case .success(let response):
                     let dbSong = self.databaseService.writeSong(
@@ -140,9 +156,9 @@ final class SongsList: ObservableObject {
                         text: response.text ?? [],
                         tempo: response.tempo,
                         songType: songName == "" ? .recorded : .localFile,
-                        ext: ext
+                        ext: ext,
+                        thumbnailUrl: ""
                     )
-                    let i = self.getSongIndexByID(id: song.id)
                     self.songs[i].name = dbSong.name
                     self.songs[i].duration = dbSong.duration
                     self.songs[i].chords = dbSong.chords
@@ -150,9 +166,13 @@ final class SongsList: ObservableObject {
                     self.songs[i].tempo = dbSong.tempo
                     self.songs[i].isProcessing = false
                     self.songs[i].stopTimer()
+                    self.recognitionInProgress = false
                     self.objectWillChange.send()
 
                 case .failure(let failure):
+                    self.songs[i].recognitionStatus = .serverError
+                    self.recognitionInProgress = false
+                    self.objectWillChange.send()
                     print("API failure: ",failure)
                 }
             }
@@ -161,20 +181,20 @@ final class SongsList: ObservableObject {
         recordingService.recordingTimeCallback = { [weak self] time, signal in
             guard let self = self else { return }
             self.duration = time
-            if Int(time * 100) % 5 == 0 {
-                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
-                    self.decibelChanges.remove(at: 0)
-                }
-                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
-                    self.decibelChanges.append(0)
-                } else {
-                    self.decibelChanges.append(max(1,min(signal,120)))
-                }
-            }
+//            if Int(time * 100) % 5 == 0 {
+//                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
+//                    self.decibelChanges.remove(at: 0)
+//                }
+//                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
+//                    self.decibelChanges.append(0)
+//                } else {
+//                    self.decibelChanges.append(max(1,min(signal,120)))
+//                }
+//            }
         }
     }
     
-    func processYoutubeVideo(by resultUrl: String, title: String) {
+    func processYoutubeVideo(by resultUrl: String, title: String, thumbnailUrl: String) {
         @AppStorage("isLimited") var isLimited: Bool = false
         @AppStorage("songCounter") var songCounter: Int = 0
 
@@ -189,7 +209,8 @@ final class SongsList: ObservableObject {
             tempo: 0,
             songType: .youtube,
             isProcessing: true,
-            isFakeLoaderVisible: true
+            isFakeLoaderVisible: true,
+            thumbnailUrl: thumbnailUrl
         )
         song.startTimer()
         self.songs.insert(song, at: 0)
@@ -197,20 +218,21 @@ final class SongsList: ObservableObject {
         self.objectWillChange.send()
         
         recognitionApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
+            let i = self.getSongIndexByID(id: song.id)
             switch result {
             case .success(let response):
                 let dbSong = self.databaseService.writeSong(
                     id: song.id,
                     name: title == "" ? self.getNewSongName() : title,
                     url: song.url.absoluteString,
-                    duration: self.duration,
+                    duration: TimeInterval(response.duration),
                     chords: response.chords,
                     text: response.text ?? [],
                     tempo: response.tempo,
                     songType: .youtube,
-                    ext: ""
+                    ext: "",
+                    thumbnailUrl: thumbnailUrl
                 )
-                let i = self.getSongIndexByID(id: song.id)
                 self.songs[i].name = dbSong.name
                 self.songs[i].duration = dbSong.duration
                 self.songs[i].chords = dbSong.chords
@@ -218,10 +240,14 @@ final class SongsList: ObservableObject {
                 self.songs[i].tempo = dbSong.tempo
                 self.songs[i].isProcessing = false
                 self.songs[i].stopTimer()
+                self.recognitionInProgress = false
                 self.objectWillChange.send()
 
             case .failure(let failure):
-                print(failure)
+                self.songs[i].recognitionStatus = .serverError
+                self.recognitionInProgress = false
+                self.objectWillChange.send()
+                print("API failure: ",failure)
             }
         }
     }
