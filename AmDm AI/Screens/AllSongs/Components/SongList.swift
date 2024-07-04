@@ -20,7 +20,7 @@ struct SongList: View {
                     List($songsList.songs, id: \.id) { song in
                         VStack {
                             if songsList.showSearch && songsList.songs.firstIndex(of: song.wrappedValue) == 0 {
-                                SearchSongView(searchText: $searchText, songsList: songsList)
+                                SearchSongView(searchText: $searchText, showSearch: $songsList.showSearch, songsList: songsList)
                                     .listRowBackground(Color.gray5)
                                     .id(0)
                             }
@@ -32,7 +32,7 @@ struct SongList: View {
                                 }
                             }
                         }
-                        .listRowSeparator(.automatic)
+                        .listRowSeparator(.hidden)
                         .listRowBackground(Color.gray5)
                     }
                     .scrollIndicators(.hidden)

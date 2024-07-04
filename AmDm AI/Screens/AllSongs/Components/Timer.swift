@@ -28,11 +28,8 @@ struct TimerView: View {
                         .font(.system(size: 24))
                         .padding(.bottom, 20)
                     Text(formatTime(duration,precision: TimePrecision.santiseconds))
-                        .foregroundStyle(Color.customGray1)                        
-                    
+                        .foregroundStyle(Color.customGray1)
                     LiveWaveform(songsList: songsList)
-
-                    
                 }
                 .transition(.asymmetric(insertion: .opacity, removal: .identity))
                 .ignoresSafeArea()
@@ -44,14 +41,3 @@ struct TimerView: View {
     }
     
 }
-
-//#Preview {
-//    @State var started: Bool = true
-//    @State var duration: Double = TimeInterval(0)
-//    return VStack {
-//        TimerView(timerState: $started, duration: $duration, songName: "New recording")
-//        Button("stop") {
-//            started = false
-//        }
-//    }
-//}

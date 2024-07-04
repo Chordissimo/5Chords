@@ -13,15 +13,15 @@ struct PlaybackView: View {
     @ObservedObject var song: Song
     @ObservedObject var songsList: SongsList
     @AppStorage("isPlaybackPanelMaximized") var isPlaybackPanelMaximized: Bool = true
-    @State var model = IntervalModel()
-    @State var isPlaying: Bool = true
-    @State var currentTime: TimeInterval = 0.0
+    @AppStorage("hideLyrics") var hideLyrics: Bool = false
+    @StateObject var model = IntervalModel()
     @StateObject var player = UniPlayer()
-    @State var currentTimeframeIndex: Int = -1
-    @State var currentChordIndex: Int = -1
+    @State var currentTimeframeIndex: Int = 0
+    @State var currentChordIndex: Int = 0
     @State var bottomPanelHieght: CGFloat = LyricsViewModelConstants.minBottomPanelHeight
     @State var isMoreShapesPopupPresented: Bool = false
     @State var isRenamePopupVisible: Bool = false
+    @State var showOptions: Bool = false
     @State var songName: String = ""
     let lyricsfontSize = 16.0
     
@@ -42,37 +42,12 @@ struct PlaybackView: View {
                         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
                             /// MARK: close button
                             HStack {
-                                Button {
-                                    isRenamePopupVisible = true
-                                } label: {
-                                    Image(systemName: "pencil")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20, height: 20)
-                                        .foregroundStyle(.secondaryText)
-                                        .padding(.leading, 20)
-                                        .padding(.top,5)
-                                }
-                                .disabled(isMoreShapesPopupPresented)
-                                .alert("Rename recording", isPresented: $isRenamePopupVisible) {
-                                    TextField(song.name, text: $songName)
-                                    Button("Save", action: {
-                                        self.song.name = songName
-                                        self.songsList.databaseService.updateSong(song: song)
-                                    })
-                                    Button("Cancel", role: .cancel) { }
-                                } message: {
-                                    Text("Please enter your username and password.")
-                                }
-                                Spacer()
-                                NavigationLink(destination: AllSongs()) {
-                                    Image(systemName: "xmark")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 20, height: 20)
-                                        .foregroundStyle(.secondaryText)
-                                        .padding(.trailing, 20)
-                                }
+                                Navbar(
+                                    isRenamePopupVisible: $isRenamePopupVisible,
+                                    isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
+                                    song: song,
+                                    songsList: songsList
+                                )
                             }
                             .frame(width: width)
                             
@@ -96,7 +71,7 @@ struct PlaybackView: View {
                                             if self.player.isPlaying {
                                                 self.player.pause()
                                             } else {
-                                                self.player.jumpTo(miliseconds: self.model.chords[self.currentChordIndex < 0 ? 0 : self.currentChordIndex].chord.start) {
+                                                self.player.jumpTo(miliseconds: self.model.chords[self.currentChordIndex].chord.start) {
                                                     if self.isPlaybackPanelMaximized && self.bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
                                                         withAnimation {
                                                             self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
@@ -144,13 +119,13 @@ struct PlaybackView: View {
                             Text(self.song.name)
                                 .font(.system(size: 20))
                                 .fontWeight(.semibold)
-                                .lineLimit(2)
+                                .multilineTextAlignment(.center)
                             Text(self.song.songType.rawValue + " • " + dateToString(self.song.created))
                                 .font(.system(size: 14))
                                 .foregroundStyle(.white)
                                 .opacity(0.6)
                         }
-                        .padding(.vertical, 10)
+                        .padding(10)
                     }
                     .frame(width: width)
                     .background {
@@ -185,18 +160,21 @@ struct PlaybackView: View {
                                                     let chordIndex = self.model.chords.firstIndex(where: {$0.chord == interval.chord })!
                                                     VStack(alignment: .leading) {
                                                         let words = interval.words.map { $0.text }.joined()
-                                                        let chord = interval.chord.chord == "N" ? "" : interval.chord.chord
+                                                        let ch = interval.chord.uiChord
+                                                        let chord = interval.chord.chord == "N" ? "" : (ch != nil ? ch!.getChordString() : "")
                                                         HStack(spacing: 0) {
                                                             VStack {
                                                                 Text(chord)
                                                                     .font(.system(size: lyricsfontSize))
                                                                     .fontWeight(chordIndex == self.currentChordIndex ? .bold : .semibold)
                                                                     .foregroundStyle(chordIndex == self.currentChordIndex ? .progressCircle : .white)
-                                                                Spacer()
-                                                                Text(words)
-                                                                    .font(.system(size: self.lyricsfontSize))
-                                                                    .lineLimit(interval.limitLines)
-                                                                    .foregroundStyle(chordIndex == self.currentChordIndex ? .progressCircle : .white)
+                                                                if !self.model.hideLyrics {
+                                                                    Spacer()
+                                                                    Text(words)
+                                                                        .font(.system(size: self.lyricsfontSize))
+                                                                        .lineLimit(interval.limitLines)
+                                                                        .foregroundStyle(chordIndex == self.currentChordIndex ? .progressCircle : .white)
+                                                                }
                                                             }
                                                             if interval == timeframe.intervals.last {
                                                                 Spacer()
@@ -255,16 +233,21 @@ struct PlaybackView: View {
                             Spacer()
                             
                             /// MARK: Chord shapes in a scrollview
-                            if self.currentChordIndex >= 0 && self.isPlaybackPanelMaximized {
-                                if isMoreShapesPopupPresented {
-                                    MoreShapesView(isMoreShapesPopupPresented: $isMoreShapesPopupPresented, uiChord: self.model.chords[currentChordIndex].chord.uiChord)
-                                } else {
+                            if isMoreShapesPopupPresented {
+                                MoreShapesView(isMoreShapesPopupPresented: $isMoreShapesPopupPresented, uiChord: self.model.chords[currentChordIndex].chord.uiChord)
+                            } else {
+                                if self.showOptions {
+                                    OptionsView(hideLyrics: $model.hideLyrics, initialValue: song.transposition) { oldValue, newValue in
+                                        song.transposition = newValue
+                                        self.model.createTimeframes(song: song, maxWidth: floor(width * 0.9), fontSize: lyricsfontSize)
+                                    }
+                                } else if self.isPlaybackPanelMaximized {
                                     ChordShapesView(chords: model.chords, currentChordIndex: self.$currentChordIndex)
                                 }
                             }
                             
                             /// MARK: playback controls
-                            if !self.isMoreShapesPopupPresented {
+                            if !self.isMoreShapesPopupPresented && !self.showOptions {
                                 VStack {
                                     VStack {
                                         Text(formatTime(Double(self.player.currentTime / 1000)) + " / " + formatTime(song.duration))
@@ -272,6 +255,23 @@ struct PlaybackView: View {
                                             .foregroundStyle(.secondaryText)
                                     }
                                     HStack {
+                                        Spacer()
+                                        VStack {
+                                            Button {
+                                                self.showOptions.toggle()
+                                                withAnimation(.easeInOut(duration: 0.1)) {
+                                                    self.bottomPanelHieght = !self.showOptions ? LyricsViewModelConstants.minBottomPanelHeight : LyricsViewModelConstants.maxBottomPanelHeight
+                                                }
+                                            } label: {
+                                                Image(systemName: "slider.horizontal.2.square")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .foregroundStyle(self.player.isPlaying || self.showOptions ? .secondaryText : .white)
+                                            }
+                                            .disabled(self.player.isPlaying || self.showOptions)
+                                        }
+                                        .frame(width: 20, height: 30)
+                                        
                                         Spacer()
                                         VStack {
                                             Button {
@@ -290,11 +290,11 @@ struct PlaybackView: View {
                                                 Image(systemName: "arrow.uturn.left")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
-                                                    .foregroundStyle(currentChordIndex <= 0 ? .secondaryText : .white)
+                                                    .foregroundStyle(currentChordIndex == 0 || self.showOptions ? .secondaryText : .white)
                                             }
-                                            .disabled(currentChordIndex <= 0)
+                                            .disabled(currentChordIndex == 0 || self.showOptions)
                                         }
-                                        .frame(width: 25, height: 30)
+                                        .frame(width: 20, height: 30)
                                         
                                         Spacer()
                                         VStack {
@@ -302,7 +302,7 @@ struct PlaybackView: View {
                                                 if self.player.isPlaying {
                                                     self.player.pause()
                                                 } else {
-                                                    self.player.jumpTo(miliseconds: self.model.chords[self.currentChordIndex < 0 ? 0 : self.currentChordIndex].chord.start) {
+                                                    self.player.jumpTo(miliseconds: self.model.chords[self.currentChordIndex].chord.start) {
                                                         if self.isPlaybackPanelMaximized {
                                                             withAnimation {
                                                                 self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
@@ -314,10 +314,9 @@ struct PlaybackView: View {
                                                 Image(systemName: self.player.isPlaying ? "pause.fill" : "play.fill")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
-                                                    .foregroundStyle(.white)
-                                                    .foregroundStyle(!self.player.isReady ? .secondaryText : .white)
+                                                    .foregroundStyle(!self.player.isReady || self.showOptions ? .secondaryText : .white)
                                             }
-                                            .disabled(!self.player.isReady)
+                                            .disabled(!self.player.isReady || self.showOptions)
                                         }
                                         .frame(width: 30, height: 30)
                                         .padding(.leading, 5)
@@ -340,11 +339,29 @@ struct PlaybackView: View {
                                                 Image(systemName: "arrow.uturn.right")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
-                                                    .foregroundStyle(currentChordIndex == self.model.chords.count - 1 ? .secondaryText : .white)
+                                                    .foregroundStyle(currentChordIndex == self.model.chords.count - 1 || self.showOptions ? .secondaryText : .white)
                                             }
-                                            .disabled(currentChordIndex == self.model.chords.count - 1)
+                                            .disabled(currentChordIndex == self.model.chords.count - 1 || self.showOptions)
                                         }
-                                        .frame(width: 25, height: 30)
+                                        .frame(width: 20, height: 30)
+                                        
+                                        Spacer()
+                                        VStack {
+                                            Button {
+                                                self.isPlaybackPanelMaximized.toggle()
+                                                withAnimation(.easeInOut(duration: 0.1)) {
+                                                    self.bottomPanelHieght = self.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
+                                                }
+                                            } label: {
+                                                Image(systemName: self.isPlaybackPanelMaximized ? "c.square.fill" : "c.square")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .foregroundStyle(self.showOptions ? .secondaryText : .white)
+                                            }
+                                            .disabled(self.showOptions)
+                                        }
+                                        .frame(width: 21, height: 30)
+                                        
                                         Spacer()
                                     }
                                     .padding(.bottom, 20)
@@ -352,30 +369,36 @@ struct PlaybackView: View {
                                 }
                             }
                         }
-                        .frame(width: width, height: bottomPanelHieght)
+                        .frame(width: width, height: self.bottomPanelHieght)
                         .padding(.bottom, geometry.safeAreaInsets.bottom)
                         .background(Color.customDarkGray)
                         .clipShape(.rect(cornerRadius: 16))
                         .gesture(
                             DragGesture().onChanged { value in
                                 if !self.isMoreShapesPopupPresented {
-                                    if self.currentChordIndex >= 0 {
-                                        self.isPlaybackPanelMaximized = value.translation.height <= 0
-                                        withAnimation(.easeInOut(duration: 0.1)) {
-                                            self.bottomPanelHieght = value.translation.height <= 0 ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
-                                        }
+                                    self.isPlaybackPanelMaximized = value.translation.height <= 0
+                                    withAnimation(.easeInOut(duration: 0.1)) {
+                                        self.bottomPanelHieght = value.translation.height <= 0 ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
                                     }
                                 }
                             }
                         )
-
+                        
+                        /// MARK: Options close, More shapes buttons
                         HStack {
-                            Spacer()
-                            if !self.player.isPlaying && self.currentChordIndex >= 0 && self.isPlaybackPanelMaximized {
+                            if !self.player.isPlaying && (self.isPlaybackPanelMaximized || self.showOptions) {
+                                Spacer()
                                 Button {
-                                    isMoreShapesPopupPresented.toggle()
+                                    if self.showOptions {
+                                        self.showOptions = false
+                                    } else {
+                                        self.isMoreShapesPopupPresented.toggle()
+                                    }
+                                    withAnimation(.easeInOut(duration: 0.1)) {
+                                        self.bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (self.showOptions || self.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
+                                    }
                                 } label: {
-                                    Image(systemName: self.isMoreShapesPopupPresented ? "chevron.down" : "book.fill")
+                                    Image(systemName: self.isMoreShapesPopupPresented ? "chevron.down" : (self.showOptions ? "xmark.circle.fill" : "book.fill"))
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 22, height: 22)
@@ -383,15 +406,11 @@ struct PlaybackView: View {
                                 }
                                 .padding(.trailing, 30)
                                 .padding(.top, 20)
+                                
                             }
                         }
                         .frame(width: width)
 
-                    }
-                    .onChange(of: isMoreShapesPopupPresented) { _, _ in
-                        withAnimation(.easeInOut(duration: 0.1)) {
-                            self.bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : LyricsViewModelConstants.maxBottomPanelHeight
-                        }
                     }
                 }
             }
@@ -401,111 +420,17 @@ struct PlaybackView: View {
                 self.model.createTimeframes(song: song, maxWidth: floor(width * 0.9), fontSize: lyricsfontSize)
                 self.player.prepareToPlay(song: song)
                 self.songName = song.name
+                self.bottomPanelHieght = self.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
+                self.currentChordIndex = self.model.getFirstChordIndex()
             }
             .onDisappear {
                 if self.song.songType != .youtube {
                     self.player.pause()
                 }
+                self.songsList.databaseService.updateSong(song: song)
+                self.song.objectWillChange.send()
             }
         }
         .padding(0)
-    }
-}
-
-
-struct ChordShapesView: View {
-    var chords: [ChordShape] = []
-    @Binding var currentChordIndex: Int
-
-    var body: some View {
-        VStack {
-            HStack(alignment: .center) {
-                ScrollViewReader { proxy in
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack {
-                            ForEach(chords, id: \.self) { chord in
-                                if let key = chord.chord.uiChord?.key, let suffix = chord.chord.uiChord?.suffix {
-                                    HStack {
-                                        chord.shape
-                                            .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
-                                        
-                                        VStack(alignment: .center, spacing: 10) {
-                                            Text(key.display.symbol + suffix.display.symbolized)
-                                                .foregroundStyle(.white)
-                                                .font(.system(size: 30))
-                                                .fontWeight(.semibold)
-                                            Text(key.display.accessible + suffix.display.accessible)
-                                                .foregroundStyle(.white)
-                                                .font(.system(size: 16))
-                                                .lineLimit(2)
-                                        }
-                                        .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
-                                    }
-                                    .id(chords.firstIndex(where: { $0.chord == chord.chord })!)
-                                    .scrollTransition(.animated, axis: .horizontal) { content, phase in
-                                        content
-                                            .opacity(phase.isIdentity ? 1.0 : 0.6)
-                                            .scaleEffect(phase.isIdentity ? 1.0 : 0.6)
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    .scrollDisabled(true)
-                    .frame(width: LyricsViewModelConstants.chordWidth * 2, height: LyricsViewModelConstants.chordHeight)
-                    .onChange(of: currentChordIndex) { _, newIndex in
-                        withAnimation {
-                            proxy.scrollTo(newIndex, anchor: .leading)
-                        }
-                    }
-                    .onAppear {
-                        if currentChordIndex >= 0 {
-                            proxy.scrollTo(currentChordIndex, anchor: .leading)
-                        }
-                    }
-                }
-            }
-            .padding(.horizontal, 20)
-        }
-
-    }
-}
-
-struct MoreShapesView: View {
-    @Binding var isMoreShapesPopupPresented: Bool
-    var uiChord: UIChord?
-    let columns = [GridItem(.adaptive(minimum: LyricsViewModelConstants.chordWidth))]
-    
-    var body: some View {
-        VStack {
-            if let key = uiChord?.key, let suffix = uiChord?.suffix {
-                HStack(alignment: .firstTextBaseline) {
-                    Text(key.display.symbol + suffix.display.symbolized)
-                        .foregroundStyle(.white)
-                        .font(.system(size: 30))
-                        .fontWeight(.semibold)
-                        
-                    Text("  (" + key.display.accessible + suffix.display.accessible + ")")
-                        .foregroundStyle(.white)
-                        .font(.system(size: 16))
-                        .lineLimit(2)
-                }
-                ScrollView {
-                    LazyVGrid(columns: columns, spacing: 0) {
-                        ForEach(uiChord!.chordPositions, id: \.self) { position in
-                            ShapeLayerView(shapeLayer: createShapeLayer(
-                                chordPosition: position,
-                                width: LyricsViewModelConstants.chordWidth,
-                                height: LyricsViewModelConstants.chordHeight)
-                            )
-                            .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
-                        }
-                    }
-                    .frame(maxHeight: LyricsViewModelConstants.chordHeight * 2.5)
-                    .padding(.horizontal)
-                }
-            }
-        }
-        .background(Color.customDarkGray)
     }
 }

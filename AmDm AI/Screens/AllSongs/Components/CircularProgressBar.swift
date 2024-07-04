@@ -64,7 +64,13 @@ struct CircularProgressBarView: View {
             }
             .onChange(of: song.elapsedTime) {
                 if song.isProcessing {
-                    song.progress = song.progress <= 0.9 ? song.progress + 0.0005 : song.progress
+                    if song.progress <= 0.8 {
+                        song.progress = song.progress + 0.0005
+                    } else if song.progress > 0.8 && song.progress <= 0.9 {
+                        song.progress = song.progress + 0.0001
+                    } else if song.progress > 0.9 && song.progress <= 0.95 {
+                        song.progress = song.progress + 0.00005
+                    }
                 }
             }
             .onChange(of: song.isProcessing) {

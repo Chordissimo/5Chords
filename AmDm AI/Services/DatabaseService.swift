@@ -52,6 +52,7 @@ class SongModel: Object {
     @Persisted var ext: String
     @Persisted var tempo: Float
     @Persisted var thumbnailUrl: String
+    @Persisted var transposition: Int
     
     
     convenience init(name: String, url: String) {
@@ -103,7 +104,8 @@ class DatabaseService {
         tempo: Float,
         songType: SongType = .recorded,
         ext: String,
-        thumbnailUrl: String
+        thumbnailUrl: String,
+        transposition: Int
     ) -> Song {
         
         let realmChordList = writeChords(chords: chords)
@@ -121,6 +123,7 @@ class DatabaseService {
         song.tempo = tempo
         song.ext = ext
         song.thumbnailUrl = thumbnailUrl
+        song.transposition = transposition
         
         try! realm.write {
             realm.add(song)
@@ -136,7 +139,8 @@ class DatabaseService {
             text: text,
             tempo: song.tempo,
             songType: songType,
-            ext: song.ext
+            ext: song.ext,
+            transposition: song.transposition
         )
     }
     
@@ -149,6 +153,7 @@ class DatabaseService {
         if let songObj = songSearchResults.first {
             try! realm.write {
                 songObj.name = song.name
+                songObj.transposition = song.transposition
             }
         }
     }
@@ -205,7 +210,8 @@ class DatabaseService {
                 tempo: $0.tempo,
                 songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
                 ext: $0.ext,
-                thumbnailUrl: $0.thumbnailUrl
+                thumbnailUrl: $0.thumbnailUrl,
+                transposition: $0.transposition
             )
         }
     }

@@ -90,9 +90,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
             let filename = UUID().uuidString
             let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
             _url = documentsPath.appendingPathComponent(filename + "." + ext)
-            let res = try FileManager.default.copyItem(at: url, to: _url)
-            print("copy from:",url, "to:",_url,"result:",res)
-            fileBookmark = try _url.bookmarkData(options: .withoutImplicitSecurityScope, includingResourceValuesForKeys: nil, relativeTo: nil)
+            try FileManager.default.copyItem(at: url, to: _url)
         } catch {
             print(error)
             result = false

@@ -14,7 +14,9 @@ struct WebView: UIViewRepresentable {
     var videoDidSelected: (_ resultUrl: String) -> Void
     
     func makeUIView(context: Context) -> WKWebView {
-        let wKWebView = WKWebView()
+        let wkWebViewConfig = WKWebViewConfiguration()
+        wkWebViewConfig.allowsInlineMediaPlayback = true
+        let wKWebView = WKWebView(frame: UIScreen.main.bounds, configuration: wkWebViewConfig)
         context.coordinator.updateState = { resultUrl in
             videoDidSelected(resultUrl)
             showWebView = false
@@ -25,22 +27,16 @@ struct WebView: UIViewRepresentable {
                     var currentElement = event.target;
                     while (currentElement !== null) {
                         if (currentElement.tagName === 'A') {
-                            // Return the first anchor element found
                             break;
                         }
-                        // Move to the parent node
                         currentElement = currentElement.parentNode;
                     }
-
-                    // var c = window.document.getElementsByClassName('media-item-headline');
-                    // var t = Array.from(c).filter(e => e.parentElement.href === currentElement.href)
-                    // var title = t.length > 0 ? t[0].children[0].innerHTML : '';
-                    // window.webkit.messageHandlers.clickHandler.postMessage(currentElement.href + '|||' + title);
                     window.webkit.messageHandlers.clickHandler.postMessage(currentElement.href);
                 });
         """
         wKWebView.configuration.userContentController.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
         wKWebView.navigationDelegate = context.coordinator
+        
         return wKWebView
     }
     

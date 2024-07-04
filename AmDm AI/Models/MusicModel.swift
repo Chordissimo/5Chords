@@ -30,12 +30,16 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
         case end
     }
     
-    init(id: String, chord: String, start: Int, end: Int) {
+    init(id: String, chord: String, start: Int, end: Int, uiChord: UIChord? = nil) {
         self.chord = chord
         self.start = start
         self.end = end
         self.id = id
-        self.uiChord = UIChord(chord: self.chord)
+        if let uiCh = uiChord {
+            self.uiChord = uiCh
+        } else {
+            self.uiChord = UIChord(chord: self.chord)
+        }
     }
     
     required init(from decoder: Decoder) throws {
@@ -156,6 +160,38 @@ class UIChord: Identifiable, Hashable {
         case "m/g#": return .minorSlashGSharp
         default: return nil
         }
+    }
+    
+    public static func transpose(key: Chords.Key, shift: Int) -> Chords.Key {
+        guard shift != 0 else { return key }
+        var resultKey: Chords.Key = key
+        
+        var keys: [Chords.Key] = []
+        if [.dFlat, .eFlat, .gFlat, .aFlat, .bFlat].contains(where: {$0 == key}) {
+            keys = [.c, .dFlat, .d, .eFlat, .e, .f, .gFlat, .g, .aFlat, .a, .bFlat, .b]
+        } else {
+            keys = [.c, .cSharp, .d, .dSharp, .e, .f, .fSharp, .g, .gSharp, .a, .aSharp, .b]
+        }
+        
+        let index = keys.firstIndex(where: { $0 == key })! + shift
+        
+        if index > (keys.count - 1) {
+            resultKey = keys[index - keys.count]
+        } else if index < 0 {
+            resultKey = keys[keys.count + index]
+        } else {
+            resultKey = keys[index]
+        }
+        
+        return resultKey
+    }
+    
+    func getChordString() -> String {
+        var result = ""
+        if let k = self.key, let s = self.suffix {
+            result = k.display.symbol + s.display.short
+        }
+        return result
     }
 }
 
