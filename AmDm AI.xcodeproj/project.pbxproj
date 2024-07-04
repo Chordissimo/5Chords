@@ -45,6 +45,9 @@
 		C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */; };
 		C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */; };
 		C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */; };
+		C3A9935D2C35737100C2D8B5 /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A9935C2C35737100C2D8B5 /* OptionsView.swift */; };
+		C3A9935F2C3573AD00C2D8B5 /* NavbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */; };
+		C3A993612C35761400C2D8B5 /* ChordShapesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A993602C35761400C2D8B5 /* ChordShapesView.swift */; };
 		C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */; };
 		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
 		C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */; };
@@ -105,6 +108,9 @@
 		C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBar.swift; sourceTree = "<group>"; };
+		C3A9935C2C35737100C2D8B5 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
+		C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavbarView.swift; sourceTree = "<group>"; };
+		C3A993602C35761400C2D8B5 /* ChordShapesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordShapesView.swift; sourceTree = "<group>"; };
 		C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappingHStack.swift; sourceTree = "<group>"; };
 		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
 		C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAPIService.swift; sourceTree = "<group>"; };
@@ -171,6 +177,9 @@
 				C3B3AD352BE79C78000EB30F /* PlaybackTimelineView.swift */,
 				C3F0B61B2BF0AC4F00866D2B /* MetronomeView.swift */,
 				C34D48772C2EBB830008E5CE /* MoreShapesView.swift */,
+				C3A9935C2C35737100C2D8B5 /* OptionsView.swift */,
+				C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */,
+				C3A993602C35761400C2D8B5 /* ChordShapesView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -486,6 +495,7 @@
 				C3F0B6232BF21EBA00866D2B /* MusicModel.swift in Sources */,
 				C357AB072BB7E30A00440554 /* DateLabel.swift in Sources */,
 				C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */,
+				C3A993612C35761400C2D8B5 /* ChordShapesView.swift in Sources */,
 				C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */,
 				C37D58392BFB18A3001DA8E1 /* Glow+Opacity.swift in Sources */,
 				C37D58362BFB1855001DA8E1 /* EmptySongList.swift in Sources */,
@@ -516,6 +526,7 @@
 				C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */,
 				C37D58402BFB25E4001DA8E1 /* OnboardingPage1.swift in Sources */,
 				C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */,
+				C3A9935D2C35737100C2D8B5 /* OptionsView.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
 				C34D48732C298E810008E5CE /* YouTubePlayerService.swift in Sources */,
 				C37996E32C0853C500DA3556 /* ChordLibrary.swift in Sources */,
@@ -529,6 +540,7 @@
 				C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */,
 				B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */,
 				C361E8272BB860D300F33B40 /* Helpers.swift in Sources */,
+				C3A9935F2C3573AD00C2D8B5 /* NavbarView.swift in Sources */,
 				C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */,
 				B798989C2BCAAADB0052C127 /* RecordingService.swift in Sources */,
 				C3DC6FDA2BFDF2B300EA0095 /* PlaybackView.swift in Sources */,

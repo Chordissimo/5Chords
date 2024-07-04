@@ -78,12 +78,15 @@ struct Timeframe: Identifiable, Hashable {
     var width: CGFloat = 0.0
 }
 
-class IntervalModel {
-    var timeframes: [Timeframe] = []
-    var chords: [ChordShape] = []
+class IntervalModel: ObservableObject {
+    @Published var timeframes: [Timeframe] = []
+    @Published var chords: [ChordShape] = []
+    @Published var hideLyrics = false
     
     func createTimeframes(song: Song, maxWidth: CGFloat, fontSize: CGFloat) {
         guard song.chords.count > 0 && maxWidth > 0 && fontSize > 0 else { return }
+        self.timeframes = []
+        self.chords = []
         
         let intervals = createIntervals(song: song, maxWidth: maxWidth, fontSize: fontSize)
         var line: [Interval] = []
@@ -116,12 +119,12 @@ class IntervalModel {
             self.timeframes.append(Timeframe(start: line.first!.start, intervals: line, width: width))
         }
     }
-    
+        
     private func createIntervals(song: Song, maxWidth: CGFloat, fontSize: CGFloat) -> [Interval] {
         guard song.chords.count > 0 else { return [] }
-        
-        let compactedWords = compactWords(words: song.text)
+            let compactedWords = compactWords(words: song.text)
         let adjustedChords = adjustChordStartTime(chords: song.chords, adjustment: -1000)
+
         var result: [Interval] = []
         
         if compactedWords.count > 0 {
@@ -145,10 +148,13 @@ class IntervalModel {
                 }
                 return condition
             }
+            if let _ = adjustedChords[i].uiChord {
+                adjustedChords[i].uiChord!.key = UIChord.transpose(key: adjustedChords[i].uiChord!.key!, shift: song.transposition)
+            }
             var interval = Interval(start: adjustedChords[i].start, words: words, chord: adjustedChords[i])
             let intervalWidth = getWidth(for: interval, with: fontSize)
             interval.limitLines = Int(ceil(intervalWidth / maxWidth))
-            interval.width = intervalWidth > maxWidth ? maxWidth : max(50, intervalWidth)
+            interval.width = intervalWidth > maxWidth ? maxWidth : intervalWidth
             result.append(interval)
         }
         
@@ -156,9 +162,16 @@ class IntervalModel {
     }
     
     private func getWidth(for interval: Interval, with fontSize: CGFloat) -> CGFloat {
-        let textSize = ceil(interval.words.map { $0.text }.joined().size(withAttributes: [.font: UIFont.systemFont(ofSize: fontSize)]).width)
-        let chordSize = ceil(interval.chord.chord.size(withAttributes: [.font: UIFont.systemFont(ofSize: fontSize)]).width)
-        return max(textSize,textSize == 0 ? max(chordSize,50) : chordSize)
+        let textSize = ceil(
+            interval.words.map { $0.text }
+                .joined()
+                .size(withAttributes: [.font: UIFont.systemFont(ofSize: fontSize)]).width
+        )
+        var chordSize = 0.0
+        if let chord = interval.chord.uiChord {
+            chordSize = ceil(chord.getChordString().size(withAttributes: [.font: UIFont.systemFont(ofSize: fontSize, weight: .semibold)]).width)
+        }
+        return max(textSize,max(chordSize,50) + 10)
     }
     
     private func compactIntervals(intervals: [Interval]) -> [Interval] {
@@ -208,9 +221,9 @@ class IntervalModel {
 
         var result: [APIChord] = []
         for chord in chords {
-            chord.start = (chord.start + adjustment) < 0 ? 0 : (chord.start + adjustment)
-            chord.end = (chord.end + adjustment) < 0 ? 0 : (chord.end + adjustment)
-            result.append(chord)
+            let start = (chord.start + adjustment) < 0 ? 0 : (chord.start + adjustment)
+            let end = (chord.end + adjustment) < 0 ? 0 : (chord.end + adjustment)
+            result.append(APIChord(id: chord.id, chord: chord.chord, start: start, end: end))
         }
         return result
     }
@@ -223,6 +236,28 @@ class IntervalModel {
     func getChordIndex(time: Int) -> Int {
         let filteredChords = self.chords.filter { return $0.chord.start < time }
         return filteredChords.count > 0 ? self.chords.firstIndex(of: filteredChords.last!)! : -1
+    }
+    
+    func getFirstChordIndex() -> Int {
+        var result = 0
+        var chordCounter = 0
+        var chordName = ""
+        
+        for timeframe in timeframes {
+            for interval in timeframe.intervals {
+                chordName = interval.chord.chord
+                if chordName != "N" {
+                    break
+                }
+                chordCounter += 1
+            }
+            if chordName != "N" {
+                result = chordCounter
+                break
+            }
+        }
+        
+        return result
     }
 
 }

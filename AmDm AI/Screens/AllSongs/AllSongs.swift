@@ -21,6 +21,7 @@ struct AllSongs: View {
     @State var isTunerPresented = false
     @State var isLibraryPresented = false
     @State var initialAnimationStep = 0
+    @State var showRecognitionInProgressHint = false
     @ObservedObject var songsList = SongsList()
     let width: CGFloat
     
@@ -59,14 +60,16 @@ struct AllSongs: View {
                 VStack {
                     SongList(songsList: songsList)
                 }
-                Color.customDarkGray
-                    .ignoresSafeArea()
-                    .frame(width: width, height: 100)
+                if !songsList.showSearch {
+                    Color.customDarkGray
+                        .ignoresSafeArea()
+                        .frame(width: width, height: 100)
+                }
             }
             
             // Layer 2: Circles around the primary button
             VStack {
-                if initialAnimationStep >= 1 {
+                if initialAnimationStep >= 1 && !songsList.showSearch {
                     ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                         Circle()
                             .frame(width: 121, height: 121)
@@ -81,7 +84,7 @@ struct AllSongs: View {
             
             // Layer 3: Secondary buttons
             VStack {
-                if initialAnimationStep >= 1 {
+                if initialAnimationStep >= 1 && !songsList.showSearch {
                     ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                         HStack {
                             HStack(spacing: 20) {
@@ -89,8 +92,17 @@ struct AllSongs: View {
                                     if isLimited && songCounter == 3 {
                                         showPaywall = true
                                     } else {
-                                        showUpload = true
-                                        songsList.showSearch = false
+                                        if songsList.recognitionInProgress {
+                                            if !showRecognitionInProgressHint {
+                                                showRecognitionInProgressHint = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                    showRecognitionInProgressHint = false
+                                                }
+                                            }
+                                        } else {
+                                            showUpload = true
+                                            songsList.showSearch = false
+                                        }
                                     }
                                 }
                                 .frame(width: 45, height: 45)
@@ -98,13 +110,22 @@ struct AllSongs: View {
                                     if isLimited && songCounter == 3 {
                                         showPaywall = true
                                     } else {
-                                        recordPanelPresented.toggle()
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                            withAnimation {
-                                                if !songsList.recordStarted {
-                                                    songsList.showSearch = false
-                                                    songsList.recognitionInProgress = true
-                                                    songsList.startRecording()
+                                        if songsList.recognitionInProgress {
+                                            if !showRecognitionInProgressHint {
+                                                showRecognitionInProgressHint = true
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                                    showRecognitionInProgressHint = false
+                                                }
+                                            }
+                                        } else {
+                                            recordPanelPresented.toggle()
+                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                                                withAnimation {
+                                                    if !songsList.recordStarted {
+                                                        songsList.showSearch = false
+                                                        songsList.recognitionInProgress = true
+                                                        songsList.startRecording()
+                                                    }
                                                 }
                                             }
                                         }
@@ -151,7 +172,7 @@ struct AllSongs: View {
             
             // Layer 5: Primary button
             VStack {
-                if initialAnimationStep == 2 {
+                if initialAnimationStep == 2 && !songsList.showSearch {
                     NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted) {
                         if isLimited && songCounter == 3 {
                             showPaywall = true
@@ -162,7 +183,16 @@ struct AllSongs: View {
                                     songsList.stopRecording()
                                 }
                             } else {
-                                youtubeViewPresented = true
+                                if songsList.recognitionInProgress {
+                                    if !showRecognitionInProgressHint {
+                                        showRecognitionInProgressHint = true
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+                                            showRecognitionInProgressHint = false
+                                        }
+                                    }
+                                } else {
+                                    youtubeViewPresented = true
+                                }
                             }
                         }
                     }
@@ -172,6 +202,29 @@ struct AllSongs: View {
             }
             .frame(height: 100)
             
+            if showRecognitionInProgressHint {
+                VStack(spacing: 0) {
+                    Text("Extracting chords and lyrics.\nThis won't take long.")
+                        .lineLimit(2)
+                        .padding()
+                        .frame(width: 300, height: 80)
+                        .foregroundStyle(.gray5)
+                        .fontWeight(.semibold)
+                        .font(.system(size: 16))
+                        .opacity(0.7)
+                        .multilineTextAlignment(.center)
+                        .background {
+                            RoundedRectangle(cornerRadius: 10)
+                                .fill(Color.white)
+                        }
+                    Triangle()
+                        .fill(Color.white)
+                        .frame(width: 30, height: 15)
+                        .rotationEffect(Angle(degrees: 180.0))
+                    Spacer()
+                }
+                .frame(height: 225)
+            }
         }
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -243,7 +296,7 @@ struct AllSongs: View {
                 }
             })
         }
-        .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf, .mp3]) { result in
+        .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf, .mp3, .mpeg4Audio, .wav]) { result in
             switch result {
             case .success(let file):
                 self.songsList.recognitionInProgress = true

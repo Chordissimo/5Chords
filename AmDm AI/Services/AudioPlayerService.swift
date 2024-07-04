@@ -21,32 +21,17 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     }
     
     func setupAudio(url: URL) -> Bool {
-//        @AppStorage("fileBookmark") var fileBookmark: Data?
         var _url = url
-        
         let isReachable = (try? url.checkResourceIsReachable()) ?? false
-//        let exists = FileManager.default.fileExists(atPath: url.absoluteString)
-//        print("original url:",isReachable,exists,url)
-        
         do {
             if !isReachable {
                 let filename = String(url.absoluteString.split(separator: "/").last ?? "")
                 let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
                 _url = documentsPath.appendingPathComponent(filename)
-//                let a = (try? _url.checkResourceIsReachable()) ?? false
-//                let exists1 = FileManager.default.fileExists(atPath: _url.absoluteString)
-//                print("modify url:",a,exists1,_url)
-//                if !a {
-//                    var s = true
-//                    _url = try URL(resolvingBookmarkData: fileBookmark!, options: .withoutImplicitStartAccessing, relativeTo: nil, bookmarkDataIsStale: &s)
-//                    let b = (try? _url.checkResourceIsReachable()) ?? false
-//                    let exists2 = FileManager.default.fileExists(atPath: _url.absoluteString)
-//                    print("bookmarl url:",b,exists2,_url)
-//                }
             }
-//            let audioSession = AVAudioSession.sharedInstance()
-//            try audioSession.setCategory(.playback, mode: .default)
-//            try audioSession.setActive(true)
+            let audioSession = AVAudioSession.sharedInstance()
+            try audioSession.setCategory(.playback, mode: .default)
+            try audioSession.setActive(true)
             self.audioPlayer = try AVAudioPlayer(contentsOf: _url)
         } catch {
             print("Audio player init:", error)

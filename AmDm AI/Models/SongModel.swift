@@ -51,8 +51,9 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     @Published var elapsedTime: TimeInterval = 0
     @Published var progress: Float = 0.0
     @Published var recognitionStatus: RecognitionStatus = .ok
+    @Published var transposition: Int = 0
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "") {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -65,6 +66,7 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         self.tempo = tempo
         self.isProcessing = isProcessing
         self.isFakeLoaderVisible = isFakeLoaderVisible
+        self.transposition = transposition
 
         if self.songType == .youtube {
             if self.url.absoluteString != "" {
@@ -151,13 +153,14 @@ final class SongsList: ObservableObject {
                         id: song.id,
                         name: songName == "" ? self.getNewSongName() : songName,
                         url: song.url.absoluteString,
-                        duration: self.duration,
+                        duration: TimeInterval(response.duration),
                         chords: response.chords,
                         text: response.text ?? [],
                         tempo: response.tempo,
                         songType: songName == "" ? .recorded : .localFile,
                         ext: ext,
-                        thumbnailUrl: ""
+                        thumbnailUrl: "",
+                        transposition: 0
                     )
                     self.songs[i].name = dbSong.name
                     self.songs[i].duration = dbSong.duration
@@ -181,16 +184,16 @@ final class SongsList: ObservableObject {
         recordingService.recordingTimeCallback = { [weak self] time, signal in
             guard let self = self else { return }
             self.duration = time
-//            if Int(time * 100) % 5 == 0 {
-//                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
-//                    self.decibelChanges.remove(at: 0)
-//                }
-//                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
-//                    self.decibelChanges.append(0)
-//                } else {
-//                    self.decibelChanges.append(max(1,min(signal,120)))
-//                }
-//            }
+            if Int(time * 100) % 5 == 0 {
+                if self.decibelChanges.count > Int(UIScreen.main.bounds.width / 2) - 20 {
+                    self.decibelChanges.remove(at: 0)
+                }
+                if self.decibelChanges.count > 0 && self.decibelChanges.last! != 0 {
+                    self.decibelChanges.append(0)
+                } else {
+                    self.decibelChanges.append(max(1,min(signal,120)))
+                }
+            }
         }
     }
     
@@ -231,7 +234,8 @@ final class SongsList: ObservableObject {
                     tempo: response.tempo,
                     songType: .youtube,
                     ext: "",
-                    thumbnailUrl: thumbnailUrl
+                    thumbnailUrl: thumbnailUrl,
+                    transposition: 0
                 )
                 self.songs[i].name = dbSong.name
                 self.songs[i].duration = dbSong.duration

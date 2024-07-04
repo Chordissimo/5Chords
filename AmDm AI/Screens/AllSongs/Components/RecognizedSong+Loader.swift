@@ -26,6 +26,7 @@ struct RecognizedSongView: View {
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
                                 .padding(.bottom, 3)
+                                .lineLimit(1)
                                 .opacityAnimaion()
                             
                             RoundedRectangle(cornerRadius: 4)
@@ -92,6 +93,7 @@ struct RecognizedSongView: View {
                             .foregroundStyle(Color.white)
                             .fontWeight(.semibold)
                             .font(.system(size: 18))
+                            .lineLimit(1)
                         
                         Text(formatTime(song.duration, precision: .seconds))
                             .font(.system(size: 14))
@@ -116,6 +118,7 @@ struct RecognizedSongView: View {
                     }
                 }
             }
+            Divider()
         }
     }
 }
