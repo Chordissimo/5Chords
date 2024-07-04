@@ -49,6 +49,12 @@
             ReferencedContainer = "container:AmDm AI.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <CommandLineArguments>
+         <CommandLineArgument
+            argument = "-FIRDebugEnabled"
+            isEnabled = "YES">
+         </CommandLineArgument>
+      </CommandLineArguments>
       <StoreKitConfigurationFileReference
          identifier = "../../AmDm AI/Screens/Paywall/Models/Pro Chords.storekit">
       </StoreKitConfigurationFileReference>

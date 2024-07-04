@@ -48,6 +48,14 @@
 		C3A9935D2C35737100C2D8B5 /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A9935C2C35737100C2D8B5 /* OptionsView.swift */; };
 		C3A9935F2C3573AD00C2D8B5 /* NavbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */; };
 		C3A993612C35761400C2D8B5 /* ChordShapesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A993602C35761400C2D8B5 /* ChordShapesView.swift */; };
+		C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */; };
+		C3A9939F2C36C83100C2D8B5 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = C3A9939E2C36C83100C2D8B5 /* FirebaseAnalytics */; };
+		C3A993A12C36C83100C2D8B5 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = C3A993A02C36C83100C2D8B5 /* FirebaseAnalyticsOnDeviceConversion */; };
+		C3A993A32C36C83100C2D8B5 /* FirebaseAnalyticsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = C3A993A22C36C83100C2D8B5 /* FirebaseAnalyticsSwift */; };
+		C3A993A52C36C83100C2D8B5 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = C3A993A42C36C83100C2D8B5 /* FirebaseAnalyticsWithoutAdIdSupport */; };
+		C3A993A72C36C83100C2D8B5 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = C3A993A62C36C83100C2D8B5 /* FirebaseAppCheck */; };
+		C3A993A92C36C83100C2D8B5 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = C3A993A82C36C83100C2D8B5 /* FirebaseCrashlytics */; };
+		C3A993AB2C36D2F200C2D8B5 /* AppCheckService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A993AA2C36D2F200C2D8B5 /* AppCheckService.swift */; };
 		C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */; };
 		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
 		C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */; };
@@ -111,6 +119,9 @@
 		C3A9935C2C35737100C2D8B5 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
 		C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavbarView.swift; sourceTree = "<group>"; };
 		C3A993602C35761400C2D8B5 /* ChordShapesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordShapesView.swift; sourceTree = "<group>"; };
+		C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C3A993AA2C36D2F200C2D8B5 /* AppCheckService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCheckService.swift; sourceTree = "<group>"; };
+		C3A993AC2C36D54E00C2D8B5 /* AmDm AIRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AmDm AIRelease.entitlements"; sourceTree = "<group>"; };
 		C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappingHStack.swift; sourceTree = "<group>"; };
 		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
 		C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAPIService.swift; sourceTree = "<group>"; };
@@ -138,8 +149,14 @@
 			files = (
 				C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */,
 				C39B6D892BEFA520002279E3 /* AudioKit in Frameworks */,
+				C3A9939F2C36C83100C2D8B5 /* FirebaseAnalytics in Frameworks */,
 				B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */,
+				C3A993A72C36C83100C2D8B5 /* FirebaseAppCheck in Frameworks */,
+				C3A993A52C36C83100C2D8B5 /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
+				C3A993A32C36C83100C2D8B5 /* FirebaseAnalyticsSwift in Frameworks */,
+				C3A993A12C36C83100C2D8B5 /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
 				C3DC6FDD2BFE1E3F00EA0095 /* YouTubePlayerKit in Frameworks */,
+				C3A993A92C36C83100C2D8B5 /* FirebaseCrashlytics in Frameworks */,
 				B79898A12BCABA030052C127 /* Alamofire in Frameworks */,
 				C39B6D8C2BEFA6DF002279E3 /* SoundpipeAudioKit in Frameworks */,
 				B79898A62BCAC2930052C127 /* Realm in Frameworks */,
@@ -167,6 +184,7 @@
 				C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */,
 				C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */,
 				C34D48722C298E810008E5CE /* YouTubePlayerService.swift */,
+				C3A993AA2C36D2F200C2D8B5 /* AppCheckService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -277,8 +295,10 @@
 		C39C87342BB0073B00EBF82C /* AmDm AI */ = {
 			isa = PBXGroup;
 			children = (
+				C3A993AC2C36D54E00C2D8B5 /* AmDm AIRelease.entitlements */,
 				C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
+				C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */,
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
 				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
 				C3B54DFE2BB1AB0A000DCF15 /* Models */,
@@ -429,6 +449,12 @@
 				C39B6D8B2BEFA6DF002279E3 /* SoundpipeAudioKit */,
 				C3DC6FDC2BFE1E3F00EA0095 /* YouTubePlayerKit */,
 				C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */,
+				C3A9939E2C36C83100C2D8B5 /* FirebaseAnalytics */,
+				C3A993A02C36C83100C2D8B5 /* FirebaseAnalyticsOnDeviceConversion */,
+				C3A993A22C36C83100C2D8B5 /* FirebaseAnalyticsSwift */,
+				C3A993A42C36C83100C2D8B5 /* FirebaseAnalyticsWithoutAdIdSupport */,
+				C3A993A62C36C83100C2D8B5 /* FirebaseAppCheck */,
+				C3A993A82C36C83100C2D8B5 /* FirebaseCrashlytics */,
 			);
 			productName = "AmDm AI";
 			productReference = C39C87322BB0073B00EBF82C /* AmDm AI.app */;
@@ -465,6 +491,7 @@
 				C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */,
 				C3DC6FDB2BFE1E3F00EA0095 /* XCRemoteSwiftPackageReference "YouTubePlayerKit" */,
 				C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */,
+				C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = C39C87332BB0073B00EBF82C /* Products */;
 			projectDirPath = "";
@@ -482,6 +509,7 @@
 			files = (
 				C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */,
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
+				C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,6 +545,7 @@
 				C3AC1BBC2C22A33D000DE8E5 /* LyricsViewModel.swift in Sources */,
 				C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */,
+				C3A993AB2C36D2F200C2D8B5 /* AppCheckService.swift in Sources */,
 				C3F0B62A2BF2258100866D2B /* MetronomeModel.swift in Sources */,
 				C37D583D2BFB2052001DA8E1 /* SplashScreen.swift in Sources */,
 				C3DC6FDF2C02EF6400EA0095 /* Tunings.swift in Sources */,
@@ -722,14 +751,12 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = "AmDm AI/AmDm_AI.entitlements";
+				CODE_SIGN_ENTITLEMENTS = "AmDm AI/AmDm AIRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
+				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"AmDm AI/Preview Content\"";
-				DEVELOPMENT_TEAM = "";
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YLUV9GUS77;
+				DEVELOPMENT_TEAM = YLUV9GUS77;
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -758,7 +785,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.chords-ai.app";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = antons_provisioning_profile;
 				SDKROOT = auto;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -824,6 +850,14 @@
 				minimumVersion = 5.6.1;
 			};
 		};
+		C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 10.28.1;
+			};
+		};
 		C3AC1BA12C105EE8000DE8E5 /* XCRemoteSwiftPackageReference "SwiftyGuitarChords" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/antm677/SwiftyGuitarChords.git";
@@ -867,6 +901,36 @@
 			isa = XCSwiftPackageProductDependency;
 			package = C39B6D8A2BEFA6DF002279E3 /* XCRemoteSwiftPackageReference "SoundpipeAudioKit" */;
 			productName = SoundpipeAudioKit;
+		};
+		C3A9939E2C36C83100C2D8B5 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		C3A993A02C36C83100C2D8B5 /* FirebaseAnalyticsOnDeviceConversion */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsOnDeviceConversion;
+		};
+		C3A993A22C36C83100C2D8B5 /* FirebaseAnalyticsSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsSwift;
+		};
+		C3A993A42C36C83100C2D8B5 /* FirebaseAnalyticsWithoutAdIdSupport */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalyticsWithoutAdIdSupport;
+		};
+		C3A993A62C36C83100C2D8B5 /* FirebaseAppCheck */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAppCheck;
+		};
+		C3A993A82C36C83100C2D8B5 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = C3A9939D2C36C83100C2D8B5 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
 		};
 		C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */ = {
 			isa = XCSwiftPackageProductDependency;
