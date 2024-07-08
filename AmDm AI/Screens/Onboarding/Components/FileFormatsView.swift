@@ -58,7 +58,7 @@ struct FileFormatsView: View {
                     .fontWeight(.semibold)
                     .fontWidth(.expanded)
                     .frame(width: 1, height: 40)
-                Text("AAC")
+                Text("And more")
                     .foregroundColor(.gray30)
                     .fontWeight(.semibold)
                     .fontWidth(.expanded)

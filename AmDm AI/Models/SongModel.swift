@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import AVFoundation
 
 enum SongType: String {
     case localFile = "uploaded"
@@ -18,6 +19,7 @@ enum SongType: String {
 enum RecognitionStatus {
     case ok
     case serverError
+    case videoTooLong
 }
 
 class Song: ObservableObject, Identifiable, Equatable, Hashable {
@@ -268,7 +270,17 @@ final class SongsList: ObservableObject {
     }
     
     func importFile(url: URL) {
-        recordingService.importFile(url: url)
+        self.recordingService.importFile(url: url)
+    }
+    
+    func getDurationFromFile(url: URL, completion: @escaping (Double) -> Void) async throws {
+        let asset = AVURLAsset(url: URL(fileURLWithPath: url.absoluteString))
+        do {
+            let duration = try await asset.load(.duration)
+            completion(Double(CMTimeGetSeconds(duration)))
+        } catch {
+            print(error)
+        }
     }
     
     func getSongIndexByID(id: String) -> Int {

@@ -24,8 +24,6 @@ class RecognitionApiService {
                 },
                 receiveValue: { tokenString in
                     self.token = tokenString
-                    // Continue building network request with the token and executing the request.
-                    // See code snippet below
                 }
             )
             .store(in: &cancellables)
@@ -50,10 +48,8 @@ class RecognitionApiService {
             multipartFormData: { multipartFormData in
                 multipartFormData.append(url, withName: "file")
             },
-            to: "http://" + server_ip + "/upload"
-//            ,headers: headers
-//                to: "http://192.168.0.4:8000/upload" // Anton
-//                to: "http://192.168.10.8:8000/upload" // Marat
+            to: "http://" + server_ip + "/upload",
+            headers: headers
         )
         .validate()
         .responseDecodable(of: Response.self) { response in
@@ -68,16 +64,14 @@ class RecognitionApiService {
     
     func recognizeAudioFromYoutube(url: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
         let headers: HTTPHeaders = [.authorization(bearerToken: self.token)]
-
+        
         let requestUrl = "http://" + server_ip + "/upload/youtube"
-//          let requestUrl = "http://192.168.0.4:8000/upload/youtube" // Anton
-//          let requestUrl = "http://192.168.10.8:8000/upload/youtube" //Marat
         AF.request(
             requestUrl,
             method: .post,
             parameters: ["url": url],
-            encoding: JSONEncoding.default
-//            ,headers: headers
+            encoding: JSONEncoding.default,
+            headers: headers
         )
         .validate()
         .responseDecodable(of: Response.self) { response in
