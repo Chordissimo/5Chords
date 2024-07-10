@@ -13,7 +13,7 @@ import Combine
 class RecognitionApiService {
     @AppStorage("server_ip") private var server_ip: String = "64.226.99.83:80"
     private var cancellables = Set<AnyCancellable>()
-    private var token: String = ""
+    @Published var token: String = ""
     
     init() {
         AppCheckManager.shared.generateTokenAppCheck()
