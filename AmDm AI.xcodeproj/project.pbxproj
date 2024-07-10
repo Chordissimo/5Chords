@@ -15,6 +15,9 @@
 		B79898A62BCAC2930052C127 /* Realm in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A52BCAC2930052C127 /* Realm */; };
 		B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A72BCAC2930052C127 /* RealmSwift */; };
 		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
+		C30ADA5F2C38F4AE00CC9F9A /* LogEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */; };
+		C30ADA612C3AB1EB00CC9F9A /* GoogleYoutubeDataAPI-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C30ADA602C3AB1EB00CC9F9A /* GoogleYoutubeDataAPI-Info.plist */; };
+		C30ADA632C3ADB4800CC9F9A /* FormatDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C34D48732C298E810008E5CE /* YouTubePlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48722C298E810008E5CE /* YouTubePlayerService.swift */; };
 		C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48742C2DA6970008E5CE /* UniPlayer.swift */; };
@@ -84,6 +87,9 @@
 		B798989B2BCAAADB0052C127 /* RecordingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingService.swift; sourceTree = "<group>"; };
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
+		C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvents.swift; sourceTree = "<group>"; };
+		C30ADA602C3AB1EB00CC9F9A /* GoogleYoutubeDataAPI-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleYoutubeDataAPI-Info.plist"; sourceTree = "<group>"; };
+		C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDuration.swift; sourceTree = "<group>"; };
 		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		C34D48722C298E810008E5CE /* YouTubePlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayerService.swift; sourceTree = "<group>"; };
@@ -171,6 +177,8 @@
 			children = (
 				B75A6FE02BE0F882001153ED /* Int.swift */,
 				C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */,
+				C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */,
+				C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -299,6 +307,7 @@
 				C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */,
+				C30ADA602C3AB1EB00CC9F9A /* GoogleYoutubeDataAPI-Info.plist */,
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
 				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
 				C3B54DFE2BB1AB0A000DCF15 /* Models */,
@@ -507,6 +516,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C30ADA612C3AB1EB00CC9F9A /* GoogleYoutubeDataAPI-Info.plist in Resources */,
 				C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */,
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
 				C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */,
@@ -549,6 +559,7 @@
 				C3F0B62A2BF2258100866D2B /* MetronomeModel.swift in Sources */,
 				C37D583D2BFB2052001DA8E1 /* SplashScreen.swift in Sources */,
 				C3DC6FDF2C02EF6400EA0095 /* Tunings.swift in Sources */,
+				C30ADA632C3ADB4800CC9F9A /* FormatDuration.swift in Sources */,
 				C3DC6FCF2BFBB40000EA0095 /* FileFormatsView.swift in Sources */,
 				C3693C082BF6371D00DC137B /* SongList.swift in Sources */,
 				B75A6FE12BE0F882001153ED /* Int.swift in Sources */,
@@ -565,6 +576,7 @@
 				B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */,
 				C34D48782C2EBB830008E5CE /* MoreShapesView.swift in Sources */,
 				C357AB052BB7D50900440554 /* EditableText.swift in Sources */,
+				C30ADA5F2C38F4AE00CC9F9A /* LogEvents.swift in Sources */,
 				C37D583B2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift in Sources */,
 				C3B3AD362BE79C78000EB30F /* PlaybackTimelineView.swift in Sources */,
 				B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */,

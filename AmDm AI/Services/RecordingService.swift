@@ -82,6 +82,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
         var result: Bool = true
         var songName: String = ""
         var ext: String = ""
+
         do {
             let fn = String(url.absoluteString.split(separator: "/").last ?? "")
             let filenameWithExt = fn.removingPercentEncoding ?? fn

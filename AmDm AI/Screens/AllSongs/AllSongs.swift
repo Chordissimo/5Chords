@@ -7,6 +7,7 @@
 //
 import SwiftUI
 import AVFoundation
+import Firebase
 
 struct AllSongs: View {
     @AppStorage("isLimited") var isLimited: Bool = false
@@ -23,6 +24,8 @@ struct AllSongs: View {
     @State var initialAnimationStep = 0
     @State var showRecognitionInProgressHint = false
     @ObservedObject var songsList = SongsList()
+    @State var showError: Bool = false
+    @State var errorMessage: String = ""
     let width: CGFloat
     
     init() {
@@ -289,24 +292,56 @@ struct AllSongs: View {
         .fullScreenCover(isPresented: $youtubeViewPresented) {
             YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
                 self.youtubeViewPresented = false
-                self.songsList.recognitionInProgress = true
                 let ytService = YouTubeAPIService()
-                ytService.getVideoData(videoUrl: resultUrl) { title, thumbnail in
-                    songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
+                ytService.getVideoData(videoUrl: resultUrl) { title, thumbnail, duration in
+                    if duration == 0 {
+                        self.showError = true
+                        self.errorMessage = "We couldn't process the video you selected."
+                    } else if duration > 600 {
+                        self.showError = true
+                        self.errorMessage = "The selected video is too long. The maximum video duration we can hadnle is 10 minutes."
+                    } else {
+                        self.songsList.recognitionInProgress = true
+                        self.songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
+                    }
                 }
             })
         }
-        .fileImporter(isPresented: $showUpload, allowedContentTypes: [.pdf, .mp3, .mpeg4Audio, .wav]) { result in
+        .fileImporter(isPresented: $showUpload, allowedContentTypes: [.mp3, .mpeg4Audio, .wav, .aiff, .avi, .mpeg, .mpeg4Movie, .appleProtectedMPEG4Audio, .appleProtectedMPEG4Video]) { result in
             switch result {
             case .success(let file):
-                self.songsList.recognitionInProgress = true
                 if file.startAccessingSecurityScopedResource() {
-                    songsList.importFile(url: file)
+                    do {
+                        let attr = try FileManager.default.attributesOfItem(atPath: file.path(percentEncoded: false))
+                        if let size = attr[FileAttributeKey.size] as? UInt64 {
+                            if size == 0 {
+                                self.showError = true
+                                self.errorMessage = "No audio data found in the file you are trying to upload."
+                            } else if size > 31457280 {
+                                self.showError = true
+                                self.errorMessage = "The file you are trying to upload is too big. The maximum file size we can hadnle is 30Mb."
+                            } else {
+                                self.songsList.recognitionInProgress = true
+                                self.songsList.importFile(url: file)
+                            }
+                        }
+                    } catch {
+                        print(error)
+                    }
                 }
                 file.stopAccessingSecurityScopedResource()
             case .failure(let error):
                 print(error.localizedDescription)
             }
+        }
+        .alert("Upload error", isPresented: $showError) {
+            Button {
+                showError = false
+            } label: {
+                Text("Ok")
+            }
+        } message: {
+            Text(errorMessage)
         }
     }
 }
@@ -338,6 +373,10 @@ struct NavigationPrimaryButton: View {
                     withAnimation {
                         action()
                     }
+//                    Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
+//                        AnalyticsParameterItemID: EventID.recognizeFromYoutube.rawValue,
+//                        AnalyticsParameterItemName: "RecognizeFromYoutube"
+//                    ])
                 } label: {
                     ZStack {
                         Circle()
@@ -359,6 +398,7 @@ struct NavigationPrimaryButton: View {
                         }
                     }
                 }
+//                .logEvent(screen: "AllSongs", event: .recognizeFromYoutube, title: "RecognizeFromYoutube")
             }
             .clipShape(Rectangle())
             .frame(width: geometry.size.width)
