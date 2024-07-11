@@ -112,7 +112,7 @@ final class SongsList: ObservableObject {
     @Published var showSearch: Bool = false
     @Published var recognitionInProgress: Bool = false
 
-    private let recordingService = RecordingService()
+    let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
     let databaseService = DatabaseService()
     private var cancellables = Set<AnyCancellable>()
@@ -127,6 +127,7 @@ final class SongsList: ObservableObject {
             guard let ext = ext else { return }
             @AppStorage("isLimited") var isLimited: Bool = false
             @AppStorage("songCounter") var songCounter: Int = 0
+            self.recordStarted = false
 
             let song = Song(
                 id: UUID().uuidString,
@@ -258,14 +259,14 @@ final class SongsList: ObservableObject {
         }
     }
     
-    func startRecording() {
-        recordingService.startRecording()
-        recordStarted = true
-        decibelChanges = [Float]()
+    func startRecording(conmpletion: @escaping (Bool) -> Void) {
+        recordingService.startRecording() { permissionGranted in
+            conmpletion(permissionGranted)
+        }
     }
     
-    func stopRecording() {
-        recordingService.stopRecording()
+    func stopRecording(cancel: Bool = false) {
+        recordingService.stopRecording(cancel: cancel)
         recordStarted = false
     }
     
