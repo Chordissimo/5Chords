@@ -30,7 +30,7 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
         case end
     }
     
-    init(id: String, chord: String, start: Int, end: Int, uiChord: UIChord? = nil) {
+    init(id: String = UUID().uuidString, chord: String, start: Int, end: Int, uiChord: UIChord? = nil) {
         self.chord = chord
         self.start = start
         self.end = end
@@ -94,7 +94,12 @@ class UIChord: Identifiable, Hashable {
             self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
         }
     }
-
+    
+    init?(key: Chords.Key, suffix: Chords.Suffix) {
+        self.key = key
+        self.suffix = suffix
+        self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
+    }
     
     private func getKey(from string: String) -> Chords.Key? {
         switch string {
@@ -158,9 +163,109 @@ class UIChord: Identifiable, Hashable {
         case "m/f#": return .minorSlashFSharp
         case "m/g": return .minorSlashG
         case "m/g#": return .minorSlashGSharp
+        case "dim7": return .dimSeven
+        case "sus2": return .susTwo
+        case "sus4": return .susFour
+        case "7sus4": return .sevenSusFour
+        case "5": return .five
+        case "alt": return .altered
+        case "6/9": return .sixNine
+        case "7b5": return .sevenFlatFive
+        case "aug7": return .augSeven
+        case "9": return .nine
+        case "9b5": return .nineFlatFive
+        case "aug9": return .augNine
+        case "m9": return .sevenFlatNine
+        case "7#9": return .sevenSharpNine
+        case "11": return .eleven
+        case "9#11": return .nineSharpEleven
+        case "13": return .thirteen
+        case "maj7b5": return .majorSevenFlatFive
+        case "maj7#5": return .majorSevenSharpFive
+        case "7#5": return .sevenSharpFive
+        case "maj9": return .majorNine
+        case "maj11": return .majorEleven
+        case "maj13": return .majorThirteen
+        case "m6/9": return .minorSixNine
+        case "mmaj7": return .minorMajorSeven
+        case "mmaj7b5": return .minorMajorSeventFlatFive
+        case "mmaj9": return .minorMajorNine
+        case "mmaj11": return .minorMajorEleven
+        case "add9": return .addNine
+        case "madd9": return .minorAddNine
         default: return nil
         }
     }
+    
+    private func getSuffixString(from suffix: Chords.Suffix) -> String {
+        switch suffix {
+        case .major: return ""
+        case .minor: return "m"
+        case .dim: return "dim"
+        case .dimSeven: return "dim7"
+        case .susTwo: return "sus2"
+        case .susFour: return "sus4"
+        case .sevenSusFour: return "7sus4"
+        case .five: return "5"
+        case .altered: return "alt"
+        case .aug: return "aug"
+        case .six: return "6"
+        case .sixNine: return "6/9"
+        case .seven: return "7"
+        case .sevenFlatFive: return "7b5"
+        case .augSeven: return "aug7"
+        case .nine: return "9"
+        case .nineFlatFive: return "9b5"
+        case .augNine: return "aug9"
+        case .sevenFlatNine: return "m9"
+        case .sevenSharpNine: return "7#9"
+        case .eleven: return "11"
+        case .nineSharpEleven: return "9#11"
+        case .thirteen: return "13"
+        case .majorSeven: return "maj7"
+        case .majorSevenFlatFive: return "maj7b5"
+        case .majorSevenSharpFive: return "maj7#5"
+        case .sevenSharpFive: return "7#5"
+        case .majorNine: return "maj9"
+        case .majorEleven: return "maj11"
+        case .majorThirteen: return "maj13"
+        case .minorSix: return "m6"
+        case .minorSixNine: return "m6/9"
+        case .minorSeven: return "m7"
+        case .minorSevenFlatFive: return "m7b5"
+        case .minorNine: return "m9"
+        case .minorEleven: return "m11"
+        case .minorMajorSeven: return "mmaj7"
+        case .minorMajorSeventFlatFive: return "mmaj7b5"
+        case .minorMajorNine: return "mmaj9"
+        case .minorMajorEleven: return "mmaj11"
+        case .addNine: return "add9"
+        case .minorAddNine: return "madd9"
+        case .slashE: return "/e"
+        case .slashF: return "/f"
+        case .slashFSharp: return "/f#"
+        case .slashG: return "/g"
+        case .slashGSharp: return "/g#"
+        case .slashA: return "/a"
+        case .slashBFlat: return "/bb"
+        case .slashB: return "/b"
+        case .slashC: return "/c"
+        case .slashCSharp: return "/c#"
+        case .minorSlashB: return "m/b"
+        case .minorSlashC: return "m/c"
+        case .minorSlashCSharp: return "m/c#"
+        case .slashD: return "/d"
+        case .minorSlashD: return "m/d"
+        case .slashDSharp: return "/d#"
+        case .minorSlashDSharp: return "m/d#"
+        case .minorSlashE: return "m/e"
+        case .minorSlashF: return "m/f"
+        case .minorSlashFSharp: return "m/f#"
+        case .minorSlashG: return "m/g"
+        case .minorSlashGSharp: return "m/g#"
+        }
+    }
+
     
     public static func transpose(key: Chords.Key, shift: Int) -> Chords.Key {
         guard shift != 0 else { return key }
@@ -186,10 +291,14 @@ class UIChord: Identifiable, Hashable {
         return resultKey
     }
     
-    func getChordString() -> String {
+    func getChordString(flatSharpSymbols: Bool = true) -> String {
         var result = ""
         if let k = self.key, let s = self.suffix {
-            result = k.display.symbol + s.display.short
+            if flatSharpSymbols {
+                result = k.display.symbol + s.display.short
+            } else {
+                result = k.rawValue + getSuffixString(from: s)
+            }
         }
         return result
     }

@@ -39,6 +39,25 @@ class AlignedTextModel: Object {
     }
 }
 
+class DBInterval: Object {
+    @Persisted var id = UUID().uuidString
+    @Persisted var start: Int
+    @Persisted var chord: String
+    @Persisted var words: String
+    @Persisted var chordIndex: Int
+    @Persisted var limitLines: Int
+    @Persisted var width: Float
+    
+    convenience init(id: String = UUID().uuidString, start: Int, chord: String, words: String, chordIndex: Int, limitLines: Int, width: Float) {
+        self.init()
+        self.id = id
+        self.start = start
+        self.chord = chord
+        self.words = words
+        self.width = width
+    }
+}
+
 
 class SongModel: Object {
     @Persisted var id = UUID().uuidString
@@ -48,6 +67,7 @@ class SongModel: Object {
     @Persisted var created: Date
     @Persisted var chords: List<ChordModel>
     @Persisted var text: List<AlignedTextModel>
+    @Persisted var intervals: List<DBInterval>
     @Persisted var songType: String
     @Persisted var ext: String
     @Persisted var tempo: Float
@@ -67,7 +87,7 @@ class DatabaseService {
     lazy var realm = try! Realm()
     
     init() {
-//        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
     private func writeChords(chords: [APIChord]) -> List<ChordModel> {
@@ -94,19 +114,21 @@ class DatabaseService {
         return realmTextList
     }
     
-    func writeSong(
-        id: String,
-        name: String,
-        url: String,
-        duration: TimeInterval,
-        chords: [APIChord],
-        text: [AlignedText],
-        tempo: Float,
-        songType: SongType = .recorded,
-        ext: String,
-        thumbnailUrl: String,
-        transposition: Int
-    ) -> Song {
+//    private func writeIntervals(intervals: [Interval]) -> List<DBInterval> {
+//        let dbIntervals = intervals.map {
+//            let words = $0.words.map { w in w.text }.joined()
+//            let chord = $0.chord.uiChord?.getChordString(flatSharpSymbols: false) ?? "N"
+//            return DBInterval(id: $0.id.uuidString, start: $0.start, chord: chord, words: words, chordIndex: $0.chordIndex, limitLines: $0.limitLines, width: Float($0.width))
+//        }
+//        try! realm.write {
+//            realm.add(dbIntervals)
+//        }
+//        let realmIntervalsList = List<DBInterval>()
+//        realmIntervalsList.append(objectsIn: dbIntervals)
+//        return realmIntervalsList
+//    }
+
+    func writeSong(id: String, name: String, url: String, duration: TimeInterval, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .recorded, ext: String, thumbnailUrl: String, transposition: Int) -> Song {
         
         let realmChordList = writeChords(chords: chords)
         let realmTextList = writeText(text: text)
@@ -118,6 +140,7 @@ class DatabaseService {
         song.duration = duration
         song.chords = realmChordList
         song.text = realmTextList
+        song.intervals = List<DBInterval>()
         song.created = Date()
         song.songType = songType.rawValue
         song.tempo = tempo
@@ -158,23 +181,90 @@ class DatabaseService {
         }
     }
     
+    func updateIntervals(song: Song) {
+        let songSearchResults = realm.objects(SongModel.self).filter { s in
+            s.id == song.id
+        }
+        let realmIntervalsList = List<DBInterval>()
+        realmIntervalsList.append(objectsIn: song.intervals.map {
+            let words = $0.words.map { w in w.text }.joined()
+            let chord = $0.chord.uiChord?.getChordString(flatSharpSymbols: false) ?? "N"
+            return DBInterval(
+                id: $0.id.uuidString,
+                start: $0.start,
+                chord: chord,
+                words: words,
+                chordIndex: $0.chordIndex,
+                limitLines: $0.limitLines,
+                width: Float($0.width)
+            )
+        })
+        
+        if realmIntervalsList.count > 0 {
+            let realm = try! Realm()
+            let intervalsList = song.intervals.map { $0.id.uuidString }
+            let intervalsSearchResults = realm.objects(DBInterval.self).filter { intervalsList.contains($0.id) }
+            if let songObj = songSearchResults.first {
+                try! realm.write {
+                    if intervalsSearchResults.count > 0 {
+                        realm.delete(intervalsSearchResults)
+                    }
+                    songObj.intervals = realmIntervalsList
+                }
+            }
+        }
+    }
+    
+    func readIntervals(dbIntervals: List<DBInterval>) -> [Interval] {
+        var intervals: [Interval] = []
+        for dbInterval in dbIntervals {
+            let words = [Word(start: dbInterval.start, text: dbInterval.words)]
+            let uiChord = UIChord(chord: dbInterval.chord)
+            let chord = APIChord(chord: dbInterval.chord, start: dbInterval.start, end: 0, uiChord: uiChord)
+            intervals.append(Interval(
+                id: .init(uuidString: dbInterval.id)!,
+                start: dbInterval.start,
+                words: words,
+                chord: chord,
+                chordIndex: dbInterval.chordIndex,
+                limitLines: dbInterval.limitLines,
+                width: CGFloat(dbInterval.width)
+            ))
+        }
+        return intervals
+    }
+
+    
     func deleteSong(song: Song) {
         let songSearchResults = realm.objects(SongModel.self).filter { s in
             s.id == song.id
         }
         let realm = try! Realm()
         if let songObj = songSearchResults.first {
-            let chordList = song.chords.map { ch in
-                return ch.id
-            }
-            let chordSearchResults = realm.objects(ChordModel.self).filter { ch in
-                chordList.contains(ch.id)
-            }
+            let chordList = song.chords.map { $0.id }
+            let chordSearchResults = realm.objects(ChordModel.self).filter { chordList.contains($0.id) }
             if chordSearchResults.count > 0 {
                 try! realm.write {
                     realm.delete(chordSearchResults)
                 }
             }
+
+            let textList = song.text.map { $0.id }
+            let textSearchResults = realm.objects(AlignedTextModel.self).filter { textList.contains($0.id) }
+            if textSearchResults.count > 0 {
+                try! realm.write {
+                    realm.delete(textSearchResults)
+                }
+            }
+
+            let intervalsList = song.intervals.map { $0.id.uuidString }
+            let intervalsSearchResults = realm.objects(DBInterval.self).filter { intervalsList.contains($0.id) }
+            if intervalsSearchResults.count > 0 {
+                try! realm.write {
+                    realm.delete(intervalsSearchResults)
+                }
+            }
+            
             try! realm.write {
                 realm.delete(songObj)
             }
@@ -207,6 +297,7 @@ class DatabaseService {
                         end: $0.end
                     )
                 },
+                intervals: self.readIntervals(dbIntervals: $0.intervals),
                 tempo: $0.tempo,
                 songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
                 ext: $0.ext,

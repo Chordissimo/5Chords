@@ -65,10 +65,20 @@ struct AllSongs: View {
                 VStack {
                     SongList(songsList: songsList)
                 }
+                
+                //Bottom panel
                 if !songsList.showSearch {
-                    Color.customDarkGray
+                    Rectangle()
                         .ignoresSafeArea()
                         .frame(width: width, height: 100)
+                        .overlay(
+                            Rectangle()
+                                .frame(width: nil, height: 1)
+                                .foregroundColor(Color.gray20),
+                            alignment: .top
+                                
+                        )
+                        .foregroundStyle(.customDarkGray)
                 }
             }
             
@@ -232,6 +242,7 @@ struct AllSongs: View {
             }
             .frame(height: 100)
             
+            // Recognition in progress message
             if showRecognitionInProgressHint && songsList.recognitionInProgress {
                 VStack(spacing: 0) {
                     Text("Extracting chords and lyrics.\nThis won't take long.")

@@ -20,6 +20,7 @@
 		C30ADA632C3ADB4800CC9F9A /* FormatDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */; };
 		C30ADA652C3FB80300CC9F9A /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA642C3FB80300CC9F9A /* AppDefaults.swift */; };
 		C30ADA672C40523000CC9F9A /* DurationLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA662C40523000CC9F9A /* DurationLimitView.swift */; };
+		C30ADA692C41679200CC9F9A /* EditChordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA682C41679200CC9F9A /* EditChordsView.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C34D48732C298E810008E5CE /* YouTubePlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48722C298E810008E5CE /* YouTubePlayerService.swift */; };
 		C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48742C2DA6970008E5CE /* UniPlayer.swift */; };
@@ -94,6 +95,7 @@
 		C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDuration.swift; sourceTree = "<group>"; };
 		C30ADA642C3FB80300CC9F9A /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		C30ADA662C40523000CC9F9A /* DurationLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationLimitView.swift; sourceTree = "<group>"; };
+		C30ADA682C41679200CC9F9A /* EditChordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditChordsView.swift; sourceTree = "<group>"; };
 		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		C34D48722C298E810008E5CE /* YouTubePlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayerService.swift; sourceTree = "<group>"; };
@@ -210,6 +212,7 @@
 				C3A9935C2C35737100C2D8B5 /* OptionsView.swift */,
 				C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */,
 				C3A993602C35761400C2D8B5 /* ChordShapesView.swift */,
+				C30ADA682C41679200CC9F9A /* EditChordsView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -543,6 +546,7 @@
 				C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */,
 				C37D58392BFB18A3001DA8E1 /* Glow+Opacity.swift in Sources */,
 				C37D58362BFB1855001DA8E1 /* EmptySongList.swift in Sources */,
+				C30ADA692C41679200CC9F9A /* EditChordsView.swift in Sources */,
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
 				C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */,

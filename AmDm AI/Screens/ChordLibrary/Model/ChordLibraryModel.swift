@@ -82,11 +82,6 @@ class ChordLibraryModel: ObservableObject {
     }
     
     func searchChords(searchString: String) {
-        guard searchString.count >= 2 else {
-            self.chordSearchResults = []
-            return
-        }
-
         var chords: [ChordPosition] = []
         var resultChords: [ChordSearchResults] = []
         

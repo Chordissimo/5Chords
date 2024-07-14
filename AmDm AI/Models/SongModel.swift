@@ -35,6 +35,8 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     var url: URL
     var chords: [APIChord]
     var text: [AlignedText]
+    var intervals: [Interval] = []
+    var intervalModel = IntervalModel()
     var id: String
     var isVisible = true
     var duration: TimeInterval
@@ -55,7 +57,7 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     @Published var recognitionStatus: RecognitionStatus = .ok
     @Published var transposition: Int = 0
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], intervals: [Interval] = [], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -84,6 +86,10 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
                     }
                 }
             }
+        }
+        let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene
+        if let window = windowScene?.windows.first {
+            self.intervalModel.createTimeframes(song: self, maxWidth: window.screen.bounds.width - 20, fontSize: LyricsViewModelConstants.lyricsfontSize)
         }
     }
     

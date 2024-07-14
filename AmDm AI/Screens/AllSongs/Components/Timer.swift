@@ -24,6 +24,10 @@ struct TimerView: View {
                 .ignoresSafeArea(.keyboard)
                 .frame(maxWidth: .infinity)
                 .foregroundColor(Color.customDarkGray)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 16)
+                        .stroke(recordPanelPresented ? .gray20 : .customDarkGray, lineWidth: 1)
+                )
             
             HStack {
                 Spacer()

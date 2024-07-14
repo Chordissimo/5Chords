@@ -32,6 +32,7 @@ struct Navbar: View {
             Button("Save", action: {
                 self.song.name = songName
                 self.songsList.databaseService.updateSong(song: song)
+                self.song.objectWillChange.send()
             })
             Button("Cancel", role: .cancel) { }
         } message: { }

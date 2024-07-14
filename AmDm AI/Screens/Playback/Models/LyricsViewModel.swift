@@ -17,6 +17,7 @@ struct LyricsViewModelConstants {
     static let maxBottomPanelHeight = 250.0
     static let minBottomPanelHeight = 110.0
     static let moreShapesPanelHeight = 350.0
+    static let lyricsfontSize: CGFloat = 16.0
 }
 
 struct Word: Identifiable, Hashable {
@@ -54,11 +55,12 @@ struct Interval: Identifiable, Hashable {
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
-    
+        
     var id = UUID()
     var start: Int
     var words: [Word] = []
     var chord: APIChord
+    var chordIndex: Int = -1
     var limitLines: Int = 1
     var width: CGFloat = 0.0
 }
@@ -78,10 +80,41 @@ struct Timeframe: Identifiable, Hashable {
     var width: CGFloat = 0.0
 }
 
+struct AdjustedChord: Identifiable, Hashable {
+    static func == (lhs: AdjustedChord, rhs: AdjustedChord) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    var id = UUID()
+    var chord: APIChord
+    var chordIndex: Int = -1
+}
+
 class IntervalModel: ObservableObject {
     @Published var timeframes: [Timeframe] = []
     @Published var chords: [ChordShape] = []
     @Published var hideLyrics = false
+    var intervals: [Interval] {
+        var result: [Interval] = []
+        for timeframe in timeframes {
+            for interval in timeframe.intervals {
+                result.append(Interval(
+                    id: interval.id,
+                    start: interval.start,
+                    words: interval.words,
+                    chord: interval.chord,
+                    chordIndex: interval.chordIndex,
+                    limitLines: interval.limitLines,
+                    width: interval.width
+                ))
+            }
+        }
+        return result
+    }
     
     func createTimeframes(song: Song, maxWidth: CGFloat, fontSize: CGFloat) {
         guard song.chords.count > 0 && maxWidth > 0 && fontSize > 0 else { return }
@@ -90,7 +123,7 @@ class IntervalModel: ObservableObject {
         self.timeframes = []
         self.chords = []
         
-        let intervals = createIntervals(song: song, maxWidth: maxWidth, fontSize: fontSize)
+        let intervals = self.intervals.count > 0 ? self.intervals : createIntervals(song: song, maxWidth: maxWidth, fontSize: fontSize)
         var line: [Interval] = []
         var width: Double = 0
         
@@ -147,16 +180,16 @@ class IntervalModel: ObservableObject {
             let words = compactedWords.filter {
                 var condition = false
                 if i == song.chords.count - 1 {
-                    condition = $0.start >= adjustedChords[i].start
+                    condition = $0.start >= adjustedChords[i].chord.start
                 } else {
-                    condition = $0.start >= adjustedChords[i].start && $0.start < adjustedChords[i + 1].start
+                    condition = $0.start >= adjustedChords[i].chord.start && $0.start < adjustedChords[i + 1].chord.start
                 }
                 return condition
             }
-            if let _ = adjustedChords[i].uiChord {
-                adjustedChords[i].uiChord!.key = UIChord.transpose(key: adjustedChords[i].uiChord!.key!, shift: song.transposition)
+            if let _ = adjustedChords[i].chord.uiChord {
+                adjustedChords[i].chord.uiChord!.key = UIChord.transpose(key: adjustedChords[i].chord.uiChord!.key!, shift: song.transposition)
             }
-            var interval = Interval(start: adjustedChords[i].start, words: words, chord: adjustedChords[i])
+            var interval = Interval(start: adjustedChords[i].chord.start, words: words, chord: adjustedChords[i].chord, chordIndex: adjustedChords[i].chordIndex)
             let intervalWidth = getWidth(for: interval, with: fontSize)
             interval.limitLines = Int(ceil(intervalWidth / maxWidth))
             interval.width = intervalWidth > maxWidth ? maxWidth : intervalWidth
@@ -221,14 +254,16 @@ class IntervalModel: ObservableObject {
         return result
     }
     
-    func adjustChordStartTime(chords: [APIChord], adjustment: Int) -> [APIChord] {
-        guard adjustment != 0 && chords.count > 0 else { return chords }
-
-        var result: [APIChord] = []
+    func adjustChordStartTime(chords: [APIChord], adjustment: Int) -> [AdjustedChord] {
+        var result: [AdjustedChord] = []
         for chord in chords {
             let start = (chord.start + adjustment) < 0 ? 0 : (chord.start + adjustment)
             let end = (chord.end + adjustment) < 0 ? 0 : (chord.end + adjustment)
-            result.append(APIChord(id: chord.id, chord: chord.chord, start: start, end: end))
+            let chordIndex = chords.firstIndex(of: chord)!
+            result.append(AdjustedChord(
+                chord: APIChord(id: chord.id, chord: chord.chord, start: start, end: end),
+                chordIndex: chordIndex
+            ))
         }
         return result
     }
@@ -264,47 +299,4 @@ class IntervalModel: ObservableObject {
         
         return result
     }
-
 }
-
-//class LimitedVersionSongContent {
-//    var chords: [String] = []
-//    var lyrics: [String] = []
-//    
-//    func createContent(song: Song) {
-//        let uniqueChords = getUniqueChords(chords: song.chords)
-//        let lyrics = getLyrics(lyrics: song.text)
-//    }
-//    
-//    private func getUniqueChords(chords: [APIChord]) -> [String] {
-//        guard chords.count > 0 else { return [] }
-//        var result: [APIChord] = []
-//        
-//        for chord in chords {
-//            let ch = result.filter {
-//                var r = false
-//                if let rKey = $0.uiChord?.key, let rSuffix = $0.uiChord?.suffix,
-//                    let key = chord.uiChord?.key, let suffix = chord.uiChord?.suffix {
-//                    r = rKey == key && rSuffix == suffix
-//                }
-//                return r
-//            }
-//            if ch.count == 0 {
-//                result.append(chord)
-//            }
-//        }
-//        
-//        return result.map {
-//            var r = ""
-//            if let chord = $0.uiChord {
-//                r = chord.getChordString()
-//            }
-//            return r
-//        }
-//    }
-//    
-//    private func getLyrics(lyrics: [AlignedText]) -> [String] {
-//        guard lyrics.count > 0 else { return [] }
-//        return lyrics.map { $0.text }
-//    }
-//}

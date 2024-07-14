@@ -14,7 +14,8 @@ struct PlaybackView: View {
     @ObservedObject var songsList: SongsList
     @AppStorage("isPlaybackPanelMaximized") var isPlaybackPanelMaximized: Bool = true
     @AppStorage("hideLyrics") var hideLyrics: Bool = false
-    @StateObject var model = IntervalModel()
+    @AppStorage("isLimited") var isLimited: Bool = false
+//    @StateObject var model = IntervalModel()
     @StateObject var player = UniPlayer()
     @State var currentTimeframeIndex: Int = 0
     @State var currentChordIndex: Int = 0
@@ -23,6 +24,9 @@ struct PlaybackView: View {
     @State var isRenamePopupVisible: Bool = false
     @State var showOptions: Bool = false
     @State var songName: String = ""
+    @State var showEditChords = false
+    @State var showEditChordsAds = false
+    @State var showPaywall = false
     let lyricsfontSize = 16.0
     
     var body: some View {
@@ -139,9 +143,9 @@ struct PlaybackView: View {
                         ScrollViewReader { proxy in
                             ScrollView(.vertical, showsIndicators: true) {
                                 VStack(alignment: .leading, spacing: 0) {
-                                    ForEach(self.model.timeframes, id: \.self) { timeframe in
+                                    ForEach(song.intervalModel.timeframes, id: \.self) { timeframe in
                                         
-                                        let timeframeIndex = self.model.timeframes.firstIndex(where: {$0 == timeframe })!
+                                        let timeframeIndex = song.intervalModel.timeframes.firstIndex(where: {$0 == timeframe })!
                                         ZStack(alignment: .leading) {
                                             Rectangle()
                                                 .foregroundStyle(.gray20)
@@ -158,9 +162,9 @@ struct PlaybackView: View {
                                             HStack(spacing: 0) {
                                                 ForEach(timeframe.intervals, id: \.self) { interval in
                                                     let chordIndex = self.model.chords.firstIndex(where: {$0.chord == interval.chord })!
+                                                    let ch = interval.chord.uiChord
                                                     VStack(alignment: .leading) {
                                                         let words = interval.words.map { $0.text }.joined()
-                                                        let ch = interval.chord.uiChord
                                                         let chord = interval.chord.chord == "N" ? "" : (ch != nil ? ch!.getChordString() : "")
                                                         HStack(spacing: 0) {
                                                             VStack {
@@ -200,6 +204,17 @@ struct PlaybackView: View {
                                                             }
                                                         }
                                                     }
+                                                    .onLongPressGesture {
+                                                        if isLimited {
+                                                            showEditChordsAds = true
+                                                        } else {
+                                                            if interval.chord.chord != "N" {
+                                                                self.showEditChords = true
+                                                                self.currentChordIndex = chordIndex
+                                                                self.currentTimeframeIndex = timeframeIndex
+                                                            }
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }
@@ -209,8 +224,8 @@ struct PlaybackView: View {
                                 }
                                 .frame(width: width)
                                 .onChange(of: self.player.currentTime) { _, newTime in
-                                    self.currentTimeframeIndex = model.getTimeframeIndex(time: newTime)
-                                    self.currentChordIndex = model.getChordIndex(time: newTime)
+                                    self.currentTimeframeIndex = song.intervalModel.getTimeframeIndex(time: newTime)
+                                    self.currentChordIndex = song.intervalModel.getChordIndex(time: newTime)
                                     withAnimation {
                                         proxy.scrollTo(self.currentTimeframeIndex, anchor: .center)
                                     }
@@ -237,12 +252,12 @@ struct PlaybackView: View {
                                 MoreShapesView(isMoreShapesPopupPresented: $isMoreShapesPopupPresented, uiChord: self.model.chords[currentChordIndex].chord.uiChord)
                             } else {
                                 if self.showOptions {
-                                    OptionsView(hideLyrics: $model.hideLyrics, initialValue: song.transposition) { oldValue, newValue in
+                                    OptionsView(hideLyrics: song.intervalModel.hideLyrics, initialValue: song.transposition) { _, newValue in
                                         song.transposition = newValue
-                                        self.model.createTimeframes(song: song, maxWidth: floor(width * 0.9), fontSize: lyricsfontSize)
+                                        song.intervalModel.createTimeframes(song: song, maxWidth: floor(width * 0.9), fontSize: lyricsfontSize)
                                     }
                                 } else if self.isPlaybackPanelMaximized {
-                                    ChordShapesView(chords: model.chords, currentChordIndex: self.$currentChordIndex)
+                                    ChordShapesView(model: song.intervalModel, currentChordIndex: self.$currentChordIndex)
                                 }
                             }
                             
@@ -276,9 +291,9 @@ struct PlaybackView: View {
                                         VStack {
                                             Button {
                                                 self.currentChordIndex -= 1
-                                                self.currentTimeframeIndex = model.getTimeframeIndex(time: model.chords[currentChordIndex].chord.start)
+                                                self.currentTimeframeIndex = song.intervalModel.getTimeframeIndex(time: song.intervalModel.chords[currentChordIndex].chord.start)
                                                 if self.player.isPlaying {
-                                                    self.player.jumpTo(miliseconds: model.chords[currentChordIndex].chord.start)
+                                                    self.player.jumpTo(miliseconds: song.intervalModel.chords[currentChordIndex].chord.start)
                                                 } else {
                                                     if self.isPlaybackPanelMaximized {
                                                         withAnimation {
@@ -302,7 +317,7 @@ struct PlaybackView: View {
                                                 if self.player.isPlaying {
                                                     self.player.pause()
                                                 } else {
-                                                    self.player.jumpTo(miliseconds: self.model.chords[self.currentChordIndex].chord.start) {
+                                                    self.player.jumpTo(miliseconds: self.song.intervalModel.chords[self.currentChordIndex].chord.start) {
                                                         if self.isPlaybackPanelMaximized {
                                                             withAnimation {
                                                                 self.bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
@@ -325,9 +340,9 @@ struct PlaybackView: View {
                                         VStack {
                                             Button {
                                                 currentChordIndex += 1
-                                                currentTimeframeIndex = model.getTimeframeIndex(time: model.chords[currentChordIndex].chord.start)
+                                                currentTimeframeIndex = song.intervalModel.getTimeframeIndex(time: song.intervalModel.chords[currentChordIndex].chord.start)
                                                 if self.player.isPlaying {
-                                                    self.player.jumpTo(miliseconds: model.chords[currentChordIndex].chord.start)
+                                                    self.player.jumpTo(miliseconds: song.intervalModel.chords[currentChordIndex].chord.start)
                                                 } else {
                                                     if isPlaybackPanelMaximized {
                                                         withAnimation {
@@ -339,9 +354,9 @@ struct PlaybackView: View {
                                                 Image(systemName: "arrow.uturn.right")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
-                                                    .foregroundStyle(currentChordIndex == self.model.chords.count - 1 || self.showOptions ? .secondaryText : .white)
+                                                    .foregroundStyle(currentChordIndex == song.intervalModel.chords.count - 1 || self.showOptions ? .secondaryText : .white)
                                             }
-                                            .disabled(currentChordIndex == self.model.chords.count - 1 || self.showOptions)
+                                            .disabled(currentChordIndex == song.intervalModel.chords.count - 1 || self.showOptions)
                                         }
                                         .frame(width: 20, height: 30)
                                         
@@ -373,6 +388,10 @@ struct PlaybackView: View {
                         .padding(.bottom, geometry.safeAreaInsets.bottom)
                         .background(Color.customDarkGray)
                         .clipShape(.rect(cornerRadius: 16))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 16)
+                                .stroke(.gray20, lineWidth: 1)
+                        )
                         .gesture(
                             DragGesture().onChanged { value in
                                 if !self.isMoreShapesPopupPresented {
@@ -421,16 +440,96 @@ struct PlaybackView: View {
                 self.player.prepareToPlay(song: song)
                 self.songName = song.name
                 self.bottomPanelHieght = self.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
-                self.currentChordIndex = self.model.getFirstChordIndex()
+                self.currentChordIndex = song.intervalModel.getFirstChordIndex()
             }
             .onDisappear {
                 if self.song.songType != .youtube {
                     self.player.pause()
                 }
-                self.songsList.databaseService.updateSong(song: song)
-                self.song.objectWillChange.send()
+            }
+            .popover(isPresented: $showEditChords) {
+                if let chord = song.intervalModel.chords[currentChordIndex].chord.uiChord {
+                    let lyrics = song.intervalModel.timeframes.[currentTimeframeIndex].intervals[currentChordIndex].words.map { $0.text }.joined()
+                    
+                    EditChordsView(searchText: chord.key!.display.accessible, lyrics: lyrics) { selectedKey, selectedSuffix, newLyrics in
+                        if let key = selectedKey, let suffix = selectedSuffix, let lyrics = newLyrics {
+                            song.intervalModel.chords[currentChordIndex].chord.uiChord!.key = key
+                            song.intervalModel.chords[currentChordIndex].chord.uiChord!.suffix = suffix
+                            song.intervalModel.chords[currentChordIndex].chord.chord = song.intervalModel.chords[currentChordIndex].chord.uiChord!.getChordString(flatSharpSymbols: false)
+                            
+                            song.intervalModel.timeframes[currentTimeframeIndex].intervals[currentChordIndex].chord.uiChord!.key = key
+                            song.intervalModel.timeframes[currentTimeframeIndex].intervals[currentChordIndex].chord.uiChord!.suffix = suffix
+                            song.intervalModel.timeframes[currentTimeframeIndex].intervals[currentChordIndex].chord.chord = song.intervalModel.chords[currentChordIndex].chord.uiChord!.getChordString(flatSharpSymbols: false)
+                            
+                            song.intervals = song.intervalModel.intervals
+                            song.intervals[self.currentChordIndex].words = [Word(start: song.intervals[self.currentChordIndex].start, text: lyrics)]
+                                                        
+                            songsList.databaseService.updateIntervals(song: song)
+                            song.objectWillChange.send()
+                            song.intervalModel.objectWillChange.send()
+                        } else {
+                            print(2)
+                        }
+                        showEditChords = false
+                    }
+                }
+            }
+            .popover(isPresented: $showEditChordsAds) {
+                AdsView(showEditChordsAds: $showEditChordsAds) {
+                    showPaywall = true
+                }
+            }
+            .fullScreenCover(isPresented: $showPaywall) {
+                Paywall(showPaywall: $showPaywall)
             }
         }
         .padding(0)
+    }
+}
+
+struct AdsView: View {
+    @Binding var showEditChordsAds: Bool
+    var completion: () -> Void
+    var body: some View {
+        VStack {
+            HStack {
+                Spacer()
+                Button {
+                    showEditChordsAds = false
+                } label: {
+                    Image(systemName: "xmark.circle.fill")
+                        .resizable()
+                        .foregroundColor(.gray40)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
+                }
+                .padding(.trailing, 20)
+            }
+            .padding(.vertical, 20)
+            
+            VStack {
+                Text("EDIT CHORDS")
+                    .font(.system(size: 20))
+                    .fontWeight(.semibold)
+                    .fontWidth(.expanded)
+                    .foregroundStyle(.white)
+            }
+            
+            Spacer()
+            
+            Button {
+                showEditChordsAds = false
+                completion()
+            } label: {
+                Text("Upgrade to Premium")
+                    .fontWeight(.semibold)
+                    .font(.system(size: 20))
+                    .padding(20)
+                    .frame(maxWidth: .infinity)
+                    .foregroundColor(.black)
+                    .background(.progressCircle, in: Capsule())
+            }
+            .padding(20)
+        }
     }
 }

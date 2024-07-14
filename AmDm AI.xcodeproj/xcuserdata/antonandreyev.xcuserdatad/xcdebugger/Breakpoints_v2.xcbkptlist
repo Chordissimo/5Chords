@@ -3,4 +3,85 @@
    uuid = "DC15ABCF-AAFB-489F-8F59-3EABD459B718"
    type = "1"
    version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "20E59478-8F2A-4E5D-8871-D02283D86AA3"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AmDm AI/Services/DatabaseService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "260"
+            endingLineNumber = "260"
+            landmarkName = "deleteSong(song:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "20E59478-8F2A-4E5D-8871-D02283D86AA3 - 536943f6d5d86bbc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "AmDm_AI.DatabaseService.deleteSong(song: AmDm_AI.Song) -&gt; ()"
+                  moduleName = "AmDm AI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/antonandreyev/Development/AmDm%20AI/AmDm%20AI/Services/DatabaseService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "260"
+                  endingLineNumber = "260"
+                  offsetFromSymbolStart = "1956">
+               </Location>
+               <Location
+                  uuid = "20E59478-8F2A-4E5D-8871-D02283D86AA3 - 347c565cb3c3ce40"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #8 (AmDm_AI.Interval) -&gt; Swift.String in AmDm_AI.DatabaseService.deleteSong(song: AmDm_AI.Song) -&gt; ()"
+                  moduleName = "AmDm AI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/antonandreyev/Development/AmDm%20AI/AmDm%20AI/Services/DatabaseService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "260"
+                  endingLineNumber = "260"
+                  offsetFromSymbolStart = "128">
+               </Location>
+               <Location
+                  uuid = "20E59478-8F2A-4E5D-8871-D02283D86AA3 - 536943f6d5d86bbc"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "AmDm_AI.DatabaseService.deleteSong(song: AmDm_AI.Song) -&gt; ()"
+                  moduleName = "AmDm AI"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/antonandreyev/Development/AmDm%20AI/AmDm%20AI/Services/DatabaseService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "260"
+                  endingLineNumber = "260"
+                  offsetFromSymbolStart = "1972">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9B0357B5-BD30-466F-AF95-C415D6E42258"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "AmDm AI/Screens/Playback/Models/LyricsViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "120"
+            endingLineNumber = "120"
+            landmarkName = "createTimeframes(song:maxWidth:fontSize:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
 </Bucket>

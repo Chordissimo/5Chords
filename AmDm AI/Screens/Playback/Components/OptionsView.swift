@@ -146,3 +146,11 @@ struct OptionsView: View {
     }
 
 }
+
+struct TranspositionAds: View {
+    var body: some View {
+        VStack {
+            Text("Chords transposition")
+        }
+    }
+}

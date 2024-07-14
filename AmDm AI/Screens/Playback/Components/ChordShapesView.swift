@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ChordShapesView: View {
-    var chords: [ChordShape] = []
+    @ObservedObject var model: IntervalModel
     @Binding var currentChordIndex: Int
 
     var body: some View {
@@ -17,7 +17,7 @@ struct ChordShapesView: View {
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(chords, id: \.self) { chord in
+                            ForEach(model.chords, id: \.self) { chord in
                                 if let key = chord.chord.uiChord?.key, let suffix = chord.chord.uiChord?.suffix {
                                     HStack {
                                         chord.shape
@@ -36,7 +36,7 @@ struct ChordShapesView: View {
                                         }
                                         .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
                                     }
-                                    .id(chords.firstIndex(where: { $0.chord == chord.chord })!)
+                                    .id(model.chords.firstIndex(where: { $0.chord == chord.chord })!)
                                     .scrollTransition(.animated, axis: .horizontal) { content, phase in
                                         content
                                             .opacity(phase.isIdentity ? 1.0 : 0.6)
