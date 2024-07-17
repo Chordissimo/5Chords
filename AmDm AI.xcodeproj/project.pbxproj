@@ -25,6 +25,8 @@
 		C34150A32C46242B00C4C3B2 /* PlaybackControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */; };
 		C34150A52C46280900C4C3B2 /* TopPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A42C46280900C4C3B2 /* TopPanel.swift */; };
 		C34150A72C462A2400C4C3B2 /* ChordsAndLyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A62C462A2400C4C3B2 /* ChordsAndLyrics.swift */; };
+		C34150A92C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A82C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift */; };
+		C34150AB2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150AA2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C34D48732C298E810008E5CE /* YouTubePlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48722C298E810008E5CE /* YouTubePlayerService.swift */; };
 		C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48742C2DA6970008E5CE /* UniPlayer.swift */; };
@@ -104,6 +106,8 @@
 		C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackControls.swift; sourceTree = "<group>"; };
 		C34150A42C46280900C4C3B2 /* TopPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPanel.swift; sourceTree = "<group>"; };
 		C34150A62C462A2400C4C3B2 /* ChordsAndLyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordsAndLyrics.swift; sourceTree = "<group>"; };
+		C34150A82C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationPrimaryButton.swift; sourceTree = "<group>"; };
+		C34150AA2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationSecondaryButton.swift; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		C34D48722C298E810008E5CE /* YouTubePlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayerService.swift; sourceTree = "<group>"; };
 		C34D48742C2DA6970008E5CE /* UniPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniPlayer.swift; sourceTree = "<group>"; };
@@ -439,6 +443,8 @@
 				C37D58352BFB1855001DA8E1 /* EmptySongList.swift */,
 				C37D583A2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift */,
 				C30ADA662C40523000CC9F9A /* DurationLimitView.swift */,
+				C34150A82C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift */,
+				C34150AA2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -576,6 +582,7 @@
 				C3DC6FD32BFCDB2E00EA0095 /* AppRoot.swift in Sources */,
 				C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */,
 				C34150A72C462A2400C4C3B2 /* ChordsAndLyrics.swift in Sources */,
+				C34150A92C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */,
 				C3A993AB2C36D2F200C2D8B5 /* AppCheckService.swift in Sources */,
 				C3F0B62A2BF2258100866D2B /* MetronomeModel.swift in Sources */,
@@ -596,6 +603,7 @@
 				C3F0B6252BF21FC500866D2B /* SongModel.swift in Sources */,
 				C3F0B61C2BF0AC4F00866D2B /* MetronomeView.swift in Sources */,
 				C37D58462BFB491E001DA8E1 /* OnboardingPage2.swift in Sources */,
+				C34150AB2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift in Sources */,
 				B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */,
 				C34D48782C2EBB830008E5CE /* MoreShapesView.swift in Sources */,
 				C357AB052BB7D50900440554 /* EditableText.swift in Sources */,
@@ -761,8 +769,8 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
@@ -810,8 +818,8 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";

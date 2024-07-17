@@ -61,30 +61,6 @@ struct PlaybackView: View {
                             bottomPanelHieght: $bottomPanelHieght,
                             width: width
                         )
-                        .popover(isPresented: $showEditChords) {
-                            EditChordsView(song: song, currentChordIndex: $currentChordIndex) { isCanceled, selectedKey, selectedSuffix, newLyrics in
-                                if !isCanceled {
-                                    
-                                    if let key = selectedKey, let suffix = selectedSuffix {
-                                        song.intervals[currentChordIndex].uiChord = UIChord(key: key, suffix: suffix)
-                                    } else {
-                                        song.intervals[currentChordIndex].uiChord = nil
-                                    }
-                                    
-                                    song.intervals[currentChordIndex].words = newLyrics ?? ""
-                                    
-//                                    let w = song.getWidth(for: song.intervals[currentChordIndex])
-//                                    song.intervals[currentChordIndex].width = w == 0 ? w : min(w, width - LyricsViewModelConstants.padding)
-//                                    song.intervals[currentChordIndex].limitLines = Int(ceil(w / (width - LyricsViewModelConstants.padding)))
-                                    song.createTimeframes()
-                                    
-                                    songsList.databaseService.updateIntervals(song: song)
-//                                    song.objectWillChange.send()
-                                    
-                                }
-                                showEditChords = false
-                            }
-                        }
                         
                         /// MARK: Bottom panel
                         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -195,6 +171,21 @@ struct PlaybackView: View {
                 .popover(isPresented: $showEditChordsAds) {
                     AdsView(showEditChordsAds: $showEditChordsAds) {
                         showPaywall = true
+                    }
+                }
+                .popover(isPresented: $showEditChords) {
+                    EditChordsView(song: song, currentChordIndex: $currentChordIndex) { isCanceled, selectedKey, selectedSuffix, newLyrics in
+                        if !isCanceled {
+                            if let key = selectedKey, let suffix = selectedSuffix {
+                                song.intervals[currentChordIndex].uiChord = UIChord(key: key, suffix: suffix)
+                            } else {
+                                song.intervals[currentChordIndex].uiChord = nil
+                            }
+                            song.intervals[currentChordIndex].words = newLyrics ?? ""
+                            song.createTimeframes()
+                            songsList.databaseService.updateIntervals(song: song)
+                        }
+                        showEditChords = false
                     }
                 }
                 .fullScreenCover(isPresented: $showPaywall) {

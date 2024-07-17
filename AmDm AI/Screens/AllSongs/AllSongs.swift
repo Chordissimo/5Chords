@@ -23,7 +23,6 @@ struct AllSongs: View {
     @State var isLibraryPresented = false
     @State var initialAnimationStep = 0
     @State var showRecognitionInProgressHint = false
-//    @StateObject var songsList = SongsList()
     @EnvironmentObject var songsList: SongsList
     @State var showError: Bool = false
     @State var errorMessage: String = ""
@@ -48,7 +47,7 @@ struct AllSongs: View {
                                 .foregroundColor(.crown)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 20)
-                            Text("Get the unlimited version")
+                            Text("Upgrade to Premium")
                                 .foregroundStyle(.white)
                                 .fontWeight(.semibold)
                                 .font(.system(size: 18))
@@ -407,134 +406,6 @@ struct AllSongs: View {
             }
         } message: {
             Text("You have denied the access to microphone. That means we are unable to capture and recognize chords and lyrics from audio input. If you wish to allow us to do so, please allow access for PROCHORDS app in the system settings.")
-        }
-    }
-}
-
-
-struct NavigationPrimaryButton: View {
-    var imageName: String
-    @Binding var recordStarted: Bool
-    @Binding var duration: TimeInterval
-    var durationLimit: Int
-    var action: () -> Void
-    @State var counter = -1
-    @State var throb = false
-    @AppStorage("isLimited") var isLimited: Bool = false
-    
-    var body: some View {
-        GeometryReader { geometry  in
-            let whiteCircleHeight = geometry.size.height
-            let grayCircleHeight = whiteCircleHeight - 2
-            let redCircleHeight = grayCircleHeight - 5
-            let redSquareHeight = redCircleHeight * 0.5
-            let imageHeight = redCircleHeight * 0.6
-            let imageLogoWidth = redCircleHeight * 0.6
-            
-            ZStack {
-                Circle()
-                    .frame(width: whiteCircleHeight, height: whiteCircleHeight)
-                    .foregroundStyle(Color.white)
-                Circle()
-                    .frame(width: grayCircleHeight, height: grayCircleHeight)
-                    .foregroundStyle(Color.customDarkGray)
-                Button {
-                    withAnimation {
-                        action()
-                    }
-//                    Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
-//                        AnalyticsParameterItemID: EventID.recognizeFromYoutube.rawValue,
-//                        AnalyticsParameterItemName: "RecognizeFromYoutube"
-//                    ])
-                } label: {
-                    ZStack {
-                        if !recordStarted {
-                            Circle()
-                                .frame(width: redCircleHeight, height: redCircleHeight)
-                                .foregroundStyle(Color.red)
-                                .onAppear {
-                                    throb = false
-                                    counter = -1
-                                }
-                            Image(imageName)
-                                .resizable()
-                                .foregroundColor(.white)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: imageLogoWidth, height: imageHeight)
-                                .opacity(0.6)
-                                .transition(.scale)
-                        } else {
-                            RoundedRectangle(cornerRadius: 5)
-                                .frame(width: redSquareHeight, height: redSquareHeight)
-                                .foregroundStyle(counter == 0 ? Color.secondaryText : Color.red)
-                                .opacity(counter > 0 ? 0.5 : 1)
-                                .animation(.easeOut(duration: 0.5).repeatCount(18, autoreverses: true), value: throb)
-                        }
-                    }
-                }
-                .disabled(counter == 0)
-//                .logEvent(screen: "AllSongs", event: .recognizeFromYoutube, title: "RecognizeFromYoutube")
-            }
-            .clipShape(Rectangle())
-            .frame(width: geometry.size.width)
-            .onChange(of: duration) { _, _ in
-                if duration >= Double(durationLimit - 10) {
-                    throb = true
-                    counter = Int(Double(durationLimit) - duration)
-                }
-            }
-            .overlay {
-                if !isLimited && counter > 0 {
-                    DurationLimitView(isLimited: isLimited)
-                        .offset(x: 0, y: -320)
-                }
-            }
-        }
-    }
-}
-
-
-struct NavigationSecondaryButton: View {
-    var imageName: String
-    var action: () -> Void
-    
-    var body: some View {
-        GeometryReader { geometry  in
-            let whiteCircleHeight = geometry.size.height
-            let grayCircleHeight = whiteCircleHeight - 2
-            let redCircleHeight = grayCircleHeight - 5
-            let imageHeight = redCircleHeight * 0.8
-            let imageLogoWidth = redCircleHeight * 0.8
-            
-            ZStack {
-                if imageName == "" {
-                    Color.clear
-                } else {
-                    Circle()
-                        .frame(width: whiteCircleHeight, height: whiteCircleHeight)
-                        .foregroundStyle(Color.clear)
-                    Circle()
-                        .frame(width: grayCircleHeight, height: grayCircleHeight)
-                        .foregroundStyle(Color.customDarkGray)
-                    
-                    Button {
-                        withAnimation {
-                            action()
-                        }
-                    } label: {
-                        ZStack {
-                            getSafeImage(named: imageName)
-                                .resizable()
-                                .foregroundColor(.white)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: imageLogoWidth, height: imageHeight)
-                                .opacity(0.6)
-                            
-                        }
-                    }
-                }
-            }
-            .frame(width: geometry.size.width)
         }
     }
 }

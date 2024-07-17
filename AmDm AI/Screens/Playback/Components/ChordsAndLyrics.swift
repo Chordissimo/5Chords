@@ -20,6 +20,7 @@ struct ChordsAndLyrics: View {
     @Binding var showEditChords: Bool
     @Binding var bottomPanelHieght: CGFloat
     var width: CGFloat
+    @State var showPaywall = false
 
     var body: some View {
         VStack {
@@ -108,7 +109,32 @@ struct ChordsAndLyrics: View {
                                 .background(timeframeIndex == currentTimeframeIndex ? Color.gray20.opacity(0.3) : Color.gray5)
                             }
                             .frame(width: width)
+                            .overlay {
+                                if isLimited && song.timeframes.last!.id == timeframe.id {
+                                    LinearGradient(gradient: Gradient(colors: [.clear, .gray5]), startPoint: .top, endPoint: .bottom)
+                                }
+                            }
                             .id(timeframeIndex)
+                        }
+                        if isLimited {
+                            VStack {
+                                UpgradeButton(content: {
+                                    VStack {
+                                        Text("Upgrade to Premium")
+                                            .font(.system(size: 20))
+                                            .foregroundStyle(.black)
+                                            .fontWeight(.semibold)
+                                        Text("for more chords and lyrics")
+                                            .font(.system(size: 16))
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.gray10)
+                                    }
+                                }, action: {
+                                    showPaywall = true
+                                })
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 20)
                         }
                     }
                     .onChange(of: player.currentTime) { _, newTime in
@@ -122,5 +148,6 @@ struct ChordsAndLyrics: View {
             }
         }
         .frame(width: width)
+        .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
     }
 }

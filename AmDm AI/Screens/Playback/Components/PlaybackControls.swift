@@ -16,6 +16,7 @@ struct PlaybackControls: View {
     @Binding var isPlaybackPanelMaximized: Bool
     @Binding var isMoreShapesPopupPresented: Bool
     @Binding var showOptions: Bool
+    @AppStorage("isLimited") var isLimited: Bool = false
 
     var body: some View {
         VStack {
@@ -33,10 +34,20 @@ struct PlaybackControls: View {
                             bottomPanelHieght = !showOptions ? LyricsViewModelConstants.minBottomPanelHeight : LyricsViewModelConstants.maxBottomPanelHeight
                         }
                     } label: {
-                        Image(systemName: "slider.horizontal.2.square")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .foregroundStyle(player.isPlaying || showOptions ? .secondaryText : .white)
+                        if isLimited {
+                            Image(systemName: "crown.fill")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .foregroundStyle(.crown)
+                                .frame(width: 30, height: 30)
+                                .opacityAnimaion()
+                                .glow()
+                        } else {
+                            Image(systemName: "slider.horizontal.2.square")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .foregroundStyle(player.isPlaying || showOptions ? .secondaryText : .white)
+                        }
                     }
                     .disabled(player.isPlaying || showOptions)
                 }

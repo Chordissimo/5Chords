@@ -190,19 +190,20 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         for interval in self.intervals {
             width += interval.width
             if width > maxWidth {
-                self.timeframes.append(Timeframe(start: line.first!.start, intervals: indices, width: width - interval.width))
+                let timeframe = Timeframe(start: line.first!.start, intervals: indices, width: width - interval.width)
+                self.timeframes.append(timeframe)
                 line = []
                 indices = []
                 width = interval.width
+                if isLimited && timeframe.start > appDefaults.LIMITED_DURATION * 1000 {
+                    break
+                }
             }
             line.append(interval)
             indices.append(self.intervals.firstIndex(of: interval)!)
-            if isLimited && interval.start >= appDefaults.LIMITED_DURATION {
-                break
-            }
         }
         if line.count > 0 {
-            self.timeframes.append(Timeframe(start: line.first!.start, intervals: Array(line.indices), width: width))
+            self.timeframes.append(Timeframe(start: line.first!.start, intervals: indices, width: width))
         }
     }
         
