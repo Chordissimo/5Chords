@@ -44,20 +44,19 @@ class DBInterval: Object {
     @Persisted var start: Int
     @Persisted var chord: String
     @Persisted var words: String
-    @Persisted var chordIndex: Int
     @Persisted var limitLines: Int
     @Persisted var width: Float
     
-    convenience init(id: String = UUID().uuidString, start: Int, chord: String, words: String, chordIndex: Int, limitLines: Int, width: Float) {
+    convenience init(id: String = UUID().uuidString, start: Int, chord: String, words: String, limitLines: Int, width: Float) {
         self.init()
         self.id = id
         self.start = start
         self.chord = chord
         self.words = words
+        self.limitLines = limitLines
         self.width = width
     }
 }
-
 
 class SongModel: Object {
     @Persisted var id = UUID().uuidString
@@ -72,8 +71,6 @@ class SongModel: Object {
     @Persisted var ext: String
     @Persisted var tempo: Float
     @Persisted var thumbnailUrl: String
-    @Persisted var transposition: Int
-    
     
     convenience init(name: String, url: String) {
         self.init()
@@ -81,7 +78,6 @@ class SongModel: Object {
         self.url = url
     }
 }
-
 
 class DatabaseService {
     lazy var realm = try! Realm()
@@ -114,21 +110,7 @@ class DatabaseService {
         return realmTextList
     }
     
-//    private func writeIntervals(intervals: [Interval]) -> List<DBInterval> {
-//        let dbIntervals = intervals.map {
-//            let words = $0.words.map { w in w.text }.joined()
-//            let chord = $0.chord.uiChord?.getChordString(flatSharpSymbols: false) ?? "N"
-//            return DBInterval(id: $0.id.uuidString, start: $0.start, chord: chord, words: words, chordIndex: $0.chordIndex, limitLines: $0.limitLines, width: Float($0.width))
-//        }
-//        try! realm.write {
-//            realm.add(dbIntervals)
-//        }
-//        let realmIntervalsList = List<DBInterval>()
-//        realmIntervalsList.append(objectsIn: dbIntervals)
-//        return realmIntervalsList
-//    }
-
-    func writeSong(id: String, name: String, url: String, duration: TimeInterval, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .recorded, ext: String, thumbnailUrl: String, transposition: Int) -> Song {
+    func writeSong(id: String, name: String, url: String, duration: TimeInterval, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .recorded, ext: String, thumbnailUrl: String) -> Song {
         
         let realmChordList = writeChords(chords: chords)
         let realmTextList = writeText(text: text)
@@ -146,7 +128,6 @@ class DatabaseService {
         song.tempo = tempo
         song.ext = ext
         song.thumbnailUrl = thumbnailUrl
-        song.transposition = transposition
         
         try! realm.write {
             realm.add(song)
@@ -162,8 +143,7 @@ class DatabaseService {
             text: text,
             tempo: song.tempo,
             songType: songType,
-            ext: song.ext,
-            transposition: song.transposition
+            ext: song.ext
         )
     }
     
@@ -176,7 +156,6 @@ class DatabaseService {
         if let songObj = songSearchResults.first {
             try! realm.write {
                 songObj.name = song.name
-                songObj.transposition = song.transposition
             }
         }
     }
@@ -187,14 +166,12 @@ class DatabaseService {
         }
         let realmIntervalsList = List<DBInterval>()
         realmIntervalsList.append(objectsIn: song.intervals.map {
-            let words = $0.words.map { w in w.text }.joined()
-            let chord = $0.chord.uiChord?.getChordString(flatSharpSymbols: false) ?? "N"
+            let chord = $0.uiChord?.getChordString(flatSharpSymbols: false) ?? "N"
             return DBInterval(
                 id: $0.id.uuidString,
                 start: $0.start,
                 chord: chord,
-                words: words,
-                chordIndex: $0.chordIndex,
+                words: $0.words,
                 limitLines: $0.limitLines,
                 width: Float($0.width)
             )
@@ -218,15 +195,11 @@ class DatabaseService {
     func readIntervals(dbIntervals: List<DBInterval>) -> [Interval] {
         var intervals: [Interval] = []
         for dbInterval in dbIntervals {
-            let words = [Word(start: dbInterval.start, text: dbInterval.words)]
-            let uiChord = UIChord(chord: dbInterval.chord)
-            let chord = APIChord(chord: dbInterval.chord, start: dbInterval.start, end: 0, uiChord: uiChord)
             intervals.append(Interval(
                 id: .init(uuidString: dbInterval.id)!,
                 start: dbInterval.start,
-                words: words,
-                chord: chord,
-                chordIndex: dbInterval.chordIndex,
+                words: dbInterval.words,
+                uiChord: UIChord(chord: dbInterval.chord),
                 limitLines: dbInterval.limitLines,
                 width: CGFloat(dbInterval.width)
             ))
@@ -259,6 +232,7 @@ class DatabaseService {
 
             let intervalsList = song.intervals.map { $0.id.uuidString }
             let intervalsSearchResults = realm.objects(DBInterval.self).filter { intervalsList.contains($0.id) }
+            print(intervalsSearchResults.count)
             if intervalsSearchResults.count > 0 {
                 try! realm.write {
                     realm.delete(intervalsSearchResults)
@@ -275,7 +249,8 @@ class DatabaseService {
         return realm.objects(SongModel.self).sorted { s1, s2 in
             return s1.created >= s2.created
         }.map {
-            Song(
+            let intervals = self.readIntervals(dbIntervals: $0.intervals)
+            return Song(
                 id: $0.id,
                 name: $0.name,
                 url: $0.url,
@@ -297,12 +272,11 @@ class DatabaseService {
                         end: $0.end
                     )
                 },
-                intervals: self.readIntervals(dbIntervals: $0.intervals),
+                intervals: intervals,
                 tempo: $0.tempo,
                 songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
                 ext: $0.ext,
-                thumbnailUrl: $0.thumbnailUrl,
-                transposition: $0.transposition
+                thumbnailUrl: $0.thumbnailUrl
             )
         }
     }

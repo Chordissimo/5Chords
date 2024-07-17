@@ -7,149 +7,102 @@
 
 import SwiftUI
 
-//struct OptionsView: View {
-//    @Binding var hideLyrics: Bool
-//    var initialValue: Int
-//    var onChangeValue: (Int,Int) -> Void
-//    @State private var value = 0
-//    @State private var stepDisplay: String = "original"
-//    private let step = 1
-//    private let range = -10...10
-//
-//    var body: some View {
-//        HStack(alignment: .top, spacing: 50) {
-//            VStack {
-//                Text("Transpose")
-//                
-//                Stepper(value: $value, in: range, step: step, label: {})
-//                    .labelsHidden()
-//                
-//                VStack {
-//                    Text(" \(stepDisplay) ")
-//                        .fontWeight(.semibold)
-//                        .padding(5)
-//                        .background(Color.gray10)
-//                }
-//                .frame(width: 140)
-//            }
-//            
-//            VStack {
-//                Text("Hide lyrics")
-//                Toggle("", isOn: $hideLyrics)
-//                    .labelsHidden()
-//            }
-//
-//        }
-//        .padding(.horizontal, 50)
-//        .padding(.vertical, 20)
-//        .onChange(of: value) { oldValue, newValue in
-//            stepDisplay = getLabel(value)
-//            onChangeValue(oldValue, newValue)
-//        }
-//        .onAppear {
-//            value = initialValue
-//            stepDisplay = getLabel(initialValue)
-//        }
-//    }
-//    
-//    func getLabel(_ value: Int) -> String {
-//        var label: String = ""
-//        let direction = stepDisplay != "orginal" ? (value < 0 ? "steps down" : (value > 0 ? "steps up" : "")) : ""
-//
-//        if value % 2 == 0 {
-//            label = value == 0 ? "original" : String(abs(Int(value / 2)))
-//        } else {
-//            label = abs(value) == 1 ? NSLocalizedString("\u{00BD}", comment: "1/2") : (String(abs(Int(value / 2))) + NSLocalizedString("\u{00BD}", comment: "1/2"))
-//        }
-//        return "\(label) \(direction)"
-//    }
-//}
-
 struct OptionsView: View {
     @Binding var hideLyrics: Bool
-    var initialValue: Int
-    var onChangeValue: (Int,Int) -> Void
-    @State private var value = 0
-    @State private var stepDisplay: String = "original"
-    private let step = 1
-    private let range = -10...10
-    
+    @State var isAlertPresented = false
+    @State var showAds = false
+    var onChangeValue: (_ transposeUp: Bool) -> Void
+    var onReset: (_ reset: Bool) -> Void
+
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
             
             VStack {
                 Toggle("Hide lyrics:", isOn: $hideLyrics)
             }
-            .frame(width: 250)
-
-            Spacer()
+            .padding(.top, 30)
+            .frame(width: 250, height: 80)
+            Divider()
 
             HStack {
                 Button {
-                    value = value < 10 ? value + 1 : value
+                    onChangeValue(true)
                 } label: {
                     Image(systemName: "arrow.up")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .foregroundColor(value == 10 ? .secondaryText : .white)
+                        .foregroundColor(.white)
                         .frame(width: 30, height: 30)
+                        .background(.gray30, in: Capsule())
                 }
-                .disabled(value == 10)
                 
-                VStack(spacing: 0) {
-                    Text("Transpose chords:")
-                    VStack {
-                        Text(" \(stepDisplay) ")
-                            .fontWeight(.semibold)
-                            .padding(5)
-                            .background(Color.gray10)
+                VStack {
+                    Text("Transpose chords")
+                    Button {
+                        showAds = true
+                    } label: {
+                        Text("How it works?")
                     }
-                    .frame(width: 140)
                 }
                 .padding(.horizontal, 30)
                 
                 Button {
-                    value = value > -10 ? value - 1 : value
+                    onChangeValue(false)
                 } label: {
                     Image(systemName: "arrow.down")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .foregroundColor(value == -10 ? .secondaryText : .white)
+                        .foregroundColor(.white)
                         .frame(width: 30, height: 30)
+                        .background(.gray30, in: Capsule())
                 }
-                .disabled(value == -10)
             }
+            .frame(height: 80)
+
+            Divider()
+            
+            VStack {
+                Button {
+                    isAlertPresented = true
+                } label: {
+                    Text("Reset changes")
+                }
+                .alert("Warning", isPresented: $isAlertPresented) {
+                    Button {
+                        isAlertPresented = false
+                        onReset(true)
+                    } label: {
+                        Text("Ok")
+                    }
+                    Button {
+                        isAlertPresented = false
+                    } label: {
+                        Text("Cancel")
+                    }
+                } message: {
+                    Text("All changes made to chords and lyrics will be reset to originally recognized values.\n\nDo you want to continue?")
+                }
+            }
+            .frame(height: 80)
             
             Spacer()
         }
-        .onChange(of: value) { oldValue, newValue in
-            stepDisplay = getLabel(value)
-            onChangeValue(oldValue, newValue)
-        }
-        .onAppear {
-            value = initialValue
-            stepDisplay = getLabel(initialValue)
+        .padding(.horizontal, 20)
+        .popover(isPresented: $showAds) {
+            TranspositionAds(showAds: $showAds)
         }
     }
-    
-    private func getLabel(_ value: Int) -> String {
-        var label: String = ""
-        let direction = stepDisplay != "orginal" ? (value < 0 ? "steps down" : (value > 0 ? "steps up" : "")) : ""
-
-        if value % 2 == 0 {
-            label = value == 0 ? "original" : String(abs(Int(value / 2)))
-        } else {
-            label = abs(value) == 1 ? NSLocalizedString("\u{00BD}", comment: "1/2") : (String(abs(Int(value / 2))) + NSLocalizedString("\u{00BD}", comment: "1/2"))
-        }
-        return "\(label) \(direction)"
-    }
-
 }
 
 struct TranspositionAds: View {
+    @Binding var showAds: Bool
     var body: some View {
         VStack {
+            Button {
+                showAds = false
+            } label: {
+                Text("Close")
+            }
             Text("Chords transposition")
         }
     }

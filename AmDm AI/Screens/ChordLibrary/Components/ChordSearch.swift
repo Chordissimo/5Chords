@@ -24,7 +24,7 @@ struct ChordSearchView: View {
                 TextField("Search", text: $searchText)
                     .focused($isFocused)
                     .onChange(of: searchText) {
-                        model.searchChords(searchString: searchText)
+                        model.searchChordsBy(searchString: searchText)
                         if chords.count > 0 {
                             chords = []
                         }

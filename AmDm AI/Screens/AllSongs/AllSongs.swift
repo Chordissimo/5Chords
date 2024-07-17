@@ -23,7 +23,8 @@ struct AllSongs: View {
     @State var isLibraryPresented = false
     @State var initialAnimationStep = 0
     @State var showRecognitionInProgressHint = false
-    @ObservedObject var songsList = SongsList()
+//    @StateObject var songsList = SongsList()
+    @EnvironmentObject var songsList: SongsList
     @State var showError: Bool = false
     @State var errorMessage: String = ""
     @State var showPermissionError = false

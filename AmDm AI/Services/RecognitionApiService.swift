@@ -11,7 +11,7 @@ import SwiftUI
 import Combine
 
 class RecognitionApiService {
-    let appDefaults = AppDefaults()
+    lazy var appDefaults = AppDefaults()
     private var cancellables = Set<AnyCancellable>()
     @Published var token: String = ""
     
@@ -64,7 +64,7 @@ class RecognitionApiService {
     
     func recognizeAudioFromYoutube(url: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
         let headers: HTTPHeaders = [.authorization(bearerToken: self.token)]
-        print(url)
+
         let requestUrl = appDefaults.YOUTUBE_ENDPOINT
         AF.request(
             requestUrl,
@@ -73,7 +73,7 @@ class RecognitionApiService {
             encoding: JSONEncoding.default,
             headers: headers
         )
-        .debugLog()
+        .debugLog(url)
         .validate()
         .responseDecodable(of: Response.self) { response in
             guard let result = response.value else {
@@ -87,9 +87,9 @@ class RecognitionApiService {
 }
 
 extension Request {
-   public func debugLog() -> Self {
+    public func debugLog(_ content: Any?) -> Self {
       #if DEBUG
-         debugPrint(self)
+        debugPrint(self, content as Any)
       #endif
       return self
    }

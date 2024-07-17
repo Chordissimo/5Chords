@@ -21,7 +21,6 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
     var chord: String
     var start: Int
     var end: Int
-    var uiChord: UIChord?
     var id = UUID().uuidString
     
     enum CodingKeys: String, CodingKey {
@@ -30,16 +29,11 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
         case end
     }
     
-    init(id: String = UUID().uuidString, chord: String, start: Int, end: Int, uiChord: UIChord? = nil) {
+    init(id: String = UUID().uuidString, chord: String, start: Int, end: Int) {
         self.chord = chord
         self.start = start
         self.end = end
         self.id = id
-        if let uiCh = uiChord {
-            self.uiChord = uiCh
-        } else {
-            self.uiChord = UIChord(chord: self.chord)
-        }
     }
     
     required init(from decoder: Decoder) throws {
@@ -47,7 +41,6 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
         self.chord = try values.decode(String.self, forKey: .chord)
         self.start = try values.decode(Int.self, forKey: .start)
         self.end = try values.decode(Int.self, forKey: .end)
-        self.uiChord = UIChord(chord: self.chord)
     }
 }
 
@@ -99,6 +92,14 @@ class UIChord: Identifiable, Hashable {
         self.key = key
         self.suffix = suffix
         self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
+    }
+    
+    func updateChord(newKey: Chords.Key, newSuffix: Chords.Suffix) {
+        self.key = newKey
+        self.suffix = newSuffix
+        if let key = self.key, let suffix = self.suffix {
+            self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
+        }
     }
     
     private func getKey(from string: String) -> Chords.Key? {
@@ -265,11 +266,29 @@ class UIChord: Identifiable, Hashable {
         case .minorSlashGSharp: return "m/g#"
         }
     }
-
     
-    public static func transpose(key: Chords.Key, shift: Int) -> Chords.Key {
-        guard shift != 0 else { return key }
-        var resultKey: Chords.Key = key
+    func getChordGroup() -> Chords.Group {
+        switch self.suffix {
+        case .major, .majorSeven, .majorSevenFlatFive, .majorSevenSharpFive, .majorNine, .majorEleven, .majorThirteen, .addNine, .slashE, .slashF, .slashFSharp, .slashG, .slashGSharp, .slashA, .slashBFlat, .slashB, .slashC, .slashCSharp, .slashD, .slashDSharp:
+            return .major
+        case .minor, .minorSix, .minorSixNine, .minorSeven, .minorEleven, .minorSevenFlatFive, .minorMajorSeven, .minorMajorSeventFlatFive, .minorMajorNine, .minorMajorEleven, .minorAddNine, .minorSlashB, .minorSlashC, .minorSlashCSharp, .minorSlashD, .minorSlashDSharp, .minorSlashE, .minorSlashF, .minorSlashFSharp, .minorSlashG, .minorNine, .minorSlashGSharp:
+            return .minor
+        case .dim, .dimSeven:
+            return .diminished
+        case .susTwo, .susFour, .sevenSusFour:
+            return .suspended
+        case .aug, .augSeven, .augNine:
+            return .augmented
+        case .altered, .five, .six, .sixNine, .seven, .sevenFlatFive, .nine, .nineFlatFive, .sevenFlatNine, .sevenSharpNine, .eleven, .nineSharpEleven, .thirteen, .sevenSharpFive:
+            return .other
+        default:
+            return .major
+        }
+    }
+    
+    func transpose(shift: Int) {
+        guard shift != 0 && self.key != nil else { return }
+        var resultKey: Chords.Key = self.key!
         
         var keys: [Chords.Key] = []
         if [.dFlat, .eFlat, .gFlat, .aFlat, .bFlat].contains(where: {$0 == key}) {
@@ -288,20 +307,30 @@ class UIChord: Identifiable, Hashable {
             resultKey = keys[index]
         }
         
-        return resultKey
+        self.key = resultKey
     }
     
     func getChordString(flatSharpSymbols: Bool = true) -> String {
         var result = ""
         if let k = self.key, let s = self.suffix {
             if flatSharpSymbols {
-                result = k.display.symbol + s.display.short
+                result = k.display.symbol + s.display.symbolized
             } else {
                 result = k.rawValue + getSuffixString(from: s)
             }
         }
         return result
     }
+    
+    func renderShape(positionIndex: Int) -> ShapeLayerView? {
+        guard self.chordPositions.count > 0 && positionIndex >= 0 else { return nil }
+        return ShapeLayerView(shapeLayer: createShapeLayer(
+            chordPosition: self.chordPositions[positionIndex],
+            width: LyricsViewModelConstants.chordWidth,
+            height: LyricsViewModelConstants.chordHeight
+        ))
+    }
+    
 }
 
 struct ShapeLayerView: UIViewRepresentable {
@@ -313,9 +342,7 @@ struct ShapeLayerView: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // Update shape layer properties if needed
-    }
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }
 
 func createShapeLayer(chordPosition: ChordPosition, width: CGFloat, height: CGFloat) -> CAShapeLayer {
@@ -324,7 +351,7 @@ func createShapeLayer(chordPosition: ChordPosition, width: CGFloat, height: CGFl
     
     let shapeLayer = chordPosition.chordLayer(
         rect: frame,
-        chordName:.init(show: false, key: .symbol, suffix: .symbolized),
+        chordName: .init(show: false, key: .symbol, suffix: .symbolized),
         forPrint: false
     )
     

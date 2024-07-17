@@ -81,7 +81,7 @@ class ChordLibraryModel: ObservableObject {
         return keys.count > 0 ? keys.first! : .c
     }
     
-    func searchChords(searchString: String) {
+    func searchChordsBy(searchString: String) {
         var chords: [ChordPosition] = []
         var resultChords: [ChordSearchResults] = []
         
@@ -95,7 +95,7 @@ class ChordLibraryModel: ObservableObject {
         
         for chord in chords {
             let ch = resultChords.filter { c in
-                return c.suffix == chord.suffix
+                return c.suffix == chord.suffix && c.key == chord.key
             }
             if ch.count == 0 {
                 resultChords.append(ChordSearchResults(key: chord.key, suffix: chord.suffix))
@@ -104,6 +104,7 @@ class ChordLibraryModel: ObservableObject {
         
         self.chordSearchResults = resultChords
     }
+    
     
     func searchChordsBy(key: Chords.Key, groups: [Chords.Group]) {
         var chords: [ChordPosition] = []

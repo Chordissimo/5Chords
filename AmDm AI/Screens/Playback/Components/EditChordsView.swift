@@ -9,23 +9,23 @@ import SwiftUI
 import SwiftyChords
 
 struct EditChordsView: View {
+    @ObservedObject var song: Song
+    @Binding var currentChordIndex: Int
     @State var searchText: String = ""
-    var lyrics: String
-    var completion: (Chords.Key?,Chords.Suffix?,String?) -> Void
+    var completion: (_ isCanceled: Bool, _ selectedKey: Chords.Key?,_ selectedSuffix: Chords.Suffix?,_ newLyrics: String?) -> Void
     @State var newLyrics: String = ""
     @State var showSearchResults = true
     @State var chords: [ChordPosition] = []
     @State var model = ChordLibraryModel()
     @State var selectedKey: Chords.Key? = nil
     @State var selectedSuffix: Chords.Suffix? = nil
-//    @FocusState var focus: Bool
         
     var body: some View {
         VStack {
             HStack {
                 Spacer()
                 Button {
-                    completion(nil,nil,nil)
+                    completion(true,nil,nil,nil)
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .resizable()
@@ -45,8 +45,6 @@ struct EditChordsView: View {
                     self.selectedSuffix = selectedSuffix
                 }
             }
-//            TextField(lyrics, text: $newLyrics)
-//                .focused($focus)
             VStack {
                 TextEditor(text: $newLyrics)
             }
@@ -62,7 +60,11 @@ struct EditChordsView: View {
             Spacer()
             
             Button {
-                completion(selectedKey, selectedSuffix, newLyrics)
+                if searchText == "" {
+                    selectedKey = nil
+                    selectedSuffix = nil
+                }
+                completion(false, selectedKey, selectedSuffix, newLyrics)
             } label: {
                 Text("Save")
                     .fontWeight(.semibold)
@@ -77,9 +79,14 @@ struct EditChordsView: View {
         }
         .onAppear {
             showSearchResults = true
-            newLyrics = lyrics
-            if searchText != "" {
-                model.searchChords(searchString: searchText)
+            newLyrics = song.intervals[currentChordIndex].words
+            if let chord = song.intervals[currentChordIndex].uiChord {
+                selectedKey = chord.key
+                selectedSuffix = chord.suffix
+                searchText = chord.getChordString(flatSharpSymbols: false)
+                model.searchChordsBy(key: selectedKey!, groups: [chord.getChordGroup()])
+            } else {
+                model.searchChordsBy(searchString: searchText)
             }
         }
     }
