@@ -82,52 +82,13 @@ struct ChordLibrary: View {
                         }
                         
                         // Search field
-                        VStack {
-                            HStack {
-                                Image(systemName: "magnifyingglass")
-                                    .foregroundStyle(.gray40)
-                                    .padding(.leading,10)
-                                TextField("Search", text: $searchText)
-                                    .focused($isFocused)
-                                    .onChange(of: searchText) {
-                                        model.searchChords(searchString: searchText)
-                                        if chords.count > 0 {
-                                            chords = []
-                                        }
-                                    }
-                                if searchText != "" {
-                                    Button {
-                                        searchText = ""
-                                        chords = []
-                                        model.clearSearchResults()
-                                    } label: {
-                                        Image(systemName: "xmark.circle.fill")
-                                            .foregroundColor(.secondaryText)
-                                    }
-                                    .padding(.trailing,10)
-                                }
-                                Spacer()
-                            }
-                            .frame(height: 35)
-                            .background(Color.search)
-                            .clipShape(.rect(cornerRadius: 10))
-                            .onTapGesture {
-                                if !showSearchResults {
-                                    showSearchResults = true
-                                    chords = []
-                                    model.clearSearchResults()
-                                }
-                            }
-                        }
-                        .padding(.horizontal,20)
-                        .frame(width: geometry.size.width)
+                        ChordSearchView(model: model, chords: $chords, showSearchResults: $showSearchResults, searchText: $searchText)
+                            .frame(width: geometry.size.width)
                         
                         // search results
                         if showSearchResults {
-                            VStack {
-                                ChordSuffixes(model: model) { selectedKey, selectedSuffix in
-                                    chords = Chords.guitar.matching(key: selectedKey).matching(suffix: selectedSuffix)
-                                }
+                            ChordSuffixes(model: model) { selectedKey, selectedSuffix in
+                                chords = Chords.guitar.matching(key: selectedKey).matching(suffix: selectedSuffix)
                             }
                         }
                         

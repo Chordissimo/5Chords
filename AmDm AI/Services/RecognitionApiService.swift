@@ -11,7 +11,7 @@ import SwiftUI
 import Combine
 
 class RecognitionApiService {
-    @AppStorage("server_ip") private var server_ip: String = "64.226.99.83:80"
+    lazy var appDefaults = AppDefaults()
     private var cancellables = Set<AnyCancellable>()
     @Published var token: String = ""
     
@@ -48,7 +48,7 @@ class RecognitionApiService {
             multipartFormData: { multipartFormData in
                 multipartFormData.append(url, withName: "file")
             },
-            to: "http://" + server_ip + "/upload",
+            to: appDefaults.UPLOAD_ENDPOINT,
             headers: headers
         )
         .validate()
@@ -64,8 +64,8 @@ class RecognitionApiService {
     
     func recognizeAudioFromYoutube(url: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
         let headers: HTTPHeaders = [.authorization(bearerToken: self.token)]
-        
-        let requestUrl = "http://" + server_ip + "/upload/youtube"
+
+        let requestUrl = appDefaults.YOUTUBE_ENDPOINT
         AF.request(
             requestUrl,
             method: .post,
@@ -73,6 +73,7 @@ class RecognitionApiService {
             encoding: JSONEncoding.default,
             headers: headers
         )
+        .debugLog(url)
         .validate()
         .responseDecodable(of: Response.self) { response in
             guard let result = response.value else {
@@ -83,4 +84,13 @@ class RecognitionApiService {
             completion(.success(result))
         }
     }
+}
+
+extension Request {
+    public func debugLog(_ content: Any?) -> Self {
+      #if DEBUG
+        debugPrint(self, content as Any)
+      #endif
+      return self
+   }
 }

@@ -32,7 +32,7 @@ struct FileFormatsView: View {
                 Rectangle()
                     .foregroundColor(.gray30)
                     .frame(width: 1, height: 40)
-                Text("MP4")
+                Text("MPeg4")
                     .foregroundColor(.gray30)
                     .fontWeight(.semibold)
                     .fontWidth(.expanded)
@@ -67,9 +67,6 @@ struct FileFormatsView: View {
                     .foregroundColor(.gray30)
                     .frame(width: 1, height: 40)
             }
-        }    }
-}
-
-#Preview {
-    FileFormatsView(width: 300)
+        }
+    }
 }

@@ -15,7 +15,11 @@ struct SongList: View {
         ScrollViewReader { proxy in
             VStack {
                 if $songsList.songs.count == 0 {
-                    EmptyListView()
+                    if !songsList.recordStarted {
+                        EmptyListView()
+                    } else {
+                        Spacer()
+                    }
                 } else {
                     List($songsList.songs, id: \.id) { song in
                         VStack {

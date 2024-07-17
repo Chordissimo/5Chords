@@ -63,38 +63,6 @@ struct Settings: View {
                         }
                     }
                     .foregroundStyle(.white)
-                    
-                    NavigationLink {
-                        VStack(alignment: .leading) {
-                            HStack(alignment: .top) {
-                                Text("Server IP:")
-                                    .fontWeight(.bold)
-                            }
-                            .padding(.leading, 20)
-                            
-                            TextField("192.168.0.5:8000", text: $server_ip)
-                                .textFieldStyle(.roundedBorder)
-                                .border(.customGray)
-                                .foregroundStyle(Color.white)
-                                .font(.system(size: 20))
-                                .padding(.horizontal,20)
-                            
-                            VStack(alignment: .center) {
-                                Button("Save") {
-                                    showSettings = false
-                                }
-                                .foregroundColor(.black)
-                                .buttonStyle(.borderedProminent)
-                                .padding(.top, 20)
-                            }
-                            .frame(maxWidth: .infinity)
-                            Spacer()
-                        }
-                        .padding(.top)
-                    } label: {
-                        Text("Server IP")
-                    }
-
                 }
                 
             }

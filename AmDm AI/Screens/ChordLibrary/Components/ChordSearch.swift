@@ -6,26 +6,53 @@
 //
 
 import SwiftUI
+import SwiftyChords
 
 struct ChordSearchView: View {
-    var action: (String) -> Void
-    @State var searchText: String = ""
+    @ObservedObject var model: ChordLibraryModel
+    @Binding var chords: [ChordPosition]
+    @Binding var showSearchResults: Bool
+    @Binding var searchText: String
     @FocusState private var isFocused: Bool
     
     var body: some View {
-        HStack {
-            Image(systemName: "magnifyingglass")
-                .foregroundStyle(.gray40)
-                .padding(.leading,10)
-            TextField("Search", text: $searchText)
-                .focused($isFocused)
-                .onChange(of: searchText) {
-                    action(searchText)
+        VStack {
+            HStack {
+                Image(systemName: "magnifyingglass")
+                    .foregroundStyle(.gray40)
+                    .padding(.leading,10)
+                TextField("Search", text: $searchText)
+                    .focused($isFocused)
+                    .onChange(of: searchText) {
+                        model.searchChordsBy(searchString: searchText)
+                        if chords.count > 0 {
+                            chords = []
+                        }
+                    }
+                if searchText != "" {
+                    Button {
+                        searchText = ""
+                        chords = []
+                        model.clearSearchResults()
+                    } label: {
+                        Image(systemName: "xmark.circle.fill")
+                            .foregroundColor(.secondaryText)
+                    }
+                    .padding(.trailing,10)
                 }
-            Spacer()
+                Spacer()
+            }
+            .frame(height: 35)
+            .background(Color.search)
+            .clipShape(.rect(cornerRadius: 10))
+            .onTapGesture {
+                if !showSearchResults {
+                    showSearchResults = true
+                    chords = []
+                    model.clearSearchResults()
+                }
+            }
         }
-        .frame(height: 35)
-        .background(Color.search)
-        .clipShape(.rect(cornerRadius: 10))
+        .padding(.horizontal,20)
     }
 }

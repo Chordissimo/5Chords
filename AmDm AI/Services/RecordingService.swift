@@ -8,54 +8,67 @@
 import AVFoundation
 import SwiftUI
 
-class RecordingService: NSObject, AVAudioRecorderDelegate {
+class RecordingService: NSObject, AVAudioRecorderDelegate, ObservableObject {
     
-    var audioRecorder: AVAudioRecorder?
+    @Published var audioRecorder: AVAudioRecorder?
     var recordingURL: URL?
     var recordingCallback: ((URL?, String?, String?) -> Void)?
     var recordingTimeCallback: ((TimeInterval, Float) -> Void)?
     var timer: Timer?
     var startTime: Date?
+    var isCanceled: Bool = false
 
+    func startRecording(completion: @escaping (Bool) -> Void) {
+        @AppStorage("isLimited") var isLimited: Bool = false
+        let appDefaults = AppDefaults()
 
-    func startRecording() {
-        let audioSession = AVAudioSession.sharedInstance()
-        
-        do {
-            try audioSession.setCategory(.playAndRecord, mode: .default)
-            try audioSession.setActive(true)
-            
-            let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-            let fileName = "\(UUID().uuidString).m4a"
-            recordingURL = documentsPath.appendingPathComponent(fileName)
-            
-            let settings = [
-                AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
-                AVSampleRateKey: 44100,
-                AVNumberOfChannelsKey: 2,
-                AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
-            ] as [String : Any]
-            
-            audioRecorder = try AVAudioRecorder(url: recordingURL!, settings: settings)
-            audioRecorder?.delegate = self
-            audioRecorder?.isMeteringEnabled = true
-            audioRecorder?.record()
-            
-            startTime = Date()
-            startTimer()
-        } catch {
-            print("Error starting recording: \(error.localizedDescription)")
+        AVAudioApplication.requestRecordPermission() { permissionGranted in
+            if permissionGranted {
+                let audioSession = AVAudioSession.sharedInstance()
+                do {
+                    try audioSession.setCategory(.playAndRecord, mode: .default)
+                    try audioSession.setActive(true)
+                    
+                    let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
+                    let fileName = "\(UUID().uuidString).m4a"
+                    self.recordingURL = documentsPath.appendingPathComponent(fileName)
+                    
+                    let settings = [
+                        AVFormatIDKey: Int(kAudioFormatMPEG4AAC),
+                        AVSampleRateKey: 44100,
+                        AVNumberOfChannelsKey: 2,
+                        AVEncoderAudioQualityKey: AVAudioQuality.high.rawValue
+                    ] as [String : Any]
+                    
+                    self.audioRecorder = try AVAudioRecorder(url: self.recordingURL!, settings: settings)
+                    self.audioRecorder?.delegate = self
+                    self.audioRecorder?.isMeteringEnabled = true
+                    self.audioRecorder?.record(forDuration: isLimited ? Double(appDefaults.LIMITED_DURATION) : Double(appDefaults.MAX_DURATION))
+                    
+                    self.startTime = Date()
+                } catch {
+                    print("Error starting recording: \(error.localizedDescription)")
+                }
+            }
+            completion(permissionGranted)            
         }
     }
     
-    func stopRecording() {
+    func stopRecording(cancel: Bool = false) {
         audioRecorder?.stop()
         audioRecorder = nil
         stopTimer()
+        isCanceled = cancel
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        recordingCallback?(recordingURL,"","")
+        if self.audioRecorder != nil {
+            self.audioRecorder = nil
+            stopTimer()
+        }
+        if !isCanceled {
+            recordingCallback?(recordingURL,"","")
+        }
     }
     
     func startTimer() {
@@ -77,7 +90,6 @@ class RecordingService: NSObject, AVAudioRecorderDelegate {
     }
     
     func importFile(url: URL) {
-        @AppStorage("fileBookmark") var fileBookmark: Data?
         var _url: URL
         var result: Bool = true
         var songName: String = ""

@@ -71,9 +71,11 @@ struct PlistInfo : Decodable {
 
 class YouTubeAPIService {
     func getVideoData(videoUrl: String, action: @escaping (String, String, Int) -> Void) {
+        let appDefaults = AppDefaults()
+        
         guard videoUrl != "" else { return }
-        guard let path = Bundle.main.path(forResource: "GoogleYoutubeDataAPI-Info", ofType: "plist") else { return }
-        var url = "", key = ""
+//        guard let path = Bundle.main.path(forResource: "GoogleYoutubeDataAPI-Info", ofType: "plist") else { return }
+//        var url = "", key = ""
         var videoId = ""
 
         if let urlComponent = URLComponents(string: videoUrl) {
@@ -85,24 +87,24 @@ class YouTubeAPIService {
 
         guard videoId != "" else { return }
 
-        do {
-            let plistUrl = URL(fileURLWithPath: path)
-            let data = try Data(contentsOf: plistUrl)
-            let plist = try PropertyListDecoder().decode(PlistInfo.self, from: data)
-            url = plist.API_URL
-            key = plist.API_KEY
-        } catch {
-            print("YTService:",error)
-        }
+//        do {
+//            let plistUrl = URL(fileURLWithPath: path)
+//            let data = try Data(contentsOf: plistUrl)
+//            let plist = try PropertyListDecoder().decode(PlistInfo.self, from: data)
+//            url = plist.API_URL
+//            key = plist.API_KEY
+//        } catch {
+//            print("YTService:",error)
+//        }
 
-        guard url != "" && key != "" else { return }
+        guard appDefaults.GOOGLE_DATA_API_URL != "" && appDefaults.GOOGLE_DATA_API_KEY != "" else { return }
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
         AF.request(
-            url,
-            parameters: ["id": videoId, "part": "snippet,contentDetails", "key": key]
+            appDefaults.GOOGLE_DATA_API_URL,
+            parameters: ["id": videoId, "part": "snippet,contentDetails", "key": appDefaults.GOOGLE_DATA_API_KEY]
         )
         .validate()
         .responseDecodable(of: Response.self, decoder: decoder) { response in
@@ -110,7 +112,7 @@ class YouTubeAPIService {
             case .success:
                 if let resp = response.value {
                     if resp.items.count > 0 {
-                        let duration = resp.items[0].snippet.liveBroadcastContent.lowercased() == "live" ? 1000 : resp.items[0].contentDetails.duration.getYoutubeDuration()
+                        let duration = resp.items[0].snippet.liveBroadcastContent.lowercased() == "live" ? appDefaults.MAX_DURATION + 1 : resp.items[0].contentDetails.duration.getYoutubeDuration()
                         action(
                             resp.items[0].snippet.title,
                             resp.items[0].snippet.thumbnails.default.url,

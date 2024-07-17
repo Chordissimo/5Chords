@@ -23,10 +23,12 @@ struct AllSongs: View {
     @State var isLibraryPresented = false
     @State var initialAnimationStep = 0
     @State var showRecognitionInProgressHint = false
-    @ObservedObject var songsList = SongsList()
+    @EnvironmentObject var songsList: SongsList
     @State var showError: Bool = false
     @State var errorMessage: String = ""
+    @State var showPermissionError = false
     let width: CGFloat
+    let appDefaults = AppDefaults()
     
     init() {
         self.width = UIScreen.main.bounds.width
@@ -45,7 +47,7 @@ struct AllSongs: View {
                                 .foregroundColor(.crown)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 20)
-                            Text("Get the unlimited version")
+                            Text("Upgrade to Premium")
                                 .foregroundStyle(.white)
                                 .fontWeight(.semibold)
                                 .font(.system(size: 18))
@@ -63,10 +65,20 @@ struct AllSongs: View {
                 VStack {
                     SongList(songsList: songsList)
                 }
+                
+                //Bottom panel
                 if !songsList.showSearch {
-                    Color.customDarkGray
+                    Rectangle()
                         .ignoresSafeArea()
                         .frame(width: width, height: 100)
+                        .overlay(
+                            Rectangle()
+                                .frame(width: nil, height: 1)
+                                .foregroundColor(Color.gray20),
+                            alignment: .top
+                                
+                        )
+                        .foregroundStyle(.customDarkGray)
                 }
             }
             
@@ -92,7 +104,7 @@ struct AllSongs: View {
                         HStack {
                             HStack(spacing: 20) {
                                 NavigationSecondaryButton(imageName: "folder.fill") {
-                                    if isLimited && songCounter == 3 {
+                                    if isLimited && songCounter == appDefaults.LIMITED_NUMBER_OR_SONGS {
                                         showPaywall = true
                                     } else {
                                         if songsList.recognitionInProgress {
@@ -110,7 +122,7 @@ struct AllSongs: View {
                                 }
                                 .frame(width: 45, height: 45)
                                 NavigationSecondaryButton(imageName: "mic.fill") {
-                                    if isLimited && songCounter == 3 {
+                                    if isLimited && songCounter == appDefaults.LIMITED_NUMBER_OR_SONGS {
                                         showPaywall = true
                                     } else {
                                         if songsList.recognitionInProgress {
@@ -121,13 +133,13 @@ struct AllSongs: View {
                                                 }
                                             }
                                         } else {
-                                            recordPanelPresented.toggle()
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                                                withAnimation {
-                                                    if !songsList.recordStarted {
-                                                        songsList.showSearch = false
-                                                        songsList.recognitionInProgress = true
-                                                        songsList.startRecording()
+                                            if !songsList.recordStarted {
+                                                songsList.startRecording() { permissionGranted in
+                                                    showPermissionError = !permissionGranted
+                                                    if permissionGranted {
+                                                        withAnimation {
+                                                            recordPanelPresented = true
+                                                        }
                                                     }
                                                 }
                                             }
@@ -135,6 +147,22 @@ struct AllSongs: View {
                                     }
                                 }
                                 .frame(width: 45, height: 45)
+                                .onChange(of: recordPanelPresented) { _, newValue in
+                                    songsList.recordStarted = newValue
+                                    if songsList.recordStarted {
+                                        songsList.decibelChanges = [Float]()
+                                        songsList.recognitionInProgress = true
+                                        songsList.showSearch = false
+                                        songsList.recordingService.startTimer()
+                                    }
+                                }
+                                .onChange(of: songsList.recordingService.audioRecorder) { _, recorder in
+                                    if recorder == nil {
+                                        withAnimation {
+                                            recordPanelPresented = false
+                                        }
+                                    }
+                                }
                             }
                             .padding(.top,20)
                             
@@ -165,8 +193,17 @@ struct AllSongs: View {
                 if recordPanelPresented {
                     Color.white.opacity(0.01)
                     VStack {
-                        TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songsList: songsList, songName: songsList.getNewSongName())
-                            .padding(.top, 20)
+                        TimerView(timerState: $songsList.recordStarted, duration: $songsList.duration, songsList: songsList, songName: songsList.getNewSongName(), recordPanelPresented: $recordPanelPresented) { isCancelled in
+                            if isCancelled {
+                                songsList.stopRecording(cancel: true)
+                                songsList.recordStarted = false
+                                songsList.recognitionInProgress = false
+                                withAnimation {
+                                    recordPanelPresented = false
+                                }
+                            }
+                        }
+                        .padding(.top, 20)
                     }
                     .transition(.move(edge: .bottom))
                     .ignoresSafeArea()
@@ -176,8 +213,8 @@ struct AllSongs: View {
             // Layer 5: Primary button
             VStack {
                 if initialAnimationStep == 2 && !songsList.showSearch {
-                    NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted) {
-                        if isLimited && songCounter == 3 {
+                    NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted, duration: $songsList.duration, durationLimit: (isLimited ? appDefaults.LIMITED_DURATION : appDefaults.MAX_DURATION)) {
+                        if isLimited && songCounter == appDefaults.LIMITED_NUMBER_OR_SONGS {
                             showPaywall = true
                         } else {
                             if recordPanelPresented {
@@ -205,7 +242,8 @@ struct AllSongs: View {
             }
             .frame(height: 100)
             
-            if showRecognitionInProgressHint {
+            // Recognition in progress message
+            if showRecognitionInProgressHint && songsList.recognitionInProgress {
                 VStack(spacing: 0) {
                     Text("Extracting chords and lyrics.\nThis won't take long.")
                         .lineLimit(2)
@@ -297,9 +335,10 @@ struct AllSongs: View {
                     if duration == 0 {
                         self.showError = true
                         self.errorMessage = "We couldn't process the video you selected."
-                    } else if duration > 600 {
+                    } else if duration > appDefaults.MAX_DURATION {
+                        let duration = Int(appDefaults.MAX_DURATION / 60)
                         self.showError = true
-                        self.errorMessage = "The selected video is too long. The maximum video duration we can hadnle is 10 minutes."
+                        self.errorMessage = "The selected video is too long. The maximum video duration we can hadnle is \(duration) minutes."
                     } else {
                         self.songsList.recognitionInProgress = true
                         self.songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
@@ -317,9 +356,15 @@ struct AllSongs: View {
                             if size == 0 {
                                 self.showError = true
                                 self.errorMessage = "No audio data found in the file you are trying to upload."
-                            } else if size > 31457280 {
+                            } else if size > (isLimited ? appDefaults.LIMITED_UPLOAD_FILE_SIZE : appDefaults.MAX_UPLOAD_FILE_SIZE) {
                                 self.showError = true
-                                self.errorMessage = "The file you are trying to upload is too big. The maximum file size we can hadnle is 30Mb."
+                                let limitedSize = Int(appDefaults.LIMITED_UPLOAD_FILE_SIZE / 1024)
+                                let maxSize = Int(appDefaults.MAX_UPLOAD_FILE_SIZE / 1024)
+                                if isLimited {
+                                    self.errorMessage = "The file you are trying to upload is too big. The maximum file size is \(limitedSize)Mb. Subscribe to upload up to \(maxSize)Mb."
+                                } else {
+                                    self.errorMessage = "The file you are trying to upload is too big. The maximum file size we can hadnle is \(maxSize)Mb."
+                                }
                             } else {
                                 self.songsList.recognitionInProgress = true
                                 self.songsList.importFile(url: file)
@@ -343,111 +388,24 @@ struct AllSongs: View {
         } message: {
             Text(errorMessage)
         }
-    }
-}
-
-
-struct NavigationPrimaryButton: View {
-    var imageName: String
-    @Binding var recordStarted: Bool
-    var action: () -> Void
-    
-    var body: some View {
-        GeometryReader { geometry  in
-            let whiteCircleHeight = geometry.size.height
-            let grayCircleHeight = whiteCircleHeight - 2
-            let redCircleHeight = grayCircleHeight - 5
-            let redSquareHeight = redCircleHeight * 0.5
-            let redCircleHeightTapped = redSquareHeight - 5
-            let imageHeight = redCircleHeight * 0.6
-            let imageLogoWidth = redCircleHeight * 0.6
-            
-            ZStack {
-                Circle()
-                    .frame(width: whiteCircleHeight, height: whiteCircleHeight)
-                    .foregroundStyle(Color.white)
-                Circle()
-                    .frame(width: grayCircleHeight, height: grayCircleHeight)
-                    .foregroundStyle(Color.customDarkGray)
-                Button {
-                    withAnimation {
-                        action()
-                    }
-//                    Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
-//                        AnalyticsParameterItemID: EventID.recognizeFromYoutube.rawValue,
-//                        AnalyticsParameterItemName: "RecognizeFromYoutube"
-//                    ])
-                } label: {
-                    ZStack {
-                        Circle()
-                            .frame(width: recordStarted ? redCircleHeightTapped : redCircleHeight, height: recordStarted ? redCircleHeightTapped : redCircleHeight)
-                            .foregroundStyle(Color.red)
-                        
-                        RoundedRectangle(cornerRadius: 5)
-                            .frame(width: redSquareHeight, height: redSquareHeight)
-                            .foregroundStyle(Color.red)
-                        
-                        if !recordStarted {
-                            Image(imageName)
-                                .resizable()
-                                .foregroundColor(.white)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: imageLogoWidth, height: imageHeight)
-                                .opacity(0.6)
-                                .transition(.scale)
-                        }
+        .alert("Record permission denied", isPresented: $showPermissionError) {
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    DispatchQueue.main.async {
+                        UIApplication.shared.open(url)
                     }
                 }
-//                .logEvent(screen: "AllSongs", event: .recognizeFromYoutube, title: "RecognizeFromYoutube")
+                showPermissionError = false
+            } label: {
+                Text("Open system settings")
             }
-            .clipShape(Rectangle())
-            .frame(width: geometry.size.width)
-        }
-    }
-}
-
-
-struct NavigationSecondaryButton: View {
-    var imageName: String
-    var action: () -> Void
-    
-    var body: some View {
-        GeometryReader { geometry  in
-            let whiteCircleHeight = geometry.size.height
-            let grayCircleHeight = whiteCircleHeight - 2
-            let redCircleHeight = grayCircleHeight - 5
-            let imageHeight = redCircleHeight * 0.8
-            let imageLogoWidth = redCircleHeight * 0.8
-            
-            ZStack {
-                if imageName == "" {
-                    Color.clear
-                } else {
-                    Circle()
-                        .frame(width: whiteCircleHeight, height: whiteCircleHeight)
-                        .foregroundStyle(Color.clear)
-                    Circle()
-                        .frame(width: grayCircleHeight, height: grayCircleHeight)
-                        .foregroundStyle(Color.customDarkGray)
-                    
-                    Button {
-                        withAnimation {
-                            action()
-                        }
-                    } label: {
-                        ZStack {
-                            getSafeImage(named: imageName)
-                                .resizable()
-                                .foregroundColor(.white)
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: imageLogoWidth, height: imageHeight)
-                                .opacity(0.6)
-                            
-                        }
-                    }
-                }
+            Button {
+                showPermissionError = false
+            } label: {
+                Text("Cancel")
             }
-            .frame(width: geometry.size.width)
+        } message: {
+            Text("You have denied the access to microphone. That means we are unable to capture and recognize chords and lyrics from audio input. If you wish to allow us to do so, please allow access for PROCHORDS app in the system settings.")
         }
     }
 }

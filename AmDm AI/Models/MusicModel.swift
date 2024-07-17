@@ -21,7 +21,6 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
     var chord: String
     var start: Int
     var end: Int
-    var uiChord: UIChord?
     var id = UUID().uuidString
     
     enum CodingKeys: String, CodingKey {
@@ -30,16 +29,11 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
         case end
     }
     
-    init(id: String, chord: String, start: Int, end: Int, uiChord: UIChord? = nil) {
+    init(id: String = UUID().uuidString, chord: String, start: Int, end: Int) {
         self.chord = chord
         self.start = start
         self.end = end
         self.id = id
-        if let uiCh = uiChord {
-            self.uiChord = uiCh
-        } else {
-            self.uiChord = UIChord(chord: self.chord)
-        }
     }
     
     required init(from decoder: Decoder) throws {
@@ -47,7 +41,6 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
         self.chord = try values.decode(String.self, forKey: .chord)
         self.start = try values.decode(Int.self, forKey: .start)
         self.end = try values.decode(Int.self, forKey: .end)
-        self.uiChord = UIChord(chord: self.chord)
     }
 }
 
@@ -94,7 +87,20 @@ class UIChord: Identifiable, Hashable {
             self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
         }
     }
-
+    
+    init?(key: Chords.Key, suffix: Chords.Suffix) {
+        self.key = key
+        self.suffix = suffix
+        self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
+    }
+    
+    func updateChord(newKey: Chords.Key, newSuffix: Chords.Suffix) {
+        self.key = newKey
+        self.suffix = newSuffix
+        if let key = self.key, let suffix = self.suffix {
+            self.chordPositions = Chords.guitar.matching(key: key).matching(suffix: suffix)
+        }
+    }
     
     private func getKey(from string: String) -> Chords.Key? {
         switch string {
@@ -158,13 +164,131 @@ class UIChord: Identifiable, Hashable {
         case "m/f#": return .minorSlashFSharp
         case "m/g": return .minorSlashG
         case "m/g#": return .minorSlashGSharp
+        case "dim7": return .dimSeven
+        case "sus2": return .susTwo
+        case "sus4": return .susFour
+        case "7sus4": return .sevenSusFour
+        case "5": return .five
+        case "alt": return .altered
+        case "6/9": return .sixNine
+        case "7b5": return .sevenFlatFive
+        case "aug7": return .augSeven
+        case "9": return .nine
+        case "9b5": return .nineFlatFive
+        case "aug9": return .augNine
+        case "m9": return .sevenFlatNine
+        case "7#9": return .sevenSharpNine
+        case "11": return .eleven
+        case "9#11": return .nineSharpEleven
+        case "13": return .thirteen
+        case "maj7b5": return .majorSevenFlatFive
+        case "maj7#5": return .majorSevenSharpFive
+        case "7#5": return .sevenSharpFive
+        case "maj9": return .majorNine
+        case "maj11": return .majorEleven
+        case "maj13": return .majorThirteen
+        case "m6/9": return .minorSixNine
+        case "mmaj7": return .minorMajorSeven
+        case "mmaj7b5": return .minorMajorSeventFlatFive
+        case "mmaj9": return .minorMajorNine
+        case "mmaj11": return .minorMajorEleven
+        case "add9": return .addNine
+        case "madd9": return .minorAddNine
         default: return nil
         }
     }
     
-    public static func transpose(key: Chords.Key, shift: Int) -> Chords.Key {
-        guard shift != 0 else { return key }
-        var resultKey: Chords.Key = key
+    private func getSuffixString(from suffix: Chords.Suffix) -> String {
+        switch suffix {
+        case .major: return ""
+        case .minor: return "m"
+        case .dim: return "dim"
+        case .dimSeven: return "dim7"
+        case .susTwo: return "sus2"
+        case .susFour: return "sus4"
+        case .sevenSusFour: return "7sus4"
+        case .five: return "5"
+        case .altered: return "alt"
+        case .aug: return "aug"
+        case .six: return "6"
+        case .sixNine: return "6/9"
+        case .seven: return "7"
+        case .sevenFlatFive: return "7b5"
+        case .augSeven: return "aug7"
+        case .nine: return "9"
+        case .nineFlatFive: return "9b5"
+        case .augNine: return "aug9"
+        case .sevenFlatNine: return "m9"
+        case .sevenSharpNine: return "7#9"
+        case .eleven: return "11"
+        case .nineSharpEleven: return "9#11"
+        case .thirteen: return "13"
+        case .majorSeven: return "maj7"
+        case .majorSevenFlatFive: return "maj7b5"
+        case .majorSevenSharpFive: return "maj7#5"
+        case .sevenSharpFive: return "7#5"
+        case .majorNine: return "maj9"
+        case .majorEleven: return "maj11"
+        case .majorThirteen: return "maj13"
+        case .minorSix: return "m6"
+        case .minorSixNine: return "m6/9"
+        case .minorSeven: return "m7"
+        case .minorSevenFlatFive: return "m7b5"
+        case .minorNine: return "m9"
+        case .minorEleven: return "m11"
+        case .minorMajorSeven: return "mmaj7"
+        case .minorMajorSeventFlatFive: return "mmaj7b5"
+        case .minorMajorNine: return "mmaj9"
+        case .minorMajorEleven: return "mmaj11"
+        case .addNine: return "add9"
+        case .minorAddNine: return "madd9"
+        case .slashE: return "/e"
+        case .slashF: return "/f"
+        case .slashFSharp: return "/f#"
+        case .slashG: return "/g"
+        case .slashGSharp: return "/g#"
+        case .slashA: return "/a"
+        case .slashBFlat: return "/bb"
+        case .slashB: return "/b"
+        case .slashC: return "/c"
+        case .slashCSharp: return "/c#"
+        case .minorSlashB: return "m/b"
+        case .minorSlashC: return "m/c"
+        case .minorSlashCSharp: return "m/c#"
+        case .slashD: return "/d"
+        case .minorSlashD: return "m/d"
+        case .slashDSharp: return "/d#"
+        case .minorSlashDSharp: return "m/d#"
+        case .minorSlashE: return "m/e"
+        case .minorSlashF: return "m/f"
+        case .minorSlashFSharp: return "m/f#"
+        case .minorSlashG: return "m/g"
+        case .minorSlashGSharp: return "m/g#"
+        }
+    }
+    
+    func getChordGroup() -> Chords.Group {
+        switch self.suffix {
+        case .major, .majorSeven, .majorSevenFlatFive, .majorSevenSharpFive, .majorNine, .majorEleven, .majorThirteen, .addNine, .slashE, .slashF, .slashFSharp, .slashG, .slashGSharp, .slashA, .slashBFlat, .slashB, .slashC, .slashCSharp, .slashD, .slashDSharp:
+            return .major
+        case .minor, .minorSix, .minorSixNine, .minorSeven, .minorEleven, .minorSevenFlatFive, .minorMajorSeven, .minorMajorSeventFlatFive, .minorMajorNine, .minorMajorEleven, .minorAddNine, .minorSlashB, .minorSlashC, .minorSlashCSharp, .minorSlashD, .minorSlashDSharp, .minorSlashE, .minorSlashF, .minorSlashFSharp, .minorSlashG, .minorNine, .minorSlashGSharp:
+            return .minor
+        case .dim, .dimSeven:
+            return .diminished
+        case .susTwo, .susFour, .sevenSusFour:
+            return .suspended
+        case .aug, .augSeven, .augNine:
+            return .augmented
+        case .altered, .five, .six, .sixNine, .seven, .sevenFlatFive, .nine, .nineFlatFive, .sevenFlatNine, .sevenSharpNine, .eleven, .nineSharpEleven, .thirteen, .sevenSharpFive:
+            return .other
+        default:
+            return .major
+        }
+    }
+    
+    func transpose(shift: Int) {
+        guard shift != 0 && self.key != nil else { return }
+        var resultKey: Chords.Key = self.key!
         
         var keys: [Chords.Key] = []
         if [.dFlat, .eFlat, .gFlat, .aFlat, .bFlat].contains(where: {$0 == key}) {
@@ -183,16 +307,30 @@ class UIChord: Identifiable, Hashable {
             resultKey = keys[index]
         }
         
-        return resultKey
+        self.key = resultKey
     }
     
-    func getChordString() -> String {
+    func getChordString(flatSharpSymbols: Bool = true) -> String {
         var result = ""
         if let k = self.key, let s = self.suffix {
-            result = k.display.symbol + s.display.short
+            if flatSharpSymbols {
+                result = k.display.symbol + s.display.symbolized
+            } else {
+                result = k.rawValue + getSuffixString(from: s)
+            }
         }
         return result
     }
+    
+    func renderShape(positionIndex: Int) -> ShapeLayerView? {
+        guard self.chordPositions.count > 0 && positionIndex >= 0 else { return nil }
+        return ShapeLayerView(shapeLayer: createShapeLayer(
+            chordPosition: self.chordPositions[positionIndex],
+            width: LyricsViewModelConstants.chordWidth,
+            height: LyricsViewModelConstants.chordHeight
+        ))
+    }
+    
 }
 
 struct ShapeLayerView: UIViewRepresentable {
@@ -204,9 +342,7 @@ struct ShapeLayerView: UIViewRepresentable {
         return view
     }
     
-    func updateUIView(_ uiView: UIView, context: Context) {
-        // Update shape layer properties if needed
-    }
+    func updateUIView(_ uiView: UIView, context: Context) {}
 }
 
 func createShapeLayer(chordPosition: ChordPosition, width: CGFloat, height: CGFloat) -> CAShapeLayer {
@@ -215,7 +351,7 @@ func createShapeLayer(chordPosition: ChordPosition, width: CGFloat, height: CGFl
     
     let shapeLayer = chordPosition.chordLayer(
         rect: frame,
-        chordName:.init(show: false, key: .symbol, suffix: .symbolized),
+        chordName: .init(show: false, key: .symbol, suffix: .symbolized),
         forPrint: false
     )
     

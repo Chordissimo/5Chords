@@ -9,6 +9,7 @@ import Foundation
 import SwiftUI
 import Combine
 import AVFoundation
+import SwiftyChords
 
 enum SongType: String {
     case localFile = "uploaded"
@@ -21,6 +22,67 @@ enum RecognitionStatus {
     case serverError
     case videoTooLong
 }
+
+struct LyricsViewModelConstants {
+    static let chordHeight = 135.0
+    static let chordWidth = 135.0 / 6 * 5
+    static let videoPlayerHeight = 120.0
+    static let videoPlayerWidth = 180.0
+    static let maxBottomPanelHeight = 250.0
+    static let minBottomPanelHeight = 110.0
+    static let moreShapesPanelHeight = 350.0
+    static let lyricsfontSize: CGFloat = 16.0
+    static let minScreenWidth: CGFloat = 250.0
+    static let padding: CGFloat = 20.0
+    static let spacing: CGFloat = 5.0
+    static let minChordWidth: CGFloat = 50.0
+}
+
+struct Word: Identifiable, Hashable {
+    static func == (lhs: Word, rhs: Word) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    var id = UUID()
+    var start: Int
+    var text: String
+}
+
+struct Interval: Identifiable, Hashable {
+    static func == (lhs: Interval, rhs: Interval) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+        
+    var id = UUID()
+    var start: Int
+    var words: String
+    var uiChord: UIChord? = nil
+    var limitLines: Int = 1
+    var width: CGFloat = 0.0
+}
+
+struct Timeframe: Identifiable, Hashable {
+    static func == (lhs: Timeframe, rhs: Timeframe) -> Bool {
+        lhs.id == rhs.id
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+    
+    var id = UUID()
+    var start: Int
+    var intervals: [Int] = []
+    var width: CGFloat = 0.0
+}
+
 
 class Song: ObservableObject, Identifiable, Equatable, Hashable {
     static func == (lhs: Song, rhs: Song) -> Bool {
@@ -35,6 +97,9 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     var url: URL
     var chords: [APIChord]
     var text: [AlignedText]
+    @Published var intervals: [Interval] = []
+    @Published var timeframes: [Timeframe] = []
+    @Published var hideLyrics: Bool = false
     var id: String
     var isVisible = true
     var duration: TimeInterval
@@ -53,9 +118,9 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     @Published var elapsedTime: TimeInterval = 0
     @Published var progress: Float = 0.0
     @Published var recognitionStatus: RecognitionStatus = .ok
-    @Published var transposition: Int = 0
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], intervals: [Interval] = [], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
+        @AppStorage("hideLyrics") var hideLyrics: Bool = false
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -68,8 +133,9 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         self.tempo = tempo
         self.isProcessing = isProcessing
         self.isFakeLoaderVisible = isFakeLoaderVisible
-        self.transposition = transposition
-
+        self.intervals = intervals
+        self.hideLyrics = hideLyrics
+        
         if self.songType == .youtube {
             if self.url.absoluteString != "" {
                 if thumbnailUrl != "" {
@@ -85,6 +151,7 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
                 }
             }
         }
+        self.createTimeframes()
     }
     
     func startTimer() {
@@ -102,17 +169,183 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         self.timer?.invalidate()
         self.timer = nil
     }
+    
+    func createTimeframes() {
+        guard self.chords.count > 0 || self.intervals.count > 0 else { return }
+        let appDefaults = AppDefaults()
+        @AppStorage("isLimited") var isLimited = false
+        self.timeframes = []
+        let maxWidth = appDefaults.screenWidth - LyricsViewModelConstants.padding
+        
+        if self.intervals.count > 0 {
+            self.intervals = compactIntervals(intervals: self.intervals, recalcWidth: true)
+        } else {
+            self.intervals = createIntervals()
+        }
+
+        var line: [Interval] = []
+        var indices: [Int] = []
+        var width: Double = 0
+        
+        for interval in self.intervals {
+            width += interval.width
+            if width > maxWidth {
+                let timeframe = Timeframe(start: line.first!.start, intervals: indices, width: width - interval.width)
+                self.timeframes.append(timeframe)
+                line = []
+                indices = []
+                width = interval.width
+                if isLimited && timeframe.start > appDefaults.LIMITED_DURATION * 1000 {
+                    break
+                }
+            }
+            line.append(interval)
+            indices.append(self.intervals.firstIndex(of: interval)!)
+        }
+        if line.count > 0 {
+            self.timeframes.append(Timeframe(start: line.first!.start, intervals: indices, width: width))
+        }
+    }
+        
+    private func createIntervals() -> [Interval] {
+        guard self.chords.count > 0 else { return [] }
+        let appDefaults = AppDefaults()
+        let compactedWords = compactWords()
+        let adjustedChords = adjustChordStartTime(adjustment: appDefaults.INTERVAL_START_ADJUSTMENT)
+
+        var result: [Interval] = []
+        
+        if compactedWords.count > 0 {
+            let firstWord = compactedWords.first!
+            if firstWord.start < self.chords.first!.start {
+                let words = compactedWords.filter { $0.start < self.chords.first!.start }.map { $0.text }.joined()
+                result.append(Interval(start: 0, words: words))
+            }
+        }
+        
+        for i in 0..<adjustedChords.count {
+            let words = compactedWords.filter {
+                var condition = false
+                if i == self.chords.count - 1 {
+                    condition = $0.start >= adjustedChords[i].start
+                } else {
+                    condition = $0.start >= adjustedChords[i].start && $0.start < adjustedChords[i + 1].start
+                }
+                return condition
+            }.map { $0.text }.joined()
+            
+            let uiChord = UIChord(chord: adjustedChords[i].chord)
+            var interval = Interval(start: adjustedChords[i].start, words: words, uiChord: uiChord)
+            let intervalWidth = getWidth(for: interval)
+            interval.limitLines = Int(ceil(intervalWidth / appDefaults.screenWidth))
+            interval.width = min(intervalWidth, appDefaults.screenWidth)
+            result.append(interval)
+        }
+        
+        return compactIntervals(intervals: result)
+    }
+    
+    func getWidth(for interval: Interval) -> CGFloat {
+        let textSize = ceil(interval.words.size(withAttributes: [.font: UIFont.systemFont(ofSize: LyricsViewModelConstants.lyricsfontSize)]).width)
+        var chordSize = 0.0
+        if let chord = interval.uiChord {
+            chordSize = ceil(chord.getChordString().size(withAttributes: [.font: UIFont.systemFont(ofSize: LyricsViewModelConstants.lyricsfontSize, weight: .semibold)]).width)
+        }
+        return (textSize > 0 ? max(textSize,chordSize) : max(chordSize,LyricsViewModelConstants.minChordWidth)) + LyricsViewModelConstants.spacing
+    }
+    
+    private func compactIntervals(intervals: [Interval], recalcWidth: Bool = false) -> [Interval] {
+        guard intervals.count > 0 else { return [] }
+        let appDefaults: AppDefaults? = recalcWidth ? AppDefaults() : nil
+        
+        return intervals.filter({ !($0.uiChord == nil && $0.words.count == 0) }).map {
+            var interval = $0
+            if recalcWidth && appDefaults != nil {
+                interval.width = getWidth(for: interval)
+                interval.limitLines = Int(ceil(interval.width / appDefaults!.screenWidth))
+            }
+            return interval
+        }
+    }
+    
+    private func compactWords() -> [Word] {
+        guard self.text.count > 0 else { return [] }
+        
+        var result: [Word] = []
+        let s = self.text.first!.start ?? -1
+        var word = Word(start: s < 0 ? 0 : s, text: self.text.first!.text)
+        
+        for i in 1..<self.text.count {
+            let start = self.text[i].start ?? -1
+            if i == 0 {
+                word = Word(start: start < 0 ? 0 : start, text: self.text.first!.text)
+            } else {
+                if start < 0 {
+                    word.text += self.text[i].text
+                } else {
+                    result.append(word)
+                    word = Word(start: start, text: self.text[i].text)
+                }
+            }
+        }
+        
+        let index = result.firstIndex(where: { $0.id == word.id })
+        if index == nil {
+            result.append(word)
+        }
+        
+        return result
+    }
+    
+    func adjustChordStartTime(adjustment: Int) -> [APIChord] {
+        var result: [APIChord] = []
+        for chord in self.chords {
+            let start = (chord.start + adjustment) < 0 ? 0 : (chord.start + adjustment)
+            let end = (chord.end + adjustment) < 0 ? 0 : (chord.end + adjustment)
+            result.append(APIChord(id: chord.id, chord: chord.chord, start: start, end: end))
+        }
+        return result
+    }
+    
+    func getTimeframeIndex(time: Int) -> Int {
+        let filteredTimeframes = self.timeframes.filter { return $0.start <= time }
+        return filteredTimeframes.count > 0 ? self.timeframes.firstIndex(of: filteredTimeframes.last!)! : -1
+    }
+
+    func getChordIndex(time: Int) -> Int {
+        let filteredIntervals = self.intervals.filter { return $0.start < time }
+        return filteredIntervals.count > 0 ? self.intervals.firstIndex(of: filteredIntervals.last!)! : -1
+    }
+    
+    func getFirstChordIndex() -> Int {
+        var result = -1
+
+        if let idx = self.intervals.firstIndex(where: { $0.uiChord != nil }) {
+            result = idx
+        }
+
+        return result
+    }
+    
+    func transpose(transposeUp: Bool) {
+        guard self.intervals.count > 0 else { return }
+        for interval in self.intervals {
+            if let uiChord = interval.uiChord {
+                uiChord.transpose(shift: transposeUp ? 1 : -1)
+            }
+        }
+    }
 }
 
 final class SongsList: ObservableObject {    
-    @Published var songs: [Song]
+    @Published var songs: [Song] = []
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
     @Published var decibelChanges = [Float]()
     @Published var showSearch: Bool = false
     @Published var recognitionInProgress: Bool = false
 
-    private let recordingService = RecordingService()
+    let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
     let databaseService = DatabaseService()
     private var cancellables = Set<AnyCancellable>()
@@ -127,6 +360,7 @@ final class SongsList: ObservableObject {
             guard let ext = ext else { return }
             @AppStorage("isLimited") var isLimited: Bool = false
             @AppStorage("songCounter") var songCounter: Int = 0
+            self.recordStarted = false
 
             let song = Song(
                 id: UUID().uuidString,
@@ -161,8 +395,7 @@ final class SongsList: ObservableObject {
                         tempo: response.tempo,
                         songType: songName == "" ? .recorded : .localFile,
                         ext: ext,
-                        thumbnailUrl: "",
-                        transposition: 0
+                        thumbnailUrl: ""
                     )
                     self.songs[i].name = dbSong.name
                     self.songs[i].duration = dbSong.duration
@@ -171,6 +404,8 @@ final class SongsList: ObservableObject {
                     self.songs[i].tempo = dbSong.tempo
                     self.songs[i].isProcessing = false
                     self.songs[i].stopTimer()
+                    self.songs[i].createTimeframes()
+                    self.databaseService.updateIntervals(song: self.songs[i])
                     self.recognitionInProgress = false
                     self.objectWillChange.send()
 
@@ -236,8 +471,7 @@ final class SongsList: ObservableObject {
                     tempo: response.tempo,
                     songType: .youtube,
                     ext: "",
-                    thumbnailUrl: thumbnailUrl,
-                    transposition: 0
+                    thumbnailUrl: thumbnailUrl
                 )
                 self.songs[i].name = dbSong.name
                 self.songs[i].duration = dbSong.duration
@@ -246,6 +480,8 @@ final class SongsList: ObservableObject {
                 self.songs[i].tempo = dbSong.tempo
                 self.songs[i].isProcessing = false
                 self.songs[i].stopTimer()
+                self.songs[i].createTimeframes()
+                self.databaseService.updateIntervals(song: self.songs[i])
                 self.recognitionInProgress = false
                 self.objectWillChange.send()
 
@@ -258,14 +494,14 @@ final class SongsList: ObservableObject {
         }
     }
     
-    func startRecording() {
-        recordingService.startRecording()
-        recordStarted = true
-        decibelChanges = [Float]()
+    func startRecording(conmpletion: @escaping (Bool) -> Void) {
+        recordingService.startRecording() { permissionGranted in
+            conmpletion(permissionGranted)
+        }
     }
     
-    func stopRecording() {
-        recordingService.stopRecording()
+    func stopRecording(cancel: Bool = false) {
+        recordingService.stopRecording(cancel: cancel)
         recordStarted = false
     }
     

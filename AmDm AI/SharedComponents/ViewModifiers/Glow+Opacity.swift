@@ -13,9 +13,11 @@ struct OpacityAnimation: ViewModifier {
         ZStack {
             content
                 .opacity(throb ? 0.7 : 1)
-                .animation(.easeOut(duration: 1.0).repeatForever(), value: throb)
+                .animation(.linear(duration: 1.0).repeatForever(), value: throb)
                 .onAppear {
-                    throb.toggle()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        throb.toggle()
+                    }
                 }
         }
     }
@@ -35,7 +37,9 @@ struct Glow: ViewModifier {
                 .blur(radius: throb ? 5 : 20)
                 .animation(.easeOut(duration: 2.0).repeatForever(), value: throb)
                 .onAppear {
-                    throb.toggle()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                        throb.toggle()
+                    }
                 }
             content
         }

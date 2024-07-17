@@ -7,142 +7,231 @@
 
 import SwiftUI
 
-//struct OptionsView: View {
-//    @Binding var hideLyrics: Bool
-//    var initialValue: Int
-//    var onChangeValue: (Int,Int) -> Void
-//    @State private var value = 0
-//    @State private var stepDisplay: String = "original"
-//    private let step = 1
-//    private let range = -10...10
-//
-//    var body: some View {
-//        HStack(alignment: .top, spacing: 50) {
-//            VStack {
-//                Text("Transpose")
-//                
-//                Stepper(value: $value, in: range, step: step, label: {})
-//                    .labelsHidden()
-//                
-//                VStack {
-//                    Text(" \(stepDisplay) ")
-//                        .fontWeight(.semibold)
-//                        .padding(5)
-//                        .background(Color.gray10)
-//                }
-//                .frame(width: 140)
-//            }
-//            
-//            VStack {
-//                Text("Hide lyrics")
-//                Toggle("", isOn: $hideLyrics)
-//                    .labelsHidden()
-//            }
-//
-//        }
-//        .padding(.horizontal, 50)
-//        .padding(.vertical, 20)
-//        .onChange(of: value) { oldValue, newValue in
-//            stepDisplay = getLabel(value)
-//            onChangeValue(oldValue, newValue)
-//        }
-//        .onAppear {
-//            value = initialValue
-//            stepDisplay = getLabel(initialValue)
-//        }
-//    }
-//    
-//    func getLabel(_ value: Int) -> String {
-//        var label: String = ""
-//        let direction = stepDisplay != "orginal" ? (value < 0 ? "steps down" : (value > 0 ? "steps up" : "")) : ""
-//
-//        if value % 2 == 0 {
-//            label = value == 0 ? "original" : String(abs(Int(value / 2)))
-//        } else {
-//            label = abs(value) == 1 ? NSLocalizedString("\u{00BD}", comment: "1/2") : (String(abs(Int(value / 2))) + NSLocalizedString("\u{00BD}", comment: "1/2"))
-//        }
-//        return "\(label) \(direction)"
-//    }
-//}
-
 struct OptionsView: View {
     @Binding var hideLyrics: Bool
-    var initialValue: Int
-    var onChangeValue: (Int,Int) -> Void
-    @State private var value = 0
-    @State private var stepDisplay: String = "original"
-    private let step = 1
-    private let range = -10...10
-    
+    @State var isAlertPresented = false
+    @State var showTranspositionAds = false
+    @State var showEditChordsAds = false
+    @State var showHideLyricsAds = false
+    var onChangeValue: (_ transposeUp: Bool) -> Void
+    var onReset: (_ reset: Bool) -> Void
+    @AppStorage("isLimited") var isLimited: Bool = false
+
     var body: some View {
         VStack(spacing: 0) {
-            Spacer()
-            
-            VStack {
-                Toggle("Hide lyrics:", isOn: $hideLyrics)
-            }
-            .frame(width: 250)
+            if isLimited {
+                Spacer()
+                VStack {
+                    UpgradeButton(content: {
+                        VStack {
+                            Text("Transpose chords")
+                                .font(.system(size: 20))
+                                .foregroundStyle(.black)
+                                .fontWeight(.semibold)
+                            Text("How it works?")
+                                .font(.system(size: 16))
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.gray10)
+                        }
+                    }, action: {
+                        showTranspositionAds = true
+                    })
+                    
+                    UpgradeButton(content: {
+                        VStack {
+                            Text("Edit chords")
+                                .font(.system(size: 20))
+                                .foregroundStyle(.black)
+                                .fontWeight(.semibold)
+                            Text("How it works?")
+                                .font(.system(size: 16))
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.gray10)
+                        }
+                    }, action: {
+                        showEditChordsAds = true
+                    })
 
-            Spacer()
-
-            HStack {
-                Button {
-                    value = value < 10 ? value + 1 : value
-                } label: {
-                    Image(systemName: "arrow.up")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(value == 10 ? .secondaryText : .white)
-                        .frame(width: 30, height: 30)
+                    UpgradeButton(content: {
+                        VStack {
+                            Text("Show or hide lyrics")
+                                .font(.system(size: 20))
+                                .foregroundStyle(.black)
+                                .fontWeight(.semibold)
+                            Text("How it works?")
+                                .font(.system(size: 16))
+                                .fontWeight(.semibold)
+                                .foregroundStyle(.gray10)
+                        }
+                    }, action: {
+                        showEditChordsAds = true
+                    })
                 }
-                .disabled(value == 10)
-                
-                VStack(spacing: 0) {
-                    Text("Transpose chords:")
+            } else {
+                VStack {
+                    Toggle("Hide lyrics", isOn: $hideLyrics)
+                        .font(.system(size: 16))
+                        .foregroundStyle(.white)
+                        .fontWeight(.semibold)
+                }
+                .padding(.top, 30)
+                .frame(width: 150, height: 80)
+
+                Divider()
+                HStack(spacing: 0) {
                     VStack {
-                        Text(" \(stepDisplay) ")
-                            .fontWeight(.semibold)
-                            .padding(5)
-                            .background(Color.gray10)
+                        Button {
+                            onChangeValue(true)
+                        } label: {
+                            Image(systemName: "arrow.up")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 25, height: 25)
+                                .foregroundColor(.white)
+                        }
+                        .disabled(isLimited)
+                        .frame(width: 80, height: 40)
+                        .background(isLimited ? .progressCircle : .gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
                     }
-                    .frame(width: 140)
+                    
+                    Button {
+                        showTranspositionAds = true
+                    } label: {
+                        VStack(spacing: 3) {
+                            Text("Transpose chords")
+                                .font(.system(size: 16))
+                                .foregroundStyle(.white)
+                                .fontWeight(.semibold)
+                            HStack(spacing: 3) {
+                                Text("How it works")
+                                    .font(.system(size: 14))
+                                    .fontWeight(.semibold)
+                                    .foregroundStyle(.gray40)
+                                Image(systemName: "questionmark.circle.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.gray40)
+
+                            }
+                        }
+                    }
+                    .frame(height: 40)
+                    .padding(.horizontal, 20)
+                    
+                    VStack {
+                        Button {
+                            onChangeValue(false)
+                        } label: {
+                            Image(systemName: "arrow.down")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width:25, height: 25)
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .disabled(isLimited)
+                    .frame(width: 80, height: 40)
+                    .background(.gray30, in: UnevenRoundedRectangle(bottomTrailingRadius: 16, topTrailingRadius: 16))
                 }
-                .padding(.horizontal, 30)
-                
-                Button {
-                    value = value > -10 ? value - 1 : value
-                } label: {
-                    Image(systemName: "arrow.down")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .foregroundColor(value == -10 ? .secondaryText : .white)
-                        .frame(width: 30, height: 30)
-                }
-                .disabled(value == -10)
+                .frame(height: 80)
             }
             
-            Spacer()
+            if !isLimited {
+                Divider()
+                VStack {
+                    Button {
+                        isAlertPresented = true
+                    } label: {
+                        Text("Reset changes")
+                    }
+                    .alert("Warning", isPresented: $isAlertPresented) {
+                        Button {
+                            isAlertPresented = false
+                            onReset(true)
+                        } label: {
+                            Text("Ok")
+                        }
+                        Button {
+                            isAlertPresented = false
+                        } label: {
+                            Text("Cancel")
+                        }
+                    } message: {
+                        Text("All changes made to chords and lyrics will be reset to originally recognized values.\n\nDo you want to continue?")
+                    }
+                }
+                .frame(height: 80)
+                Spacer()
+            }
         }
-        .onChange(of: value) { oldValue, newValue in
-            stepDisplay = getLabel(value)
-            onChangeValue(oldValue, newValue)
+        .padding(.horizontal, 20)
+        .popover(isPresented: $showTranspositionAds) {
+            TranspositionAds(showAds: $showTranspositionAds)
         }
-        .onAppear {
-            value = initialValue
-            stepDisplay = getLabel(initialValue)
+        .popover(isPresented: $showEditChordsAds) {
+            AdsView(showEditChordsAds: $showEditChordsAds) {
+//                showPaywall = true
+            }
+        }
+        .popover(isPresented: $showHideLyricsAds) {
+            HideLyricsAds(showAds: $showHideLyricsAds)
         }
     }
-    
-    private func getLabel(_ value: Int) -> String {
-        var label: String = ""
-        let direction = stepDisplay != "orginal" ? (value < 0 ? "steps down" : (value > 0 ? "steps up" : "")) : ""
+}
 
-        if value % 2 == 0 {
-            label = value == 0 ? "original" : String(abs(Int(value / 2)))
-        } else {
-            label = abs(value) == 1 ? NSLocalizedString("\u{00BD}", comment: "1/2") : (String(abs(Int(value / 2))) + NSLocalizedString("\u{00BD}", comment: "1/2"))
+struct TranspositionAds: View {
+    @Binding var showAds: Bool
+    var body: some View {
+        VStack {
+            Button {
+                showAds = false
+            } label: {
+                Text("Close")
+            }
+            Text("Chords transposition")
         }
-        return "\(label) \(direction)"
     }
+}
 
+struct HideLyricsAds: View {
+    @Binding var showAds: Bool
+    var body: some View {
+        VStack {
+            Button {
+                showAds = false
+            } label: {
+                Text("Close")
+            }
+            Text("Show or hide Lyrics")
+        }
+    }
+}
+
+
+struct UpgradeButton: View {
+    var content: () -> any View
+    var action: () -> Void
+    var body: some View {
+        Button {
+            action()
+        } label: {
+            ZStack {
+                HStack {
+                    Image(systemName: "crown.fill")
+                        .resizable()
+                        .foregroundColor(.grad2)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 20)
+                    Spacer()
+                }
+                .padding(.horizontal, 20)
+                
+                AnyView(content())
+            }
+            .frame(height: 60)
+            .frame(maxWidth: .infinity)
+            .background(.progressCircle, in: Capsule())
+        }
+    }
 }

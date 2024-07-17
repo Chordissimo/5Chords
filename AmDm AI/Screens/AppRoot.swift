@@ -12,7 +12,8 @@ struct AppRoot: View {
     @AppStorage("showOnboarding") private var showOnboarding: Bool = true
 //    @StateObject var store = StorekitManager()
     @StateObject var store = MockStore()
-
+    @StateObject var songsList = SongsList()
+    
     var body: some View {
         NavigationStack {
             if loadingStage == 0 {
@@ -31,9 +32,6 @@ struct AppRoot: View {
             }
         }
         .environmentObject(store)
+        .environmentObject(songsList)
     }
-}
-
-#Preview {
-    AppRoot()
 }

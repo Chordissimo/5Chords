@@ -8,20 +8,21 @@
 import SwiftUI
 
 struct ChordShapesView: View {
-    var chords: [ChordShape] = []
+    @ObservedObject var song: Song
     @Binding var currentChordIndex: Int
-
+    
     var body: some View {
         VStack {
             HStack(alignment: .center) {
                 ScrollViewReader { proxy in
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(chords, id: \.self) { chord in
-                                if let key = chord.chord.uiChord?.key, let suffix = chord.chord.uiChord?.suffix {
+                            ForEach(song.intervals, id: \.self) { interval in
+                                if let key = interval.uiChord?.key, let suffix = interval.uiChord?.suffix {
                                     HStack {
-                                        chord.shape
+                                        interval.uiChord?.renderShape(positionIndex: 0)
                                             .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
+                                            .id(interval.uiChord!.id)
                                         
                                         VStack(alignment: .center, spacing: 10) {
                                             Text(key.display.symbol + suffix.display.symbolized)
@@ -36,7 +37,7 @@ struct ChordShapesView: View {
                                         }
                                         .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
                                     }
-                                    .id(chords.firstIndex(where: { $0.chord == chord.chord })!)
+                                    .id(song.intervals.firstIndex(where: { $0 == interval })!)
                                     .scrollTransition(.animated, axis: .horizontal) { content, phase in
                                         content
                                             .opacity(phase.isIdentity ? 1.0 : 0.6)
@@ -60,6 +61,6 @@ struct ChordShapesView: View {
             }
             .padding(.horizontal, 20)
         }
-
+        
     }
 }
