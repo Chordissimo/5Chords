@@ -64,7 +64,7 @@ struct OptionsView: View {
                                 .foregroundStyle(.gray10)
                         }
                     }, action: {
-                        showEditChordsAds = true
+                        showHideLyricsAds = true
                     })
                 }
             } else {
@@ -167,71 +167,25 @@ struct OptionsView: View {
         }
         .padding(.horizontal, 20)
         .popover(isPresented: $showTranspositionAds) {
-            TranspositionAds(showAds: $showTranspositionAds)
+            AdsView(showAds: $showTranspositionAds, title: "CHORD TRANSPOSITION", content: {
+                TranspositionAds()
+            }) {
+//                showPaywall = true
+            }
         }
         .popover(isPresented: $showEditChordsAds) {
-            AdsView(showEditChordsAds: $showEditChordsAds) {
+            AdsView(showAds: $showEditChordsAds, title: "EDITING CHORDS", content: {
+                EditChordsAds()
+            }) {
 //                showPaywall = true
             }
         }
         .popover(isPresented: $showHideLyricsAds) {
-            HideLyricsAds(showAds: $showHideLyricsAds)
-        }
-    }
-}
-
-struct TranspositionAds: View {
-    @Binding var showAds: Bool
-    var body: some View {
-        VStack {
-            Button {
-                showAds = false
-            } label: {
-                Text("Close")
+            AdsView(showAds: $showHideLyricsAds, title: "SHOWING AND HIDING LYRICS", content: {
+                HideLyricsAds()
+            }) {
+//                showPaywall = true
             }
-            Text("Chords transposition")
-        }
-    }
-}
-
-struct HideLyricsAds: View {
-    @Binding var showAds: Bool
-    var body: some View {
-        VStack {
-            Button {
-                showAds = false
-            } label: {
-                Text("Close")
-            }
-            Text("Show or hide Lyrics")
-        }
-    }
-}
-
-
-struct UpgradeButton: View {
-    var content: () -> any View
-    var action: () -> Void
-    var body: some View {
-        Button {
-            action()
-        } label: {
-            ZStack {
-                HStack {
-                    Image(systemName: "crown.fill")
-                        .resizable()
-                        .foregroundColor(.grad2)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 20)
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                
-                AnyView(content())
-            }
-            .frame(height: 60)
-            .frame(maxWidth: .infinity)
-            .background(.progressCircle, in: Capsule())
         }
     }
 }

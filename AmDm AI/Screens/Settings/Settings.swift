@@ -35,7 +35,7 @@ struct Settings: View {
                     .foregroundStyle(.white)
                                         
                     Button {
-                        openURL(URL(string: "https://www.google.com")!)
+                        openURL(URL(string: "https://aichords.pro/privacy-policy/")!)
                     } label: {
                         HStack {
                             Text("Privacy policy")
@@ -50,7 +50,7 @@ struct Settings: View {
                     .foregroundStyle(.white)
                     
                     Button {
-                        openURL(URL(string: "https://www.google.com")!)
+                        openURL(URL(string: "https://aichords.pro/terms-of-use/")!)
                     } label: {
                         HStack {
                             Text("Terms of use")

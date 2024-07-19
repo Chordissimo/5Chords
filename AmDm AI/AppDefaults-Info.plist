@@ -9,13 +9,13 @@
 	<key>GOOGLE_DATA_API_URL</key>
 	<string>https://www.googleapis.com/youtube/v3/videos</string>
 	<key>UPLOAD_ENDPOINT</key>
-	<string>http://64.226.99.83:80/upload</string>
+	<string>https://staging.aichords.pro/upload</string>
 	<key>YOUTUBE_ENDPOINT</key>
-	<string>http://64.226.99.83:80/upload/youtube</string>
+	<string>https://staging.aichords.pro/api/upload/youtube</string>
 	<key>LIMITED_UPLOAD_FILE_SIZE</key>
 	<integer>3072</integer>
 	<key>MAX_UPLOAD_FILE_SIZE</key>
-	<integer>31457280</integer>
+	<integer>314572800000000</integer>
 	<key>LIMITED_DURATION</key>
 	<integer>60</integer>
 	<key>MAX_DURATION</key>

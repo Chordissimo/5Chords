@@ -169,8 +169,10 @@ struct PlaybackView: View {
                     }
                 }
                 .popover(isPresented: $showEditChordsAds) {
-                    AdsView(showEditChordsAds: $showEditChordsAds) {
-                        showPaywall = true
+                    AdsView(showAds: $showEditChordsAds, title: "EDITING CHORDS", content: {
+                        EditChordsAds()
+                    }) {
+//                        showPaywall = true
                     }
                 }
                 .popover(isPresented: $showEditChords) {

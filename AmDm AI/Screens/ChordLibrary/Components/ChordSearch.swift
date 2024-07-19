@@ -35,7 +35,7 @@ struct ChordSearchView: View {
                         chords = []
                         model.clearSearchResults()
                     } label: {
-                        Image(systemName: "xmark.circle.fill")
+                        Image(systemName: "delete.left")
                             .foregroundColor(.secondaryText)
                     }
                     .padding(.trailing,10)

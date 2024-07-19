@@ -154,7 +154,6 @@ struct OnboardingPage1: View {
                                         .padding(.bottom, 20)
                                         
                                         VStack {
-//                                            FileFormatsView(width: geometry.size.width)
                                             Text("MP3, MPeg4, M4A, WAV\nand more")
                                                 .lineLimit(2)
                                                 .lineSpacing(10)

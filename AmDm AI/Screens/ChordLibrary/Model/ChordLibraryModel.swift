@@ -7,7 +7,7 @@
 
 import Foundation
 import SwiftyChords
-import AudioKit
+//import AudioKit
 
 struct ChordSearchResults: Identifiable, Equatable, Hashable {
     var id = UUID()

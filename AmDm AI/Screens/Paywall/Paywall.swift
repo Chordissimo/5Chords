@@ -16,6 +16,7 @@ struct Paywall: View {
     @Binding var showPaywall: Bool
     @State var monthlyPlan: ProductConfiguration?
     @State var yearlyPlan: ProductConfiguration?
+    @Environment(\.openURL) var openURL
     
     var body: some View {
         GeometryReader { geometry in
@@ -80,12 +81,23 @@ struct Paywall: View {
                     
                     VStack {
                         HStack(spacing: 30) {
-                            Text("Terms of use")
-                                .foregroundStyle(.gray)
-                                .font(.system(size: 14))
-                            Text("Privacy policy")
-                                .foregroundStyle(.gray)
-                                .font(.system(size: 14))
+                            Button {
+                                openURL(URL(string: "https://aichords.pro/privacy-policy/")!)
+                            } label: {
+                                Text("Terms of use")
+                                    .foregroundStyle(.gray)
+                                    .font(.system(size: 14))
+                            }
+                            .foregroundStyle(.white)
+                            
+                            Button {
+                                openURL(URL(string: "https://aichords.pro/terms-of-use/")!)
+                            } label: {
+                                Text("Privacy policy")
+                                    .foregroundStyle(.gray)
+                                    .font(.system(size: 14))
+                            }
+                            .foregroundStyle(.white)
                         }
                     }
                     Spacer()

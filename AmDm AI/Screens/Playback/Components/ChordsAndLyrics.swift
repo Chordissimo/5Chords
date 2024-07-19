@@ -31,8 +31,8 @@ struct ChordsAndLyrics: View {
                             let timeframeIndex = song.timeframes.firstIndex(where: {$0 == timeframe })!
                             let first = timeframe.intervals.first!
                             let last = timeframe.intervals.last!
-                            let intervalWidth = CGFloat(Array(song.intervals[first...last]).map { $0.width }.reduce(0, +))
-                            let intervalPaddingWidth = (width - intervalWidth - LyricsViewModelConstants.padding) / 2
+                            let timeframeWidth = CGFloat(Array(song.intervals[first...last]).map { $0.width }.reduce(0, +))
+                            let intervalPaddingWidth = (width - timeframeWidth - LyricsViewModelConstants.padding) / 2
                             ZStack(alignment: .leading) {
                                 Rectangle()
                                     .foregroundStyle(.gray20)
