@@ -16,6 +16,7 @@ struct OptionsView: View {
     var onChangeValue: (_ transposeUp: Bool) -> Void
     var onReset: (_ reset: Bool) -> Void
     @AppStorage("isLimited") var isLimited: Bool = false
+    @State var showPaywall = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -167,25 +168,20 @@ struct OptionsView: View {
         }
         .padding(.horizontal, 20)
         .popover(isPresented: $showTranspositionAds) {
-            AdsView(showAds: $showTranspositionAds, title: "CHORD TRANSPOSITION", content: {
-                TranspositionAds()
-            }) {
-//                showPaywall = true
-            }
+            AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
+                EditChordsAds()
+            })
         }
         .popover(isPresented: $showEditChordsAds) {
-            AdsView(showAds: $showEditChordsAds, title: "EDITING CHORDS", content: {
+            AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "EDITING CHORDS", content: {
                 EditChordsAds()
-            }) {
-//                showPaywall = true
-            }
+            }) 
         }
         .popover(isPresented: $showHideLyricsAds) {
-            AdsView(showAds: $showHideLyricsAds, title: "SHOWING AND HIDING LYRICS", content: {
-                HideLyricsAds()
-            }) {
-//                showPaywall = true
-            }
+            AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "SHOWING AND HIDING LYRICS", content: {
+                EditChordsAds()
+            })
         }
+        .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
     }
 }

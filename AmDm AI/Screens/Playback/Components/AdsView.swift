@@ -9,9 +9,10 @@ import SwiftUI
 
 struct AdsView<Content: View>: View {
     @Binding var showAds: Bool
+    @Binding var showPaywall: Bool
     var title: String
     @ViewBuilder let content: Content
-    var completion: () -> Void
+//    var completion: () -> Void
     @AppStorage("isLimited") var isLimited: Bool = false
     
     
@@ -61,7 +62,8 @@ struct AdsView<Content: View>: View {
             if isLimited {
                 Button {
                     showAds = false
-                    completion()
+                    showPaywall = true
+//                    completion()
                 } label: {
                     Text("Upgrade to Premium")
                         .fontWeight(.semibold)

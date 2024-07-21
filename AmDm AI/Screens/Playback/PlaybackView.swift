@@ -22,9 +22,9 @@ struct PlaybackView: View {
     @State var isRenamePopupVisible: Bool = false
     @State var showOptions: Bool = false
     @State var songName: String = ""
-    @State var showEditChords = false
-    @State var showEditChordsAds = false
-    @State var showPaywall = false
+//    @State var showEditChords = false
+//    @State var showEditChordsAds = false
+//    @State var showPaywall = false
     let lyricsfontSize = LyricsViewModelConstants.lyricsfontSize
     
     var body: some View {
@@ -56,8 +56,6 @@ struct PlaybackView: View {
                             currentChordIndex: $currentChordIndex,
                             currentTimeframeIndex: $currentTimeframeIndex,
                             isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
-                            showEditChordsAds: $showEditChordsAds,
-                            showEditChords: $showEditChords,
                             bottomPanelHieght: $bottomPanelHieght,
                             width: width
                         )
@@ -167,31 +165,6 @@ struct PlaybackView: View {
                     if song.songType != .youtube {
                         player.pause()
                     }
-                }
-                .popover(isPresented: $showEditChordsAds) {
-                    AdsView(showAds: $showEditChordsAds, title: "EDITING CHORDS", content: {
-                        EditChordsAds()
-                    }) {
-//                        showPaywall = true
-                    }
-                }
-                .popover(isPresented: $showEditChords) {
-                    EditChordsView(song: song, currentChordIndex: $currentChordIndex) { isCanceled, selectedKey, selectedSuffix, newLyrics in
-                        if !isCanceled {
-                            if let key = selectedKey, let suffix = selectedSuffix {
-                                song.intervals[currentChordIndex].uiChord = UIChord(key: key, suffix: suffix)
-                            } else {
-                                song.intervals[currentChordIndex].uiChord = nil
-                            }
-                            song.intervals[currentChordIndex].words = newLyrics ?? ""
-                            song.createTimeframes()
-                            songsList.databaseService.updateIntervals(song: song)
-                        }
-                        showEditChords = false
-                    }
-                }
-                .fullScreenCover(isPresented: $showPaywall) {
-                    Paywall(showPaywall: $showPaywall)
                 }
             }
         }

@@ -20,7 +20,7 @@ class ChordLibraryModel: ObservableObject {
     let majorKeysAlt =  ["" ,"" ,"" ,"" ,"" ,"" ,"F♯","C♯","G♯","D♯","A♯",""]
     let minorKeys =     ["Am","Em","Bm","F♯m","C♯m","G♯m","E♭m","B♭m","Fm","Cm","Gm","Dm"]
     let minorKeysAlt =  [""  ,""  ,""  ,"G♭m","D♭m","A♭m","D♯m","A♯m",""  ,""  ,""  ,""]
-    
+
     @Published var chordSearchResults: [ChordSearchResults] = []
     
     //    let midi = MIDI()
@@ -86,11 +86,17 @@ class ChordLibraryModel: ObservableObject {
         var resultChords: [ChordSearchResults] = []
         
         chords = Chords.guitar.filter {
-            let search1 = ($0.key.rawValue + $0.suffix.display.accessible).lowercased().contains(searchString.lowercased())
-            let search2 = ($0.key.rawValue + $0.suffix.display.short).lowercased().contains(searchString.lowercased())
-            let search3 = ($0.key.display.accessible + $0.suffix.display.accessible).lowercased().contains(searchString.lowercased())
-            let search4 = ($0.key.display.accessible + $0.suffix.display.short).lowercased().contains(searchString.lowercased())
-            return search1 || search2 || search3 || search4
+            var result = false
+            if searchString.count == 1 {
+                result = $0.key.rawValue.lowercased().contains(searchString.lowercased())
+            } else {
+                let search1 = ($0.key.rawValue + $0.suffix.display.accessible).lowercased().contains(searchString.lowercased())
+                let search2 = ($0.key.rawValue + $0.suffix.display.short).lowercased().contains(searchString.lowercased())
+                let search3 = ($0.key.display.accessible + $0.suffix.display.accessible).lowercased().contains(searchString.lowercased())
+                let search4 = ($0.key.display.accessible + $0.suffix.display.short).lowercased().contains(searchString.lowercased())
+                result = search1 || search2 || search3 || search4
+            }
+            return result
         }
         
         for chord in chords {
