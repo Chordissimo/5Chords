@@ -22,6 +22,7 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
     
     func setupAudio(url: URL) -> Bool {
         var _url = url
+        var result = false
         let isReachable = (try? url.checkResourceIsReachable()) ?? false
         do {
             if !isReachable {
@@ -37,10 +38,11 @@ class Player: NSObject, ObservableObject, AVAudioPlayerDelegate {
             print("Audio player init:", error)
         }
         guard let player = self.audioPlayer else { return false }
+        result = true
         player.delegate = self
         player.prepareToPlay()
         self.duration = player.duration
-        return true
+        return result
     }
     
     func play() {

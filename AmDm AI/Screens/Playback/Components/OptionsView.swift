@@ -16,66 +16,70 @@ struct OptionsView: View {
     var onChangeValue: (_ transposeUp: Bool) -> Void
     var onReset: (_ reset: Bool) -> Void
     @AppStorage("isLimited") var isLimited: Bool = false
+    @State var showPaywall = false
 
     var body: some View {
         VStack(spacing: 0) {
             if isLimited {
                 Spacer()
                 VStack {
-                    UpgradeButton(content: {
+                    UpgradeButton(rightIconName: "arrow.up.arrow.down", content: {
                         VStack {
                             Text("Transpose chords")
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-                            Text("How it works?")
-                                .font(.system(size: 16))
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.gray10)
+//                            Text("How it works?")
+//                                .font(.system(size: 16))
+//                                .fontWeight(.semibold)
+//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showTranspositionAds = true
                     })
                     
-                    UpgradeButton(content: {
+                    UpgradeButton(rightIconName: "square.and.pencil", content: {
                         VStack {
                             Text("Edit chords")
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-                            Text("How it works?")
-                                .font(.system(size: 16))
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.gray10)
+//                            Text("How it works?")
+//                                .font(.system(size: 16))
+//                                .fontWeight(.semibold)
+//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showEditChordsAds = true
                     })
 
-                    UpgradeButton(content: {
+                    UpgradeButton(rightIconName: "eye.slash.fill", content: {
                         VStack {
                             Text("Show or hide lyrics")
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-                            Text("How it works?")
-                                .font(.system(size: 16))
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.gray10)
+//                            Text("How it works?")
+//                                .font(.system(size: 16))
+//                                .fontWeight(.semibold)
+//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
-                        showEditChordsAds = true
+                        showHideLyricsAds = true
                     })
                 }
             } else {
-                VStack {
-                    Toggle("Hide lyrics", isOn: $hideLyrics)
+                Divider()
+                    .padding(.top, 30)
+                HStack {
+                    Text("Hide lyrics")
                         .font(.system(size: 16))
                         .foregroundStyle(.white)
                         .fontWeight(.semibold)
+                    Toggle("",isOn: $hideLyrics)
+                        .labelsHidden()
                 }
-                .padding(.top, 30)
-                .frame(width: 150, height: 80)
+                .frame(width: 150, height: 60)
 
                 Divider()
                 HStack(spacing: 0) {
@@ -91,7 +95,7 @@ struct OptionsView: View {
                         }
                         .disabled(isLimited)
                         .frame(width: 80, height: 40)
-                        .background(isLimited ? .progressCircle : .gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
+                        .background(.gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
                     }
                     
                     Button {
@@ -134,7 +138,7 @@ struct OptionsView: View {
                     .frame(width: 80, height: 40)
                     .background(.gray30, in: UnevenRoundedRectangle(bottomTrailingRadius: 16, topTrailingRadius: 16))
                 }
-                .frame(height: 80)
+                .frame(height: 60)
             }
             
             if !isLimited {
@@ -161,77 +165,26 @@ struct OptionsView: View {
                         Text("All changes made to chords and lyrics will be reset to originally recognized values.\n\nDo you want to continue?")
                     }
                 }
-                .frame(height: 80)
+                .frame(height: 60)
                 Spacer()
             }
         }
         .padding(.horizontal, 20)
         .popover(isPresented: $showTranspositionAds) {
-            TranspositionAds(showAds: $showTranspositionAds)
+            AdsView(showAds: $showTranspositionAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
+                TranspositionAds()
+            })
         }
         .popover(isPresented: $showEditChordsAds) {
-            AdsView(showEditChordsAds: $showEditChordsAds) {
-//                showPaywall = true
-            }
+            AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "EDITING CHORDS", content: {
+                EditChordsAds()
+            }) 
         }
         .popover(isPresented: $showHideLyricsAds) {
-            HideLyricsAds(showAds: $showHideLyricsAds)
+            AdsView(showAds: $showHideLyricsAds, showPaywall: $showPaywall, title: "SHOWING\nAND HIDING LYRICS", content: {
+                HideLyricsAds()
+            })
         }
-    }
-}
-
-struct TranspositionAds: View {
-    @Binding var showAds: Bool
-    var body: some View {
-        VStack {
-            Button {
-                showAds = false
-            } label: {
-                Text("Close")
-            }
-            Text("Chords transposition")
-        }
-    }
-}
-
-struct HideLyricsAds: View {
-    @Binding var showAds: Bool
-    var body: some View {
-        VStack {
-            Button {
-                showAds = false
-            } label: {
-                Text("Close")
-            }
-            Text("Show or hide Lyrics")
-        }
-    }
-}
-
-
-struct UpgradeButton: View {
-    var content: () -> any View
-    var action: () -> Void
-    var body: some View {
-        Button {
-            action()
-        } label: {
-            ZStack {
-                HStack {
-                    Image(systemName: "crown.fill")
-                        .resizable()
-                        .foregroundColor(.grad2)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 20)
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                
-                AnyView(content())
-            }
-            .frame(height: 60)
-            .frame(maxWidth: .infinity)
-            .background(.progressCircle, in: Capsule())
-        }
+        .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
     }
 }

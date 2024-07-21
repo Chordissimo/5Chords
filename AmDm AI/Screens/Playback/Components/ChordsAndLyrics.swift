@@ -16,11 +16,11 @@ struct ChordsAndLyrics: View {
     @Binding var currentChordIndex: Int
     @Binding var currentTimeframeIndex: Int
     @Binding var isMoreShapesPopupPresented: Bool
-    @Binding var showEditChordsAds: Bool
-    @Binding var showEditChords: Bool
     @Binding var bottomPanelHieght: CGFloat
     var width: CGFloat
     @State var showPaywall = false
+    @State var showEditChordsAds: Bool = false
+    @State var showEditChords: Bool = false
 
     var body: some View {
         VStack {
@@ -31,8 +31,8 @@ struct ChordsAndLyrics: View {
                             let timeframeIndex = song.timeframes.firstIndex(where: {$0 == timeframe })!
                             let first = timeframe.intervals.first!
                             let last = timeframe.intervals.last!
-                            let intervalWidth = CGFloat(Array(song.intervals[first...last]).map { $0.width }.reduce(0, +))
-                            let intervalPaddingWidth = (width - intervalWidth - LyricsViewModelConstants.padding) / 2
+                            let timeframeWidth = CGFloat(Array(song.intervals[first...last]).map { $0.width }.reduce(0, +))
+                            let intervalPaddingWidth = (width - timeframeWidth - LyricsViewModelConstants.padding) / 2
                             ZStack(alignment: .leading) {
                                 Rectangle()
                                     .foregroundStyle(.gray20)
@@ -149,5 +149,25 @@ struct ChordsAndLyrics: View {
         }
         .frame(width: width)
         .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
+        .popover(isPresented: $showEditChordsAds) {
+            AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "EDITING CHORDS", content: {
+                EditChordsAds()
+            })
+        }
+        .popover(isPresented: $showEditChords) {
+            EditChordsView(song: song, currentChordIndex: $currentChordIndex) { isCanceled, selectedKey, selectedSuffix, newLyrics in
+                if !isCanceled {
+                    if let key = selectedKey, let suffix = selectedSuffix {
+                        song.intervals[currentChordIndex].uiChord = UIChord(key: key, suffix: suffix)
+                    } else {
+                        song.intervals[currentChordIndex].uiChord = nil
+                    }
+                    song.intervals[currentChordIndex].words = newLyrics ?? ""
+                    song.createTimeframes()
+                    songsList.databaseService.updateIntervals(song: song)
+                }
+                showEditChords = false
+            }
+        }
     }
 }

@@ -13,11 +13,10 @@ struct ChordSuffixes: View {
     var action: (Chords.Key, Chords.Suffix) -> Void
     @State var selectedChord = ChordSearchResults()
     
-    init(model: ChordLibraryModel, action: @escaping (Chords.Key, Chords.Suffix) -> Void) {
-        self.model = model
-        self.action = action
+    public func selectChord(chord: ChordSearchResults) {
+        self.selectedChord = chord
     }
-    
+        
     var body: some View {
         VStack {
             if model.chordSearchResults.count == 0 {

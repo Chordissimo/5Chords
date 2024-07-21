@@ -7,15 +7,20 @@
 
 import SwiftUI
 
-struct AdsView: View {
-    @Binding var showEditChordsAds: Bool
-    var completion: () -> Void
+struct AdsView<Content: View>: View {
+    @Binding var showAds: Bool
+    @Binding var showPaywall: Bool
+    var title: String
+    @ViewBuilder let content: Content
+    @AppStorage("isLimited") var isLimited: Bool = false
+    
+    
     var body: some View {
         VStack {
             HStack {
                 Spacer()
                 Button {
-                    showEditChordsAds = false
+                    showAds = false
                 } label: {
                     Image(systemName: "xmark.circle.fill")
                         .resizable()
@@ -25,31 +30,50 @@ struct AdsView: View {
                 }
                 .padding(.trailing, 20)
             }
-            .padding(.vertical, 20)
+            .padding(.top, 20)
             
             VStack {
-                Text("EDIT CHORDS")
+                Text(title)
+                    .multilineTextAlignment(.center)
                     .font(.system(size: 20))
                     .fontWeight(.semibold)
                     .fontWidth(.expanded)
                     .foregroundStyle(.white)
+                HStack {
+                    Image(systemName: "crown.fill")
+                        .resizable()
+                        .foregroundColor(.grad2)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 20)
+                    Text("Premium feature")
+                        .font(.system(size: 18))
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                }
+                .padding(.horizontal, 20)
+            }
+            
+            ScrollView(.vertical) {
+                content
             }
             
             Spacer()
             
-            Button {
-                showEditChordsAds = false
-                completion()
-            } label: {
-                Text("Upgrade to Premium")
-                    .fontWeight(.semibold)
-                    .font(.system(size: 20))
-                    .padding(20)
-                    .frame(maxWidth: .infinity)
-                    .foregroundColor(.black)
-                    .background(.progressCircle, in: Capsule())
+            if isLimited {
+                Button {
+                    showAds = false
+                    showPaywall = true
+                } label: {
+                    Text("Upgrade to Premium")
+                        .fontWeight(.semibold)
+                        .font(.system(size: 20))
+                        .padding(20)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.black)
+                        .background(.progressCircle, in: Capsule())
+                }
+                .padding(20)
             }
-            .padding(20)
         }
     }
 }

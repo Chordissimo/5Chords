@@ -366,8 +366,13 @@ struct AllSongs: View {
                                     self.errorMessage = "The file you are trying to upload is too big. The maximum file size we can hadnle is \(maxSize)Mb."
                                 }
                             } else {
-                                self.songsList.recognitionInProgress = true
-                                self.songsList.importFile(url: file)
+                                if Player().setupAudio(url: file) {
+                                    self.songsList.recognitionInProgress = true
+                                    self.songsList.importFile(url: file)
+                                } else {
+                                    showError = true
+                                    errorMessage = "The file is broken or it's format is not supported."
+                                }
                             }
                         }
                     } catch {

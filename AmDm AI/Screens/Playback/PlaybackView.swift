@@ -22,9 +22,9 @@ struct PlaybackView: View {
     @State var isRenamePopupVisible: Bool = false
     @State var showOptions: Bool = false
     @State var songName: String = ""
-    @State var showEditChords = false
-    @State var showEditChordsAds = false
-    @State var showPaywall = false
+//    @State var showEditChords = false
+//    @State var showEditChordsAds = false
+//    @State var showPaywall = false
     let lyricsfontSize = LyricsViewModelConstants.lyricsfontSize
     
     var body: some View {
@@ -56,8 +56,6 @@ struct PlaybackView: View {
                             currentChordIndex: $currentChordIndex,
                             currentTimeframeIndex: $currentTimeframeIndex,
                             isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
-                            showEditChordsAds: $showEditChordsAds,
-                            showEditChords: $showEditChords,
                             bottomPanelHieght: $bottomPanelHieght,
                             width: width
                         )
@@ -127,31 +125,41 @@ struct PlaybackView: View {
                             )
                             
                             /// MARK: Options close, More shapes buttons
-                            HStack {
-                                if !player.isPlaying && (isPlaybackPanelMaximized || showOptions) {
-                                    Spacer()
-                                    Button {
-                                        if showOptions {
-                                            showOptions = false
-                                        } else {
-                                            isMoreShapesPopupPresented.toggle()
+                            if !player.isPlaying && (isPlaybackPanelMaximized || showOptions) {
+                                ZStack {
+                                    if showOptions {
+                                        VStack {
+                                            Text(isLimited ? "Premium features" : "Preferences")
+                                                .font(.system(size: 16))
+                                                .foregroundStyle(.gray40)
+                                                .fontWeight(.semibold)
+                                                .padding(.top, 20)
                                         }
-                                        withAnimation(.easeInOut(duration: 0.1)) {
-                                            bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
-                                        }
-                                    } label: {
-                                        Image(systemName: isMoreShapesPopupPresented ? "chevron.down" : (showOptions ? "xmark.circle.fill" : "book.fill"))
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 22, height: 22)
-                                            .foregroundStyle(.secondaryText)
                                     }
-                                    .padding(.trailing, 30)
-                                    .padding(.top, 20)
-                                    
+                                    HStack {
+                                        Spacer()
+                                        Button {
+                                            if showOptions {
+                                                showOptions = false
+                                            } else {
+                                                isMoreShapesPopupPresented.toggle()
+                                            }
+                                            withAnimation(.easeInOut(duration: 0.1)) {
+                                                bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
+                                            }
+                                        } label: {
+                                            Image(systemName: isMoreShapesPopupPresented ? "chevron.down" : (showOptions ? "xmark.circle.fill" : "book.fill"))
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 22, height: 22)
+                                                .foregroundStyle(.secondaryText)
+                                        }
+                                        .padding(.trailing, 30)
+                                        .padding(.top, 20)
+                                    }
+                                    .frame(width: width)
                                 }
                             }
-                            .frame(width: width)
                         }
                     }
                 }
@@ -167,29 +175,6 @@ struct PlaybackView: View {
                     if song.songType != .youtube {
                         player.pause()
                     }
-                }
-                .popover(isPresented: $showEditChordsAds) {
-                    AdsView(showEditChordsAds: $showEditChordsAds) {
-                        showPaywall = true
-                    }
-                }
-                .popover(isPresented: $showEditChords) {
-                    EditChordsView(song: song, currentChordIndex: $currentChordIndex) { isCanceled, selectedKey, selectedSuffix, newLyrics in
-                        if !isCanceled {
-                            if let key = selectedKey, let suffix = selectedSuffix {
-                                song.intervals[currentChordIndex].uiChord = UIChord(key: key, suffix: suffix)
-                            } else {
-                                song.intervals[currentChordIndex].uiChord = nil
-                            }
-                            song.intervals[currentChordIndex].words = newLyrics ?? ""
-                            song.createTimeframes()
-                            songsList.databaseService.updateIntervals(song: song)
-                        }
-                        showEditChords = false
-                    }
-                }
-                .fullScreenCover(isPresented: $showPaywall) {
-                    Paywall(showPaywall: $showPaywall)
                 }
             }
         }
