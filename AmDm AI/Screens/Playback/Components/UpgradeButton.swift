@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct UpgradeButton: View {
+    var leftIconName: String = "crown.fill"
+    var rightIconName: String = ""
     var content: () -> any View
     var action: () -> Void
     var body: some View {
@@ -16,12 +18,19 @@ struct UpgradeButton: View {
         } label: {
             ZStack {
                 HStack {
-                    Image(systemName: "crown.fill")
+                    Image(systemName: leftIconName)
                         .resizable()
                         .foregroundColor(.grad2)
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 20)
                     Spacer()
+                    if rightIconName != "" {
+                        Image(systemName: rightIconName)
+                            .resizable()
+                            .foregroundColor(.grad2)
+                            .aspectRatio(contentMode: .fit)
+                            .frame(height: 20)
+                    }
                 }
                 .padding(.horizontal, 20)
                 

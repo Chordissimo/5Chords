@@ -129,7 +129,7 @@ struct PlaybackView: View {
                                 ZStack {
                                     if showOptions {
                                         VStack {
-                                            Text("Preferences")
+                                            Text(isLimited ? "Premium features" : "Preferences")
                                                 .font(.system(size: 16))
                                                 .foregroundStyle(.gray40)
                                                 .fontWeight(.semibold)

@@ -23,46 +23,46 @@ struct OptionsView: View {
             if isLimited {
                 Spacer()
                 VStack {
-                    UpgradeButton(content: {
+                    UpgradeButton(rightIconName: "arrow.up.arrow.down", content: {
                         VStack {
                             Text("Transpose chords")
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-                            Text("How it works?")
-                                .font(.system(size: 16))
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.gray10)
+//                            Text("How it works?")
+//                                .font(.system(size: 16))
+//                                .fontWeight(.semibold)
+//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showTranspositionAds = true
                     })
                     
-                    UpgradeButton(content: {
+                    UpgradeButton(rightIconName: "square.and.pencil", content: {
                         VStack {
                             Text("Edit chords")
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-                            Text("How it works?")
-                                .font(.system(size: 16))
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.gray10)
+//                            Text("How it works?")
+//                                .font(.system(size: 16))
+//                                .fontWeight(.semibold)
+//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showEditChordsAds = true
                     })
 
-                    UpgradeButton(content: {
+                    UpgradeButton(rightIconName: "eye.slash.fill", content: {
                         VStack {
                             Text("Show or hide lyrics")
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-                            Text("How it works?")
-                                .font(.system(size: 16))
-                                .fontWeight(.semibold)
-                                .foregroundStyle(.gray10)
+//                            Text("How it works?")
+//                                .font(.system(size: 16))
+//                                .fontWeight(.semibold)
+//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showHideLyricsAds = true
