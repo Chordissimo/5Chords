@@ -69,14 +69,17 @@ struct OptionsView: View {
                     })
                 }
             } else {
-                VStack {
-                    Toggle("Hide lyrics", isOn: $hideLyrics)
+                Divider()
+                    .padding(.top, 30)
+                HStack {
+                    Text("Hide lyrics")
                         .font(.system(size: 16))
                         .foregroundStyle(.white)
                         .fontWeight(.semibold)
+                    Toggle("",isOn: $hideLyrics)
+                        .labelsHidden()
                 }
-                .padding(.top, 30)
-                .frame(width: 150, height: 80)
+                .frame(width: 150, height: 60)
 
                 Divider()
                 HStack(spacing: 0) {
@@ -135,7 +138,7 @@ struct OptionsView: View {
                     .frame(width: 80, height: 40)
                     .background(.gray30, in: UnevenRoundedRectangle(bottomTrailingRadius: 16, topTrailingRadius: 16))
                 }
-                .frame(height: 80)
+                .frame(height: 60)
             }
             
             if !isLimited {
@@ -162,15 +165,15 @@ struct OptionsView: View {
                         Text("All changes made to chords and lyrics will be reset to originally recognized values.\n\nDo you want to continue?")
                     }
                 }
-                .frame(height: 80)
+                .frame(height: 60)
                 Spacer()
             }
         }
         .padding(.horizontal, 20)
         .popover(isPresented: $showTranspositionAds) {
-            AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
-                EditChordsAds()
-            })
+//            AdsView(showAds: $showTranspositionAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
+//                EditChordsAds()
+//            })
         }
         .popover(isPresented: $showEditChordsAds) {
             AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "EDITING CHORDS", content: {
@@ -178,8 +181,8 @@ struct OptionsView: View {
             }) 
         }
         .popover(isPresented: $showHideLyricsAds) {
-            AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "SHOWING AND HIDING LYRICS", content: {
-                EditChordsAds()
+            AdsView(showAds: $showHideLyricsAds, showPaywall: $showPaywall, title: "SHOWING\nAND HIDING LYRICS", content: {
+                HideLyricsAds()
             })
         }
         .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }

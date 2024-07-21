@@ -16,6 +16,11 @@
 		B79898A82BCAC2930052C127 /* RealmSwift in Frameworks */ = {isa = PBXBuildFile; productRef = B79898A72BCAC2930052C127 /* RealmSwift */; };
 		B79898AA2BCAC2CD0052C127 /* DatabaseService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79898A92BCAC2CD0052C127 /* DatabaseService.swift */; };
 		C308BD3A2C4A291B00C54602 /* EditChordsAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD392C4A291B00C54602 /* EditChordsAds.swift */; };
+		C308BD3C2C4CF68C00C54602 /* HideLyricsAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD3B2C4CF68C00C54602 /* HideLyricsAds.swift */; };
+		C308BD3E2C4CF6ED00C54602 /* AdsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD3D2C4CF6ED00C54602 /* AdsViewModel.swift */; };
+		C308BD432C4CF9D700C54602 /* ChordsAndLyricsAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD422C4CF9D700C54602 /* ChordsAndLyricsAds.swift */; };
+		C308BD452C4CF9F600C54602 /* SearchChordsAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD442C4CF9F600C54602 /* SearchChordsAds.swift */; };
+		C308BD472C4CFDF300C54602 /* UpgradeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD462C4CFDF300C54602 /* UpgradeButton.swift */; };
 		C30ADA5F2C38F4AE00CC9F9A /* LogEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */; };
 		C30ADA612C3AB1EB00CC9F9A /* AppDefaults-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C30ADA602C3AB1EB00CC9F9A /* AppDefaults-Info.plist */; };
 		C30ADA632C3ADB4800CC9F9A /* FormatDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */; };
@@ -91,6 +96,11 @@
 		B798989D2BCAB9930052C127 /* RecognitionApiService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecognitionApiService.swift; sourceTree = "<group>"; };
 		B79898A92BCAC2CD0052C127 /* DatabaseService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
 		C308BD392C4A291B00C54602 /* EditChordsAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditChordsAds.swift; sourceTree = "<group>"; };
+		C308BD3B2C4CF68C00C54602 /* HideLyricsAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HideLyricsAds.swift; sourceTree = "<group>"; };
+		C308BD3D2C4CF6ED00C54602 /* AdsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsViewModel.swift; sourceTree = "<group>"; };
+		C308BD422C4CF9D700C54602 /* ChordsAndLyricsAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordsAndLyricsAds.swift; sourceTree = "<group>"; };
+		C308BD442C4CF9F600C54602 /* SearchChordsAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchChordsAds.swift; sourceTree = "<group>"; };
+		C308BD462C4CFDF300C54602 /* UpgradeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeButton.swift; sourceTree = "<group>"; };
 		C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvents.swift; sourceTree = "<group>"; };
 		C30ADA602C3AB1EB00CC9F9A /* AppDefaults-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppDefaults-Info.plist"; sourceTree = "<group>"; };
 		C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDuration.swift; sourceTree = "<group>"; };
@@ -203,9 +213,21 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
+		C308BD3F2C4CF75600C54602 /* Ads */ = {
+			isa = PBXGroup;
+			children = (
+				C308BD392C4A291B00C54602 /* EditChordsAds.swift */,
+				C308BD3B2C4CF68C00C54602 /* HideLyricsAds.swift */,
+				C308BD422C4CF9D700C54602 /* ChordsAndLyricsAds.swift */,
+				C308BD442C4CF9F600C54602 /* SearchChordsAds.swift */,
+			);
+			path = Ads;
+			sourceTree = "<group>";
+		};
 		C34D48762C2E566E0008E5CE /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				C308BD3F2C4CF75600C54602 /* Ads */,
 				C34D48772C2EBB830008E5CE /* MoreShapesView.swift */,
 				C3A9935C2C35737100C2D8B5 /* OptionsView.swift */,
 				C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */,
@@ -215,7 +237,7 @@
 				C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */,
 				C34150A42C46280900C4C3B2 /* TopPanel.swift */,
 				C34150A62C462A2400C4C3B2 /* ChordsAndLyrics.swift */,
-				C308BD392C4A291B00C54602 /* EditChordsAds.swift */,
+				C308BD462C4CFDF300C54602 /* UpgradeButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -352,6 +374,7 @@
 			isa = PBXGroup;
 			children = (
 				C34D48742C2DA6970008E5CE /* UniPlayer.swift */,
+				C308BD3D2C4CF6ED00C54602 /* AdsViewModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -538,6 +561,7 @@
 				C37D58392BFB18A3001DA8E1 /* Glow+Opacity.swift in Sources */,
 				C37D58362BFB1855001DA8E1 /* EmptySongList.swift in Sources */,
 				C30ADA692C41679200CC9F9A /* EditChordsView.swift in Sources */,
+				C308BD3C2C4CF68C00C54602 /* HideLyricsAds.swift in Sources */,
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,
 				B71F3FD82BD42D63005C3606 /* YoutubeView.swift in Sources */,
 				C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */,
@@ -551,10 +575,12 @@
 				C37D58342BFB181B001DA8E1 /* SearchView.swift in Sources */,
 				C37996E02C0757BF00DA3556 /* CircleOf5th.swift in Sources */,
 				C3DF0ABC2BE93D1900F69AFB /* Chunked.swift in Sources */,
+				C308BD3E2C4CF6ED00C54602 /* AdsViewModel.swift in Sources */,
 				C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */,
 				C3DC6FD52BFCDEFC00EA0095 /* Paywall.swift in Sources */,
 				C30ADA652C3FB80300CC9F9A /* AppDefaults.swift in Sources */,
 				C34150A32C46242B00C4C3B2 /* PlaybackControls.swift in Sources */,
+				C308BD452C4CF9F600C54602 /* SearchChordsAds.swift in Sources */,
 				C3DC6FD32BFCDB2E00EA0095 /* AppRoot.swift in Sources */,
 				C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */,
 				C34150A72C462A2400C4C3B2 /* ChordsAndLyrics.swift in Sources */,
@@ -569,6 +595,7 @@
 				B75A6FE12BE0F882001153ED /* Int.swift in Sources */,
 				C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */,
 				C37D58402BFB25E4001DA8E1 /* OnboardingPage1.swift in Sources */,
+				C308BD432C4CF9D700C54602 /* ChordsAndLyricsAds.swift in Sources */,
 				C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */,
 				C3A9935D2C35737100C2D8B5 /* OptionsView.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */,
@@ -579,6 +606,7 @@
 				C37D58462BFB491E001DA8E1 /* OnboardingPage2.swift in Sources */,
 				C34150AB2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift in Sources */,
 				B798989E2BCAB9930052C127 /* RecognitionApiService.swift in Sources */,
+				C308BD472C4CFDF300C54602 /* UpgradeButton.swift in Sources */,
 				C34D48782C2EBB830008E5CE /* MoreShapesView.swift in Sources */,
 				C30ADA5F2C38F4AE00CC9F9A /* LogEvents.swift in Sources */,
 				C37D583B2BFB18F0001DA8E1 /* RecognizedSong+Loader.swift in Sources */,

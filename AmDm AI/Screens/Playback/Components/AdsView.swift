@@ -12,7 +12,6 @@ struct AdsView<Content: View>: View {
     @Binding var showPaywall: Bool
     var title: String
     @ViewBuilder let content: Content
-//    var completion: () -> Void
     @AppStorage("isLimited") var isLimited: Bool = false
     
     
@@ -35,6 +34,7 @@ struct AdsView<Content: View>: View {
             
             VStack {
                 Text(title)
+                    .multilineTextAlignment(.center)
                     .font(.system(size: 20))
                     .fontWeight(.semibold)
                     .fontWidth(.expanded)
@@ -63,7 +63,6 @@ struct AdsView<Content: View>: View {
                 Button {
                     showAds = false
                     showPaywall = true
-//                    completion()
                 } label: {
                     Text("Upgrade to Premium")
                         .fontWeight(.semibold)
@@ -88,36 +87,3 @@ struct TranspositionAds: View {
     }
 }
 
-struct HideLyricsAds: View {
-    var body: some View {
-        Text("Show or hide Lyrics")
-    }
-}
-
-
-struct UpgradeButton: View {
-    var content: () -> any View
-    var action: () -> Void
-    var body: some View {
-        Button {
-            action()
-        } label: {
-            ZStack {
-                HStack {
-                    Image(systemName: "crown.fill")
-                        .resizable()
-                        .foregroundColor(.grad2)
-                        .aspectRatio(contentMode: .fit)
-                        .frame(height: 20)
-                    Spacer()
-                }
-                .padding(.horizontal, 20)
-                
-                AnyView(content())
-            }
-            .frame(height: 60)
-            .frame(maxWidth: .infinity)
-            .background(.progressCircle, in: Capsule())
-        }
-    }
-}

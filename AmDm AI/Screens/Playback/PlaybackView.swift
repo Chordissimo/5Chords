@@ -125,31 +125,41 @@ struct PlaybackView: View {
                             )
                             
                             /// MARK: Options close, More shapes buttons
-                            HStack {
-                                if !player.isPlaying && (isPlaybackPanelMaximized || showOptions) {
-                                    Spacer()
-                                    Button {
-                                        if showOptions {
-                                            showOptions = false
-                                        } else {
-                                            isMoreShapesPopupPresented.toggle()
+                            if !player.isPlaying && (isPlaybackPanelMaximized || showOptions) {
+                                ZStack {
+                                    if showOptions {
+                                        VStack {
+                                            Text("Preferences")
+                                                .font(.system(size: 16))
+                                                .foregroundStyle(.gray40)
+                                                .fontWeight(.semibold)
+                                                .padding(.top, 20)
                                         }
-                                        withAnimation(.easeInOut(duration: 0.1)) {
-                                            bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
-                                        }
-                                    } label: {
-                                        Image(systemName: isMoreShapesPopupPresented ? "chevron.down" : (showOptions ? "xmark.circle.fill" : "book.fill"))
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 22, height: 22)
-                                            .foregroundStyle(.secondaryText)
                                     }
-                                    .padding(.trailing, 30)
-                                    .padding(.top, 20)
-                                    
+                                    HStack {
+                                        Spacer()
+                                        Button {
+                                            if showOptions {
+                                                showOptions = false
+                                            } else {
+                                                isMoreShapesPopupPresented.toggle()
+                                            }
+                                            withAnimation(.easeInOut(duration: 0.1)) {
+                                                bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
+                                            }
+                                        } label: {
+                                            Image(systemName: isMoreShapesPopupPresented ? "chevron.down" : (showOptions ? "xmark.circle.fill" : "book.fill"))
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 22, height: 22)
+                                                .foregroundStyle(.secondaryText)
+                                        }
+                                        .padding(.trailing, 30)
+                                        .padding(.top, 20)
+                                    }
+                                    .frame(width: width)
                                 }
                             }
-                            .frame(width: width)
                         }
                     }
                 }
