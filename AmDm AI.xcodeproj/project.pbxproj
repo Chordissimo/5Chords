@@ -21,6 +21,7 @@
 		C308BD432C4CF9D700C54602 /* ChordsAndLyricsAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD422C4CF9D700C54602 /* ChordsAndLyricsAds.swift */; };
 		C308BD452C4CF9F600C54602 /* SearchChordsAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD442C4CF9F600C54602 /* SearchChordsAds.swift */; };
 		C308BD472C4CFDF300C54602 /* UpgradeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD462C4CFDF300C54602 /* UpgradeButton.swift */; };
+		C308BD492C4D152C00C54602 /* TranspositionAds.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD482C4D152C00C54602 /* TranspositionAds.swift */; };
 		C30ADA5F2C38F4AE00CC9F9A /* LogEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */; };
 		C30ADA612C3AB1EB00CC9F9A /* AppDefaults-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C30ADA602C3AB1EB00CC9F9A /* AppDefaults-Info.plist */; };
 		C30ADA632C3ADB4800CC9F9A /* FormatDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */; };
@@ -101,6 +102,7 @@
 		C308BD422C4CF9D700C54602 /* ChordsAndLyricsAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordsAndLyricsAds.swift; sourceTree = "<group>"; };
 		C308BD442C4CF9F600C54602 /* SearchChordsAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchChordsAds.swift; sourceTree = "<group>"; };
 		C308BD462C4CFDF300C54602 /* UpgradeButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpgradeButton.swift; sourceTree = "<group>"; };
+		C308BD482C4D152C00C54602 /* TranspositionAds.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TranspositionAds.swift; sourceTree = "<group>"; };
 		C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvents.swift; sourceTree = "<group>"; };
 		C30ADA602C3AB1EB00CC9F9A /* AppDefaults-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppDefaults-Info.plist"; sourceTree = "<group>"; };
 		C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDuration.swift; sourceTree = "<group>"; };
@@ -220,6 +222,7 @@
 				C308BD3B2C4CF68C00C54602 /* HideLyricsAds.swift */,
 				C308BD422C4CF9D700C54602 /* ChordsAndLyricsAds.swift */,
 				C308BD442C4CF9F600C54602 /* SearchChordsAds.swift */,
+				C308BD482C4D152C00C54602 /* TranspositionAds.swift */,
 			);
 			path = Ads;
 			sourceTree = "<group>";
@@ -560,6 +563,7 @@
 				C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */,
 				C37D58392BFB18A3001DA8E1 /* Glow+Opacity.swift in Sources */,
 				C37D58362BFB1855001DA8E1 /* EmptySongList.swift in Sources */,
+				C308BD492C4D152C00C54602 /* TranspositionAds.swift in Sources */,
 				C30ADA692C41679200CC9F9A /* EditChordsView.swift in Sources */,
 				C308BD3C2C4CF68C00C54602 /* HideLyricsAds.swift in Sources */,
 				C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */,

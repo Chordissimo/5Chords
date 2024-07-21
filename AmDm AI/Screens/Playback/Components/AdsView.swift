@@ -77,13 +77,3 @@ struct AdsView<Content: View>: View {
         }
     }
 }
-
-
-
-
-struct TranspositionAds: View {
-    var body: some View {
-        Text("Chords transposition")
-    }
-}
-

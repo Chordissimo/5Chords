@@ -95,7 +95,7 @@ struct OptionsView: View {
                         }
                         .disabled(isLimited)
                         .frame(width: 80, height: 40)
-                        .background(isLimited ? .progressCircle : .gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
+                        .background(.gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
                     }
                     
                     Button {
@@ -171,9 +171,9 @@ struct OptionsView: View {
         }
         .padding(.horizontal, 20)
         .popover(isPresented: $showTranspositionAds) {
-//            AdsView(showAds: $showTranspositionAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
-//                EditChordsAds()
-//            })
+            AdsView(showAds: $showTranspositionAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
+                TranspositionAds()
+            })
         }
         .popover(isPresented: $showEditChordsAds) {
             AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "EDITING CHORDS", content: {
