@@ -11,7 +11,7 @@
 	<key>UPLOAD_ENDPOINT</key>
 	<string>https://staging.aichords.pro/upload</string>
 	<key>YOUTUBE_ENDPOINT</key>
-	<string>https://staging.aichords.pro/api/upload/youtube</string>
+	<string>https://staging.aichords.pro/youtube</string>
 	<key>LIMITED_UPLOAD_FILE_SIZE</key>
 	<integer>3072</integer>
 	<key>MAX_UPLOAD_FILE_SIZE</key>
