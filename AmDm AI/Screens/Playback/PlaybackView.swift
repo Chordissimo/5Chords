@@ -22,9 +22,6 @@ struct PlaybackView: View {
     @State var isRenamePopupVisible: Bool = false
     @State var showOptions: Bool = false
     @State var songName: String = ""
-//    @State var showEditChords = false
-//    @State var showEditChordsAds = false
-//    @State var showPaywall = false
     let lyricsfontSize = LyricsViewModelConstants.lyricsfontSize
     
     var body: some View {

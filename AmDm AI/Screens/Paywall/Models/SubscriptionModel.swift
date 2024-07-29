@@ -9,205 +9,123 @@ import Foundation
 import StoreKit
 import SwiftUI
 
-struct ProductConfiguration: Identifiable, Equatable {
-    let id = UUID()
-    let planId: String
-    let title: String
-    let description: String
-    let tagLine: String
-    let displayPrice: String
-    let isPreferable: Bool
-    var isActive: Bool = false
-    let productPriority: Int
+struct Subscription: Identifiable, Hashable {
+    let id: String
+    let isDefault: Bool
     let billingPeriod: BillingPeriod
-    var startDate: Date? = nil
     
-    enum BillingPeriod {
-        case year
-        case month
+    enum BillingPeriod: String {
+        case year = "Yearly"
+        case month = "Monthly"
+        case none = ""
     }
 }
 
-public enum StoreError: Error {
-    case failedVerification
+struct ProductFeature: Identifiable, Hashable {
+    var id = UUID()
+    var name: String
+    var subscriptions: [String]
 }
 
-// tutorial https://www.youtube.com/watch?v=jLA0r7cvePo
-class StorekitManager: ObservableObject {
-    @Published var products: [Product] = []
-    @Published var productConfig: [ProductConfiguration] = []
-    let productIds: [String] = ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
-    var updateListenerTask: Task<Void, Error>? = nil
+class ProductModel: ObservableObject {
+    let subscriptions: [Subscription] = [
+        Subscription(id: "pro_chords_9999_1y_3d0", isDefault: true, billingPeriod: .year),
+        Subscription(id: "pro_chords_1299_1m_3d0", isDefault: false, billingPeriod: .month)
+    ]
+
+    let features: [ProductFeature] = [
+        ProductFeature(
+            name: "AI chords and lyrics recognition",
+            subscriptions: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
+        ),
+        ProductFeature(
+            name: "Unlimited songs in your collection",
+            subscriptions: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
+        ),
+        ProductFeature(
+            name: "Chord transposition",
+            subscriptions: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
+        ),
+        ProductFeature(
+            name: "Chord editing",
+            subscriptions: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
+        ),
+        ProductFeature(
+            name: "400+ guitar chord shapes",
+            subscriptions: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
+        ),
+        ProductFeature(
+            name: "Guitab, bass, and ukulele tuner",
+            subscriptions: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"]
+        ),
+
+    ]
+
+    var activeSubscriptionId: String {
+        return self.store.activeSubscriptionId
+    }
+    @Published var productInfoLoaded = false
+    @Published var store: StorekitManager
     
-    init() {
-        self.updateListenerTask = listenForTransactions()
-        
+    init(isMock: Bool = false) {
+        print("init")
+        self.store = StorekitManager(productIds: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"], isMock: false)
         Task {
-            await requestProducts()
-            await updateCustomerProductStatus()
+            await getSubscriptionStatus()
         }
     }
     
-    deinit {
-        updateListenerTask?.cancel()
+    func getSubscriptionBy(id: String) -> Subscription? {
+        guard id != "" else { return nil }
+        let result = subscriptions.filter { $0.id == id }
+        return result.count > 0 ? result.first! : nil
     }
     
-    func listenForTransactions() -> Task<Void, Error> {
-        return Task.detached {
-            for await result in Transaction.updates {
-                do {
-                    let transaction = try self.checkVerified(result)
-                    await self.updateCustomerProductStatus()
-                    await transaction.finish()
-                } catch {
-                    print("Transaction failed verification")
-                }
-            }
-        }
-    }
-    
-    @MainActor
-    func requestProducts() async {
-        do {
-            self.products = try await Product.products(for: self.productIds)
-        } catch {
-            print(error)
-        }
-        
-        if let productOne = products.first(where: { $0.id == self.productIds[0] }) {
-            self.productConfig.append(ProductConfiguration(
-                planId: "pro_chords_9999_1y_3d0",
-                title: productOne.displayName,
-                description: "12 month • " + productOne.displayPrice,
-                tagLine: "Save 36%",
-                displayPrice: String(format: "%.2f", (productOne.price as CVarArg) as! Double / 12.0) + " / month",
-                isPreferable: true,
-                productPriority: 1,
-                billingPeriod: .year
-            ))
-        }
-        
-        if let productTwo = products.first(where: { $0.id == self.productIds[1] }) {
-            self.productConfig.append(ProductConfiguration(
-                planId: "pro_chords_1299_1m_3d0",
-                title: productTwo.displayName,
-                description: "",
-                tagLine: "",
-                displayPrice: productTwo.displayPrice + " / month",
-                isPreferable: false,
-                productPriority: 0,
-                billingPeriod: .month
-            ))
-        }
-    }
-    
-    func purchase(_ productId: String) async throws -> StoreKit.Transaction? {
-        guard let product = products.first(where: { $0.id == productId }) else { return nil}
-        let result = try await product.purchase()
-        
-        switch result {
-        case .success(let verificationResult):
-            let transaction = try checkVerified(verificationResult)
-            await transaction.finish()
-            await updateCustomerProductStatus()
-            return transaction
-        case .userCancelled, .pending:
-            return nil
-        default:
-            return nil
-        }
-    }
-    
-    func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-        switch result {
-        case .unverified:
-            throw StoreError.failedVerification
-        case .verified(let signedType):
-            return signedType
-        }
-    }
-    
-    @MainActor
-    func updateCustomerProductStatus() async {
-        var transactions: [StoreKit.Transaction] = []
+    func purchase(billingPeriod: Subscription.BillingPeriod) async -> Bool {
+        var result = false
         @AppStorage("isLimited") var isLimited: Bool = false
-
-        for await result in Transaction.currentEntitlements {
-            do {
-                let transaction = try checkVerified(result)
-                transactions.append(transaction)
-            } catch {
-                print("Transaction failed verification")
-            }
-        }
         
-        if transactions.count > 0 {
-            let latestActiveTransactions = transactions.filter { t in
-                t.expirationDate ?? Date() > Date()
-            }
-
-            if latestActiveTransactions.count > 0 {
-                let status = await latestActiveTransactions[0].subscriptionStatus
+        let subscriptionId = getSubscriptionIdBy(billingPeriod: billingPeriod)
+        if subscriptionId != "" {
+            if !self.store.isMock {
                 do {
-                    if let activeProductIndex = productConfig.firstIndex(where: { $0.planId == latestActiveTransactions[0].productID}) {
-                        for i in 0..<productConfig.count {
-                            self.productConfig[i].isActive = activeProductIndex == i
-                            if activeProductIndex == i {
-                                isLimited = false
-                            }
-                        }
-                        let autoRenewProductId = try status?.renewalInfo.payloadValue.autoRenewPreference
-                        if autoRenewProductId != self.productConfig[activeProductIndex].planId {
-                            if let productIndex = productConfig.firstIndex(where: { $0.planId == autoRenewProductId}) {
-                                self.productConfig[productIndex].startDate = latestActiveTransactions[0].expirationDate
-                            }
-                        }
-                    }
+                    result = try await store.purchase(subscriptionId)
+                    isLimited = !result
                 } catch {
                     print(error)
                 }
-            }
-        }
-    }
-}
-
-class MockStore: ObservableObject {
-    @Published var productConfig: [ProductConfiguration] = []
-
-    init() {
-        @AppStorage("activeProductId") var activeProductId: String?
-        let activeProduct = activeProductId ?? ""
-        self.productConfig.append(ProductConfiguration(
-            planId: "pro_chords_9999_1y_3d0",
-            title: "Best value",
-            description: "12 month • $99.99",
-            tagLine: "Save 36%",
-            displayPrice: "$8.33 / month",
-            isPreferable: true,
-            isActive: activeProduct == "pro_chords_9999_1y_3d0",
-            productPriority: 1,
-            billingPeriod: .year
-        ))
-        self.productConfig.append(ProductConfiguration(
-            planId: "pro_chords_1299_1m_3d0",
-            title: "Starter",
-            description: "",
-            tagLine: "",
-            displayPrice: "$12.99 / month",
-            isPreferable: false,
-            isActive: activeProduct == "pro_chords_1299_1m_3d0",
-            productPriority: 0,
-            billingPeriod: .month
-        ))
-    }
-    
-    func purchase(_ productId: String) {
-        @AppStorage("isLimited") var isLimited: Bool = false
-        for i in 0..<productConfig.count {
-            self.productConfig[i].isActive = productId == self.productConfig[i].planId
-            if productId == self.productConfig[i].planId {
+            } else {
                 isLimited = false
             }
         }
+        return result
+    }
+    
+    func getSubscriptionStatus() async {
+        if !self.store.isMock {
+            await self.store.getSubscriptionStatus()
+            try! await AppStore.sync()
+            DispatchQueue.main.async {
+                self.productInfoLoaded = true
+            }
+        } else {
+            self.productInfoLoaded = true
+        }
+    }
+    
+    func getSubscriptionIdBy(billingPeriod: Subscription.BillingPeriod) -> String {
+        let subs = self.subscriptions.filter { $0.billingPeriod == billingPeriod }
+        return subs.count > 0 ? subs.first!.id : ""
+    }
+    
+    func restoreSubscription() {
+        Task {
+            do {
+                try await AppStore.sync()
+            } catch {
+                print(error)
+            }
+        }
     }
 }
+

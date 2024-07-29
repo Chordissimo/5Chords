@@ -10,9 +10,9 @@ import SwiftUI
 struct AppRoot: View {
     @State var loadingStage = 0
     @AppStorage("showOnboarding") private var showOnboarding: Bool = true
-//    @StateObject var store = StorekitManager()
-    @StateObject var store = MockStore()
+    @StateObject var store = ProductModel(isMock: false)
     @StateObject var songsList = SongsList()
+    @State var productInfoLoaded = false
     
     var body: some View {
         NavigationStack {
@@ -26,9 +26,11 @@ struct AppRoot: View {
                 }
             }
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                loadingStage = 1
+        .onChange(of: store.productInfoLoaded) {
+            if store.productInfoLoaded {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    loadingStage = 1
+                }
             }
         }
         .environmentObject(store)

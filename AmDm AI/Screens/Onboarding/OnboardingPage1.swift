@@ -280,21 +280,9 @@ struct OnboardingPage1: View {
                                         .padding(20)
                                         .frame(maxWidth: .infinity)
                                         .foregroundColor(.black)
-//                                        .frame(height: 50)
                                         .background(.progressCircle, in: Capsule())
                                         .padding(20)
                                         .padding(.bottom, geometry.safeAreaInsets.bottom)
-
-//                                    ZStack {
-//                                        Color.clear.frame(height: 150)
-//                                        Circle()
-//                                            .foregroundColor(.gray30)
-//                                            .frame(height: 60)
-//                                        Image(systemName: "arrow.right")
-//                                            .resizable()
-//                                            .frame(width: 25, height: 20)
-//                                            .foregroundColor(.gray5)
-//                                    }
                                 }
                             }
                         }

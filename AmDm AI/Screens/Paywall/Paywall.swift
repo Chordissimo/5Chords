@@ -1,261 +1,236 @@
 //
-//  Paywall.swift
+//  Paywall1.swift
 //  AmDm AI
 //
-//  Created by Anton on 21/05/2024.
+//  Created by Anton on 26/07/2024.
 //
 
 import SwiftUI
 import StoreKit
 
-struct Paywall: View {
+struct Paywall: View  {
+    var appDefaults = AppDefaults()
+    @EnvironmentObject var store: ProductModel
     @AppStorage("isLimited") var isLimited: Bool = false
-//    @EnvironmentObject var store: StorekitManager
-    @EnvironmentObject var store: MockStore
-    @State var selectedPlan = ""
     @Binding var showPaywall: Bool
-    @State var monthlyPlan: ProductConfiguration?
-    @State var yearlyPlan: ProductConfiguration?
     @Environment(\.openURL) var openURL
-    
+    @State var selectedBillingPeriod: Subscription.BillingPeriod = .year
+    @State var activeBillingPeriod: Subscription.BillingPeriod = .none
+    var completion: () -> Void = {}
+        
     var body: some View {
-        GeometryReader { geometry in
-            ZStack {
-                Color.gray5
-                VStack {
-                    VStack {
-                        HStack(spacing: 0) {
-                            Text("PRO")
-                                .fontWeight(.semibold)
-                                .fontWidth(.expanded)
-                                .font(.system(size: 38))
-                                .foregroundStyle(.progressCircle)
-                            Text("CHORDS")
-                                .fontWeight(.semibold)
-                                .fontWidth(.expanded)
-                                .font(.system(size: 38))
-                        }
-                        Text("POWERED BY AI")
-                            .fontWeight(.semibold)
-                            .fontWidth(.expanded)
-                            .foregroundStyle(.secondaryText)
-                            .font(.system(size: 11))
-                    }
-                    .padding(.top, 100 + geometry.safeAreaInsets.top)
-                    .padding(.bottom, 50)
-
-                    VStack(spacing: 10) {
-                        if yearlyPlan != nil {
-                            ProductButton(product: yearlyPlan)
-                                .background(selectedPlan == yearlyPlan!.planId ? Color.clear : Color.paywallInactive)
-                                .cornerRadius(25)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 25)
-                                        .stroke(selectedPlan == yearlyPlan!.planId ? Color.progressCircle : Color.clear, lineWidth: 2)
-                                        .fill(selectedPlan == yearlyPlan!.planId ? Color.progressCircle.opacity(0.1) : Color.clear)
-                                )
-                                .onTapGesture {
-                                    if !yearlyPlan!.isActive {
-                                        selectedPlan = yearlyPlan!.planId
-                                    }
-                                }
-                        }
-                        if monthlyPlan != nil {
-                            ProductButton(product: monthlyPlan)
-                                .background(selectedPlan == monthlyPlan!.planId ? Color.clear : Color.paywallInactive)
-                                .cornerRadius(25)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 25)
-                                        .stroke(selectedPlan == monthlyPlan!.planId ? Color.progressCircle : Color.clear, lineWidth: 2)
-                                        .fill(selectedPlan == monthlyPlan!.planId ? Color.progressCircle.opacity(0.1) : Color.clear)
-                                )
-                                .onTapGesture {
-                                    if !monthlyPlan!.isActive && monthlyPlan!.startDate == nil {
-                                        selectedPlan = monthlyPlan!.planId
-                                    }
-                                }
-                        }
-                    }
-
-                    Spacer()
-                    
-                    VStack {
-                        HStack(spacing: 30) {
-                            Button {
-                                openURL(URL(string: "https://aichords.pro/privacy-policy/")!)
-                            } label: {
-                                Text("Terms of use")
-                                    .foregroundStyle(.gray)
-                                    .font(.system(size: 14))
-                            }
-                            .foregroundStyle(.white)
-                            
-                            Button {
-                                openURL(URL(string: "https://aichords.pro/terms-of-use/")!)
-                            } label: {
-                                Text("Privacy policy")
-                                    .foregroundStyle(.gray)
-                                    .font(.system(size: 14))
-                            }
-                            .foregroundStyle(.white)
-                        }
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal, 10)
-                
-                VStack {
-                    Spacer()
-                    
-                    let label = yearlyPlan != nil && monthlyPlan != nil ?
-                    (yearlyPlan!.isActive || monthlyPlan!.isActive ? "Subscribe" : (selectedPlan == yearlyPlan!.planId ? "Start 7 days Free Trial" : "Subscribe")) :
-                    ""
-                    let color = yearlyPlan != nil && monthlyPlan != nil ?
-                    (yearlyPlan!.isActive || monthlyPlan!.isActive ? Color.white : (selectedPlan == yearlyPlan!.planId ? Color.progressCircle : Color.white)) :
-                    Color.white
-                    
-                    let isDisabled = yearlyPlan != nil && monthlyPlan != nil ? (yearlyPlan!.isActive && monthlyPlan!.startDate != nil) : false
-
-                    Button {
-                        store.purchase(selectedPlan)
-                        showPaywall = false
-// ============================  Uncomment this before release ============
-//                        Task {
-//                            let transaction = try await store.purchase(selectedPlan)
-//                            if transaction != nil {
-//                                showPaywall = false
-//                            }
-//                        }
-//=========================================================================
-                    } label: {
-                        
-                        Text(label)
-                            .fontWeight(.semibold)
-                            .font(.system(size: 20))
-                            .padding(20)
-                            .frame(maxWidth: .infinity)
-                            .foregroundColor(.black)
-                            .background(isDisabled ? .gray20 : color, in: Capsule())
-                    }
-                    .disabled(isDisabled)
-                    
-                }
-                .padding(20)
-                .padding(.bottom, geometry.safeAreaInsets.bottom)
-                
-                VStack {
-                    HStack {
-                        let activeProduct = store.productConfig.first(where: { $0.isActive }) ?? nil
-                        Button {
-                            isLimited = activeProduct == nil
-                            showPaywall = false
-                        } label: {
-                            Image(systemName: "xmark")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 18, height: 18)
-                                .foregroundColor(activeProduct != nil ? .white : .gray30)
-                                .opacity(0.5)
-                        }
-                        Spacer()
-                        Text("Choose your plan")
-                            .foregroundStyle(.white)
-                            .fontWeight(.semibold)
-                            .font(.system(size: 20))
-                        Spacer()
-                        Button {
-// ============================  Uncomment this before release ============
-//                            Task {
-//                                do {
-//                                    try await AppStore.sync()
-//                                    await store.updateCustomerProductStatus()
-//                                } catch {
-//                                    print(error)
-//                                }
-//                            }
-//=========================================================================
-                        } label: {
-                            Text("Restore")
-                                .foregroundStyle(.white)
-                                .fontWeight(.semibold)
-                                .font(.system(size: 20))
-                        }
-                    }
-                    .padding(.top, geometry.safeAreaInsets.top)
-                    .padding(.horizontal, 10)
-                    
-                    Spacer()
-                }
-            }
-            .navigationBarBackButtonHidden(true)
-            .ignoresSafeArea()
-            .onAppear {
-                self.monthlyPlan = store.productConfig.first(where: { $0.billingPeriod == .month }) ?? nil
-                self.yearlyPlan = store.productConfig.first(where: { $0.billingPeriod == .year }) ?? nil
-
-                let plan = monthlyPlan != nil && yearlyPlan != nil ?
-                (!yearlyPlan!.isActive ? yearlyPlan!.planId : (monthlyPlan!.startDate == nil ? monthlyPlan!.planId : "")) :
-                ""
-                
-                selectedPlan = plan
-            }
-        }
-    }
-}
-
-struct ProductButton: View {
-    var product: ProductConfiguration?
-    
-    var body: some View {
-        if product != nil {
-            VStack(spacing: 10) {
-                if product!.billingPeriod == .year {
-                    HStack {
-                        Text(product!.tagLine)
-                            .font(.system(size: 18))
-                            .foregroundStyle(.progressCircle)
-                            .fontWeight(.bold)
-                        Spacer()
-                    }
-                }
+        VStack(spacing: 0) {
+            /// MARK: Header
+            VStack {
                 HStack {
-                    Text(product!.title)
-                        .font(.system(size: 18))
-                        .foregroundStyle(.white)
-                        .fontWeight(.bold)
-                    Spacer()
-                    if !product!.isActive {
-                        if product!.startDate == nil {
-                            Text(product!.displayPrice)
-                                .font(.system(size: 18))
-                                .foregroundStyle(.white)
-                                .fontWeight(.bold)
-                        } else {
-                            Text("Activates on: " + product!.startDate!.formatted(date: .abbreviated , time: .omitted))
-                                .font(.system(size: 14))
-                                .lineLimit(2)
-                                .foregroundStyle(.white)
-                                .frame(width: 110)
-                        }
-                    } else {
-                        Image(systemName: "checkmark")
+                    Button {
+                        isLimited = store.activeSubscriptionId == ""
+                        showPaywall = false
+                        completion()
+                    } label: {
+                        Image(systemName: "xmark")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 20)
-                            .foregroundStyle(.progressCircle)
+                            .frame(width: 18, height: 18)
+                            .foregroundColor(.white)
+                            .opacity(0.5)
+                    }
+                    Spacer()
+                    Button {
+                        store.restoreSubscription()
+                    } label: {
+                        Text("Restore")
+                            .font(.system(size: 18))
+                            .foregroundStyle(.white)
+                            .fontWeight(.semibold)
+                            .font(.system(size: 20))
                     }
                 }
-                if product!.billingPeriod == .year {
-                    HStack {
-                        Text(product!.description)
-                            .font(.system(size: 16))
-                            .foregroundStyle(.white)
-                            .opacity(0.3)
-                        Spacer()
+                .padding(.top, appDefaults.topSafeArea)
+                .padding(.horizontal, 20)
+            }
+            
+            /// MARK: App name
+            VStack(spacing: 0) {
+                HStack(spacing: 0) {
+                    Text("PRO")
+                        .fontWeight(.semibold)
+                        .fontWidth(.expanded)
+                        .font(.system(size: 38))
+                        .foregroundStyle(.progressCircle)
+                    Text("CHORDS")
+                        .fontWeight(.semibold)
+                        .fontWidth(.expanded)
+                        .font(.system(size: 38))
+                }
+                Text("POWERED BY AI")
+                    .fontWeight(.semibold)
+                    .fontWidth(.expanded)
+                    .foregroundStyle(.secondaryText)
+                    .font(.system(size: 11))
+            }
+            .padding(.vertical,40)
+            
+            /// MARK: Billing period selection
+            VStack {
+                HStack(spacing: 0) {
+                    Button {
+                        selectedBillingPeriod = .year
+                    } label: {
+                        Text("Yearly")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(selectedBillingPeriod == .year ? Color.black : Color.white)
+                            .frame(width: (appDefaults.screenWidth - 40) / 2, height: 40)
                     }
+                    .background(selectedBillingPeriod == .year ? Color.white : Color.clear, in: Capsule())
+
+                    Button {
+                        selectedBillingPeriod = .month
+                    } label: {
+                        Text("Monthly")
+                            .fontWeight(.semibold)
+                            .foregroundStyle(selectedBillingPeriod == .month ? Color.black : Color.white)
+                            .frame(width: (appDefaults.screenWidth - 40) / 2, height: 40)
+                    }
+                    .background(selectedBillingPeriod == .month ? Color.white : Color.clear, in: Capsule())
+                }
+                .background(Color.gray20)
+                .clipShape(.rect(cornerRadius: 20))
+                .padding(.horizontal, 20)
+            }
+            .frame(width: appDefaults.screenWidth)
+            
+            /// MARK: Price tag
+            VStack {
+                Text(selectedBillingPeriod == .month ? "$12.99 / mo" : "$8.33 / mo")
+                    .font(.system(size: 20))
+                    .fontWeight(.semibold)
+                Text(selectedBillingPeriod == .month ? "billed monthly" : "billed annually")
+                    .fontWidth(.expanded)
+                    .foregroundStyle(.secondaryText)
+                    .font(.system(size: 11))
+                Text(selectedBillingPeriod == activeBillingPeriod ? "You are currently subscribed to this" : "No commitement, cancel any time")
+                    .foregroundStyle(selectedBillingPeriod == activeBillingPeriod ? .progressCircle : .white)
+                    .font(.system(size: 14))
+                    .fontWeight(selectedBillingPeriod == activeBillingPeriod ? .bold : .regular)
+                    .padding(.top, 5)
+            }
+            .padding(.vertical, 20)
+            
+            /// MARK: Product features
+            VStack {
+                HStack {
+                    Spacer()
+                    Image(systemName: "crown.fill")
+                        .resizable()
+                        .foregroundColor(.grad2)
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: 16)
+                    Text("Premium features")
+                        .font(.system(size: 16))
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.black)
+                    Spacer()
+                }
+                .padding(.vertical, 10)
+                .background(Color.progressCircle)
+                
+                VStack {
+                    ScrollView(.vertical) {
+                        ForEach(store.features, id: \.self) { feature in
+                            HStack {
+                                Text(feature.name)
+                                    .font(.system(size: 14))
+                                    .fontWeight(.semibold)
+                                Spacer()
+                                Image(systemName: "checkmark.circle.fill")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .foregroundStyle(Color.progressCircle)
+                                    .frame(width: 20, height: 20)
+                            }
+                        }
+                    }
+                    .frame(maxHeight: 180)
+                }
+                .padding(.vertical, 5)
+                .padding(.horizontal, 20)
+            }
+            .clipShape(.rect(cornerRadius: 20))
+            .background(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color.progressCircle, lineWidth: 2)
+                    .fill(Color.progressCircle.opacity(0.1))
+            )
+            .padding(.horizontal, 20)
+
+            Spacer()
+
+            /// MARK: Privacy links
+            VStack {
+                HStack(spacing: 30) {
+                    Button {
+                        openURL(URL(string: "https://www.aichords.pro/terms-of-use/")!)
+                    } label: {
+                        Text("Terms of use")
+                            .foregroundStyle(.gray)
+                            .font(.system(size: 14))
+                    }
+                    .foregroundStyle(.white)
+                    
+                    Button {
+                        openURL(URL(string: "https://www.aichords.pro/privacy-policy/")!)
+                    } label: {
+                        Text("Privacy policy")
+                            .foregroundStyle(.gray)
+                            .font(.system(size: 14))
+                    }
+                    .foregroundStyle(.white)
                 }
             }
-            .padding(20)
+            .padding(.vertical, 20)
+            
+
+            /// MARK: Subscribe button
+            VStack {
+                let label = selectedBillingPeriod == activeBillingPeriod ? "Manage subscription" : (selectedBillingPeriod == .year ? "Start 7 days Free Trial" : "Subscribe")
+                Button {
+                    if selectedBillingPeriod == activeBillingPeriod {
+                        Task {
+                            if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                                do {
+                                    try  await AppStore.showManageSubscriptions(in: scene)
+                                } catch {
+                                    print("Error:(error)")
+
+                                }
+                            }
+                        }
+                    } else {
+                        Task {
+                            let status = await store.purchase(billingPeriod: selectedBillingPeriod)
+                            showPaywall = !status
+                            completion()
+                        }
+                    }
+                } label: {
+                    Text(label)
+                        .fontWeight(.semibold)
+                        .font(.system(size: 20))
+                        .padding(20)
+                        .frame(maxWidth: .infinity)
+                        .foregroundColor(.black)
+                        .background(selectedBillingPeriod == activeBillingPeriod ? .white : Color.progressCircle, in: Capsule())
+                }
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, appDefaults.bottomSafeArea)
+        }
+        .ignoresSafeArea()
+        .frame(width: appDefaults.screenWidth)
+        .background(Color.gray5)
+        .onAppear {
+            self.activeBillingPeriod = store.getSubscriptionBy(id: store.activeSubscriptionId)?.billingPeriod ?? .none
         }
     }
 }
