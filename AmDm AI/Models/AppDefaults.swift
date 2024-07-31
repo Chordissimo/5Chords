@@ -27,6 +27,8 @@ struct AppDefaults: Decodable {
     
     var screenWidth: CGFloat = 0.0
     var screenHeight: CGFloat = 0.0
+    var topSafeArea: CGFloat = 0.0
+    var bottomSafeArea: CGFloat = 0.0
         
     init() {
         guard let path = Bundle.main.path(forResource: "AppDefaults-Info", ofType: "plist") else { return }
@@ -34,6 +36,8 @@ struct AppDefaults: Decodable {
         if let window = windowScene?.windows.first {
             self.screenWidth = window.screen.bounds.width
             self.screenHeight = window.screen.bounds.height
+            self.topSafeArea = window.safeAreaInsets.top
+            self.bottomSafeArea = window.safeAreaInsets.bottom
         }
 
         do {

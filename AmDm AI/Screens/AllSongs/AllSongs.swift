@@ -10,13 +10,13 @@ import AVFoundation
 import Firebase
 
 struct AllSongs: View {
+    @State var showPaywall = false
     @AppStorage("isLimited") var isLimited: Bool = false
     @AppStorage("songCounter") var songCounter: Int = 0
-//    @EnvironmentObject var store: StorekitManager
-    @EnvironmentObject var store: MockStore
+    @AppStorage("showOnboarding") var showOnboarding: Bool = false
+    @EnvironmentObject var store: ProductModel
     @State var showSettings = false
     @State var showUpload = false
-    @State var showPaywall = false
     @State var youtubeViewPresented = false
     @State var recordPanelPresented = false
     @State var isTunerPresented = false
@@ -27,12 +27,7 @@ struct AllSongs: View {
     @State var showError: Bool = false
     @State var errorMessage: String = ""
     @State var showPermissionError = false
-    let width: CGFloat
     let appDefaults = AppDefaults()
-    
-    init() {
-        self.width = UIScreen.main.bounds.width
-    }
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
@@ -53,7 +48,7 @@ struct AllSongs: View {
                                 .font(.system(size: 18))
                         }
                     }
-                    .frame(width: width, height: 50)
+                    .frame(width: appDefaults.screenWidth, height: 50)
                     .background(
                         LinearGradient(gradient: Gradient(colors: [.grad1, .grad2, .grad3]), startPoint: .leading, endPoint: .trailing)
                     )
@@ -70,7 +65,7 @@ struct AllSongs: View {
                 if !songsList.showSearch {
                     Rectangle()
                         .ignoresSafeArea()
-                        .frame(width: width, height: 100)
+                        .frame(width: appDefaults.screenWidth, height: 100)
                         .overlay(
                             Rectangle()
                                 .frame(width: nil, height: 1)
@@ -276,10 +271,9 @@ struct AllSongs: View {
                     withAnimation(.linear(duration: 0.1)) {
                         initialAnimationStep = 2
                     }
-                    let product = store.productConfig.first(where: { $0.isActive }) ?? nil
-                    if product == nil {
-                        showPaywall = true
-                    }
+//                    if store.activeSubscriptionId == "" && !showOnboarding {
+//                        showPaywall = true
+//                    }
                 }
             }
         }

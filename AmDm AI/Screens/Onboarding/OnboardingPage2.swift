@@ -49,166 +49,163 @@ struct OnboardingPage2: View {
             let tallSegmentHeight = geometry.size.height * 0.07
             
             ZStack {
-                Color.gray5
-                if animationStage >= 1 {
-                    VStack(spacing: 20) {
-                        if animationStage < 3 {
-                            VStack {
-                                Image(systemName: "book.fill")
-                                    .resizable()
-                                    .foregroundColor(.gray30)
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 60, height: 60)
-                                    .padding(.top, 60)
-                                Text("CHORD TABS")
-                                    .fontWeight(.semibold)
-                                    .fontWidth(.expanded)
-                                    .font(.system(size: 30))
-                                VStack {
-                                    Text("Explore different options")
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 16))
-                                        .foregroundStyle(.secondaryText)
-                                    Text("of playing any chord.")
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 16))
-                                        .foregroundStyle(.secondaryText)
-                                }
-                            }
+                if animationStage == 4 {
+                    Paywall(showPaywall: $showPaywall) {
+                        withAnimation {
+                            showOnboarding = false
                         }
-                        
-                        if animationStage == 2 {
-                            VStack {
-                                ScrollViewReader { proxy in
-                                    ScrollView(.horizontal, showsIndicators: false) {
-                                        HStack {
-                                            ForEach(chords) { ch in
-                                                VStack {
-                                                    Text(ch.key.display.symbol + ch.suffix.display.symbolized)
-                                                        .foregroundStyle(Color.white)
-                                                        .font(.system(size: 15))
-                                                    ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: ch.key).matching(suffix: ch.suffix).first!, width: chordWidth, height: chordHeight))
-                                                        .frame(width: chordWidth, height: chordHeight)
-                                                }
-                                                .id(ch.id)
-                                            }
-                                        }
-                                    }
-                                    .scrollDisabled(true)
-                                    .onAppear {
-                                        withAnimation {
-                                            proxy.scrollTo(chords[chords.count - 1].id, anchor: .trailing)
-                                        }
+                    }
+                    .transition(.move(edge: .bottom))
+                } else {
+                    Color.gray5
+                    if animationStage >= 1 && animationStage < 4 {
+                        VStack(spacing: 20) {
+                            if animationStage < 3 {
+                                VStack {
+                                    Image(systemName: "book.fill")
+                                        .resizable()
+                                        .foregroundColor(.gray30)
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 60, height: 60)
+                                        .padding(.top, 60)
+                                    Text("CHORD TABS")
+                                        .fontWeight(.semibold)
+                                        .fontWidth(.expanded)
+                                        .font(.system(size: 30))
+                                    VStack {
+                                        Text("Explore different options")
+                                            .fontWeight(.semibold)
+                                            .font(.system(size: 16))
+                                            .foregroundStyle(.secondaryText)
+                                        Text("of playing any chord.")
+                                            .fontWeight(.semibold)
+                                            .font(.system(size: 16))
+                                            .foregroundStyle(.secondaryText)
                                     }
                                 }
                             }
-                        }
-                        
-                        if animationStage == 3 {
-                            VStack {
-                                Image("custom.tuningfork.2")
-                                    .resizable()
-                                    .foregroundColor(.gray30)
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 60, height: 60)
-                                    .padding(.top, 60)
-                                Text("TUNER")
-                                    .fontWeight(.semibold)
-                                    .fontWidth(.expanded)
-                                    .font(.system(size: 30))
+                            
+                            if animationStage == 2 {
                                 VStack {
-                                    Text("Stay in tune")
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 16))
-                                        .foregroundStyle(.secondaryText)
-                                    Text("with our easy-to-use chromatic tuner")
-                                        .fontWeight(.semibold)
-                                        .font(.system(size: 16))
-                                        .foregroundStyle(.secondaryText)
-                                }
-                            }
-                            .transition(.push(from: .trailing))
-
-                            VStack {
-                                ZStack {
                                     ScrollViewReader { proxy in
                                         ScrollView(.horizontal, showsIndicators: false) {
-                                            HStack(spacing: tunerSegmentsSpacing) {
-                                                ForEach(tunerSegments, id: \.self) { s in
-                                                    Rectangle()
-                                                        .frame(width: 1, height: s % 5 == 0 ? tallSegmentHeight : smallSegmentHeight)
-                                                        .foregroundColor(s >= 50 ? .clear : .secondaryText)
-                                                        .id(s)
+                                            HStack {
+                                                ForEach(chords) { ch in
+                                                    VStack {
+                                                        Text(ch.key.display.symbol + ch.suffix.display.symbolized)
+                                                            .foregroundStyle(Color.white)
+                                                            .font(.system(size: 15))
+                                                        ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: ch.key).matching(suffix: ch.suffix).first!, width: chordWidth, height: chordHeight))
+                                                            .frame(width: chordWidth, height: chordHeight)
+                                                    }
+                                                    .id(ch.id)
                                                 }
                                             }
                                         }
-                                        .padding(0)
+                                        .scrollDisabled(true)
                                         .onAppear {
-                                            proxy.scrollTo(tunerSegments.last, anchor: .trailing)
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                                                withAnimation {
-                                                    proxy.scrollTo(tunerSegments.first, anchor: .leading)
-                                                }
+                                            withAnimation {
+                                                proxy.scrollTo(chords[chords.count - 1].id, anchor: .trailing)
                                             }
                                         }
-                                    }
-
-                                    Spacer()
-                                    
-                                    VStack {
-                                        Image(systemName: "triangle.fill")
-                                            .resizable()
-                                            .foregroundColor(.progressCircle)
-                                            .rotationEffect(Angle(degrees: 180))
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 28, height: 28)
-                                        RoundedRectangle(cornerRadius: 4)
-                                            .foregroundColor(.progressCircle)
-                                            .frame(width: 4, height: tallSegmentHeight)
-                                            .padding(.vertical, 10)
-                                        Image(systemName: "checkmark")
-                                            .resizable()
-                                            .foregroundColor(.progressCircle)
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 28, height: 28)
                                     }
                                 }
                             }
+                            
+                            if animationStage == 3 {
+                                VStack {
+                                    Image("custom.tuningfork.2")
+                                        .resizable()
+                                        .foregroundColor(.gray30)
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 60, height: 60)
+                                        .padding(.top, 60)
+                                    Text("TUNER")
+                                        .fontWeight(.semibold)
+                                        .fontWidth(.expanded)
+                                        .font(.system(size: 30))
+                                    VStack {
+                                        Text("Stay in tune")
+                                            .fontWeight(.semibold)
+                                            .font(.system(size: 16))
+                                            .foregroundStyle(.secondaryText)
+                                        Text("with our easy-to-use chromatic tuner")
+                                            .fontWeight(.semibold)
+                                            .font(.system(size: 16))
+                                            .foregroundStyle(.secondaryText)
+                                    }
+                                }
+                                .transition(.push(from: .trailing))
+                                
+                                VStack {
+                                    ZStack {
+                                        ScrollViewReader { proxy in
+                                            ScrollView(.horizontal, showsIndicators: false) {
+                                                HStack(spacing: tunerSegmentsSpacing) {
+                                                    ForEach(tunerSegments, id: \.self) { s in
+                                                        Rectangle()
+                                                            .frame(width: 1, height: s % 5 == 0 ? tallSegmentHeight : smallSegmentHeight)
+                                                            .foregroundColor(s >= 50 ? .clear : .secondaryText)
+                                                            .id(s)
+                                                    }
+                                                }
+                                            }
+                                            .padding(0)
+                                            .onAppear {
+                                                proxy.scrollTo(tunerSegments.last, anchor: .trailing)
+                                                DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                                                    withAnimation {
+                                                        proxy.scrollTo(tunerSegments.first, anchor: .leading)
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        
+                                        VStack {
+                                            Image(systemName: "triangle.fill")
+                                                .resizable()
+                                                .foregroundColor(.progressCircle)
+                                                .rotationEffect(Angle(degrees: 180))
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 28, height: 28)
+                                            RoundedRectangle(cornerRadius: 4)
+                                                .foregroundColor(.progressCircle)
+                                                .frame(width: 4, height: tallSegmentHeight)
+                                                .padding(.vertical, 10)
+                                            Image(systemName: "checkmark")
+                                                .resizable()
+                                                .foregroundColor(.progressCircle)
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 28, height: 28)
+                                        }
+                                    }
+                                }
+                            }
+                            
+                            Spacer()
                         }
-
-                        Spacer()
+                        .transition(.push(from: .top))
+                        VStack {
+                            Spacer()
+                            Image("Guitar")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: imageWidth, height: imageHeight)
+                        }
+                        .transition(.push(from: .bottom))
                     }
-                    .transition(.push(from: .top))
                     VStack {
                         Spacer()
-                        Image("Guitar")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: imageWidth, height: imageHeight)
-                    }
-                    .transition(.push(from: .bottom))
-                }
-                VStack {
-                    Spacer()
-                    if animationStage == 3 {
-                        NavigationLink(destination: AllSongs()) {
-                            Text("Next")
-                                .fontWeight(.semibold)
-                                .font(.system(size: 20))
-                                .padding(20)
-                                .frame(maxWidth: .infinity)
-                                .foregroundColor(.black)
-                                .background(.progressCircle, in: Capsule())
-                                .padding(20)
-                                .padding(.bottom, geometry.safeAreaInsets.bottom)
-                        }
-                        
-                    } else {
                         Button {
                             if animationStage == 2 {
                                 withAnimation(.bouncy(duration: 0.7)) {
                                     animationStage = 3
-                                    showOnboarding = false
+                                }
+                            } else if animationStage == 3 {
+                                withAnimation(.bouncy(duration: 0.7)) {
+                                    animationStage = 4
                                 }
                             }
                         } label: {
@@ -227,6 +224,7 @@ struct OnboardingPage2: View {
             }
             .ignoresSafeArea()
             .onAppear {
+                print("page2")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     withAnimation(.bouncy(duration: 0.7)) {
                         animationStage = 1
