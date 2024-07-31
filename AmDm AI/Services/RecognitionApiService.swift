@@ -9,24 +9,23 @@ import Foundation
 import Alamofire
 import SwiftUI
 import Combine
+import AuthenticationServices
+import FirebaseAuth
+import FirebaseCore
 
 class RecognitionApiService {
     lazy var appDefaults = AppDefaults()
-    private var cancellables = Set<AnyCancellable>()
-    @Published var token: String = ""
+    var uid: String = ""
     
     init() {
-        AppCheckManager.shared.generateTokenAppCheck()
-            .sink(
-                receiveCompletion: { completion in
-                    guard case let .failure(error) = completion else { return }
-                    print(error)
-                },
-                receiveValue: { tokenString in
-                    self.token = tokenString
-                }
-            )
-            .store(in: &cancellables)
+        Task {
+            do {
+                let result = try await Auth.auth().signInAnonymously()
+                self.uid = result.user.uid
+            } catch {
+                print("Auth error:",error)
+            }
+        }
     }
     
     struct Response: Codable {
@@ -40,16 +39,13 @@ class RecognitionApiService {
         case noResult
     }
     
-    
     func recognizeAudio(url: URL, completion: @escaping ((Result<Response, Error>) -> Void)) {
-        let headers: HTTPHeaders = [.authorization(bearerToken: self.token)]
-        
         AF.upload(
             multipartFormData: { multipartFormData in
                 multipartFormData.append(url, withName: "file")
+                multipartFormData.append(self.uid.data(using: String.Encoding.utf8)!, withName: "token")
             },
-            to: appDefaults.UPLOAD_ENDPOINT,
-            headers: headers
+            to: appDefaults.UPLOAD_ENDPOINT
         )
         .validate()
         .responseDecodable(of: Response.self) { response in
@@ -62,18 +58,14 @@ class RecognitionApiService {
         }
     }
     
-    func recognizeAudioFromYoutube(url: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
-        let headers: HTTPHeaders = [.authorization(bearerToken: self.token)]
-
+    func recognizeAudioFromYoutube(url: String, completion: @escaping ((Result<Response, Error>) -> Void)) {        
         let requestUrl = appDefaults.YOUTUBE_ENDPOINT
         AF.request(
             requestUrl,
             method: .post,
-            parameters: ["url": url],
-            encoding: JSONEncoding.default,
-            headers: headers
+            parameters: ["url": url, "token": self.uid],
+            encoding: JSONEncoding.default
         )
-        .debugLog(url)
         .validate()
         .responseDecodable(of: Response.self) { response in
             guard let result = response.value else {
@@ -83,14 +75,14 @@ class RecognitionApiService {
             
             completion(.success(result))
         }
+//        .debugLog()
     }
 }
 
 extension Request {
-    public func debugLog(_ content: Any?) -> Self {
+    public func debugLog() {
       #if DEBUG
-        debugPrint(self, content as Any)
+        debugPrint("debugLog:",self.request?.httpBody as Any)
       #endif
-      return self
    }
 }

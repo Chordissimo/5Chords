@@ -68,7 +68,6 @@ class ProductModel: ObservableObject {
     @Published var store: StorekitManager
     
     init(isMock: Bool = false) {
-        print("init")
         self.store = StorekitManager(productIds: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"], isMock: false)
         Task {
             await getSubscriptionStatus()

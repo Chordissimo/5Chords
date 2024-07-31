@@ -224,7 +224,6 @@ struct OnboardingPage2: View {
             }
             .ignoresSafeArea()
             .onAppear {
-                print("page2")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                     withAnimation(.bouncy(duration: 0.7)) {
                         animationStage = 1

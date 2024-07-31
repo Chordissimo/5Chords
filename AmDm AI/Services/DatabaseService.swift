@@ -83,7 +83,7 @@ class DatabaseService {
     lazy var realm = try! Realm()
     
     init() {
-        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+//        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
     private func writeChords(chords: [APIChord]) -> List<ChordModel> {
@@ -232,7 +232,6 @@ class DatabaseService {
 
             let intervalsList = song.intervals.map { $0.id.uuidString }
             let intervalsSearchResults = realm.objects(DBInterval.self).filter { intervalsList.contains($0.id) }
-            print(intervalsSearchResults.count)
             if intervalsSearchResults.count > 0 {
                 try! realm.write {
                     realm.delete(intervalsSearchResults)
