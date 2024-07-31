@@ -68,7 +68,6 @@
 		C3A9935F2C3573AD00C2D8B5 /* NavbarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */; };
 		C3A993612C35761400C2D8B5 /* ChordShapesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A993602C35761400C2D8B5 /* ChordShapesView.swift */; };
 		C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */; };
-		C3A993AB2C36D2F200C2D8B5 /* AppCheckService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A993AA2C36D2F200C2D8B5 /* AppCheckService.swift */; };
 		C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */; };
 		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
 		C3AC1BA32C105EE9000DE8E5 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3AC1BA22C105EE9000DE8E5 /* SwiftyChords */; };
@@ -154,7 +153,6 @@
 		C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavbarView.swift; sourceTree = "<group>"; };
 		C3A993602C35761400C2D8B5 /* ChordShapesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordShapesView.swift; sourceTree = "<group>"; };
 		C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		C3A993AA2C36D2F200C2D8B5 /* AppCheckService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCheckService.swift; sourceTree = "<group>"; };
 		C3A993AC2C36D54E00C2D8B5 /* AmDm AIRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "AmDm AIRelease.entitlements"; sourceTree = "<group>"; };
 		C3AC1B802C0C3981000DE8E5 /* WrappingHStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WrappingHStack.swift; sourceTree = "<group>"; };
 		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
@@ -216,7 +214,6 @@
 				C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */,
 				C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */,
 				C34D48722C298E810008E5CE /* YouTubePlayerService.swift */,
-				C3A993AA2C36D2F200C2D8B5 /* AppCheckService.swift */,
 				C308BD4E2C5653F700C54602 /* StoreKitManager.swift */,
 			);
 			path = Services;
@@ -600,7 +597,6 @@
 				C308BD3A2C4A291B00C54602 /* EditChordsAds.swift in Sources */,
 				C34150A92C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */,
-				C3A993AB2C36D2F200C2D8B5 /* AppCheckService.swift in Sources */,
 				C37D583D2BFB2052001DA8E1 /* SplashScreen.swift in Sources */,
 				C3DC6FDF2C02EF6400EA0095 /* Tunings.swift in Sources */,
 				C30ADA632C3ADB4800CC9F9A /* FormatDuration.swift in Sources */,

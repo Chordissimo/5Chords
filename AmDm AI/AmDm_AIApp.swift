@@ -10,7 +10,6 @@ import Firebase
 
 class AppDelegate: NSObject, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey : Any]? = nil) -> Bool {
-        AppCheckManager.shared.setProviderFactory()
         FirebaseApp.configure()
         return true
     }
@@ -19,7 +18,7 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct AmDm_AIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-        
+            
     var body: some Scene {
         WindowGroup {
             AppRoot()
