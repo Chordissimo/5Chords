@@ -230,7 +230,6 @@ struct Paywall: View  {
         .background(Color.gray5)
         .onAppear {
             self.activeBillingPeriod = store.getSubscriptionBy(id: store.activeSubscriptionId)?.billingPeriod ?? .none
-            print(self.activeBillingPeriod,store.getSubscriptionBy(id: store.activeSubscriptionId) as Any)
         }
     }
 }
