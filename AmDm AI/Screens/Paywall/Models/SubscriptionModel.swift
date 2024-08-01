@@ -68,7 +68,7 @@ class ProductModel: ObservableObject {
     @Published var store: StorekitManager
     
     init(isMock: Bool = false) {
-        self.store = StorekitManager(productIds: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"], isMock: false)
+        self.store = StorekitManager(productIds: ["pro_chords_9999_1y_3d0","pro_chords_1299_1m_3d0"], isMock: isMock)
         Task {
             await getSubscriptionStatus()
         }
@@ -86,15 +86,11 @@ class ProductModel: ObservableObject {
         
         let subscriptionId = getSubscriptionIdBy(billingPeriod: billingPeriod)
         if subscriptionId != "" {
-            if !self.store.isMock {
-                do {
-                    result = try await store.purchase(subscriptionId)
-                    isLimited = !result
-                } catch {
-                    print(error)
-                }
-            } else {
-                isLimited = false
+            do {
+                result = try await store.purchase(subscriptionId)
+                isLimited = !result
+            } catch {
+                print(error)
             }
         }
         return result
@@ -104,10 +100,8 @@ class ProductModel: ObservableObject {
         if !self.store.isMock {
             await self.store.getSubscriptionStatus()
             try! await AppStore.sync()
-            DispatchQueue.main.async {
-                self.productInfoLoaded = true
-            }
-        } else {
+        }
+        DispatchQueue.main.async {
             self.productInfoLoaded = true
         }
     }

@@ -199,10 +199,9 @@ struct Paywall: View  {
                         Task {
                             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                                 do {
-                                    try  await AppStore.showManageSubscriptions(in: scene)
+                                    try await AppStore.showManageSubscriptions(in: scene)
                                 } catch {
                                     print("Error:(error)")
-
                                 }
                             }
                         }
@@ -231,6 +230,7 @@ struct Paywall: View  {
         .background(Color.gray5)
         .onAppear {
             self.activeBillingPeriod = store.getSubscriptionBy(id: store.activeSubscriptionId)?.billingPeriod ?? .none
+            print(self.activeBillingPeriod,store.getSubscriptionBy(id: store.activeSubscriptionId) as Any)
         }
     }
 }

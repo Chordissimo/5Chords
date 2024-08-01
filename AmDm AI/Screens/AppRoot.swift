@@ -10,7 +10,7 @@ import SwiftUI
 struct AppRoot: View {
     @State var loadingStage = 0
     @AppStorage("showOnboarding") private var showOnboarding: Bool = true
-    @StateObject var store = ProductModel(isMock: false)
+    @StateObject var store = ProductModel(isMock: true)
     @StateObject var songsList = SongsList()
     @State var productInfoLoaded = false
     
