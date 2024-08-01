@@ -49,7 +49,7 @@ struct ChordsAndLyrics: View {
                                 HStack(spacing: 0) {
                                     ForEach(timeframe.intervals, id: \.self) { chordIndex in
                                         let interval = song.intervals[chordIndex]
-                                        let intervalIndex = timeframe.intervals.first(where: { $0 == chordIndex})!
+                                        let intervalIndex = timeframe.intervals.firstIndex(where: { $0 == chordIndex })
                                         let chord = interval.uiChord == nil ? "" : interval.uiChord!.getChordString()
                                         let intervalWidth = intervalIndex == 0 || intervalIndex == (timeframe.intervals.count - 1) ?
                                         (timeframe.intervals.count == 1 ? (width - LyricsViewModelConstants.padding) : (interval.width + intervalPaddingWidth)) :
@@ -68,6 +68,7 @@ struct ChordsAndLyrics: View {
                                                         Text(interval.words)
                                                             .font(.system(size: LyricsViewModelConstants.lyricsfontSize))
                                                             .lineLimit(interval.limitLines)
+                                                            .multilineTextAlignment(.center)
                                                             .foregroundStyle(chordIndex == currentChordIndex ? .progressCircle : .white)
                                                             .padding(.horizontal, 0)
                                                     }

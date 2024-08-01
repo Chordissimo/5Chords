@@ -213,8 +213,8 @@
 				B79898A92BCAC2CD0052C127 /* DatabaseService.swift */,
 				C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */,
 				C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */,
-				C34D48722C298E810008E5CE /* YouTubePlayerService.swift */,
 				C308BD4E2C5653F700C54602 /* StoreKitManager.swift */,
+				C34D48722C298E810008E5CE /* YouTubePlayerService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -343,8 +343,8 @@
 				C3B54DFE2BB1AB0A000DCF15 /* Models */,
 				C361E8252BB860C200F33B40 /* Helpers */,
 				B798989A2BCAAAAB0052C127 /* Services */,
-				C357AB032BB7D4CC00440554 /* SharedComponents */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
+				C357AB032BB7D4CC00440554 /* SharedComponents */,
 				C39C873E2BB0073D00EBF82C /* Preview Content */,
 			);
 			path = "AmDm AI";

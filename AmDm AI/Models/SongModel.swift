@@ -261,8 +261,9 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         return intervals.filter({ !($0.uiChord == nil && $0.words.count == 0) }).map {
             var interval = $0
             if recalcWidth && appDefaults != nil {
-                interval.width = getWidth(for: interval)
-                interval.limitLines = Int(ceil(interval.width / appDefaults!.screenWidth))
+                let intervalWidth = getWidth(for: interval)
+                interval.width = min(intervalWidth, appDefaults!.screenWidth)
+                interval.limitLines = Int(ceil(intervalWidth / appDefaults!.screenWidth))
             }
             return interval
         }

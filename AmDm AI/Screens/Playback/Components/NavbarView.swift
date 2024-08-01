@@ -17,6 +17,7 @@ struct Navbar: View {
     var body: some View {
         Button {
             isRenamePopupVisible = true
+            songName = song.name
         } label: {
             Image(systemName: "pencil")
                 .resizable()
