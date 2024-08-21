@@ -81,6 +81,7 @@
 		C3AD97112C5A3615004097A4 /* FirebaseInAppMessaging-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = C3AD97102C5A3615004097A4 /* FirebaseInAppMessaging-Beta */; };
 		C3AD97132C5A3615004097A4 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = C3AD97122C5A3615004097A4 /* FirebaseMessaging */; };
 		C3BCF9CE2C744D0800F6BFD9 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3BCF9CD2C744D0800F6BFD9 /* SwiftyChords */; };
+		C3BCF9D02C75EC3300F6BFD9 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BCF9CF2C75EC3300F6BFD9 /* AuthService.swift */; };
 		C3DC6FD32BFCDB2E00EA0095 /* AppRoot.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FD22BFCDB2E00EA0095 /* AppRoot.swift */; };
 		C3DC6FDA2BFDF2B300EA0095 /* PlaybackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DC6FD92BFDF2B300EA0095 /* PlaybackView.swift */; };
 		C3DC6FDD2BFE1E3F00EA0095 /* YouTubePlayerKit in Frameworks */ = {isa = PBXBuildFile; productRef = C3DC6FDC2BFE1E3F00EA0095 /* YouTubePlayerKit */; };
@@ -158,6 +159,7 @@
 		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
 		C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAPIService.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionModel.swift; sourceTree = "<group>"; };
+		C3BCF9CF2C75EC3300F6BFD9 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		C3DC6FD22BFCDB2E00EA0095 /* AppRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoot.swift; sourceTree = "<group>"; };
 		C3DC6FD92BFDF2B300EA0095 /* PlaybackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackView.swift; sourceTree = "<group>"; };
 		C3DC6FDE2C02EF6400EA0095 /* Tunings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tunings.swift; sourceTree = "<group>"; };
@@ -215,6 +217,7 @@
 				C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */,
 				C308BD4E2C5653F700C54602 /* StoreKitManager.swift */,
 				C34D48722C298E810008E5CE /* YouTubePlayerService.swift */,
+				C3BCF9CF2C75EC3300F6BFD9 /* AuthService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -595,6 +598,7 @@
 				C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */,
 				C34150A72C462A2400C4C3B2 /* ChordsAndLyrics.swift in Sources */,
 				C308BD3A2C4A291B00C54602 /* EditChordsAds.swift in Sources */,
+				C3BCF9D02C75EC3300F6BFD9 /* AuthService.swift in Sources */,
 				C34150A92C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift in Sources */,
 				C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */,
 				C37D583D2BFB2052001DA8E1 /* SplashScreen.swift in Sources */,

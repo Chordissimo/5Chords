@@ -37,10 +37,6 @@ struct NavigationPrimaryButton: View {
                     withAnimation {
                         action()
                     }
-//                    Analytics.logEvent(AnalyticsEventSelectContent, parameters: [
-//                        AnalyticsParameterItemID: EventID.recognizeFromYoutube.rawValue,
-//                        AnalyticsParameterItemName: "RecognizeFromYoutube"
-//                    ])
                 } label: {
                     ZStack {
                         if !recordStarted {
@@ -68,7 +64,6 @@ struct NavigationPrimaryButton: View {
                     }
                 }
                 .disabled(counter == 0)
-//                .logEvent(screen: "AllSongs", event: .recognizeFromYoutube, title: "RecognizeFromYoutube")
             }
             .clipShape(Rectangle())
             .frame(width: geometry.size.width)
