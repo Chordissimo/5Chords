@@ -14,6 +14,7 @@ struct AppRoot: View {
     @StateObject var store = ProductModel(isMock: true)
     @StateObject var songsList = SongsList()
     @State var productInfoLoaded = false
+    @EnvironmentObject var authService: AuthService
     
     var body: some View {
         NavigationStack {
@@ -31,6 +32,16 @@ struct AppRoot: View {
             if store.productInfoLoaded {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                     loadingStage = 1
+                }
+            }
+        }
+        .onAppear {
+            Task {
+                do {
+                    let _ = try await authService.signInAnonymously()
+                }
+                catch {
+                    print("SignInAnonymouslyError: \(error)")
                 }
             }
         }

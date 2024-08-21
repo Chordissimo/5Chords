@@ -28,6 +28,8 @@ struct AllSongs: View {
     @State var errorMessage: String = ""
     @State var showPermissionError = false
     let appDefaults = AppDefaults()
+    @EnvironmentObject var authService: AuthService
+    @AppStorage("token") var token: String = ""
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
@@ -149,6 +151,9 @@ struct AllSongs: View {
                                         songsList.recognitionInProgress = true
                                         songsList.showSearch = false
                                         songsList.recordingService.startTimer()
+                                        authService.getToken { t in
+                                            token = t
+                                        }
                                     }
                                 }
                                 .onChange(of: songsList.recordingService.audioRecorder) { _, recorder in
@@ -271,9 +276,6 @@ struct AllSongs: View {
                     withAnimation(.linear(duration: 0.1)) {
                         initialAnimationStep = 2
                     }
-//                    if store.activeSubscriptionId == "" && !showOnboarding {
-//                        showPaywall = true
-//                    }
                 }
             }
         }
@@ -334,8 +336,11 @@ struct AllSongs: View {
                         self.showError = true
                         self.errorMessage = "The selected video is too long. The maximum video duration we can hadnle is \(duration) minutes."
                     } else {
-                        self.songsList.recognitionInProgress = true
-                        self.songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
+                        authService.getToken { t in
+                            token = t
+                            self.songsList.recognitionInProgress = true
+                            self.songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
+                        }
                     }
                 }
             })
@@ -361,8 +366,11 @@ struct AllSongs: View {
                                 }
                             } else {
                                 if Player().setupAudio(url: file) {
-                                    self.songsList.recognitionInProgress = true
-                                    self.songsList.importFile(url: file)
+                                    authService.getToken { t in
+                                        token = t
+                                        self.songsList.recognitionInProgress = true
+                                        self.songsList.importFile(url: file)
+                                    }
                                 } else {
                                     showError = true
                                     errorMessage = "The file is broken or it's format is not supported."
