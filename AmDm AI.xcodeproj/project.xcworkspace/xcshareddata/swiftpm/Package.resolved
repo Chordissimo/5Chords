@@ -183,10 +183,10 @@
     {
       "identity" : "swiftyguitarchords",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/antm677/SwiftyGuitarChords.git",
+      "location" : "https://github.com/Chordissimo/SwiftyGuitarChords.git",
       "state" : {
         "branch" : "main",
-        "revision" : "dfa3e942e219a2e08ca760574d9cb87124aaffa9"
+        "revision" : "c4f4360a288564468b74521927cd5670ccf78e04"
       }
     },
     {

@@ -71,6 +71,7 @@ class SongModel: Object {
     @Persisted var ext: String
     @Persisted var tempo: Float
     @Persisted var thumbnailUrl: String
+    @Persisted var isProcessing: Bool
     
     convenience init(name: String, url: String) {
         self.init()
@@ -80,10 +81,13 @@ class SongModel: Object {
 }
 
 class DatabaseService {
-    lazy var realm = try! Realm()
+    var realm: Realm
     
     init() {
-//        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+        let config = Realm.Configuration(schemaVersion: 1)
+        Realm.Configuration.defaultConfiguration = config
+        self.realm = try! Realm()
+        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
     }
     
     private func writeChords(chords: [APIChord]) -> List<ChordModel> {
@@ -109,8 +113,8 @@ class DatabaseService {
         realmTextList.append(objectsIn: dbTexts)
         return realmTextList
     }
-    
-    func writeSong(id: String, name: String, url: String, duration: TimeInterval, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .recorded, ext: String, thumbnailUrl: String) -> Song {
+        
+    func createSongStub(id: String, name: String, url: String, duration: TimeInterval, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .recorded, ext: String, thumbnailUrl: String) -> Song {
         
         let realmChordList = writeChords(chords: chords)
         let realmTextList = writeText(text: text)
@@ -128,6 +132,7 @@ class DatabaseService {
         song.tempo = tempo
         song.ext = ext
         song.thumbnailUrl = thumbnailUrl
+        song.isProcessing = true
         
         try! realm.write {
             realm.add(song)
@@ -143,11 +148,13 @@ class DatabaseService {
             text: text,
             tempo: song.tempo,
             songType: songType,
-            ext: song.ext
+            ext: song.ext,
+            isProcessing: song.isProcessing,
+            thumbnailUrl: song.thumbnailUrl
         )
     }
     
-    func updateSong(song: Song) {
+    func updateSongName(song: Song) {
         let songSearchResults = realm.objects(SongModel.self).filter { s in
             s.id == song.id
         }
@@ -159,6 +166,83 @@ class DatabaseService {
             }
         }
     }
+
+    func updateSong(song: Song) {
+        let songSearchResults = realm.objects(SongModel.self).filter { s in
+            s.id == song.id
+        }
+        
+        guard songSearchResults.count > 0 else { return }
+        
+        let realmIntervalsList = List<DBInterval>()
+        let intervalsList = song.intervals.map { $0.id.uuidString }
+        let intervalsSearchResults = realm.objects(DBInterval.self).filter { intervalsList.contains($0.id) }
+        realmIntervalsList.append(objectsIn: song.intervals.map {
+            let chord = $0.uiChord?.getChordString(flatSharpSymbols: false) ?? "N"
+            return DBInterval(
+                id: $0.id.uuidString,
+                start: $0.start,
+                chord: chord,
+                words: $0.words,
+                limitLines: $0.limitLines,
+                width: Float($0.width)
+            )
+        })
+        
+        let realmTextList = List<AlignedTextModel>()
+        let textList = song.intervals.map { $0.id.uuidString }
+        let textSearchResults = realm.objects(AlignedTextModel.self).filter { textList.contains($0.id) }
+        realmTextList.append(objectsIn: song.text.map { t in
+            AlignedTextModel(
+                id: t.id,
+                text: t.text,
+                start: t.start,
+                end: t.end
+            )
+        })
+        
+        let realmChordList = List<ChordModel>()
+        let chordsList = song.intervals.map { $0.id.uuidString }
+        let chordsSearchResults = realm.objects(ChordModel.self).filter { chordsList.contains($0.id) }
+        realmChordList.append(objectsIn: song.chords.map { ch in
+            ChordModel(
+                id: ch.id,
+                chord: ch.chord,
+                start: ch.start,
+                end: ch.end
+            )
+        })
+
+                
+        if let songObj = songSearchResults.first {
+            try! realm.write {
+                if intervalsSearchResults.count > 0 {
+                    realm.delete(intervalsSearchResults)
+                }
+                if textSearchResults.count > 0 {
+                    realm.delete(textSearchResults)
+                }
+                if chordsSearchResults.count > 0 {
+                    realm.delete(chordsSearchResults)
+                }
+            }
+            
+            try! realm.write {
+                songObj.name = song.name
+                songObj.url = song.url.absoluteString
+                songObj.duration = song.duration
+                songObj.created = song.created
+                songObj.tempo = song.tempo
+                songObj.songType = song.songType.rawValue
+                songObj.ext = song.ext
+                songObj.isProcessing = song.isProcessing
+                songObj.intervals = realmIntervalsList
+                songObj.text = realmTextList
+                songObj.chords = realmChordList
+            }
+        }
+    }
+
     
     func updateIntervals(song: Song) {
         let songSearchResults = realm.objects(SongModel.self).filter { s in
@@ -245,11 +329,13 @@ class DatabaseService {
     }
     
     func getSongs() -> [Song] {
+        let recognitionApiService = RecognitionApiService()
         return realm.objects(SongModel.self).sorted { s1, s2 in
             return s1.created >= s2.created
-        }.map {
+        }
+        .map {
             let intervals = self.readIntervals(dbIntervals: $0.intervals)
-            return Song(
+            let song = Song(
                 id: $0.id,
                 name: $0.name,
                 url: $0.url,
@@ -263,7 +349,7 @@ class DatabaseService {
                         end: $0.end
                     )
                 },
-                text:  $0.text.sorted { x1, x2 in x1.start ?? 0 < x2.start ?? 0 }.map {
+                text: $0.text.sorted { x1, x2 in x1.start ?? 0 < x2.start ?? 0 }.map {
                     AlignedText(
                         id: $0.id,
                         text: $0.text,
@@ -277,6 +363,26 @@ class DatabaseService {
                 ext: $0.ext,
                 thumbnailUrl: $0.thumbnailUrl
             )
+
+            if $0.isProcessing {
+                recognitionApiService.getUnfinished(songId: $0.id) { result in
+                    switch result {
+                    case .success(let response):
+                        if response.completed {
+                            song.duration = TimeInterval(response.result.duration)
+                            song.chords = response.result.chords
+                            song.text = response.result.text ?? []
+                            song.tempo = response.result.tempo
+                            self.updateSong(song: song)
+                        } else {
+                            song.isFakeLoaderVisible = true
+                        }
+                    case .failure(let failure):
+                        print("API failure: ", failure)
+                    }
+                }
+            }
+            return song
         }
     }
 }

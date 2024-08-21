@@ -42,6 +42,20 @@ struct RecognizedSongView: View {
                         }
                         .padding(.leading, 10)
                     }
+//                    .overlay {
+//                        if song.shouldRetry {
+//                            ZStack {
+//                                Rectangle()
+//                                    .fill(Color.gray20.opacity(0.5))
+//                                Button {
+//                                    print("")
+//                                } label: {
+//                                    Text("Retry")
+//                                }
+//
+//                            }
+//                        }
+//                    }
                 }
                 .onChange(of: song.recognitionStatus, { oldValue, newValue in
                     if song.recognitionStatus == .serverError {
@@ -60,6 +74,7 @@ struct RecognizedSongView: View {
             } else {
                 HStack {
                     if song.songType == .youtube && song.thumbnailUrl.absoluteString != "" {
+//                        let _ = print(song.thumbnailUrl.absoluteString)
                         AsyncImage(url: URL(string: song.thumbnailUrl.absoluteString)) { image in
                             image
                                 .resizable()

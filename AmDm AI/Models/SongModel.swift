@@ -190,17 +190,26 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         for interval in self.intervals {
             width += interval.width
             if width > maxWidth {
-                let timeframe = Timeframe(start: line.first!.start, intervals: indices, width: width - interval.width)
-                self.timeframes.append(timeframe)
-                line = []
-                indices = []
-                width = interval.width
+                var timeframe: Timeframe
+                if line.count == 0 {
+                    timeframe = Timeframe(start: interval.start, intervals: [self.intervals.firstIndex(of: interval)!], width: maxWidth)
+                    width = 0
+                    self.timeframes.append(timeframe)
+                    continue
+                } else {
+                    timeframe = Timeframe(start: line.first!.start, intervals: indices, width: width - interval.width)
+                    line = []
+                    indices = []
+                    width = interval.width
+                    self.timeframes.append(timeframe)
+                }
                 if isLimited && timeframe.start > appDefaults.LIMITED_DURATION * 1000 {
                     break
                 }
+            } else {
+                line.append(interval)
+                indices.append(self.intervals.firstIndex(of: interval)!)
             }
-            line.append(interval)
-            indices.append(self.intervals.firstIndex(of: interval)!)
         }
         if line.count > 0 {
             self.timeframes.append(Timeframe(start: line.first!.start, intervals: indices, width: width))
@@ -363,50 +372,41 @@ final class SongsList: ObservableObject {
             @AppStorage("songCounter") var songCounter: Int = 0
             self.recordStarted = false
 
-            let song = Song(
+            let song = self.databaseService.createSongStub(
                 id: UUID().uuidString,
                 name: songName == "" ? self.getNewSongName() : songName,
                 url: url.absoluteString,
                 duration: 0.0,
-                created: Date(),
                 chords: [],
                 text: [],
                 tempo: 0,
                 songType: songName == "" ? .recorded : .localFile,
                 ext: ext,
-                isProcessing: true,
-                isFakeLoaderVisible: true
+                thumbnailUrl: ""
             )
+
+            song.isFakeLoaderVisible = true
             song.startTimer()
             self.songs.insert(song, at: 0)
             songCounter = isLimited ? songCounter + 1 : songCounter
             self.objectWillChange.send()
             
-            self.recognitionApiService.recognizeAudio(url: url) { result in
+            self.recognitionApiService.recognizeAudio(url: url, songId: song.id) { result in
                 let i = self.getSongIndexByID(id: song.id)
                 switch result {
                 case .success(let response):
-                    let dbSong = self.databaseService.writeSong(
-                        id: song.id,
-                        name: songName == "" ? self.getNewSongName() : songName,
-                        url: song.url.absoluteString,
-                        duration: TimeInterval(response.duration),
-                        chords: response.chords,
-                        text: response.text ?? [],
-                        tempo: response.tempo,
-                        songType: songName == "" ? .recorded : .localFile,
-                        ext: ext,
-                        thumbnailUrl: ""
-                    )
-                    self.songs[i].name = dbSong.name
-                    self.songs[i].duration = dbSong.duration
-                    self.songs[i].chords = dbSong.chords
-                    self.songs[i].text = dbSong.text
-                    self.songs[i].tempo = dbSong.tempo
+                    self.songs[i].duration = TimeInterval(response.duration)
+                    self.songs[i].chords = response.chords
+                    self.songs[i].text = response.text ?? []
+                    self.songs[i].tempo = response.tempo
                     self.songs[i].isProcessing = false
+                    self.songs[i].isFakeLoaderVisible = true
+                    self.songs[i].isFakeLoaderVisible = false
+
                     self.songs[i].stopTimer()
                     self.songs[i].createTimeframes()
-                    self.databaseService.updateIntervals(song: self.songs[i])
+
+                    self.databaseService.updateSong(song: self.songs[i])
                     self.recognitionInProgress = false
                     self.objectWillChange.send()
 
@@ -439,50 +439,40 @@ final class SongsList: ObservableObject {
         @AppStorage("isLimited") var isLimited: Bool = false
         @AppStorage("songCounter") var songCounter: Int = 0
 
-        let song = Song(
+        let song = self.databaseService.createSongStub(
             id: UUID().uuidString,
-            name: title,
+            name: title == "" ? self.getNewSongName() : title,
             url: resultUrl,
             duration: 0.0,
-            created: Date(),
             chords: [],
             text: [],
             tempo: 0,
             songType: .youtube,
-            isProcessing: true,
-            isFakeLoaderVisible: true,
+            ext: "",
             thumbnailUrl: thumbnailUrl
         )
-        song.startTimer()
+
+        song.isFakeLoaderVisible = true
         self.songs.insert(song, at: 0)
+        self.songs[0].startTimer()
         songCounter = isLimited ? songCounter + 1 : songCounter
         self.objectWillChange.send()
         
-        recognitionApiService.recognizeAudioFromYoutube(url: resultUrl) { result  in
+        recognitionApiService.recognizeAudioFromYoutube(url: resultUrl, songId: song.id) { result  in
             let i = self.getSongIndexByID(id: song.id)
             switch result {
             case .success(let response):
-                let dbSong = self.databaseService.writeSong(
-                    id: song.id,
-                    name: title == "" ? self.getNewSongName() : title,
-                    url: song.url.absoluteString,
-                    duration: TimeInterval(response.duration),
-                    chords: response.chords,
-                    text: response.text ?? [],
-                    tempo: response.tempo,
-                    songType: .youtube,
-                    ext: "",
-                    thumbnailUrl: thumbnailUrl
-                )
-                self.songs[i].name = dbSong.name
-                self.songs[i].duration = dbSong.duration
-                self.songs[i].chords = dbSong.chords
-                self.songs[i].text = dbSong.text
-                self.songs[i].tempo = dbSong.tempo
+                self.songs[i].duration = TimeInterval(response.duration)
+                self.songs[i].chords = response.chords
+                self.songs[i].text = response.text ?? []
+                self.songs[i].tempo = response.tempo
                 self.songs[i].isProcessing = false
+                self.songs[i].isFakeLoaderVisible = false
+                
                 self.songs[i].stopTimer()
                 self.songs[i].createTimeframes()
-                self.databaseService.updateIntervals(song: self.songs[i])
+
+                self.databaseService.updateSong(song: self.songs[i])
                 self.recognitionInProgress = false
                 self.objectWillChange.send()
 
@@ -493,6 +483,27 @@ final class SongsList: ObservableObject {
                 print("API failure: ",failure)
             }
         }
+    }
+    
+    func updateUnfinishedSong(songId: String) {
+        let i = self.getSongIndexByID(id: songId)
+        recognitionApiService.getUnfinished(songId: songId) { result in
+            switch result {
+            case .success(let response):
+                if response.completed {
+                    self.songs[i].duration = TimeInterval(response.result.duration)
+                    self.songs[i].chords = response.result.chords
+                    self.songs[i].text = response.result.text ?? []
+                    self.songs[i].tempo = response.result.tempo
+                    self.databaseService.updateSong(song: self.songs[i])
+                } else {
+                    self.songs[i].isFakeLoaderVisible = true
+                }
+            case .failure(let failure):
+                print("API failure: ", failure)
+            }
+        }
+
     }
     
     func startRecording(conmpletion: @escaping (Bool) -> Void) {

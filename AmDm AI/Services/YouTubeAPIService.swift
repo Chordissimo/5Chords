@@ -7,7 +7,7 @@
 
 import Foundation
 import Alamofire
-import Network
+//import Network
 
 struct Response: Decodable {
     
@@ -74,8 +74,6 @@ class YouTubeAPIService {
         let appDefaults = AppDefaults()
         
         guard videoUrl != "" else { return }
-//        guard let path = Bundle.main.path(forResource: "GoogleYoutubeDataAPI-Info", ofType: "plist") else { return }
-//        var url = "", key = ""
         var videoId = ""
 
         if let urlComponent = URLComponents(string: videoUrl) {
@@ -86,16 +84,6 @@ class YouTubeAPIService {
         }
 
         guard videoId != "" else { return }
-
-//        do {
-//            let plistUrl = URL(fileURLWithPath: path)
-//            let data = try Data(contentsOf: plistUrl)
-//            let plist = try PropertyListDecoder().decode(PlistInfo.self, from: data)
-//            url = plist.API_URL
-//            key = plist.API_KEY
-//        } catch {
-//            print("YTService:",error)
-//        }
 
         guard appDefaults.GOOGLE_DATA_API_URL != "" && appDefaults.GOOGLE_DATA_API_KEY != "" else { return }
         

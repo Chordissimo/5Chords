@@ -12,6 +12,8 @@
 	<string>https://production.aichords.pro/upload</string>
 	<key>YOUTUBE_ENDPOINT</key>
 	<string>https://production.aichords.pro/youtube</string>
+	<key>STATUS_ENDPOINT</key>
+	<string>https://production.aichords.pro/status</string>
 	<key>LIMITED_UPLOAD_FILE_SIZE</key>
 	<integer>3072</integer>
 	<key>MAX_UPLOAD_FILE_SIZE</key>

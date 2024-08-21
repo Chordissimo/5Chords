@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftyChords
 
 struct AppRoot: View {
     @State var loadingStage = 0

@@ -15,13 +15,13 @@ import FirebaseCore
 
 class RecognitionApiService {
     lazy var appDefaults = AppDefaults()
-    var uid: String = ""
+    var token: String = ""
     
     init() {
         Task {
             do {
                 let result = try await Auth.auth().signInAnonymously()
-                self.uid = result.user.uid
+                self.token = try await result.user.getIDToken()
             } catch {
                 print("Auth error:",error)
             }
@@ -34,18 +34,38 @@ class RecognitionApiService {
         var tempo: Float
         var duration: Float
     }
+
+    struct StatusResponse: Decodable {
+        var completed: Bool
+        var result: Result
+        
+        enum CondingKeys: String, CodingKey {
+            case completed, result
+        }
+        
+        struct Result: Decodable {
+            var chords: [APIChord]
+            var text: [AlignedText]?
+            var tempo: Float
+            var duration: Float
+            
+            enum CondingKeys: String, CodingKey {
+                case chords, text, tempo, duration
+            }
+        }
+    }
     
     private enum ServiceError: Error {
         case noResult
     }
     
-    func recognizeAudio(url: URL, completion: @escaping ((Result<Response, Error>) -> Void)) {
+    func recognizeAudio(url: URL, songId: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
         AF.upload(
             multipartFormData: { multipartFormData in
                 multipartFormData.append(url, withName: "file")
-                multipartFormData.append(self.uid.data(using: String.Encoding.utf8)!, withName: "token")
             },
-            to: appDefaults.UPLOAD_ENDPOINT
+            to: appDefaults.UPLOAD_ENDPOINT + "/" + songId,
+            headers: [.authorization(bearerToken: self.token)]
         )
         .validate()
         .responseDecodable(of: Response.self) { response in
@@ -53,18 +73,17 @@ class RecognitionApiService {
                 completion(.failure(response.error ?? ServiceError.noResult))
                 return
             }
-            
             completion(.success(result))
         }
     }
     
-    func recognizeAudioFromYoutube(url: String, completion: @escaping ((Result<Response, Error>) -> Void)) {        
-        let requestUrl = appDefaults.YOUTUBE_ENDPOINT
+    func recognizeAudioFromYoutube(url: String, songId: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
         AF.request(
-            requestUrl,
+            appDefaults.YOUTUBE_ENDPOINT + "/" + songId,
             method: .post,
-            parameters: ["url": url, "token": self.uid],
-            encoding: JSONEncoding.default
+            parameters: ["url": url],
+            encoding: JSONEncoding.default,
+            headers: [.authorization(bearerToken: self.token)]
         )
         .validate()
         .responseDecodable(of: Response.self) { response in
@@ -72,11 +91,28 @@ class RecognitionApiService {
                 completion(.failure(response.error ?? ServiceError.noResult))
                 return
             }
-            
             completion(.success(result))
         }
-//        .debugLog()
     }
+
+    func getUnfinished(songId: String, completion: @escaping ((Result<StatusResponse, Error>) -> Void)) {
+        AF.request(
+            appDefaults.STATUS_ENDPOINT + "/" + songId,
+            method: .post,
+            parameters: ["task_id": songId],
+            encoding: JSONEncoding.default,
+            headers: [.authorization(bearerToken: self.token)]
+        )
+        .validate()
+        .responseDecodable(of: StatusResponse.self) { response in
+            guard let result = response.value else {
+                completion(.failure(response.error ?? ServiceError.noResult))
+                return
+            }
+            completion(.success(result))
+        }
+    }
+
 }
 
 extension Request {

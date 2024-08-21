@@ -7,34 +7,6 @@
 
 import SwiftUI
 
-//class ProgressTimer: ObservableObject, Equatable {
-//    static func == (lhs: ProgressTimer, rhs: ProgressTimer) -> Bool {
-//        lhs.id == rhs.id
-//    }
-//    var id = UUID()
-//    private var startTime: Date?
-//    @Published private var timer: Timer?
-//    @Published var elapsedTime: TimeInterval = 0.0
-//    
-//    func startTimer() {
-//        self.startTime = Date()
-//        self.timer = Timer.scheduledTimer(withTimeInterval: 0.01, repeats: true) { [weak self] _ in
-//            guard let self = self else { return }
-//            if let startTime = self.startTime {
-//                let currentTime = Date()
-//                self.elapsedTime = currentTime.timeIntervalSince(startTime)
-//            }
-//        }
-//    }
-//    
-//    func stopTimer() {
-//        self.timer?.invalidate()
-//        self.timer = nil
-//    }
-//}
-
-
-
 struct CircularProgressBarView: View {
     @ObservedObject var song: Song
     @ObservedObject var songsList: SongsList
