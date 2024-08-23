@@ -18,17 +18,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 @main
 struct AmDm_AIApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
-    @StateObject var authService: AuthService
-    
-    init() {
-        let authService = AuthService()
-        self._authService = StateObject(wrappedValue: authService)
-    }
-            
+           
     var body: some Scene {
         WindowGroup {
             AppRoot()
-                .environmentObject(authService)
         }
     }
 }

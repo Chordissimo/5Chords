@@ -12,8 +12,6 @@ import SwiftyChords
 struct PlaybackView: View {
     @ObservedObject var song: Song
     @ObservedObject var songsList: SongsList
-    @AppStorage("isPlaybackPanelMaximized") var isPlaybackPanelMaximized: Bool = true
-    @AppStorage("isLimited") var isLimited: Bool = false
     @StateObject var player = UniPlayer()
     @State var currentTimeframeIndex: Int = 0
     @State var currentChordIndex: Int = 0
@@ -83,7 +81,7 @@ struct PlaybackView: View {
                                             song.createTimeframes()
                                             songsList.databaseService.updateIntervals(song: song)
                                         })
-                                    } else if isPlaybackPanelMaximized {
+                                    } else if AppDefaults.isPlaybackPanelMaximized {
                                         ChordShapesView(song: song, currentChordIndex: $currentChordIndex)
                                     }
                                 }
@@ -96,7 +94,6 @@ struct PlaybackView: View {
                                         currentChordIndex: $currentChordIndex,
                                         currentTimeframeIndex: $currentTimeframeIndex,
                                         bottomPanelHieght: $bottomPanelHieght,
-                                        isPlaybackPanelMaximized: $isPlaybackPanelMaximized,
                                         isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
                                         showOptions: $showOptions
                                     )
@@ -113,7 +110,7 @@ struct PlaybackView: View {
                             .gesture(
                                 DragGesture().onChanged { value in
                                     if !isMoreShapesPopupPresented {
-                                        isPlaybackPanelMaximized = value.translation.height <= 0
+                                        AppDefaults.isPlaybackPanelMaximized = value.translation.height <= 0
                                         withAnimation(.easeInOut(duration: 0.1)) {
                                             bottomPanelHieght = value.translation.height <= 0 ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
                                         }
@@ -122,11 +119,11 @@ struct PlaybackView: View {
                             )
                             
                             /// MARK: Options close, More shapes buttons
-                            if !player.isPlaying && (isPlaybackPanelMaximized || showOptions) {
+                            if !player.isPlaying && (AppDefaults.isPlaybackPanelMaximized || showOptions) {
                                 ZStack {
                                     if showOptions {
                                         VStack {
-                                            Text(isLimited ? "Premium features" : "Preferences")
+                                            Text(AppDefaults.isLimited ? "Premium features" : "Preferences")
                                                 .font(.system(size: 16))
                                                 .foregroundStyle(.gray40)
                                                 .fontWeight(.semibold)
@@ -142,7 +139,7 @@ struct PlaybackView: View {
                                                 isMoreShapesPopupPresented.toggle()
                                             }
                                             withAnimation(.easeInOut(duration: 0.1)) {
-                                                bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
+                                                bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || AppDefaults.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
                                             }
                                         } label: {
                                             Image(systemName: isMoreShapesPopupPresented ? "chevron.down" : (showOptions ? "xmark.circle.fill" : "book.fill"))
@@ -165,7 +162,7 @@ struct PlaybackView: View {
                 .onAppear {
                     player.prepareToPlay(song: song)
                     songName = song.name
-                    bottomPanelHieght = isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
+                    bottomPanelHieght = AppDefaults.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
                     currentChordIndex = song.getFirstChordIndex()
                 }
                 .onDisappear {

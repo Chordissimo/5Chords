@@ -361,24 +361,75 @@ class DatabaseService {
                 tempo: $0.tempo,
                 songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
                 ext: $0.ext,
+                isProcessing: $0.isProcessing,
+                isFakeLoaderVisible: $0.isProcessing,
                 thumbnailUrl: $0.thumbnailUrl
             )
 
-            if $0.isProcessing {
-                recognitionApiService.getUnfinished(songId: $0.id) { result in
+            if song.isProcessing {
+                song.startTimer()
+                recognitionApiService.getUnfinished(songId: song.id) { result in
                     switch result {
                     case .success(let response):
-                        if response.completed {
-                            song.duration = TimeInterval(response.result.duration)
-                            song.chords = response.result.chords
-                            song.text = response.result.text ?? []
-                            song.tempo = response.result.tempo
-                            self.updateSong(song: song)
+                        if response.found {
+                            if response.completed {
+                                song.duration = TimeInterval(response.result!.duration)
+                                song.chords = response.result!.chords
+                                song.text = response.result!.text ?? []
+                                song.tempo = response.result!.tempo
+                                song.createTimeframes()
+                                song.isProcessing = false
+                                song.isFakeLoaderVisible = false
+                                self.updateSong(song: song)
+                            }
                         } else {
-                            song.isFakeLoaderVisible = true
+                            if song.songType == .youtube {
+                                recognitionApiService.recognizeAudioFromYoutube(url: song.url.absoluteString, songId: song.id) { result  in
+                                    switch result {
+                                    case .success(let response):
+                                        song.duration = TimeInterval(response.duration)
+                                        song.chords = response.chords
+                                        song.text = response.text ?? []
+                                        song.tempo = response.tempo
+                                        song.isProcessing = false
+                                        song.isFakeLoaderVisible = false
+                                        
+                                        song.stopTimer()
+                                        song.createTimeframes()
+                                        
+                                        self.updateSong(song: song)
+                                        
+                                    case .failure:
+                                        song.stopTimer()
+                                        song.recognitionStatus = .serverError
+                                    }
+                                }
+                            } else {
+                                recognitionApiService.recognizeAudio(url: song.url, songId: song.id) { result in
+                                    switch result {
+                                    case .success(let response):
+                                        song.duration = TimeInterval(response.duration)
+                                        song.chords = response.chords
+                                        song.text = response.text ?? []
+                                        song.tempo = response.tempo
+                                        song.isProcessing = false
+                                        song.isFakeLoaderVisible = false
+                                        
+                                        song.stopTimer()
+                                        song.createTimeframes()
+                                        
+                                        self.updateSong(song: song)
+                                        
+                                    case .failure:
+                                        song.stopTimer()
+                                        song.recognitionStatus = .serverError
+                                    }
+                                }
+                            }
                         }
-                    case .failure(let failure):
-                        print("API failure: ", failure)
+                    case .failure:
+                        song.stopTimer()
+                        song.recognitionStatus = .serverError
                     }
                 }
             }

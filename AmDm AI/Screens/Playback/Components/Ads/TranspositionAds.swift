@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct TranspositionAds: View {
-    var appDefaults = AppDefaults()
     @StateObject var model = AdsViewModel()
     @State var slideNumber = 1
     @State var hideLyrics = false
@@ -18,7 +17,7 @@ struct TranspositionAds: View {
     let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        let width: CGFloat = appDefaults.screenWidth * 0.8
+        let width: CGFloat = AppDefaults.screenWidth * 0.8
         
         ZStack {
             VStack {

@@ -15,12 +15,11 @@ struct OptionsView: View {
     @State var showHideLyricsAds = false
     var onChangeValue: (_ transposeUp: Bool) -> Void
     var onReset: (_ reset: Bool) -> Void
-    @AppStorage("isLimited") var isLimited: Bool = false
     @State var showPaywall = false
 
     var body: some View {
         VStack(spacing: 0) {
-            if isLimited {
+            if AppDefaults.isLimited {
                 Spacer()
                 VStack {
                     UpgradeButton(rightIconName: "arrow.up.arrow.down", content: {
@@ -93,7 +92,7 @@ struct OptionsView: View {
                                 .frame(width: 25, height: 25)
                                 .foregroundColor(.white)
                         }
-                        .disabled(isLimited)
+                        .disabled(AppDefaults.isLimited)
                         .frame(width: 80, height: 40)
                         .background(.gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
                     }
@@ -134,14 +133,14 @@ struct OptionsView: View {
                                 .foregroundColor(.white)
                         }
                     }
-                    .disabled(isLimited)
+                    .disabled(AppDefaults.isLimited)
                     .frame(width: 80, height: 40)
                     .background(.gray30, in: UnevenRoundedRectangle(bottomTrailingRadius: 16, topTrailingRadius: 16))
                 }
                 .frame(height: 60)
             }
             
-            if !isLimited {
+            if !AppDefaults.isLimited {
                 Divider()
                 VStack {
                     Button {

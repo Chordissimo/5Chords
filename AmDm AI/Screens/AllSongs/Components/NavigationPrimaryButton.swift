@@ -15,7 +15,6 @@ struct NavigationPrimaryButton: View {
     var action: () -> Void
     @State var counter = -1
     @State var throb = false
-    @AppStorage("isLimited") var isLimited: Bool = false
     
     var body: some View {
         GeometryReader { geometry  in
@@ -74,8 +73,8 @@ struct NavigationPrimaryButton: View {
                 }
             }
             .overlay {
-                if !isLimited && counter > 0 {
-                    DurationLimitView(isLimited: isLimited)
+                if !AppDefaults.isLimited && counter > 0 {
+                    DurationLimitView(isLimited: AppDefaults.isLimited)
                         .offset(x: 0, y: -320)
                 }
             }

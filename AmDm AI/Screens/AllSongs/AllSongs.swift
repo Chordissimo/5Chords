@@ -11,9 +11,6 @@ import Firebase
 
 struct AllSongs: View {
     @State var showPaywall = false
-    @AppStorage("isLimited") var isLimited: Bool = false
-    @AppStorage("songCounter") var songCounter: Int = 0
-    @AppStorage("showOnboarding") var showOnboarding: Bool = false
     @EnvironmentObject var store: ProductModel
     @State var showSettings = false
     @State var showUpload = false
@@ -27,16 +24,13 @@ struct AllSongs: View {
     @State var showError: Bool = false
     @State var errorMessage: String = ""
     @State var showPermissionError = false
-    let appDefaults = AppDefaults()
-    @EnvironmentObject var authService: AuthService
-    @AppStorage("token") var token: String = ""
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
             Color.gray5
             //Layer 1: song list + limited version label
             VStack {
-                if isLimited {
+                if AppDefaults.isLimited {
                     VStack {
                         HStack {
                             Image(systemName: "crown.fill")
@@ -50,7 +44,7 @@ struct AllSongs: View {
                                 .font(.system(size: 18))
                         }
                     }
-                    .frame(width: appDefaults.screenWidth, height: 50)
+                    .frame(width: AppDefaults.screenWidth, height: 50)
                     .background(
                         LinearGradient(gradient: Gradient(colors: [.grad1, .grad2, .grad3]), startPoint: .leading, endPoint: .trailing)
                     )
@@ -67,7 +61,7 @@ struct AllSongs: View {
                 if !songsList.showSearch {
                     Rectangle()
                         .ignoresSafeArea()
-                        .frame(width: appDefaults.screenWidth, height: 100)
+                        .frame(width: AppDefaults.screenWidth, height: 100)
                         .overlay(
                             Rectangle()
                                 .frame(width: nil, height: 1)
@@ -101,7 +95,7 @@ struct AllSongs: View {
                         HStack {
                             HStack(spacing: 20) {
                                 NavigationSecondaryButton(imageName: "folder.fill") {
-                                    if isLimited && songCounter == appDefaults.LIMITED_NUMBER_OR_SONGS {
+                                    if AppDefaults.isLimited && AppDefaults.songCounter == AppDefaults.LIMITED_NUMBER_OF_SONGS {
                                         showPaywall = true
                                     } else {
                                         if songsList.recognitionInProgress {
@@ -119,7 +113,7 @@ struct AllSongs: View {
                                 }
                                 .frame(width: 45, height: 45)
                                 NavigationSecondaryButton(imageName: "mic.fill") {
-                                    if isLimited && songCounter == appDefaults.LIMITED_NUMBER_OR_SONGS {
+                                    if AppDefaults.isLimited && AppDefaults.songCounter == AppDefaults.LIMITED_NUMBER_OF_SONGS {
                                         showPaywall = true
                                     } else {
                                         if songsList.recognitionInProgress {
@@ -151,9 +145,6 @@ struct AllSongs: View {
                                         songsList.recognitionInProgress = true
                                         songsList.showSearch = false
                                         songsList.recordingService.startTimer()
-                                        authService.getToken { t in
-                                            token = t
-                                        }
                                     }
                                 }
                                 .onChange(of: songsList.recordingService.audioRecorder) { _, recorder in
@@ -213,8 +204,8 @@ struct AllSongs: View {
             // Layer 5: Primary button
             VStack {
                 if initialAnimationStep == 2 && !songsList.showSearch {
-                    NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted, duration: $songsList.duration, durationLimit: (isLimited ? appDefaults.LIMITED_DURATION : appDefaults.MAX_DURATION)) {
-                        if isLimited && songCounter == appDefaults.LIMITED_NUMBER_OR_SONGS {
+                    NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted, duration: $songsList.duration, durationLimit: (AppDefaults.isLimited ? AppDefaults.LIMITED_DURATION : AppDefaults.MAX_DURATION)) {
+                        if AppDefaults.isLimited && AppDefaults.songCounter == AppDefaults.LIMITED_NUMBER_OF_SONGS {
                             showPaywall = true
                         } else {
                             if recordPanelPresented {
@@ -331,16 +322,13 @@ struct AllSongs: View {
                     if duration == 0 {
                         self.showError = true
                         self.errorMessage = "We couldn't process the video you selected."
-                    } else if duration > appDefaults.MAX_DURATION {
-                        let duration = Int(appDefaults.MAX_DURATION / 60)
+                    } else if duration > AppDefaults.MAX_DURATION {
+                        let duration = Int(AppDefaults.MAX_DURATION / 60)
                         self.showError = true
                         self.errorMessage = "The selected video is too long. The maximum video duration we can hadnle is \(duration) minutes."
                     } else {
-                        authService.getToken { t in
-                            token = t
-                            self.songsList.recognitionInProgress = true
-                            self.songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
-                        }
+                        self.songsList.recognitionInProgress = true
+                        self.songsList.processYoutubeVideo(by: resultUrl, title: title, thumbnailUrl: thumbnail)
                     }
                 }
             })
@@ -355,22 +343,19 @@ struct AllSongs: View {
                             if size == 0 {
                                 self.showError = true
                                 self.errorMessage = "No audio data found in the file you are trying to upload."
-                            } else if size > (isLimited ? appDefaults.LIMITED_UPLOAD_FILE_SIZE : appDefaults.MAX_UPLOAD_FILE_SIZE) {
+                            } else if size > (AppDefaults.isLimited ? AppDefaults.LIMITED_UPLOAD_FILE_SIZE : AppDefaults.MAX_UPLOAD_FILE_SIZE) {
                                 self.showError = true
-                                let limitedSize = Int(appDefaults.LIMITED_UPLOAD_FILE_SIZE / 1024)
-                                let maxSize = Int(appDefaults.MAX_UPLOAD_FILE_SIZE / 1024)
-                                if isLimited {
+                                let limitedSize = Int(AppDefaults.LIMITED_UPLOAD_FILE_SIZE / 1024)
+                                let maxSize = Int(AppDefaults.MAX_UPLOAD_FILE_SIZE / 1024)
+                                if AppDefaults.isLimited {
                                     self.errorMessage = "The file you are trying to upload is too big. The maximum file size is \(limitedSize)Mb. Subscribe to upload up to \(maxSize)Mb."
                                 } else {
                                     self.errorMessage = "The file you are trying to upload is too big. The maximum file size we can hadnle is \(maxSize)Mb."
                                 }
                             } else {
                                 if Player().setupAudio(url: file) {
-                                    authService.getToken { t in
-                                        token = t
-                                        self.songsList.recognitionInProgress = true
-                                        self.songsList.importFile(url: file)
-                                    }
+                                    self.songsList.recognitionInProgress = true
+                                    self.songsList.importFile(url: file)
                                 } else {
                                     showError = true
                                     errorMessage = "The file is broken or it's format is not supported."

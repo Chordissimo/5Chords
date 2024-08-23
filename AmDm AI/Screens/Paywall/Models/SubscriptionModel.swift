@@ -82,13 +82,12 @@ class ProductModel: ObservableObject {
     
     func purchase(billingPeriod: Subscription.BillingPeriod) async -> Bool {
         var result = false
-        @AppStorage("isLimited") var isLimited: Bool = false
         
         let subscriptionId = getSubscriptionIdBy(billingPeriod: billingPeriod)
         if subscriptionId != "" {
             do {
                 result = try await store.purchase(subscriptionId)
-                isLimited = !result
+                AppDefaults.isLimited = !result
             } catch {
                 print(error)
             }

@@ -13,10 +13,8 @@ struct PlaybackControls: View {
     @Binding var currentChordIndex: Int
     @Binding var currentTimeframeIndex: Int
     @Binding var bottomPanelHieght: CGFloat
-    @Binding var isPlaybackPanelMaximized: Bool
     @Binding var isMoreShapesPopupPresented: Bool
     @Binding var showOptions: Bool
-    @AppStorage("isLimited") var isLimited: Bool = false
 
     var body: some View {
         VStack {
@@ -34,7 +32,7 @@ struct PlaybackControls: View {
                             bottomPanelHieght = !showOptions ? LyricsViewModelConstants.minBottomPanelHeight : LyricsViewModelConstants.maxBottomPanelHeight
                         }
                     } label: {
-                        if isLimited {
+                        if AppDefaults.isLimited {
                             Image(systemName: "crown.fill")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
@@ -61,7 +59,7 @@ struct PlaybackControls: View {
                         if player.isPlaying {
                             player.jumpTo(miliseconds: song.intervals[currentChordIndex].start)
                         } else {
-                            if isPlaybackPanelMaximized {
+                            if AppDefaults.isPlaybackPanelMaximized {
                                 withAnimation {
                                     bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
                                 }
@@ -84,7 +82,7 @@ struct PlaybackControls: View {
                             player.pause()
                         } else {
                             player.jumpTo(miliseconds: song.intervals[currentChordIndex].start) {
-                                if isPlaybackPanelMaximized {
+                                if AppDefaults.isPlaybackPanelMaximized {
                                     withAnimation {
                                         bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
                                     }
@@ -110,7 +108,7 @@ struct PlaybackControls: View {
                         if player.isPlaying {
                             player.jumpTo(miliseconds: song.intervals[currentChordIndex].start)
                         } else {
-                            if isPlaybackPanelMaximized {
+                            if AppDefaults.isPlaybackPanelMaximized {
                                 withAnimation {
                                     bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
                                 }
@@ -129,12 +127,12 @@ struct PlaybackControls: View {
                 Spacer()
                 VStack {
                     Button {
-                        isPlaybackPanelMaximized.toggle()
+                        AppDefaults.isPlaybackPanelMaximized.toggle()
                         withAnimation(.easeInOut(duration: 0.1)) {
-                            bottomPanelHieght = isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
+                            bottomPanelHieght = AppDefaults.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
                         }
                     } label: {
-                        Image(systemName: isPlaybackPanelMaximized ? "c.square.fill" : "c.square")
+                        Image(systemName: AppDefaults.isPlaybackPanelMaximized ? "c.square.fill" : "c.square")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .foregroundStyle(showOptions ? .secondaryText : .white)

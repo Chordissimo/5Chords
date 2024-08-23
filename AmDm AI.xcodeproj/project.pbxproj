@@ -25,7 +25,6 @@
 		C308BD4D2C5353CC00C54602 /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD4C2C5353CC00C54602 /* Paywall.swift */; };
 		C308BD4F2C5653F700C54602 /* StoreKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C308BD4E2C5653F700C54602 /* StoreKitManager.swift */; };
 		C30ADA5F2C38F4AE00CC9F9A /* LogEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */; };
-		C30ADA612C3AB1EB00CC9F9A /* AppDefaults-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C30ADA602C3AB1EB00CC9F9A /* AppDefaults-Info.plist */; };
 		C30ADA632C3ADB4800CC9F9A /* FormatDuration.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */; };
 		C30ADA652C3FB80300CC9F9A /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA642C3FB80300CC9F9A /* AppDefaults.swift */; };
 		C30ADA672C40523000CC9F9A /* DurationLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA662C40523000CC9F9A /* DurationLimitView.swift */; };
@@ -109,7 +108,6 @@
 		C308BD4C2C5353CC00C54602 /* Paywall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paywall.swift; sourceTree = "<group>"; };
 		C308BD4E2C5653F700C54602 /* StoreKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreKitManager.swift; sourceTree = "<group>"; };
 		C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogEvents.swift; sourceTree = "<group>"; };
-		C30ADA602C3AB1EB00CC9F9A /* AppDefaults-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppDefaults-Info.plist"; sourceTree = "<group>"; };
 		C30ADA622C3ADB4800CC9F9A /* FormatDuration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatDuration.swift; sourceTree = "<group>"; };
 		C30ADA642C3FB80300CC9F9A /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		C30ADA662C40523000CC9F9A /* DurationLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationLimitView.swift; sourceTree = "<group>"; };
@@ -340,7 +338,6 @@
 				C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */,
-				C30ADA602C3AB1EB00CC9F9A /* AppDefaults-Info.plist */,
 				C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */,
 				C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */,
 				C3B54DFE2BB1AB0A000DCF15 /* Models */,
@@ -552,7 +549,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C30ADA612C3AB1EB00CC9F9A /* AppDefaults-Info.plist in Resources */,
 				C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */,
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
 				C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */,

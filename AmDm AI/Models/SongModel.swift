@@ -120,7 +120,6 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     @Published var recognitionStatus: RecognitionStatus = .ok
     
     init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], intervals: [Interval] = [], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
-        @AppStorage("hideLyrics") var hideLyrics: Bool = false
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -172,10 +171,8 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     
     func createTimeframes() {
         guard self.chords.count > 0 || self.intervals.count > 0 else { return }
-        let appDefaults = AppDefaults()
-        @AppStorage("isLimited") var isLimited = false
         self.timeframes = []
-        let maxWidth = appDefaults.screenWidth - LyricsViewModelConstants.padding
+        let maxWidth = AppDefaults.screenWidth - LyricsViewModelConstants.padding
         
         if self.intervals.count > 0 {
             self.intervals = compactIntervals(intervals: self.intervals, recalcWidth: true)
@@ -186,30 +183,21 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         var line: [Interval] = []
         var indices: [Int] = []
         var width: Double = 0
-        
+
         for interval in self.intervals {
             width += interval.width
             if width > maxWidth {
-                var timeframe: Timeframe
-                if line.count == 0 {
-                    timeframe = Timeframe(start: interval.start, intervals: [self.intervals.firstIndex(of: interval)!], width: maxWidth)
-                    width = 0
-                    self.timeframes.append(timeframe)
-                    continue
-                } else {
-                    timeframe = Timeframe(start: line.first!.start, intervals: indices, width: width - interval.width)
-                    line = []
-                    indices = []
-                    width = interval.width
-                    self.timeframes.append(timeframe)
-                }
-                if isLimited && timeframe.start > appDefaults.LIMITED_DURATION * 1000 {
+                let timeframe = Timeframe(start: line.first!.start, intervals: indices, width: width - interval.width)
+                self.timeframes.append(timeframe)
+                line = []
+                indices = []
+                width = interval.width
+                if AppDefaults.isLimited && timeframe.start > AppDefaults.LIMITED_DURATION * 1000 {
                     break
                 }
-            } else {
-                line.append(interval)
-                indices.append(self.intervals.firstIndex(of: interval)!)
             }
+            line.append(interval)
+            indices.append(self.intervals.firstIndex(of: interval)!)
         }
         if line.count > 0 {
             self.timeframes.append(Timeframe(start: line.first!.start, intervals: indices, width: width))
@@ -218,16 +206,15 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         
     private func createIntervals() -> [Interval] {
         guard self.chords.count > 0 else { return [] }
-        let appDefaults = AppDefaults()
         let compactedWords = compactWords()
-        let adjustedChords = adjustChordStartTime(adjustment: appDefaults.INTERVAL_START_ADJUSTMENT)
-
+        let adjustedChords = adjustChordStartTime(adjustment: AppDefaults.INTERVAL_START_ADJUSTMENT)
+        let maxWidth = AppDefaults.screenWidth - LyricsViewModelConstants.padding
         var result: [Interval] = []
         
         if compactedWords.count > 0 {
             let firstWord = compactedWords.first!
             if firstWord.start < self.chords.first!.start {
-                let words = compactedWords.filter { $0.start < self.chords.first!.start }.map { $0.text }.joined()
+                let words = compactedWords.filter { $0.start < self.chords.first!.start }.map { $0.text }.joined(separator: " ")
                 result.append(Interval(start: 0, words: words))
             }
         }
@@ -241,13 +228,13 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
                     condition = $0.start >= adjustedChords[i].start && $0.start < adjustedChords[i + 1].start
                 }
                 return condition
-            }.map { $0.text }.joined()
+            }.map { $0.text }.joined(separator: " ")
             
             let uiChord = UIChord(chord: adjustedChords[i].chord)
             var interval = Interval(start: adjustedChords[i].start, words: words, uiChord: uiChord)
             let intervalWidth = getWidth(for: interval)
-            interval.limitLines = Int(ceil(intervalWidth / appDefaults.screenWidth))
-            interval.width = min(intervalWidth, appDefaults.screenWidth)
+            interval.limitLines = Int(ceil(intervalWidth / maxWidth))
+            interval.width = min(intervalWidth, maxWidth)
             result.append(interval)
         }
         
@@ -265,17 +252,19 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     
     private func compactIntervals(intervals: [Interval], recalcWidth: Bool = false) -> [Interval] {
         guard intervals.count > 0 else { return [] }
-        let appDefaults: AppDefaults? = recalcWidth ? AppDefaults() : nil
+        let maxWidth: CGFloat = AppDefaults.screenWidth - LyricsViewModelConstants.padding
         
-        return intervals.filter({ !($0.uiChord == nil && $0.words.count == 0) }).map {
+        let inter =  intervals.filter({ !($0.uiChord == nil && $0.words.count == 0) }).map {
             var interval = $0
-            if recalcWidth && appDefaults != nil {
+            if recalcWidth {
                 let intervalWidth = getWidth(for: interval)
-                interval.width = min(intervalWidth, appDefaults!.screenWidth)
-                interval.limitLines = Int(ceil(intervalWidth / appDefaults!.screenWidth))
+                interval.width = min(intervalWidth, maxWidth)
+                interval.limitLines = Int(ceil(intervalWidth / maxWidth))
             }
             return interval
         }
+                
+        return inter
     }
     
     private func compactWords() -> [Word] {
@@ -358,20 +347,17 @@ final class SongsList: ObservableObject {
     let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
     let databaseService = DatabaseService()
-    private var cancellables = Set<AnyCancellable>()
     
     init() {
-        songs = self.databaseService.getSongs()
+        self.songs = self.databaseService.getSongs()
         
         recordingService.recordingCallback = { [weak self] url, songName, ext in
             guard let self = self else { return }
             guard let url = url else { return }
             guard let songName = songName else { return }
             guard let ext = ext else { return }
-            @AppStorage("isLimited") var isLimited: Bool = false
-            @AppStorage("songCounter") var songCounter: Int = 0
             self.recordStarted = false
-
+            
             let song = self.databaseService.createSongStub(
                 id: UUID().uuidString,
                 name: songName == "" ? self.getNewSongName() : songName,
@@ -384,11 +370,11 @@ final class SongsList: ObservableObject {
                 ext: ext,
                 thumbnailUrl: ""
             )
-
+            
             song.isFakeLoaderVisible = true
             song.startTimer()
             self.songs.insert(song, at: 0)
-            songCounter = isLimited ? songCounter + 1 : songCounter
+            AppDefaults.songCounter = AppDefaults.isLimited ? AppDefaults.songCounter + 1 : AppDefaults.songCounter
             self.objectWillChange.send()
             
             self.recognitionApiService.recognizeAudio(url: url, songId: song.id) { result in
@@ -400,16 +386,15 @@ final class SongsList: ObservableObject {
                     self.songs[i].text = response.text ?? []
                     self.songs[i].tempo = response.tempo
                     self.songs[i].isProcessing = false
-                    self.songs[i].isFakeLoaderVisible = true
                     self.songs[i].isFakeLoaderVisible = false
-
+                    
                     self.songs[i].stopTimer()
                     self.songs[i].createTimeframes()
-
+                    
                     self.databaseService.updateSong(song: self.songs[i])
                     self.recognitionInProgress = false
                     self.objectWillChange.send()
-
+                    
                 case .failure(let failure):
                     self.songs[i].recognitionStatus = .serverError
                     self.recognitionInProgress = false
@@ -436,9 +421,6 @@ final class SongsList: ObservableObject {
     }
     
     func processYoutubeVideo(by resultUrl: String, title: String, thumbnailUrl: String) {
-        @AppStorage("isLimited") var isLimited: Bool = false
-        @AppStorage("songCounter") var songCounter: Int = 0
-
         let song = self.databaseService.createSongStub(
             id: UUID().uuidString,
             name: title == "" ? self.getNewSongName() : title,
@@ -455,7 +437,7 @@ final class SongsList: ObservableObject {
         song.isFakeLoaderVisible = true
         self.songs.insert(song, at: 0)
         self.songs[0].startTimer()
-        songCounter = isLimited ? songCounter + 1 : songCounter
+        AppDefaults.songCounter = AppDefaults.isLimited ? AppDefaults.songCounter + 1 : AppDefaults.songCounter
         self.objectWillChange.send()
         
         recognitionApiService.recognizeAudioFromYoutube(url: resultUrl, songId: song.id) { result  in
@@ -483,27 +465,6 @@ final class SongsList: ObservableObject {
                 print("API failure: ",failure)
             }
         }
-    }
-    
-    func updateUnfinishedSong(songId: String) {
-        let i = self.getSongIndexByID(id: songId)
-        recognitionApiService.getUnfinished(songId: songId) { result in
-            switch result {
-            case .success(let response):
-                if response.completed {
-                    self.songs[i].duration = TimeInterval(response.result.duration)
-                    self.songs[i].chords = response.result.chords
-                    self.songs[i].text = response.result.text ?? []
-                    self.songs[i].tempo = response.result.tempo
-                    self.databaseService.updateSong(song: self.songs[i])
-                } else {
-                    self.songs[i].isFakeLoaderVisible = true
-                }
-            case .failure(let failure):
-                print("API failure: ", failure)
-            }
-        }
-
     }
     
     func startRecording(conmpletion: @escaping (Bool) -> Void) {

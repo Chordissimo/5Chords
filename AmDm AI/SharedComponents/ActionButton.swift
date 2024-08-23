@@ -33,12 +33,3 @@ struct ActionButton: View {
         }.buttonStyle(BorderlessButtonStyle())
     }
 }
-
-#Preview {
-    func preview() -> Void {
-        print("Tapped")
-    }
-    return ActionButton(imageName: "trash", title: "trash", action: preview)
-        .frame(width: 150, height: 20)
-}
-

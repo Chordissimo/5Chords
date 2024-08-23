@@ -1,5 +1,5 @@
 //
-//  Paywall1.swift
+//  Paywall.swift
 //  AmDm AI
 //
 //  Created by Anton on 26/07/2024.
@@ -11,7 +11,6 @@ import StoreKit
 struct Paywall: View  {
     var appDefaults = AppDefaults()
     @EnvironmentObject var store: ProductModel
-    @AppStorage("isLimited") var isLimited: Bool = false
     @Binding var showPaywall: Bool
     @Environment(\.openURL) var openURL
     @State var selectedBillingPeriod: Subscription.BillingPeriod = .year
@@ -24,7 +23,7 @@ struct Paywall: View  {
             VStack {
                 HStack {
                     Button {
-                        isLimited = store.activeSubscriptionId == ""
+                        AppDefaults.isLimited = store.activeSubscriptionId == ""
                         showPaywall = false
                         completion()
                     } label: {
@@ -46,7 +45,7 @@ struct Paywall: View  {
                             .font(.system(size: 20))
                     }
                 }
-                .padding(.top, appDefaults.topSafeArea)
+                .padding(.top, AppDefaults.topSafeArea)
                 .padding(.horizontal, 20)
             }
             
@@ -80,7 +79,7 @@ struct Paywall: View  {
                         Text("Yearly")
                             .fontWeight(.semibold)
                             .foregroundStyle(selectedBillingPeriod == .year ? Color.black : Color.white)
-                            .frame(width: (appDefaults.screenWidth - 40) / 2, height: 40)
+                            .frame(width: (AppDefaults.screenWidth - 40) / 2, height: 40)
                     }
                     .background(selectedBillingPeriod == .year ? Color.white : Color.clear, in: Capsule())
 
@@ -90,7 +89,7 @@ struct Paywall: View  {
                         Text("Monthly")
                             .fontWeight(.semibold)
                             .foregroundStyle(selectedBillingPeriod == .month ? Color.black : Color.white)
-                            .frame(width: (appDefaults.screenWidth - 40) / 2, height: 40)
+                            .frame(width: (AppDefaults.screenWidth - 40) / 2, height: 40)
                     }
                     .background(selectedBillingPeriod == .month ? Color.white : Color.clear, in: Capsule())
                 }
@@ -98,7 +97,7 @@ struct Paywall: View  {
                 .clipShape(.rect(cornerRadius: 20))
                 .padding(.horizontal, 20)
             }
-            .frame(width: appDefaults.screenWidth)
+            .frame(width: AppDefaults.screenWidth)
             
             /// MARK: Price tag
             VStack {
@@ -223,10 +222,10 @@ struct Paywall: View  {
                 }
             }
             .padding(.horizontal, 20)
-            .padding(.bottom, appDefaults.bottomSafeArea)
+            .padding(.bottom, AppDefaults.bottomSafeArea)
         }
         .ignoresSafeArea()
-        .frame(width: appDefaults.screenWidth)
+        .frame(width: AppDefaults.screenWidth)
         .background(Color.gray5)
         .onAppear {
             self.activeBillingPeriod = store.getSubscriptionBy(id: store.activeSubscriptionId)?.billingPeriod ?? .none

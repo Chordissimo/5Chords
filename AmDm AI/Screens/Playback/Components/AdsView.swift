@@ -12,8 +12,6 @@ struct AdsView<Content: View>: View {
     @Binding var showPaywall: Bool
     var title: String
     @ViewBuilder let content: Content
-    @AppStorage("isLimited") var isLimited: Bool = false
-    
     
     var body: some View {
         VStack {
@@ -59,7 +57,7 @@ struct AdsView<Content: View>: View {
             
             Spacer()
             
-            if isLimited {
+            if AppDefaults.isLimited {
                 Button {
                     showAds = false
                     showPaywall = true

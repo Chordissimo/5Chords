@@ -19,9 +19,6 @@ class RecordingService: NSObject, AVAudioRecorderDelegate, ObservableObject {
     var isCanceled: Bool = false
 
     func startRecording(completion: @escaping (Bool) -> Void) {
-        @AppStorage("isLimited") var isLimited: Bool = false
-        let appDefaults = AppDefaults()
-
         AVAudioApplication.requestRecordPermission() { permissionGranted in
             if permissionGranted {
                 let audioSession = AVAudioSession.sharedInstance()
@@ -43,7 +40,7 @@ class RecordingService: NSObject, AVAudioRecorderDelegate, ObservableObject {
                     self.audioRecorder = try AVAudioRecorder(url: self.recordingURL!, settings: settings)
                     self.audioRecorder?.delegate = self
                     self.audioRecorder?.isMeteringEnabled = true
-                    self.audioRecorder?.record(forDuration: isLimited ? Double(appDefaults.LIMITED_DURATION) : Double(appDefaults.MAX_DURATION))
+                    self.audioRecorder?.record(forDuration: AppDefaults.isLimited ? Double(AppDefaults.LIMITED_DURATION) : Double(AppDefaults.MAX_DURATION))
                     
                     self.startTime = Date()
                 } catch {
