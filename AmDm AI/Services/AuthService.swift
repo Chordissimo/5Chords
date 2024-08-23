@@ -5,40 +5,35 @@
 //  Created by Anton on 21/08/2024.
 //
 
-import Foundation
-import AuthenticationServices
 import FirebaseAuth
-import FirebaseCore
+import SwiftUI
 
-@MainActor
-class AuthService: ObservableObject {
-    @Published var user: User?
-    @Published var authenticated: Bool = false
-    
-    func signInAnonymously() async throws -> AuthDataResult? {
-        do {
-            let result = try await Auth.auth().signInAnonymously()
-            self.user = result.user
-            print("FirebaseAuthSuccess: Sign in anonymously, UID:(\(String(describing: result.user.uid)))")
-            return result
-        }
-        catch {
-            print("FirebaseAuthError: failed to sign in anonymously: \(error.localizedDescription)")
-            throw error
-        }
-    }
-    
-    func getToken(completion: @escaping (String) -> Void) {
-        self.user?.getIDToken() { token, error in
-            if let err = error {
-                print("FirebaseAuthError: failed to fetch token: \(err.localizedDescription)")
-            } else if let t = token {
-                completion(t)
-            } else {
-                completion("")
-                print("FirebaseAuthError: failed to fetch token.")
+
+public struct AuthService {
+    public static func getToken(completion: @escaping (String) -> Void) {
+        let currentTimestamp: TimeInterval = NSDate().timeIntervalSince1970
+        if Int(currentTimestamp - AppDefaults.tokenTimestamp) > 60 * 55 {
+            Auth.auth().signInAnonymously() { result, error in
+                if let err = error {
+                    print(err)
+                } else if let user = result?.user {
+                    user.getIDToken() { token, error in
+                        if let err = error {
+                            print("FirebaseAuthError: failed to fetch token: \(err.localizedDescription)")
+                        } else if let t = token {
+                            AppDefaults.tokenTimestamp = NSDate().timeIntervalSince1970
+                            AppDefaults.token = t
+                            completion(t)
+                        } else {
+                            print("FirebaseAuthError: failed to fetch token.")
+                        }
+                    }
+                } else {
+                    print("FirebaseAuthError: failed to fetch signed in user.")
+                }
             }
+        } else {
+            completion(AppDefaults.token)
         }
     }
 }
-

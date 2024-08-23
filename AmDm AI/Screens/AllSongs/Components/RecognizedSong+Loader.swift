@@ -42,26 +42,13 @@ struct RecognizedSongView: View {
                         }
                         .padding(.leading, 10)
                     }
-//                    .overlay {
-//                        if song.shouldRetry {
-//                            ZStack {
-//                                Rectangle()
-//                                    .fill(Color.gray20.opacity(0.5))
-//                                Button {
-//                                    print("")
-//                                } label: {
-//                                    Text("Retry")
-//                                }
-//
-//                            }
-//                        }
-//                    }
                 }
-                .onChange(of: song.recognitionStatus, { oldValue, newValue in
+                .onChange(of: song.recognitionStatus) {
+                    print(song.name, song.recognitionStatus)
                     if song.recognitionStatus == .serverError {
                         showError = true
                     }
-                })
+                }
                 .alert("Something went wrong", isPresented: $showError) {
                     Button {
                         songsList.del(song: song)
@@ -74,7 +61,6 @@ struct RecognizedSongView: View {
             } else {
                 HStack {
                     if song.songType == .youtube && song.thumbnailUrl.absoluteString != "" {
-//                        let _ = print(song.thumbnailUrl.absoluteString)
                         AsyncImage(url: URL(string: song.thumbnailUrl.absoluteString)) { image in
                             image
                                 .resizable()
@@ -134,6 +120,9 @@ struct RecognizedSongView: View {
                 }
             }
             Divider()
+        }
+        .onAppear {
+            showError = song.recognitionStatus == .serverError
         }
     }
 }

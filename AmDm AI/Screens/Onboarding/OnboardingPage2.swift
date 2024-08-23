@@ -15,14 +15,14 @@ struct OnboardingChords: Identifiable {
 }
 
 struct OnboardingPage2: View {
-    @AppStorage("showOnboarding") private var showOnboarding: Bool = true
     @State var animationStage = 0
     let columns: [GridItem] = Array(repeating: .init(.flexible()), count: 1)
     var chords = [OnboardingChords]()
     var tunerSegments = Array(0..<100)
     @State var showPaywall = false
+    var completion: () -> Void = {}
     
-    init() {
+    init(completion: @escaping () -> Void) {
         var _chords = [[Any]]()
         _chords.append([Chords.Key.a, Chords.Suffix.seven])
         _chords.append([Chords.Key.c, Chords.Suffix.minor])
@@ -36,6 +36,7 @@ struct OnboardingPage2: View {
                 self.chords.append(OnboardingChords(key: k as! Chords.Key, suffix: s as! Chords.Suffix))
             }
         }
+        self.completion = completion
     }
     
     var body: some View {
@@ -51,9 +52,7 @@ struct OnboardingPage2: View {
             ZStack {
                 if animationStage == 4 {
                     Paywall(showPaywall: $showPaywall) {
-                        withAnimation {
-                            showOnboarding = false
-                        }
+                        completion()
                     }
                     .transition(.move(edge: .bottom))
                 } else {

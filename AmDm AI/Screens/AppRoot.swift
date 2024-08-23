@@ -10,19 +10,21 @@ import SwiftyChords
 
 struct AppRoot: View {
     @State var loadingStage = 0
-    @AppStorage("showOnboarding") private var showOnboarding: Bool = true
     @StateObject var store = ProductModel(isMock: true)
     @StateObject var songsList = SongsList()
     @State var productInfoLoaded = false
-    @EnvironmentObject var authService: AuthService
+    @State var showOnboarding = AppDefaults.showOnboarding
     
     var body: some View {
         NavigationStack {
-            if loadingStage == 0 {
+            if loadingStage < 3 {
                 SplashScreen()
             } else {
                 if showOnboarding {
-                    OnboardingPage1()
+                    OnboardingPage1() {
+                        AppDefaults.showOnboarding = false
+                        showOnboarding = false
+                    }
                 } else {
                     AllSongs()
                 }
@@ -31,18 +33,16 @@ struct AppRoot: View {
         .onChange(of: store.productInfoLoaded) {
             if store.productInfoLoaded {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    loadingStage = 1
+                    loadingStage += 1
                 }
             }
         }
         .onAppear {
-            Task {
-                do {
-                    let _ = try await authService.signInAnonymously()
-                }
-                catch {
-                    print("SignInAnonymouslyError: \(error)")
-                }
+            loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
+                loadingStage += 1
+            }
+            loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
+                loadingStage += 1
             }
         }
         .environmentObject(store)

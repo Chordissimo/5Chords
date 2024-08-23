@@ -9,6 +9,8 @@ import SwiftUI
 
 struct OnboardingPage1: View {
     @State var animationStage: Int = 0
+    var completion: () -> Void = {}
+    
     var body: some View {
         
         GeometryReader { geometry in
@@ -16,8 +18,10 @@ struct OnboardingPage1: View {
             let logoHeight = geometry.size.height * 0.135
             
             if animationStage >= 8 {
-                OnboardingPage2()
-                    .transition(.push(from: .trailing))
+                OnboardingPage2() {
+                    completion()
+                }
+                .transition(.push(from: .trailing))
             } else {
                 
                 ZStack {

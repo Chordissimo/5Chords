@@ -71,8 +71,6 @@ struct PlistInfo : Decodable {
 
 class YouTubeAPIService {
     func getVideoData(videoUrl: String, action: @escaping (String, String, Int) -> Void) {
-        let appDefaults = AppDefaults()
-        
         guard videoUrl != "" else { return }
         var videoId = ""
 
@@ -85,14 +83,14 @@ class YouTubeAPIService {
 
         guard videoId != "" else { return }
 
-        guard appDefaults.GOOGLE_DATA_API_URL != "" && appDefaults.GOOGLE_DATA_API_KEY != "" else { return }
+        guard AppDefaults.GOOGLE_DATA_API_URL != "" && AppDefaults.GOOGLE_DATA_API_KEY != "" else { return }
         
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         
         AF.request(
-            appDefaults.GOOGLE_DATA_API_URL,
-            parameters: ["id": videoId, "part": "snippet,contentDetails", "key": appDefaults.GOOGLE_DATA_API_KEY]
+            AppDefaults.GOOGLE_DATA_API_URL,
+            parameters: ["id": videoId, "part": "snippet,contentDetails", "key": AppDefaults.GOOGLE_DATA_API_KEY]
         )
         .validate()
         .responseDecodable(of: Response.self, decoder: decoder) { response in
@@ -100,7 +98,7 @@ class YouTubeAPIService {
             case .success:
                 if let resp = response.value {
                     if resp.items.count > 0 {
-                        let duration = resp.items[0].snippet.liveBroadcastContent.lowercased() == "live" ? appDefaults.MAX_DURATION + 1 : resp.items[0].contentDetails.duration.getYoutubeDuration()
+                        let duration = resp.items[0].snippet.liveBroadcastContent.lowercased() == "live" ? AppDefaults.MAX_DURATION + 1 : resp.items[0].contentDetails.duration.getYoutubeDuration()
                         action(
                             resp.items[0].snippet.title,
                             resp.items[0].snippet.thumbnails.default.url,

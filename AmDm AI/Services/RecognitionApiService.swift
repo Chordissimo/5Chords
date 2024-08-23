@@ -13,20 +13,7 @@ import AuthenticationServices
 import FirebaseAuth
 import FirebaseCore
 
-class RecognitionApiService {
-    lazy var appDefaults = AppDefaults()
-    
-//    init() {
-//        Task {
-//            do {
-//                let result = try await Auth.auth().signInAnonymously()
-//                self.token = try await result.user.getIDToken()
-//            } catch {
-//                print("Auth error:",error)
-//            }
-//        }
-//    }
-    
+class RecognitionApiService: RequestInterceptor {
     struct Response: Codable {
         var chords: [APIChord]
         var text: [AlignedText]?
@@ -35,11 +22,12 @@ class RecognitionApiService {
     }
 
     struct StatusResponse: Decodable {
+        var found: Bool
         var completed: Bool
-        var result: Result
+        var result: Result?
         
         enum CondingKeys: String, CodingKey {
-            case completed, result
+            case found, completed, result
         }
         
         struct Result: Decodable {
@@ -58,69 +46,77 @@ class RecognitionApiService {
         case noResult
     }
     
-    func recognizeAudio(url: URL, songId: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
-        @AppStorage("token") var token: String = ""
-        AF.upload(
-            multipartFormData: { multipartFormData in
-                multipartFormData.append(url, withName: "file")
-            },
-            to: appDefaults.UPLOAD_ENDPOINT + "/" + songId,
-            headers: [.authorization(bearerToken: token)]
-        )
-        .validate()
-        .responseDecodable(of: Response.self) { response in
-            guard let result = response.value else {
-                completion(.failure(response.error ?? ServiceError.noResult))
+    func adapt(_ urlRequest: URLRequest, for session: Session, completion: @escaping (Result<URLRequest, Error>) -> Void) {}
+    
+    func retry(_ request: Request, for session: Session, dueTo error: Error, completion: @escaping (RetryResult) -> Void) {
+        let response = request.task?.response as? HTTPURLResponse
+        if let statusCode = response?.statusCode, statusCode == 202 {
+            guard request.retryCount < AppDefaults.STATUS_CALL_RETRY_LIMIT else {
+                completion(.doNotRetry)
                 return
             }
-            completion(.success(result))
+            completion(.retryWithDelay(AppDefaults.STATUS_CALL_RETRY_INTERVAL))
+        }
+        completion(.doNotRetry)
+    }
+    
+    func recognizeAudio(url: URL, songId: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
+        AuthService.getToken { token in
+            AF.upload(
+                multipartFormData: { multipartFormData in
+                    multipartFormData.append(url, withName: "file")
+                },
+                to: AppDefaults.UPLOAD_ENDPOINT + "/" + songId,
+                headers: [.authorization(bearerToken: token)]
+            )
+            .validate()
+            .responseDecodable(of: Response.self) { response in
+                guard let result = response.value else {
+                    completion(.failure(response.error ?? ServiceError.noResult))
+                    return
+                }
+                completion(.success(result))
+            }
         }
     }
     
     func recognizeAudioFromYoutube(url: String, songId: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
-        @AppStorage("token") var token: String = ""
-        AF.request(
-            appDefaults.YOUTUBE_ENDPOINT + "/" + songId,
-            method: .post,
-            parameters: ["url": url],
-            encoding: JSONEncoding.default,
-            headers: [.authorization(bearerToken: token)]
-        )
-        .validate()
-        .responseDecodable(of: Response.self) { response in
-            guard let result = response.value else {
-                completion(.failure(response.error ?? ServiceError.noResult))
-                return
+        AuthService.getToken { token in
+            AF.request(
+                AppDefaults.YOUTUBE_ENDPOINT + "/" + songId,
+                method: .post,
+                parameters: ["url": url],
+                encoding: JSONEncoding.default,
+                headers: [.authorization(bearerToken: token)]
+            )
+            .validate()
+            .responseDecodable(of: Response.self) { response in
+                guard let result = response.value else {
+                    completion(.failure(response.error ?? ServiceError.noResult))
+                    return
+                }
+                completion(.success(result))
             }
-            completion(.success(result))
         }
     }
 
     func getUnfinished(songId: String, completion: @escaping ((Result<StatusResponse, Error>) -> Void)) {
-        @AppStorage("token") var token: String = ""
-        AF.request(
-            appDefaults.STATUS_ENDPOINT + "/" + songId,
-            method: .post,
-            parameters: ["task_id": songId],
-            encoding: JSONEncoding.default,
-            headers: [.authorization(bearerToken: token)]
-        )
-        .validate()
-        .responseDecodable(of: StatusResponse.self) { response in
-            guard let result = response.value else {
-                completion(.failure(response.error ?? ServiceError.noResult))
-                return
+        AuthService.getToken { token in
+            AF.request(
+                AppDefaults.STATUS_ENDPOINT + "/" + songId,
+                method: .get,
+                encoding: JSONEncoding.default,
+                headers: [.authorization(bearerToken: token)]
+            )
+            .validate(statusCode: 200...200)
+            .responseDecodable(of: StatusResponse.self) { response in
+                guard let result = response.value else {
+                    completion(.failure(response.error ?? ServiceError.noResult))
+                    return
+                }
+                completion(.success(result))
             }
-            completion(.success(result))
         }
     }
 
-}
-
-extension Request {
-    public func debugLog() {
-      #if DEBUG
-        debugPrint("debugLog:",self.request?.httpBody as Any)
-      #endif
-   }
 }

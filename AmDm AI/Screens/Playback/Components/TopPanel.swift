@@ -9,7 +9,6 @@ import SwiftUI
 import YouTubePlayerKit
 
 struct TopPanel: View {
-    @AppStorage("isPlaybackPanelMaximized") var isPlaybackPanelMaximized: Bool = true
     @ObservedObject var song: Song
     @ObservedObject var songsList: SongsList
     @ObservedObject var player: UniPlayer
@@ -61,7 +60,7 @@ struct TopPanel: View {
                                     player.pause()
                                 } else {
                                     player.jumpTo(miliseconds: song.intervals[currentChordIndex].start) {
-                                        if isPlaybackPanelMaximized && bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
+                                        if AppDefaults.isPlaybackPanelMaximized && bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
                                             withAnimation {
                                                 bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
                                             }

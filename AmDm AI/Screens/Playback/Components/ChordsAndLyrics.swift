@@ -8,8 +8,6 @@
 import SwiftUI
 
 struct ChordsAndLyrics: View {
-    @AppStorage("isLimited") var isLimited: Bool = false
-    @AppStorage("isPlaybackPanelMaximized") var isPlaybackPanelMaximized: Bool = true
     @ObservedObject var song: Song
     @ObservedObject var songsList: SongsList
     @ObservedObject var player: UniPlayer
@@ -83,7 +81,7 @@ struct ChordsAndLyrics: View {
                                             .onTapGesture {
                                                 if !isMoreShapesPopupPresented {
                                                     player.jumpTo(miliseconds: interval.start) {
-                                                        if isPlaybackPanelMaximized && bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
+                                                        if AppDefaults.isPlaybackPanelMaximized && bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
                                                             withAnimation {
                                                                 bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
                                                                 currentTimeframeIndex = timeframeIndex
@@ -95,7 +93,7 @@ struct ChordsAndLyrics: View {
                                                 }
                                             }
                                             .onLongPressGesture {
-                                                if isLimited {
+                                                if AppDefaults.isLimited {
                                                     showEditChordsAds = true
                                                 } else {
                                                     currentChordIndex = chordIndex
@@ -111,13 +109,13 @@ struct ChordsAndLyrics: View {
                             }
                             .frame(width: width)
                             .overlay {
-                                if isLimited && song.timeframes.last!.id == timeframe.id {
+                                if AppDefaults.isLimited && song.timeframes.last!.id == timeframe.id {
                                     LinearGradient(gradient: Gradient(colors: [.clear, .gray5]), startPoint: .top, endPoint: .bottom)
                                 }
                             }
                             .id(timeframeIndex)
                         }
-                        if isLimited {
+                        if AppDefaults.isLimited {
                             VStack {
                                 UpgradeButton(content: {
                                     VStack {

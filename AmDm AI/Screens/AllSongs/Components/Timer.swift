@@ -15,7 +15,6 @@ struct TimerView: View {
     var songName: String
     @Binding var recordPanelPresented: Bool
     var completion: (Bool) -> Void
-    @AppStorage("isLimited") var isLimited: Bool = false
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -62,8 +61,8 @@ struct TimerView: View {
             .padding(.vertical, 20)
         }
         .overlay {
-            if isLimited && recordPanelPresented {
-                DurationLimitView(isLimited: isLimited)
+            if AppDefaults.isLimited && recordPanelPresented {
+                DurationLimitView(isLimited: AppDefaults.isLimited)
                     .offset(x: 0, y: -240)
             }
         }
