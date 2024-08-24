@@ -38,11 +38,15 @@ struct AppRoot: View {
             }
         }
         .onAppear {
-            loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
-                loadingStage += 1
-            }
-            loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
-                loadingStage += 1
+            AppDefaults.loadDefaultsFromFirestore() { isSuccess in
+                if isSuccess {
+                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
+                        loadingStage += 1
+                    }
+                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
+                        loadingStage += 1
+                    }
+                }
             }
         }
         .environmentObject(store)

@@ -381,25 +381,16 @@ final class SongsList: ObservableObject {
                 let i = self.getSongIndexByID(id: song.id)
                 switch result {
                 case .success(let response):
-                    self.songs[i].duration = TimeInterval(response.duration)
-                    self.songs[i].chords = response.chords
-                    self.songs[i].text = response.text ?? []
-                    self.songs[i].tempo = response.tempo
-                    self.songs[i].isProcessing = false
-                    self.songs[i].isFakeLoaderVisible = false
-                    
+                    SongsList.recognitionSuccess(song: &self.songs[i], response: response)
                     self.songs[i].stopTimer()
-                    self.songs[i].createTimeframes()
-                    
                     self.databaseService.updateSong(song: self.songs[i])
                     self.recognitionInProgress = false
                     self.objectWillChange.send()
                     
-                case .failure(let failure):
+                case .failure:
                     self.songs[i].recognitionStatus = .serverError
                     self.recognitionInProgress = false
                     self.objectWillChange.send()
-                    print("API failure: ",failure)
                 }
             }
         }
@@ -444,15 +435,8 @@ final class SongsList: ObservableObject {
             let i = self.getSongIndexByID(id: song.id)
             switch result {
             case .success(let response):
-                self.songs[i].duration = TimeInterval(response.duration)
-                self.songs[i].chords = response.chords
-                self.songs[i].text = response.text ?? []
-                self.songs[i].tempo = response.tempo
-                self.songs[i].isProcessing = false
-                self.songs[i].isFakeLoaderVisible = false
-                
+                SongsList.recognitionSuccess(song: &self.songs[i], response: response)
                 self.songs[i].stopTimer()
-                self.songs[i].createTimeframes()
 
                 self.databaseService.updateSong(song: self.songs[i])
                 self.recognitionInProgress = false
@@ -465,6 +449,23 @@ final class SongsList: ObservableObject {
                 print("API failure: ",failure)
             }
         }
+    }
+    
+    static func recognitionSuccess(song: inout Song, response: RecognitionApiService.Response) {
+        if let _ = response.result {
+            song.duration = TimeInterval(response.result!.duration ?? 0)
+            song.chords = response.result!.chords ?? []
+            song.text = response.result!.text ?? []
+            song.tempo = response.result!.tempo ?? 0
+        } else {
+            song.duration = TimeInterval(response.duration ?? 0)
+            song.chords = response.chords ?? []
+            song.text = response.text ?? []
+            song.tempo = response.tempo ?? 0
+        }
+        song.isProcessing = false
+        song.isFakeLoaderVisible = false
+        song.createTimeframes()
     }
     
     func startRecording(conmpletion: @escaping (Bool) -> Void) {
