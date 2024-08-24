@@ -335,7 +335,7 @@ class DatabaseService {
         }
         .map {
             let intervals = self.readIntervals(dbIntervals: $0.intervals)
-            let song = Song(
+            var song = Song(
                 id: $0.id,
                 name: $0.name,
                 url: $0.url,
@@ -371,65 +371,47 @@ class DatabaseService {
                 recognitionApiService.getUnfinished(songId: song.id) { result in
                     switch result {
                     case .success(let response):
-                        if response.found {
-                            if response.completed {
-                                song.duration = TimeInterval(response.result!.duration)
-                                song.chords = response.result!.chords
-                                song.text = response.result!.text ?? []
-                                song.tempo = response.result!.tempo
-                                song.createTimeframes()
-                                song.isProcessing = false
-                                song.isFakeLoaderVisible = false
+                        if response.found! {
+                            if response.completed! {
+                                SongsList.recognitionSuccess(song: &song, response: response)
+                                song.stopTimer()
                                 self.updateSong(song: song)
                             }
                         } else {
                             if song.songType == .youtube {
-                                recognitionApiService.recognizeAudioFromYoutube(url: song.url.absoluteString, songId: song.id) { result  in
+                                recognitionApiService.recognizeAudioFromYoutube(url: song.url.absoluteString, songId: song.id) { result in
                                     switch result {
                                     case .success(let response):
-                                        song.duration = TimeInterval(response.duration)
-                                        song.chords = response.chords
-                                        song.text = response.text ?? []
-                                        song.tempo = response.tempo
-                                        song.isProcessing = false
-                                        song.isFakeLoaderVisible = false
-                                        
+                                        SongsList.recognitionSuccess(song: &song, response: response)
                                         song.stopTimer()
-                                        song.createTimeframes()
-                                        
                                         self.updateSong(song: song)
                                         
-                                    case .failure:
+                                    case .failure(let failure):
                                         song.stopTimer()
                                         song.recognitionStatus = .serverError
+                                        print("youtube, not found, ApiError",failure)
                                     }
                                 }
                             } else {
                                 recognitionApiService.recognizeAudio(url: song.url, songId: song.id) { result in
                                     switch result {
                                     case .success(let response):
-                                        song.duration = TimeInterval(response.duration)
-                                        song.chords = response.chords
-                                        song.text = response.text ?? []
-                                        song.tempo = response.tempo
-                                        song.isProcessing = false
-                                        song.isFakeLoaderVisible = false
-                                        
+                                        SongsList.recognitionSuccess(song: &song, response: response)
                                         song.stopTimer()
-                                        song.createTimeframes()
-                                        
                                         self.updateSong(song: song)
-                                        
-                                    case .failure:
+
+                                    case .failure(let failure):
                                         song.stopTimer()
                                         song.recognitionStatus = .serverError
+                                        print("upload, not found, ApiError",failure)
                                     }
                                 }
                             }
                         }
-                    case .failure:
+                    case .failure(let failure):
                         song.stopTimer()
                         song.recognitionStatus = .serverError
+                        print("processing: ApiError",failure)
                     }
                 }
             }

@@ -44,7 +44,6 @@ struct RecognizedSongView: View {
                     }
                 }
                 .onChange(of: song.recognitionStatus) {
-                    print(song.name, song.recognitionStatus)
                     if song.recognitionStatus == .serverError {
                         showError = true
                     }

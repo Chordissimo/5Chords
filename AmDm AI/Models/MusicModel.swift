@@ -8,7 +8,6 @@
 import Foundation
 import SwiftyChords
 import SwiftUI
-import Alamofire
 
 class APIChord: Codable, Identifiable, Equatable, Hashable {
     static func == (lhs: APIChord, rhs: APIChord) -> Bool {
@@ -357,41 +356,4 @@ func createShapeLayer(chordPosition: ChordPosition, width: CGFloat, height: CGFl
     )
     
     return shapeLayer
-}
-
-func loadChordsJSON(_ urlString: String, completion: @escaping () -> Void) {
-    AF.request(
-        urlString,
-        method: .get,
-        encoding: JSONEncoding.default
-    )
-    .validate()
-    .responseDecodable(of: [ChordPosition].self) { response in
-        guard let chordPositions = response.value else {
-            completion()
-            return
-        }
-        do {
-            if chordPositions.count > 0 {
-                if chordPositions.count > 0 {
-                    let json = String(data: try JSONEncoder().encode(chordPositions), encoding: .utf8)!
-                    let data = Data(json.utf8)
-                    do {
-                        let filename = String(urlString.split(separator: "/").last ?? "")
-                        let documentsPath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0]
-                        let resourceUrl = documentsPath.appendingPathComponent(filename)
-                        try data.write(to: resourceUrl, options: [.atomic, .completeFileProtection])
-                    } catch {
-                        print(error.localizedDescription)
-                    }
-                    completion()
-                }
-            }
-        } catch {
-            #if DEBUG
-            print("Couldn't parse data from \(urlString)\n\(error)")
-            #endif
-            completion()
-        }
-    }
 }
