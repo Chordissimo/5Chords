@@ -84,7 +84,12 @@ class DatabaseService {
     var realm: Realm
     
     init() {
-        let config = Realm.Configuration(schemaVersion: 1)
+        let config = Realm.Configuration(schemaVersion: 2)
+//        let config = Realm.Configuration(schemaVersion: 2) { migration, oldSchemaVersion in
+//            if oldSchemaVersion < 2 {
+//                print("needs updating...")
+//            }
+//        }
         Realm.Configuration.defaultConfiguration = config
         self.realm = try! Realm()
         print("User Realm User file location: \(realm.configuration.fileURL!.path)")
