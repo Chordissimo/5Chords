@@ -104,7 +104,7 @@ struct Paywall: View  {
                 Text(selectedBillingPeriod == .month ? "$12.99 / mo" : "$8.33 / mo")
                     .font(.system(size: 20))
                     .fontWeight(.semibold)
-                Text(selectedBillingPeriod == .month ? "billed monthly" : "billed annually")
+                Text(selectedBillingPeriod == .month ? "billed monthly" : "$99.99, billed annually")
                     .fontWidth(.expanded)
                     .foregroundStyle(.secondaryText)
                     .font(.system(size: 11))

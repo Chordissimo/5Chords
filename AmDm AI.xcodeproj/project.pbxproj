@@ -760,7 +760,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "AmDm-AI-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Pro Chords";
+				INFOPLIST_KEY_CFBundleDisplayName = ProChords;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
@@ -809,7 +809,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "AmDm-AI-Info.plist";
-				INFOPLIST_KEY_CFBundleDisplayName = "Pro Chords";
+				INFOPLIST_KEY_CFBundleDisplayName = ProChords;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
