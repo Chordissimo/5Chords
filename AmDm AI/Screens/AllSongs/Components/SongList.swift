@@ -34,7 +34,6 @@ struct SongList: View {
                                         .padding(.top,5)
                                         .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
                                 }
-                                .disabled(song.isFakeLoaderVisible.wrappedValue)
                             }
                         }
                         .listRowSeparator(.hidden)
