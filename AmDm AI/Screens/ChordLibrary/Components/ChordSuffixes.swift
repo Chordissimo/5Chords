@@ -10,6 +10,7 @@ import SwiftyChords
 
 struct ChordSuffixes: View {
     @ObservedObject var model: ChordLibraryModel
+    @FocusState var isFocused: Bool
     var action: (Chords.Key, Chords.Suffix) -> Void
     @State var selectedChord = ChordSearchResults()
     
@@ -30,6 +31,7 @@ struct ChordSuffixes: View {
                         ForEach(model.chordSearchResults, id: \.self) { chord in
                             Button {
                                 self.selectedChord = chord
+                                isFocused = false
                                 action(chord.key, chord.suffix)
                             } label: {
                                 Text("\(chord.key.display.symbol)\(chord.suffix.display.short)")
@@ -50,6 +52,7 @@ struct ChordSuffixes: View {
                     self.selectedChord = model.chordSearchResults.count > 0 ? model.chordSearchResults.first! : self.selectedChord
                 }
             }
+            Spacer()
         }
     }
 }

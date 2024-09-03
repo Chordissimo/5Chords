@@ -21,7 +21,7 @@ struct EditChordsAds: View {
             VStack(alignment: .center) {
                 Text("Chord and lyrics recognition is done\nby AI-backed cutting edge technology. However, sometimes you may want to change some of the chords to make it easier\nfor you to play.")
                     .multilineTextAlignment(.center)
-                    .padding(.vertical, 20)
+                    .padding(20)
                 ZStack {
                     VStack {
                         if slideNumber == 1 || slideNumber == 3 {

@@ -28,10 +28,6 @@ struct OptionsView: View {
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-//                            Text("How it works?")
-//                                .font(.system(size: 16))
-//                                .fontWeight(.semibold)
-//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showTranspositionAds = true
@@ -43,10 +39,6 @@ struct OptionsView: View {
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-//                            Text("How it works?")
-//                                .font(.system(size: 16))
-//                                .fontWeight(.semibold)
-//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showEditChordsAds = true
@@ -58,10 +50,6 @@ struct OptionsView: View {
                                 .font(.system(size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
-//                            Text("How it works?")
-//                                .font(.system(size: 16))
-//                                .fontWeight(.semibold)
-//                                .foregroundStyle(.gray10)
                         }
                     }, action: {
                         showHideLyricsAds = true

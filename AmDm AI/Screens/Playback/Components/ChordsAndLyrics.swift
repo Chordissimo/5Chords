@@ -16,6 +16,7 @@ struct ChordsAndLyrics: View {
     @Binding var isMoreShapesPopupPresented: Bool
     @Binding var bottomPanelHieght: CGFloat
     var width: CGFloat
+    @Binding var noChordsFound: Bool
     @State var showPaywall = false
     @State var showEditChordsAds: Bool = false
     @State var showEditChords: Bool = false
@@ -158,8 +159,10 @@ struct ChordsAndLyrics: View {
                 if !isCanceled {
                     if let key = selectedKey, let suffix = selectedSuffix {
                         song.intervals[currentChordIndex].uiChord = UIChord(key: key, suffix: suffix)
+                        noChordsFound = false
                     } else {
                         song.intervals[currentChordIndex].uiChord = nil
+                        noChordsFound = song.getFirstChordIndex() == nil
                     }
                     song.intervals[currentChordIndex].words = newLyrics ?? ""
                     song.createTimeframes()

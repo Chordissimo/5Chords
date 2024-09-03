@@ -21,6 +21,8 @@ struct PlaybackView: View {
     @State var showOptions: Bool = false
     @State var songName: String = ""
     let lyricsfontSize = LyricsViewModelConstants.lyricsfontSize
+    @State var showError = false
+    @State var noChordsFound = false
     
     var body: some View {
         GeometryReader { geometry in
@@ -44,114 +46,170 @@ struct PlaybackView: View {
                         Spacer()
                         
                         /// MARK: chords and lyrics
-                        ChordsAndLyrics(
-                            song: song,
-                            songsList: songsList,
-                            player: player,
-                            currentChordIndex: $currentChordIndex,
-                            currentTimeframeIndex: $currentTimeframeIndex,
-                            isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
-                            bottomPanelHieght: $bottomPanelHieght,
-                            width: width
-                        )
-                        
-                        /// MARK: Bottom panel
-                        ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
-                            VStack(spacing: 0) {
-                                VStack {
-                                    RoundedRectangle(cornerRadius: 10)
-                                        .fill(Color.secondaryText)
-                                        .frame(width: 30, height: 5)
+                        if song.timeframes.count == 0 {
+                            VStack {
+                                ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
+                                    MatrixRain()
+                                    VStack {
+                                        Text("Extracting chords and lyrics")
+                                            .font(.system(size: 18))
+                                            .fontWeight(.semibold)
+                                            .foregroundStyle(.white)
+                                            .multilineTextAlignment(.center)
+                                            .opacityAnimaion()
+                                    }
+                                    .frame(width: 300, height: 60)
+                                    .background {
+                                        Color.gray20
+                                    }
+                                    .clipShape(.rect(cornerRadius: 12))
+                                    .padding(.top, 100)
                                 }
-                                .padding(.vertical, 8)
-                                
-                                Spacer()
-                                
-                                /// MARK: Chord shapes in a scrollview
-                                if isMoreShapesPopupPresented {
-                                    MoreShapesView(isMoreShapesPopupPresented: $isMoreShapesPopupPresented, uiChord: song.intervals[currentChordIndex].uiChord)
-                                } else {
-                                    if showOptions {
-                                        OptionsView(hideLyrics: $song.hideLyrics, onChangeValue: { transposeUp in
-                                            song.transpose(transposeUp: transposeUp)
-                                            song.createTimeframes()
-                                            songsList.databaseService.updateIntervals(song: song)
-                                        }, onReset: { reset in
-                                            song.intervals = []
-                                            song.createTimeframes()
-                                            songsList.databaseService.updateIntervals(song: song)
-                                        })
-                                    } else if AppDefaults.isPlaybackPanelMaximized {
-                                        ChordShapesView(song: song, currentChordIndex: $currentChordIndex)
+                                .onChange(of: song.recognitionStatus) {
+                                    if song.recognitionStatus == .serverError {
+                                        showError = true
                                     }
                                 }
-                                
-                                /// MARK: playback controls
-                                if !isMoreShapesPopupPresented && !showOptions {
-                                    PlaybackControls(
-                                        player: player,
-                                        song: song,
-                                        currentChordIndex: $currentChordIndex,
-                                        currentTimeframeIndex: $currentTimeframeIndex,
-                                        bottomPanelHieght: $bottomPanelHieght,
-                                        isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
-                                        showOptions: $showOptions
-                                    )
+                                .alert("Something went wrong", isPresented: $showError) {
+                                    Button {
+                                        songsList.del(song: song)
+                                    } label: {
+                                        Text("Ok")
+                                    }
+                                } message: {
+                                    Text("Please try again later.")
                                 }
                             }
-                            .frame(width: width, height: bottomPanelHieght)
-                            .padding(.bottom, geometry.safeAreaInsets.bottom)
-                            .background(Color.customDarkGray)
-                            .clipShape(.rect(cornerRadius: 16))
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .stroke(.gray20, lineWidth: 1)
+                        } else {
+                            ChordsAndLyrics(
+                                song: song,
+                                songsList: songsList,
+                                player: player,
+                                currentChordIndex: $currentChordIndex,
+                                currentTimeframeIndex: $currentTimeframeIndex,
+                                isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
+                                bottomPanelHieght: $bottomPanelHieght,
+                                width: width,
+                                noChordsFound: $noChordsFound
                             )
-                            .gesture(
-                                DragGesture().onChanged { value in
-                                    if !isMoreShapesPopupPresented {
-                                        AppDefaults.isPlaybackPanelMaximized = value.translation.height <= 0
-                                        withAnimation(.easeInOut(duration: 0.1)) {
-                                            bottomPanelHieght = value.translation.height <= 0 ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
+                        }
+                        
+                        if song.timeframes.count > 0 {
+                            /// MARK: Bottom panel
+                            ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
+                                VStack(spacing: 0) {
+                                    VStack {
+                                        RoundedRectangle(cornerRadius: 10)
+                                            .fill(!showOptions ? Color.secondaryText : Color.clear)
+                                            .frame(width: 30, height: 5)
+                                    }
+                                    .padding(.vertical, 8)
+                                    
+                                    Spacer()
+
+                                    /// MARK: Chord shapes in a scrollview
+                                    if isMoreShapesPopupPresented {
+                                        MoreShapesView(isMoreShapesPopupPresented: $isMoreShapesPopupPresented, uiChord: song.intervals[currentChordIndex].uiChord)
+                                    } else {
+                                        if showOptions {
+                                            OptionsView(hideLyrics: $song.hideLyrics, onChangeValue: { transposeUp in
+                                                song.transpose(transposeUp: transposeUp)
+                                                song.createTimeframes()
+                                                songsList.databaseService.updateIntervals(song: song)
+                                            }, onReset: { reset in
+                                                song.intervals = []
+                                                song.createTimeframes()
+                                                songsList.databaseService.updateIntervals(song: song)
+                                            })
+                                        } else if AppDefaults.isPlaybackPanelMaximized {
+                                            ChordShapesView(song: song, currentChordIndex: $currentChordIndex)
                                         }
+                                    }
+                                    
+                                    /// MARK: playback controls
+                                    if !isMoreShapesPopupPresented && !showOptions {
+                                        PlaybackControls(
+                                            player: player,
+                                            song: song,
+                                            currentChordIndex: $currentChordIndex,
+                                            currentTimeframeIndex: $currentTimeframeIndex,
+                                            bottomPanelHieght: $bottomPanelHieght,
+                                            isMoreShapesPopupPresented: $isMoreShapesPopupPresented,
+                                            showOptions: $showOptions,
+                                            noChordsFound: $noChordsFound
+                                        )
                                     }
                                 }
-                            )
-                            
-                            /// MARK: Options close, More shapes buttons
-                            if !player.isPlaying && (AppDefaults.isPlaybackPanelMaximized || showOptions) {
-                                ZStack {
-                                    if showOptions {
-                                        VStack {
-                                            Text(AppDefaults.isLimited ? "Premium features" : "Preferences")
-                                                .font(.system(size: 16))
-                                                .foregroundStyle(.gray40)
-                                                .fontWeight(.semibold)
-                                                .padding(.top, 20)
-                                        }
-                                    }
-                                    HStack {
-                                        Spacer()
-                                        Button {
-                                            if showOptions {
-                                                showOptions = false
-                                            } else {
-                                                isMoreShapesPopupPresented.toggle()
-                                            }
+                                .frame(width: width, height: bottomPanelHieght)
+                                .padding(.bottom, geometry.safeAreaInsets.bottom)
+                                .background(Color.customDarkGray)
+                                .clipShape(.rect(cornerRadius: 16))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 16)
+                                        .stroke(.gray20, lineWidth: 1)
+                                )
+                                .gesture(
+                                    DragGesture().onEnded { value in
+                                        if !showOptions && !noChordsFound {
                                             withAnimation(.easeInOut(duration: 0.1)) {
-                                                bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || AppDefaults.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
+                                                if value.translation.height <= 0 {
+                                                    if bottomPanelHieght == LyricsViewModelConstants.maxBottomPanelHeight {
+                                                        isMoreShapesPopupPresented = true
+                                                        bottomPanelHieght = LyricsViewModelConstants.moreShapesPanelHeight
+                                                    } else if bottomPanelHieght == LyricsViewModelConstants.minBottomPanelHeight {
+                                                        AppDefaults.isPlaybackPanelMaximized = true
+                                                        bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                    }
+                                                } else {
+                                                    if bottomPanelHieght == LyricsViewModelConstants.moreShapesPanelHeight {
+                                                        isMoreShapesPopupPresented = false
+                                                        bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                    } else if bottomPanelHieght == LyricsViewModelConstants.maxBottomPanelHeight {
+                                                        AppDefaults.isPlaybackPanelMaximized = false
+                                                        bottomPanelHieght = LyricsViewModelConstants.minBottomPanelHeight
+                                                    }
+                                                }
                                             }
-                                        } label: {
-                                            Image(systemName: isMoreShapesPopupPresented ? "chevron.down" : (showOptions ? "xmark.circle.fill" : "book.fill"))
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .frame(width: 22, height: 22)
-                                                .foregroundStyle(.secondaryText)
+                                            
                                         }
-                                        .padding(.trailing, 30)
-                                        .padding(.top, 20)
                                     }
-                                    .frame(width: width)
+                                )
+                                
+                                /// MARK: Options close, More shapes buttons
+                                if !player.isPlaying && (AppDefaults.isPlaybackPanelMaximized || showOptions) {
+                                    ZStack {
+                                        if showOptions {
+                                            VStack {
+                                                Text(AppDefaults.isLimited ? "Premium features" : "Preferences")
+                                                    .font(.system(size: 16))
+                                                    .foregroundStyle(.gray40)
+                                                    .fontWeight(.semibold)
+                                                    .padding(.top, 20)
+                                            }
+                                        }
+                                        HStack {
+                                            Spacer()
+                                            Button {
+                                                if showOptions {
+                                                    showOptions = false
+                                                } else {
+                                                    isMoreShapesPopupPresented.toggle()
+                                                }
+                                                withAnimation(.easeInOut(duration: 0.1)) {
+                                                    bottomPanelHieght = isMoreShapesPopupPresented ? LyricsViewModelConstants.moreShapesPanelHeight : (showOptions || AppDefaults.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight)
+                                                }
+                                            } label: {
+                                                Image(systemName: isMoreShapesPopupPresented ? "chevron.down" : (showOptions ? "xmark.circle.fill" : "book.fill"))
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 22, height: 22)
+                                                    .foregroundStyle(.secondaryText)
+                                            }
+                                            .padding(.trailing, 30)
+                                            .padding(.top, 20)
+                                        }
+                                        .frame(width: width)
+                                    }
                                 }
                             }
                         }
@@ -159,11 +217,27 @@ struct PlaybackView: View {
                 }
                 .ignoresSafeArea()
                 .navigationBarBackButtonHidden(true)
+                .onChange(of: player.currentTime) {
+                    if AppDefaults.isLimited && player.currentTime > AppDefaults.LIMITED_DURATION * 1000 + abs(AppDefaults.INTERVAL_START_ADJUSTMENT) {
+                        player.pause()
+                    }
+                }
+                .onChange(of: noChordsFound) { oldValue, newValue in
+                    bottomPanelHieght = oldValue && !newValue ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
+                    AppDefaults.isPlaybackPanelMaximized = oldValue && !newValue
+                }
                 .onAppear {
                     player.prepareToPlay(song: song)
                     songName = song.name
                     bottomPanelHieght = AppDefaults.isPlaybackPanelMaximized ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
-                    currentChordIndex = song.getFirstChordIndex()
+                    if let index = song.getFirstChordIndex() {
+                        currentChordIndex = index
+                    } else {
+                        currentChordIndex = 0
+                        AppDefaults.isPlaybackPanelMaximized = false
+                        noChordsFound = true
+                        bottomPanelHieght = LyricsViewModelConstants.minBottomPanelHeight
+                    }
                 }
                 .onDisappear {
                     if song.songType != .youtube {

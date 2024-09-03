@@ -13,7 +13,7 @@ struct ChordSearchView: View {
     @Binding var chords: [ChordPosition]
     @Binding var showSearchResults: Bool
     @Binding var searchText: String
-    @FocusState private var isFocused: Bool
+    @FocusState var isFocused: Bool
     
     var body: some View {
         VStack {
