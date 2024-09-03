@@ -59,10 +59,12 @@ struct TopPanel: View {
                                 if player.isPlaying {
                                     player.pause()
                                 } else {
-                                    player.jumpTo(miliseconds: song.intervals[currentChordIndex].start) {
-                                        if AppDefaults.isPlaybackPanelMaximized && bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
-                                            withAnimation {
-                                                bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                    if song.timeframes.count > 0 {
+                                        player.jumpTo(miliseconds: song.intervals[currentChordIndex].start) {
+                                            if AppDefaults.isPlaybackPanelMaximized && bottomPanelHieght != LyricsViewModelConstants.maxBottomPanelHeight {
+                                                withAnimation {
+                                                    bottomPanelHieght = LyricsViewModelConstants.maxBottomPanelHeight
+                                                }
                                             }
                                         }
                                     }

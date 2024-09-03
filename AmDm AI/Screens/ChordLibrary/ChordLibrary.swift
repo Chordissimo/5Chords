@@ -24,7 +24,7 @@ struct ChordLibrary: View {
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
             GeometryReader { geometry in
-                let twoThirdsScreenHeight = geometry.size.height / 3 * 2
+//                let twoThirdsScreenHeight = geometry.size.height / 3 * 2
                 let oneThirdsScreenHeight = geometry.size.height / 3
                 let circleOf5thSize = geometry.size.height * 0.4
                 let chordHeight = oneThirdsScreenHeight * 0.75

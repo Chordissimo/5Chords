@@ -222,6 +222,19 @@ struct PlaybackView: View {
                         player.pause()
                     }
                 }
+                .onChange(of: song.isProcessing) { oldValue, newValue in
+                    if oldValue && !newValue {
+                        if let index = song.getFirstChordIndex() {
+                            currentChordIndex = index
+                            AppDefaults.isPlaybackPanelMaximized = true
+                            noChordsFound = false
+                        } else {
+                            currentChordIndex = 0
+                            AppDefaults.isPlaybackPanelMaximized = false
+                            noChordsFound = true
+                        }
+                    }
+                }
                 .onChange(of: noChordsFound) { oldValue, newValue in
                     bottomPanelHieght = oldValue && !newValue ? LyricsViewModelConstants.maxBottomPanelHeight : LyricsViewModelConstants.minBottomPanelHeight
                     AppDefaults.isPlaybackPanelMaximized = oldValue && !newValue
