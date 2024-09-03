@@ -15,6 +15,7 @@ struct PlaybackControls: View {
     @Binding var bottomPanelHieght: CGFloat
     @Binding var isMoreShapesPopupPresented: Bool
     @Binding var showOptions: Bool
+    @Binding var noChordsFound: Bool
 
     var body: some View {
         VStack {
@@ -81,6 +82,7 @@ struct PlaybackControls: View {
                         if player.isPlaying {
                             player.pause()
                         } else {
+                            print(song.intervals, currentChordIndex)
                             player.jumpTo(miliseconds: song.intervals[currentChordIndex].start) {
                                 if AppDefaults.isPlaybackPanelMaximized {
                                     withAnimation {
@@ -135,9 +137,9 @@ struct PlaybackControls: View {
                         Image(systemName: AppDefaults.isPlaybackPanelMaximized ? "c.square.fill" : "c.square")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .foregroundStyle(showOptions ? .secondaryText : .white)
+                            .foregroundStyle(showOptions || noChordsFound ? .secondaryText : .white)
                     }
-                    .disabled(showOptions)
+                    .disabled(showOptions || noChordsFound)
                 }
                 .frame(width: 21, height: 30)
                 

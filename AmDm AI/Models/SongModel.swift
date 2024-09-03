@@ -316,8 +316,8 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         return filteredIntervals.count > 0 ? self.intervals.firstIndex(of: filteredIntervals.last!)! : -1
     }
     
-    func getFirstChordIndex() -> Int {
-        var result = -1
+    func getFirstChordIndex() -> Int? {
+        var result: Int? = nil
 
         if let idx = self.intervals.firstIndex(where: { $0.uiChord != nil }) {
             result = idx

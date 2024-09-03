@@ -29,6 +29,7 @@
 		C30ADA652C3FB80300CC9F9A /* AppDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA642C3FB80300CC9F9A /* AppDefaults.swift */; };
 		C30ADA672C40523000CC9F9A /* DurationLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA662C40523000CC9F9A /* DurationLimitView.swift */; };
 		C30ADA692C41679200CC9F9A /* EditChordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA682C41679200CC9F9A /* EditChordsView.swift */; };
+		C32563F92C86CCBB00399615 /* MatrixRain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32563F82C86CCBB00399615 /* MatrixRain.swift */; };
 		C34150A12C4623B700C4C3B2 /* AdsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A02C4623B700C4C3B2 /* AdsView.swift */; };
 		C34150A32C46242B00C4C3B2 /* PlaybackControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */; };
 		C34150A52C46280900C4C3B2 /* TopPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A42C46280900C4C3B2 /* TopPanel.swift */; };
@@ -60,7 +61,6 @@
 		C39B6D912BEFC873002279E3 /* TunerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39B6D902BEFC873002279E3 /* TunerView.swift */; };
 		C39B6D932BEFE3F6002279E3 /* TunerModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39B6D922BEFE3F6002279E3 /* TunerModel.swift */; };
 		C39C87362BB0073B00EBF82C /* AmDm_AIApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */; };
-		C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */; };
 		C3A0CF6C2BB9C20200A0C4FD /* Timer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */; };
 		C3A16A912BF7A87B00C389F0 /* CircularProgressBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */; };
 		C3A9935D2C35737100C2D8B5 /* OptionsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3A9935C2C35737100C2D8B5 /* OptionsView.swift */; };
@@ -110,7 +110,7 @@
 		C30ADA642C3FB80300CC9F9A /* AppDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDefaults.swift; sourceTree = "<group>"; };
 		C30ADA662C40523000CC9F9A /* DurationLimitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DurationLimitView.swift; sourceTree = "<group>"; };
 		C30ADA682C41679200CC9F9A /* EditChordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditChordsView.swift; sourceTree = "<group>"; };
-		C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
+		C32563F82C86CCBB00399615 /* MatrixRain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixRain.swift; sourceTree = "<group>"; };
 		C34150A02C4623B700C4C3B2 /* AdsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsView.swift; sourceTree = "<group>"; };
 		C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackControls.swift; sourceTree = "<group>"; };
 		C34150A42C46280900C4C3B2 /* TopPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPanel.swift; sourceTree = "<group>"; };
@@ -143,7 +143,6 @@
 		C39C87352BB0073B00EBF82C /* AmDm_AIApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmDm_AIApp.swift; sourceTree = "<group>"; };
 		C39C873B2BB0073D00EBF82C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C39C873D2BB0073D00EBF82C /* AmDm_AI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = AmDm_AI.entitlements; sourceTree = "<group>"; };
-		C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C3A0CF6B2BB9C20200A0C4FD /* Timer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Timer.swift; sourceTree = "<group>"; };
 		C3A16A902BF7A87B00C389F0 /* CircularProgressBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircularProgressBar.swift; sourceTree = "<group>"; };
 		C3A9935C2C35737100C2D8B5 /* OptionsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OptionsView.swift; sourceTree = "<group>"; };
@@ -251,6 +250,7 @@
 			children = (
 				C37D58372BFB1871001DA8E1 /* ViewModifiers */,
 				C357AB132BB7EB4B00440554 /* ActionButton.swift */,
+				C32563F82C86CCBB00399615 /* MatrixRain.swift */,
 			);
 			path = SharedComponents;
 			sourceTree = "<group>";
@@ -301,6 +301,13 @@
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
+		C39045D82C86F911002780C1 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
 		C39B6D822BEFA47F002279E3 /* Tuner */ = {
 			isa = PBXGroup;
 			children = (
@@ -330,6 +337,7 @@
 		C39C87342BB0073B00EBF82C /* AmDm AI */ = {
 			isa = PBXGroup;
 			children = (
+				C39045D82C86F911002780C1 /* Preview Content */,
 				C3A993AC2C36D54E00C2D8B5 /* AmDm AIRelease.entitlements */,
 				C3DE80EE2BC45C250063189D /* AmDm-AI-Info.plist */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
@@ -341,17 +349,8 @@
 				B798989A2BCAAAAB0052C127 /* Services */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
 				C357AB032BB7D4CC00440554 /* SharedComponents */,
-				C39C873E2BB0073D00EBF82C /* Preview Content */,
 			);
 			path = "AmDm AI";
-			sourceTree = "<group>";
-		};
-		C39C873E2BB0073D00EBF82C /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				C39C873F2BB0073D00EBF82C /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 		C3AC1B782C0AF714000DE8E5 /* Model */ = {
@@ -455,7 +454,6 @@
 		C3F0B6262BF2213B00866D2B /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				C32C77372BE5FA6000A197E3 /* Pro Chords.storekit */,
 				C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */,
 			);
 			path = Models;
@@ -543,7 +541,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C39C87402BB0073D00EBF82C /* Preview Assets.xcassets in Resources */,
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
 				C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */,
 			);
@@ -570,6 +567,7 @@
 				C3AC1B812C0C3981000DE8E5 /* WrappingHStack.swift in Sources */,
 				C3DE80ED2BC1C3010063189D /* Settings.swift in Sources */,
 				C34150A12C4623B700C4C3B2 /* AdsView.swift in Sources */,
+				C32563F92C86CCBB00399615 /* MatrixRain.swift in Sources */,
 				C37996E52C08580600DA3556 /* ChordSearch.swift in Sources */,
 				C3AC1BA72C1AB52D000DE8E5 /* YouTubeAPIService.swift in Sources */,
 				C37996E72C089B9E00DA3556 /* ChordLibraryModel.swift in Sources */,
@@ -661,7 +659,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
-				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = YES;
@@ -679,7 +677,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
@@ -735,7 +733,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;

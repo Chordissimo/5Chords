@@ -48,7 +48,7 @@ class TunerModel: ObservableObject, HasAudioEngine {
 
         tracker = PitchTap(self.mic) { pitch, amp in
             DispatchQueue.main.async {
-                if self.flag == 3 {
+                if self.flag == 2 {
                     self.update(pitch[0], amp[0])
                     self.flag = 0
                 } else {
@@ -61,8 +61,9 @@ class TunerModel: ObservableObject, HasAudioEngine {
 
     func update(_ pitch: AUValue, _ amp: AUValue) {
         // Reduces sensitivity to background noise to prevent random / fluctuating data.
-        guard amp > 0.1 else { return }
-
+        guard amp > 0.1 else {
+            return
+        }
         data.pitch = pitch
         data.amplitude = amp
 
@@ -104,48 +105,4 @@ class TunerModel: ObservableObject, HasAudioEngine {
         self.data = TunerData()
     }
     
-//    func selfTest() {
-//        print("Frequencies:", self.guitarStandardTuning)
-//        
-//        print("Test 1 -------------------------")
-//        self.update(400.00, 1)
-//        print("semitoneRange", data.semitoneRange, "expected:", 415.3 - 392)
-//        print("distance:", data.distance)
-
-        
-        
-//        print("pitch:", data.pitch)
-//        print("stringName:", data.stringName, "expected: E")
-//        print("stringIndex:", data.stringIndex, "expected: 5")
-//        print("distance:", data.distance, "expected:", 400 - 329.63)
-        
-//        print("Test 2 -------------------------")
-//        self.update(290.00, 1)
-//        print("pitch:", data.pitch)
-//        print("stringName:", data.stringName, "expected: E")
-//        print("stringIndex:", data.stringIndex, "expected: 5")
-//        print("distance:", data.distance, "expected:", 290 - 329.63)
-        
-//        print("Test 3 -------------------------")
-//        self.update(260.00, 1)
-//        print("pitch:", data.pitch)
-//        print("stringName:", data.stringName, "expected: B")
-//        print("stringIndex:", data.stringIndex, "expected: 4")
-//        print("distance:", data.distance, "expected:", 260 - 246.94)
-
-//        print("Test 4 -------------------------")
-//        self.update(288.285, 1)
-//        print("pitch:", data.pitch)
-//        print("stringName:", data.stringName, "expected: E")
-//        print("stringIndex:", data.stringIndex, "expected: 5")
-//        print("distance:", data.distance, "expected:", 288.285 - 329.63)
-
-//        print("Test 5 -------------------------")
-//        self.update(109.4, 1)
-//        print("pitch:", data.pitch)
-//        print("stringName:", data.stringName, "expected: A")
-//        print("stringIndex:", data.stringIndex, "expected: 1")
-//        print("distance:", data.distance, "expected:", 109.4 - 110.0)
-//    }
-
 }

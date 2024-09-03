@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftyChords
+import Combine
 
 struct ChordLibrary: View {
     @Binding var isLibraryPresented: Bool
@@ -17,7 +18,8 @@ struct ChordLibrary: View {
     @State var showSearchResults: Bool = false
     @ObservedObject var model = ChordLibraryModel()
     @State var searchText: String = ""
-    @FocusState private var isFocused: Bool
+    @FocusState var isFocused: Bool
+    @State var keyboardVisible: Bool = false
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -82,12 +84,12 @@ struct ChordLibrary: View {
                         }
                         
                         // Search field
-                        ChordSearchView(model: model, chords: $chords, showSearchResults: $showSearchResults, searchText: $searchText)
+                        ChordSearchView(model: model, chords: $chords, showSearchResults: $showSearchResults, searchText: $searchText, isFocused: _isFocused)
                             .frame(width: geometry.size.width)
                         
                         // search results
                         if showSearchResults {
-                            ChordSuffixes(model: model) { selectedKey, selectedSuffix in
+                            ChordSuffixes(model: model, isFocused: _isFocused) { selectedKey, selectedSuffix in
                                 chords = Chords.guitar.matching(key: selectedKey).matching(suffix: selectedSuffix)
                             }
                         }
@@ -129,7 +131,7 @@ struct ChordLibrary: View {
                         
                         Spacer()
                     }
-                    .frame(height: twoThirdsScreenHeight)
+//                    .frame(height: twoThirdsScreenHeight)
                     
                     if !showSearchResults {
                         if selectedMajor < 0 && selectedMinor < 0 {
@@ -157,15 +159,16 @@ struct ChordLibrary: View {
                             
                         }
                     }
-                        // Chord shapes in a scroll view
+                    // Chord shapes in a scroll view
+                    if chords.count > 0 && !keyboardVisible {
                         VStack {
-                            if chords.count > 0 {
-                                Text(chords[0].key.display.symbol + chords[0].suffix.display.short)
-                                    .foregroundStyle(.white)
-                                    .font(.system(size: 24))
-                                    .fontWeight(.semibold)
-                                    .padding(.vertical, 15)
-                            }
+                            //                        if chords.count > 0 {
+                            Text(chords[0].key.display.symbol + chords[0].suffix.display.short)
+                                .foregroundStyle(.white)
+                                .font(.system(size: 24))
+                                .fontWeight(.semibold)
+                                .padding(.vertical, 15)
+                            //                        }
                             ScrollViewReader { proxy in
                                 ScrollView(.horizontal) {
                                     HStack(spacing: 0) {
@@ -216,13 +219,16 @@ struct ChordLibrary: View {
                             Spacer()
                         }
                         .frame(height: oneThirdsScreenHeight)
-                    
+                    }
                     Spacer()
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
         .background(Color.gray5, ignoresSafeAreaEdges: .vertical)
+        .onReceive(Publishers.keyboardHeight) { value in
+            keyboardVisible = value > 0
+        }
     }
 }
 
@@ -236,5 +242,25 @@ struct Triangle: Shape {
         path.addLine(to: CGPoint(x: rect.midX, y: rect.minY))
         
         return path
+    }
+}
+
+
+extension Publishers {
+    static var keyboardHeight: AnyPublisher<CGFloat, Never> {
+        let willShow = NotificationCenter.default.publisher(for: UIApplication.keyboardWillShowNotification)
+            .map { $0.keyboardHeight }
+        
+        let willHide = NotificationCenter.default.publisher(for: UIApplication.keyboardWillHideNotification)
+            .map { _ in CGFloat(0) }
+        
+        return MergeMany(willShow, willHide)
+            .eraseToAnyPublisher()
+    }
+}
+
+extension Notification {
+    var keyboardHeight: CGFloat {
+        return (userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect)?.height ?? 0
     }
 }

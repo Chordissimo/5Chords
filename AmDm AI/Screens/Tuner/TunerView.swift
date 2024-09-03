@@ -105,35 +105,34 @@ struct TunerView: View {
                         }
                         
                         // Tuning scale: segments
-                        VStack {
-                            HStack(spacing: tunerSegmentsSpacing) {
-                                ForEach(tunerModel.scaleIntervals, id: \.self) { interval in
+                        ZStack {
+                            VStack {
+                                HStack(spacing: tunerSegmentsSpacing) {
+                                    ForEach(tunerModel.scaleIntervals, id: \.self) { interval in
+                                        Rectangle()
+                                            .frame(width: 1, height: interval % 5 == 0 ? tallSegmentHeight : smallSegmentHeight)
+                                            .foregroundColor(.secondaryText)
+                                            .id(interval)
+                                    }
+                                }
+                            }
+                            HStack(spacing: 0) {
+                                HStack {
+                                    Spacer()
                                     Rectangle()
-                                        .frame(width: 1, height: interval % 5 == 0 ? tallSegmentHeight : smallSegmentHeight)
-                                        .foregroundColor(.secondaryText)
-                                        .id(interval)
+                                        .fill(Color.progressCircle.opacity(0.1))
+                                        .frame(width: leftIndicator, height: tallSegmentHeight)
                                 }
-                            }
-                        }
-                        .overlay {
-                            if tunerModel.data.distance != 0 {
-                                HStack(spacing: 0) {
-                                    HStack {
-                                        Spacer()
-                                        Rectangle()
-                                            .fill(tunerModel.data.distance < 0 ? Color.progressCircle.opacity(0.1) : Color.clear)
-                                            .frame(width: leftIndicator, height: tallSegmentHeight)
-                                    }
-                                    .frame(width: geometry.size.width / 2)
-                                    HStack {
-                                        Rectangle()
-                                            .fill(tunerModel.data.distance > 0 ? Color.progressCircle.opacity(0.1) : Color.clear)
-                                            .frame(width: rightIndicator, height: tallSegmentHeight)
-                                        Spacer()
-                                    }
-                                    .frame(width: geometry.size.width / 2)
+                                .frame(width: geometry.size.width / 2)
+                                HStack {
+                                    Rectangle()
+                                        .fill(Color.progressCircle.opacity(0.1))
+                                        .frame(width: rightIndicator, height: tallSegmentHeight)
+                                    Spacer()
                                 }
+                                .frame(width: geometry.size.width / 2)
                             }
+
                         }
                         
                         // Tuneup, tune down, and checkmark
@@ -144,12 +143,12 @@ struct TunerView: View {
                                 HStack(spacing: 0) {
                                     Text("Tune up")
                                         .font(.system(size: 16))
-                                        .foregroundStyle(tunerModel.data.distance < 0 && percentageDiff > segmentWeight / 2 ? .gray40 : .clear)
+                                        .foregroundStyle(tunerModel.data.distance < 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
                                         .frame(width: geometry.size.width / 2, alignment: .center)
                                                                         
                                     Text("Tune down")
                                         .font(.system(size: 16))
-                                        .foregroundStyle(tunerModel.data.distance > 0 && percentageDiff > segmentWeight / 2 ? .gray40 : .clear)
+                                        .foregroundStyle(tunerModel.data.distance > 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
                                         .frame(width: geometry.size.width / 2, alignment: .center)
                                 }
                                 
@@ -159,10 +158,6 @@ struct TunerView: View {
                                     .frame(height: 30)
                                     .foregroundStyle(percentageDiff <= segmentWeight / 2 ? .progressCircle : .clear)
                             }
-                            
-//                            Text("\(tunerModel.data.stringName)")
-//                                .font(.system(size: 50))
-//                                .fontWeight(.semibold)
                         }
                         
                         Spacer()
@@ -238,16 +233,9 @@ struct TunerView: View {
                     tunerModel.stop()
                 }
                 .onChange(of: tunerModel.data) { _, data in
-                    let step = data.semitoneRange > 0 ? Float(geometry.size.width) / 2 / data.semitoneRange : 0
-                    if data.semitoneRange > abs(data.distance) && step > 0 {
-                        if data.distance < 0 {
-                            leftIndicator = CGFloat(abs(data.distance) * step)
-                            rightIndicator = 1
-                        } else {
-                            rightIndicator = CGFloat(data.distance * step)
-                            leftIndicator = 1
-                        }
-                    }
+                    let w = abs(data.distance) >= data.semitoneRange ? Float(geometry.size.width / 2) : (abs(data.distance) / data.semitoneRange) * (Float(geometry.size.width / 2))
+                    leftIndicator = data.distance < 0 ? CGFloat(w) : 1
+                    rightIndicator = data.distance > 0 ? CGFloat(w) : 1
                 }
             }
         }

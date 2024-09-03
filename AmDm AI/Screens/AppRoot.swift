@@ -16,6 +16,7 @@ struct AppRoot: View {
     @State var showOnboarding = AppDefaults.showOnboarding
     
     var body: some View {
+//        MatrixRain()
         NavigationStack {
             if loadingStage < 3 {
                 SplashScreen()
