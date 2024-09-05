@@ -81,6 +81,7 @@ struct Timeframe: Identifiable, Hashable {
     var start: Int
     var intervals: [Int] = []
     var width: CGFloat = 0.0
+    var limit: Bool = false
 }
 
 
@@ -193,6 +194,7 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
                 indices = []
                 width = interval.width
                 if AppDefaults.isLimited && timeframe.start > AppDefaults.LIMITED_DURATION * 1000 {
+                    self.timeframes[self.timeframes.count - 1].limit = true
                     break
                 }
             }
@@ -536,6 +538,16 @@ final class SongsList: ObservableObject {
     func filterSongs(searchText: String) {
         for i in songs.indices {
             songs[i].isVisible = searchText == "" ? true : songs[i].name.contains(searchText)
+        }
+    }
+    
+    func rebuildTimeframes() {
+        for i in 0..<self.songs.count {
+            if songs[i].timeframes.count > 0 {
+                if songs[i].timeframes.last!.limit {
+                    songs[i].createTimeframes()
+                }
+            }
         }
     }
 }

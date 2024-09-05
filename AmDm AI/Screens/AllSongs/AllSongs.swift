@@ -24,13 +24,14 @@ struct AllSongs: View {
     @State var showError: Bool = false
     @State var errorMessage: String = ""
     @State var showPermissionError = false
+    @State var showIsLimited: Bool = AppDefaults.isLimited
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
             Color.gray5
             //Layer 1: song list + limited version label
             VStack {
-                if AppDefaults.isLimited {
+                if showIsLimited {
                     VStack {
                         HStack {
                             Image(systemName: "crown.fill")
@@ -300,7 +301,14 @@ struct AllSongs: View {
                     }
                 }.foregroundColor(.white)
         )
-        .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
+        .fullScreenCover(isPresented: $showPaywall) {  
+            Paywall(showPaywall: $showPaywall) {
+                showIsLimited = AppDefaults.isLimited
+                if !showIsLimited {
+                    songsList.rebuildTimeframes()
+                }
+            }
+        }
         .fullScreenCover(isPresented: $showSettings) {
             Settings(showSettings: $showSettings) { showPaywall in
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {

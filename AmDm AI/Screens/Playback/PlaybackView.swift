@@ -112,7 +112,7 @@ struct PlaybackView: View {
                                         MoreShapesView(isMoreShapesPopupPresented: $isMoreShapesPopupPresented, uiChord: song.intervals[currentChordIndex].uiChord)
                                     } else {
                                         if showOptions {
-                                            OptionsView(hideLyrics: $song.hideLyrics, onChangeValue: { transposeUp in
+                                            OptionsView(songsList: songsList, hideLyrics: $song.hideLyrics, showOptions: $showOptions, onChangeValue: { transposeUp in
                                                 song.transpose(transposeUp: transposeUp)
                                                 song.createTimeframes()
                                                 songsList.databaseService.updateIntervals(song: song)

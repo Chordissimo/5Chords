@@ -19,7 +19,7 @@ struct EditChordsAds: View {
 
         ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
             VStack(alignment: .center) {
-                Text("Chord and lyrics recognition is done\nby AI-backed cutting edge technology. However, sometimes you may want to change some of the chords to make it easier\nfor you to play.")
+                Text("Chord and lyrics recognition is done by AI-backed cutting edge technology. However, sometimes you may want to change some of the chords to make it easier for you to play.")
                     .multilineTextAlignment(.center)
                     .padding(20)
                 ZStack {

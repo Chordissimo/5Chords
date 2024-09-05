@@ -17,40 +17,35 @@ class StorekitManager: ObservableObject {
     var products: [Product] = []
     var isMock: Bool
     var productIds: [String]
-    var updateListenerTask: Task<Void, Error>? = nil
-    @Published var activeSubscriptionId: String = ""
+//    var updateListenerTask: Task<Void, Error>? = nil
     
     init(productIds: [String], isMock: Bool = false) {
         self.productIds = productIds
         self.isMock = isMock
-        if !isMock {
-            self.updateListenerTask = listenForTransactions()
-            Task {
-                await requestProducts()
-                await getSubscriptionStatus()
-            }
-        }
+//        if !isMock {
+//            self.updateListenerTask = listenForTransactions()
+//        }
     }
     
-    deinit {
-        if !self.isMock {
-            updateListenerTask?.cancel()
-        }
-    }
+//    deinit {
+//        if !self.isMock {
+//            updateListenerTask?.cancel()
+//        }
+//    }
     
-    func listenForTransactions() -> Task<Void, Error> {
-        return Task.detached {
-            for await result in Transaction.updates {
-                do {
-                    let transaction = try self.checkVerified(result)
-                    await self.getSubscriptionStatus()
-                    await transaction.finish()
-                } catch {
-                    print("Transaction failed verification")
-                }
-            }
-        }
-    }
+//    func listenForTransactions() -> Task<Void, Error> {
+//        return Task.detached {
+//            for await result in Transaction.updates {
+//                do {
+//                    let transaction = try self.checkVerified(result)
+//                    await self.getSubscriptionStatus()
+//                    await transaction.finish()
+//                } catch {
+//                    print("Transaction failed verification")
+//                }
+//            }
+//        }
+//    }
     
     @MainActor
     func requestProducts() async {
@@ -61,9 +56,25 @@ class StorekitManager: ObservableObject {
         }
     }
     
+    func checkEligibilityForFreeTrial(id: String) async -> Bool {
+        let p = self.products.filter({ $0.id == id })
+        if p.count > 0 {
+            if let subscription = p.first!.subscription {
+                if let _ = subscription.introductoryOffer {
+                    return await subscription.isEligibleForIntroOffer
+                } else {
+                    return false
+                }
+            } else {
+                return false
+            }
+        } else {
+            return false
+        }
+    }
+    
     func purchase(_ productId: String) async throws -> Bool {
         guard !self.isMock else {
-            self.activeSubscriptionId = productId
             return true
         }
         guard let product = products.first(where: { $0.id == productId }) else { return false }
@@ -74,7 +85,7 @@ class StorekitManager: ObservableObject {
         case .success(let verificationResult):
             let transaction = try checkVerified(verificationResult)
             await transaction.finish()
-            await getSubscriptionStatus()
+//            await getSubscriptionStatus()
             return true
         case .userCancelled, .pending:
             return false
@@ -92,35 +103,18 @@ class StorekitManager: ObservableObject {
         }
     }
     
-    func getSubscriptionStatus() async {
-        guard !self.isMock else { return }
-        var transactions: [StoreKit.Transaction] = []
+//    func getSubscriptionStatus() async {
+//        guard !self.isMock else { return }
+//        var transactions: [StoreKit.Transaction] = []
+//
+//        for await result in Transaction.currentEntitlements {
+//            do {
+//                let transaction = try checkVerified(result)
+//                transactions.append(transaction)
+//            } catch {
+//                print("Transaction failed verification")
+//            }
+//        }
+//    }
 
-        for await result in Transaction.currentEntitlements {
-            do {
-                let transaction = try checkVerified(result)
-                transactions.append(transaction)
-            } catch {
-                print("Transaction failed verification")
-            }
-        }
-        
-        if transactions.count > 0 {
-            let latestActiveTransactions = transactions.filter { t in
-                t.expirationDate ?? Date() > Date()
-            }
-
-            if latestActiveTransactions.count > 0 {
-                if let status = await latestActiveTransactions[0].subscriptionStatus {
-                    do {
-                        if let id = try status.renewalInfo.payloadValue.autoRenewPreference {
-                            self.activeSubscriptionId = id
-                        }
-                    } catch {
-                        print(error)
-                    }
-                }
-            }
-        }
-    }
 }

@@ -124,6 +124,7 @@
 		C357AB132BB7EB4B00440554 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		C361E8262BB860D300F33B40 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		C3693C072BF6371D00DC137B /* SongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList.swift; sourceTree = "<group>"; };
+		C369B2992C884866002DE197 /* Pro Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Pro Chords.storekit"; sourceTree = "<group>"; };
 		C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWaveform.swift; sourceTree = "<group>"; };
 		C37996DF2C0757BF00DA3556 /* CircleOf5th.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleOf5th.swift; sourceTree = "<group>"; };
 		C37996E22C0853C500DA3556 /* ChordLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordLibrary.swift; sourceTree = "<group>"; };
@@ -321,6 +322,7 @@
 		C39C87292BB0073B00EBF82C = {
 			isa = PBXGroup;
 			children = (
+				C369B2992C884866002DE197 /* Pro Chords.storekit */,
 				C39C87342BB0073B00EBF82C /* AmDm AI */,
 				C39C87332BB0073B00EBF82C /* Products */,
 			);
@@ -750,7 +752,7 @@
 				CODE_SIGN_IDENTITY = "Apple Development";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = "";
 				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = YLUV9GUS77;
@@ -800,7 +802,7 @@
 				CODE_SIGN_ENTITLEMENTS = "AmDm AI/AmDm AIRelease.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = YLUV9GUS77;
 				ENABLE_HARDENED_RUNTIME = YES;

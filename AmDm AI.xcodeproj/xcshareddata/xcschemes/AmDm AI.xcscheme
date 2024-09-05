@@ -52,15 +52,15 @@
       <CommandLineArguments>
          <CommandLineArgument
             argument = "-FIRDebugDisabled"
-            isEnabled = "NO">
+            isEnabled = "YES">
          </CommandLineArgument>
          <CommandLineArgument
             argument = "-FIRDebugEnabled"
-            isEnabled = "YES">
+            isEnabled = "NO">
          </CommandLineArgument>
       </CommandLineArguments>
       <StoreKitConfigurationFileReference
-         identifier = "../../AmDm AI/Screens/Paywall/Models/Pro Chords.storekit">
+         identifier = "../../Pro Chords.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction
@@ -85,6 +85,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "ProChords"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

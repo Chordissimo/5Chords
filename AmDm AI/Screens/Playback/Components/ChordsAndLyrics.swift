@@ -148,7 +148,11 @@ struct ChordsAndLyrics: View {
             }
         }
         .frame(width: width)
-        .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
+        .fullScreenCover(isPresented: $showPaywall) {
+            Paywall(showPaywall: $showPaywall) {
+                self.songsList.rebuildTimeframes()
+            }
+        }
         .popover(isPresented: $showEditChordsAds) {
             AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "EDITING CHORDS", content: {
                 EditChordsAds()

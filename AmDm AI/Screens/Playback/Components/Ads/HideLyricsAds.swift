@@ -18,7 +18,7 @@ struct HideLyricsAds: View {
         
         ZStack {
             VStack {
-                Text("Sometimes you may want just to see chords\nand hide the lyrics. To do that just tap the toggle switch in the Preferences.")
+                Text("Sometimes you may want just to see chords and hide the lyrics. To do that just tap the toggle switch in the Preferences.")
                     .multilineTextAlignment(.center)
                     .padding(20)
                 

@@ -8,7 +8,9 @@
 import SwiftUI
 
 struct OptionsView: View {
+    @ObservedObject var songsList: SongsList
     @Binding var hideLyrics: Bool
+    @Binding var showOptions: Bool
     @State var isAlertPresented = false
     @State var showTranspositionAds = false
     @State var showEditChordsAds = false
@@ -16,10 +18,11 @@ struct OptionsView: View {
     var onChangeValue: (_ transposeUp: Bool) -> Void
     var onReset: (_ reset: Bool) -> Void
     @State var showPaywall = false
+    @State var showIsLimited: Bool = AppDefaults.isLimited
 
     var body: some View {
         VStack(spacing: 0) {
-            if AppDefaults.isLimited {
+            if showIsLimited {
                 Spacer()
                 VStack {
                     UpgradeButton(rightIconName: "arrow.up.arrow.down", content: {
@@ -80,7 +83,7 @@ struct OptionsView: View {
                                 .frame(width: 25, height: 25)
                                 .foregroundColor(.white)
                         }
-                        .disabled(AppDefaults.isLimited)
+                        .disabled(showIsLimited)
                         .frame(width: 80, height: 40)
                         .background(.gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
                     }
@@ -121,14 +124,14 @@ struct OptionsView: View {
                                 .foregroundColor(.white)
                         }
                     }
-                    .disabled(AppDefaults.isLimited)
+                    .disabled(showIsLimited)
                     .frame(width: 80, height: 40)
                     .background(.gray30, in: UnevenRoundedRectangle(bottomTrailingRadius: 16, topTrailingRadius: 16))
                 }
                 .frame(height: 60)
             }
             
-            if !AppDefaults.isLimited {
+            if !showIsLimited {
                 Divider()
                 VStack {
                     Button {
@@ -157,6 +160,9 @@ struct OptionsView: View {
             }
         }
         .padding(.horizontal, 20)
+        .onAppear {
+            showIsLimited = AppDefaults.isLimited
+        }
         .popover(isPresented: $showTranspositionAds) {
             AdsView(showAds: $showTranspositionAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
                 TranspositionAds()
@@ -172,6 +178,14 @@ struct OptionsView: View {
                 HideLyricsAds()
             })
         }
-        .fullScreenCover(isPresented: $showPaywall) {  Paywall(showPaywall: $showPaywall)  }
+        .fullScreenCover(isPresented: $showPaywall) {
+            Paywall(showPaywall: $showPaywall) {
+                if showIsLimited && !AppDefaults.isLimited {
+                    self.songsList.rebuildTimeframes()
+                    showIsLimited = AppDefaults.isLimited
+                    showOptions = false
+                }
+            }
+        }
     }
 }

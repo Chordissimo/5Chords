@@ -10,13 +10,12 @@ import SwiftyChords
 
 struct AppRoot: View {
     @State var loadingStage = 0
-    @StateObject var store = ProductModel(isMock: true)
+    @StateObject var store = ProductModel(isMock: false)
     @StateObject var songsList = SongsList()
     @State var productInfoLoaded = false
     @State var showOnboarding = AppDefaults.showOnboarding
     
     var body: some View {
-//        MatrixRain()
         NavigationStack {
             if loadingStage < 3 {
                 SplashScreen()
@@ -41,12 +40,12 @@ struct AppRoot: View {
         .onAppear {
             AppDefaults.loadDefaultsFromFirestore() { isSuccess in
                 if isSuccess {
-                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
+//                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
                         loadingStage += 1
-                    }
-                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
+//                    }
+//                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
                         loadingStage += 1
-                    }
+//                    }
                 }
             }
         }

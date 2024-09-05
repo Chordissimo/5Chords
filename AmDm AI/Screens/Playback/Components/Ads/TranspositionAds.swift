@@ -21,7 +21,7 @@ struct TranspositionAds: View {
         
         ZStack {
             VStack {
-                Text("Many musicians use non-standard tunings to record their songs to make it sound better.\nThe AI-backed recognition model provides chords using the standard tuning which may not be very convenient to play along. And that's where the Transposition feature comes in handy.")
+                Text("Many musicians use non-standard tunings to record their songs to make it sound better. The AI-backed recognition model provides chords using the standard tuning which may not be very convenient to play along. And that's where the Transposition feature comes in handy.")
                     .multilineTextAlignment(.center)
                     .padding(20)
                 

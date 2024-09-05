@@ -13,8 +13,8 @@ struct Paywall: View  {
     @EnvironmentObject var store: ProductModel
     @Binding var showPaywall: Bool
     @Environment(\.openURL) var openURL
-    @State var selectedBillingPeriod: Subscription.BillingPeriod = .year
-    @State var activeBillingPeriod: Subscription.BillingPeriod = .none
+    @State var selectedSubscriptionId: String = ""
+    @State var currentSubscriptionId: String = ""
     var completion: () -> Void = {}
         
     var body: some View {
@@ -23,7 +23,7 @@ struct Paywall: View  {
             VStack {
                 HStack {
                     Button {
-                        AppDefaults.isLimited = store.activeSubscriptionId == ""
+                        AppDefaults.isLimited = (store.currentSubscription?.id ?? "") == ""
                         showPaywall = false
                         completion()
                     } label: {
@@ -36,7 +36,14 @@ struct Paywall: View  {
                     }
                     Spacer()
                     Button {
-                        store.restoreSubscription()
+                        Task {
+                            await store.restoreSubscription()
+                            await store.store.requestProducts()
+                            await store.loadSubScriptionInfo()
+                            await MainActor.run {
+                                store.verifySubscriptions()
+                            }
+                        }
                     } label: {
                         Text("Restore")
                             .font(.system(size: 18))
@@ -73,25 +80,17 @@ struct Paywall: View  {
             /// MARK: Billing period selection
             VStack {
                 HStack(spacing: 0) {
-                    Button {
-                        selectedBillingPeriod = .year
-                    } label: {
-                        Text("Yearly")
-                            .fontWeight(.semibold)
-                            .foregroundStyle(selectedBillingPeriod == .year ? Color.black : Color.white)
-                            .frame(width: (AppDefaults.screenWidth - 40) / 2, height: 40)
+                    ForEach(store.subscriptions, id: \.self) { subscription in
+                        Button {
+                            selectedSubscriptionId = subscription.id
+                        } label: {
+                            Text(subscription.billingPeriodLabel)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(selectedSubscriptionId == subscription.id ? Color.black : Color.white)
+                                .frame(width: (AppDefaults.screenWidth - 40) / 2, height: 40)
+                        }
+                        .background(selectedSubscriptionId == subscription.id ? Color.white : Color.clear, in: Capsule())
                     }
-                    .background(selectedBillingPeriod == .year ? Color.white : Color.clear, in: Capsule())
-
-                    Button {
-                        selectedBillingPeriod = .month
-                    } label: {
-                        Text("Monthly")
-                            .fontWeight(.semibold)
-                            .foregroundStyle(selectedBillingPeriod == .month ? Color.black : Color.white)
-                            .frame(width: (AppDefaults.screenWidth - 40) / 2, height: 40)
-                    }
-                    .background(selectedBillingPeriod == .month ? Color.white : Color.clear, in: Capsule())
                 }
                 .background(Color.gray20)
                 .clipShape(.rect(cornerRadius: 20))
@@ -101,18 +100,25 @@ struct Paywall: View  {
             
             /// MARK: Price tag
             VStack {
-                Text(selectedBillingPeriod == .month ? "$12.99 / mo" : "$8.33 / mo")
-                    .font(.system(size: 20))
+                let subscription = store.getSubscriptionBy(id: selectedSubscriptionId)
+                let price = subscription?.price ?? ""
+                let billingPeriod = subscription == nil ? "" : (subscription!.billingPeriod == .year ? "\(subscription!.fullPrice), billed annually" : "billed monthly")
+                let message = subscription == nil ? "" : store.getMessage(subscriptionId: subscription!.id)
+                let colorTrigger = self.store.currentSubscription != nil && selectedSubscriptionId == currentSubscriptionId
+                
+                Text(price)
+                    .font(.system(size: 24))
                     .fontWeight(.semibold)
-                Text(selectedBillingPeriod == .month ? "billed monthly" : "$99.99, billed annually")
+                Text(billingPeriod)
                     .fontWidth(.expanded)
                     .foregroundStyle(.secondaryText)
                     .font(.system(size: 11))
-                Text(selectedBillingPeriod == activeBillingPeriod ? "You are currently subscribed to this" : "No commitement, cancel any time")
-                    .foregroundStyle(selectedBillingPeriod == activeBillingPeriod ? .progressCircle : .white)
+                Text(message)
+                    .foregroundStyle(colorTrigger ? .progressCircle : .white)
                     .font(.system(size: 14))
-                    .fontWeight(selectedBillingPeriod == activeBillingPeriod ? .bold : .regular)
-                    .padding(.top, 5)
+                    .fontWeight(colorTrigger ? .bold : .regular)
+                    .padding(.top, 10)
+                    .multilineTextAlignment(.center)
             }
             .padding(.vertical, 20)
             
@@ -192,9 +198,9 @@ struct Paywall: View  {
 
             /// MARK: Subscribe button
             VStack {
-                let label = selectedBillingPeriod == activeBillingPeriod ? "Manage subscription" : (selectedBillingPeriod == .year ? "Start 7 days Free Trial" : "Subscribe")
+                let label = store.getSubscribeButtonLabel(subscriptionId: selectedSubscriptionId)
                 Button {
-                    if selectedBillingPeriod == activeBillingPeriod {
+                    if label == "Manage subscription" {
                         Task {
                             if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                                 do {
@@ -203,11 +209,19 @@ struct Paywall: View  {
                                     print("Error:(error)")
                                 }
                             }
+                            await store.restoreSubscription()
+                            await store.loadSubScriptionInfo()
+                            await MainActor.run {
+                                store.verifySubscriptions()
+                            }
                         }
                     } else {
                         Task {
-                            let status = await store.purchase(billingPeriod: selectedBillingPeriod)
-                            showPaywall = !status
+                            let status = await store.purchase(subscriptionId: selectedSubscriptionId)
+                            await MainActor.run {
+                                store.verifySubscriptions()
+                                showPaywall = !status
+                            }
                             completion()
                         }
                     }
@@ -218,7 +232,7 @@ struct Paywall: View  {
                         .padding(20)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.black)
-                        .background(selectedBillingPeriod == activeBillingPeriod ? .white : Color.progressCircle, in: Capsule())
+                        .background(label == "Manage subscription" ? .white : Color.progressCircle, in: Capsule())
                 }
             }
             .padding(.horizontal, 20)
@@ -228,7 +242,22 @@ struct Paywall: View  {
         .frame(width: AppDefaults.screenWidth)
         .background(Color.gray5)
         .onAppear {
-            self.activeBillingPeriod = store.getSubscriptionBy(id: store.activeSubscriptionId)?.billingPeriod ?? .none
+            if let subscription = self.store.currentSubscription {
+                if subscription.renewProductId == subscription.id || subscription.renewProductId == "" {
+                    self.selectedSubscriptionId = subscription.id
+                } else {
+                    if let renewSub = self.store.getSubscriptionBy(id: subscription.renewProductId) {
+                        if renewSub.startDate ?? Date() > Date() {
+                            self.selectedSubscriptionId = renewSub.id
+                        } else {
+                            self.selectedSubscriptionId = subscription.id
+                        }
+                    }
+                }
+            } else {
+                self.selectedSubscriptionId = self.store.defaultSubscription?.id ?? ""
+            }
+            self.currentSubscriptionId = self.selectedSubscriptionId
         }
     }
 }
