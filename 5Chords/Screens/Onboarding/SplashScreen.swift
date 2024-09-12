@@ -1,0 +1,51 @@
+//
+//  Onboarding.swift
+//  AmDm AI
+//
+//  Created by Anton on 20/05/2024.
+//
+
+import SwiftUI
+
+struct SplashScreen: View {
+    @Binding var loadingStage: Int
+    var body: some View {
+        ZStack {
+            Color.gray5
+            Image("five-chords-mobile-app")
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: AppDefaults.screenWidth / 4 * 3)
+                .clipShape(.circle)
+            VStack {
+                HStack(spacing: 0) {
+                    Text("5")
+                        .font(.custom("TitanOne", size: 60))
+                        .foregroundStyle(.progressCircle)
+                    Text("CHORDS")
+                        .fontWeight(.semibold)
+                        .fontWidth(.standard)
+                        .font(.system(size: 38))
+                }
+                .padding(.top, AppDefaults.topSafeArea + 50)
+                Text("POWERED BY AI")
+                    .fontWeight(.semibold)
+                    .fontWidth(.expanded)
+                    .foregroundStyle(.secondaryText)
+                    .font(.system(size: 11))
+                    .padding(.bottom, AppDefaults.bottomSafeArea + 50)
+                Spacer()
+                ZStack(alignment: Alignment(horizontal: .leading, vertical: .center)) {
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.gray40)
+                        .frame(width: AppDefaults.screenWidth / 3 * 2,height: 5)
+                    RoundedRectangle(cornerRadius: 5)
+                        .fill(Color.progressCircle.opacity(0.7))
+                        .frame(width: (AppDefaults.screenWidth / 3.0 * 2.0) / 3.0 * Double(loadingStage), height: 5)
+                }
+                .padding(.bottom, AppDefaults.bottomSafeArea + 50)
+            }
+        }
+        .ignoresSafeArea()
+    }
+}
