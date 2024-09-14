@@ -183,7 +183,7 @@ struct Paywall: View  {
             VStack {
                 HStack(spacing: 30) {
                     Button {
-                        openURL(URL(string: "https://www.aichords.pro/terms-of-use/")!)
+                        openURL(URL(string: AppDefaults.TERMS_LINK)!)
                     } label: {
                         Text("Terms of use")
                             .foregroundStyle(.gray)
@@ -192,7 +192,7 @@ struct Paywall: View  {
                     .foregroundStyle(.white)
                     
                     Button {
-                        openURL(URL(string: "https://www.aichords.pro/privacy-policy/")!)
+                        openURL(URL(string: AppDefaults.PRIVACY_LINK)!)
                     } label: {
                         Text("Privacy policy")
                             .foregroundStyle(.gray)
@@ -225,7 +225,7 @@ struct Paywall: View  {
                         }
                     } else {
                         Task {
-                            await store.purchase(subscriptionId: selectedSubscriptionId)
+                            let _ = await store.purchase(subscriptionId: selectedSubscriptionId)
                             await MainActor.run {
                                 store.verifySubscriptions()
                                 showPaywall = false

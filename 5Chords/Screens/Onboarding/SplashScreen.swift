@@ -8,7 +8,11 @@
 import SwiftUI
 
 struct SplashScreen: View {
-    @Binding var loadingStage: Int
+    var completion: () -> Void
+    let timer = Timer.publish(every: 0.01, on: .main, in: .common).autoconnect()
+    @State var progress: CGFloat = 0
+    let maxWidth = AppDefaults.screenWidth / 3.0 * 2.0
+    
     var body: some View {
         ZStack {
             Color.gray5
@@ -38,14 +42,25 @@ struct SplashScreen: View {
                 ZStack(alignment: Alignment(horizontal: .leading, vertical: .center)) {
                     RoundedRectangle(cornerRadius: 5)
                         .fill(Color.gray40)
-                        .frame(width: AppDefaults.screenWidth / 3 * 2,height: 5)
+                        .frame(width: maxWidth, height: 5)
                     RoundedRectangle(cornerRadius: 5)
                         .fill(Color.progressCircle.opacity(0.7))
-                        .frame(width: (AppDefaults.screenWidth / 3.0 * 2.0) / 3.0 * Double(loadingStage), height: 5)
+                        .frame(width: progress, height: 5)
                 }
                 .padding(.bottom, AppDefaults.bottomSafeArea + 50)
             }
         }
         .ignoresSafeArea()
+        .onReceive(timer) { _ in
+            if progress <= maxWidth {
+                withAnimation {
+                    progress += 1
+                }
+            } else {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    completion()
+                }
+            }
+        }
     }
 }

@@ -56,7 +56,7 @@ struct OnboardingPage2: View {
                     }
                     .transition(.move(edge: .bottom))
                 } else {
-                    Color.gray5
+                    Color.gray10
                     if animationStage >= 1 && animationStage < 4 {
                         VStack(spacing: 20) {
                             if animationStage < 3 {

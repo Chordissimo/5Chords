@@ -34,7 +34,7 @@ struct AllSongs: View {
                 if showIsLimited {
                     VStack {
                         HStack {
-                            Image(systemName: "crown.fill")
+                            Image("logo3")
                                 .resizable()
                                 .foregroundColor(.crown)
                                 .aspectRatio(contentMode: .fit)

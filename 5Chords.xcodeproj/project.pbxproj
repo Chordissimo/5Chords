@@ -29,6 +29,7 @@
 		C30ADA672C40523000CC9F9A /* DurationLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA662C40523000CC9F9A /* DurationLimitView.swift */; };
 		C30ADA692C41679200CC9F9A /* EditChordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA682C41679200CC9F9A /* EditChordsView.swift */; };
 		C32460C32C9378EB004FFFF1 /* 5Chords-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3DE80EE2BC45C250063189D /* 5Chords-Info.plist */; };
+		C32460C82C95A7A4004FFFF1 /* 5Chords.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C32460C72C95A7A4004FFFF1 /* 5Chords.storekit */; };
 		C32563F92C86CCBB00399615 /* MatrixRain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32563F82C86CCBB00399615 /* MatrixRain.swift */; };
 		C34150A12C4623B700C4C3B2 /* AdsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A02C4623B700C4C3B2 /* AdsView.swift */; };
 		C34150A32C46242B00C4C3B2 /* PlaybackControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */; };
@@ -112,6 +113,7 @@
 		C30ADA682C41679200CC9F9A /* EditChordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditChordsView.swift; sourceTree = "<group>"; };
 		C32460C52C937EBF004FFFF1 /* 5ChordsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = 5ChordsRelease.entitlements; sourceTree = "<group>"; };
 		C32460C62C937F7B004FFFF1 /* 5Chords.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = 5Chords.entitlements; sourceTree = "<group>"; };
+		C32460C72C95A7A4004FFFF1 /* 5Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = 5Chords.storekit; sourceTree = "<group>"; };
 		C32563F82C86CCBB00399615 /* MatrixRain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixRain.swift; sourceTree = "<group>"; };
 		C34150A02C4623B700C4C3B2 /* AdsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsView.swift; sourceTree = "<group>"; };
 		C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackControls.swift; sourceTree = "<group>"; };
@@ -342,6 +344,7 @@
 				B798989A2BCAAAAB0052C127 /* Services */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
 				C357AB032BB7D4CC00440554 /* SharedComponents */,
+				C32460C72C95A7A4004FFFF1 /* 5Chords.storekit */,
 			);
 			path = 5Chords;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
 				C32460C32C9378EB004FFFF1 /* 5Chords-Info.plist in Resources */,
 				C3B775792C93630C00A1D201 /* TitanOne-Regular.ttf in Resources */,
+				C32460C82C95A7A4004FFFF1 /* 5Chords.storekit in Resources */,
 				C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

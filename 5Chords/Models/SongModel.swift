@@ -431,24 +431,46 @@ final class SongsList: ObservableObject {
         self.songs.insert(song, at: 0)
         self.songs[0].startTimer()
         self.objectWillChange.send()
-        
-        recognitionApiService.recognizeAudioFromYoutube(url: resultUrl, songId: song.id) { result  in
+        print("Start time:", Date())
+        recognitionApiService.retrieveYoutubeFromDB(url: resultUrl, songId: song.id) { result, statusCode  in
+            print("End time:", Date())
             let i = self.getSongIndexByID(id: song.id)
             switch result {
             case .success(let response):
                 SongsList.recognitionSuccess(song: &self.songs[i], response: response)
                 self.songs[i].stopTimer()
-
+                
                 self.databaseService.updateSong(song: self.songs[i])
                 self.recognitionInProgress = false
                 self.objectWillChange.send()
                 AppDefaults.songCounter = AppDefaults.isLimited ? AppDefaults.songCounter + 1 : AppDefaults.songCounter
 
             case .failure(let failure):
-                self.songs[i].recognitionStatus = .serverError
-                self.recognitionInProgress = false
-                self.objectWillChange.send()
-                print("API failure: ",failure)
+                if statusCode == 204 {
+                    self.recognitionApiService.recognizeAudioFromYoutube(url: resultUrl, songId: song.id) { result in
+                        switch result {
+                        case .success(let response):
+                            SongsList.recognitionSuccess(song: &self.songs[i], response: response)
+                            self.songs[i].stopTimer()
+                            
+                            self.databaseService.updateSong(song: self.songs[i])
+                            self.recognitionInProgress = false
+                            self.objectWillChange.send()
+                            AppDefaults.songCounter = AppDefaults.isLimited ? AppDefaults.songCounter + 1 : AppDefaults.songCounter
+                            
+                        case .failure(let failure):
+                            self.songs[i].recognitionStatus = .serverError
+                            self.recognitionInProgress = false
+                            self.objectWillChange.send()
+                            print("API failure: ",failure)
+                        }
+                    }
+                } else {
+                    self.songs[i].recognitionStatus = .serverError
+                    self.recognitionInProgress = false
+                    self.objectWillChange.send()
+                    print("API failure: ",failure)
+                }
             }
         }
     }

@@ -84,6 +84,7 @@ class RecognitionApiService: RequestInterceptor {
     }
     
     func recognizeAudio(url: URL, songId: String, completion: @escaping ((Result<Response, Error>) -> Void)) {
+        AF.sessionConfiguration.timeoutIntervalForRequest = 3000
         AuthService.getToken { token in
             AF.upload(
                 multipartFormData: { multipartFormData in
@@ -111,7 +112,9 @@ class RecognitionApiService: RequestInterceptor {
                 parameters: ["url": url],
                 encoding: JSONEncoding.default,
                 headers: [.authorization(bearerToken: token)]
-            )
+            ) { urlRequest in
+                urlRequest.timeoutInterval = 3000
+            }
             .validate()
             .responseDecodable(of: Response.self) { response in
                 guard let result = response.value else {
@@ -119,6 +122,27 @@ class RecognitionApiService: RequestInterceptor {
                     return
                 }
                 completion(.success(result))
+            }
+        }
+    }
+    
+    func retrieveYoutubeFromDB(url: String, songId: String, completion: @escaping ((Result<Response, Error>, Int?) -> Void)) {
+        AuthService.getToken { token in
+            AF.request(
+                AppDefaults.YOUTUBE_RETRIEVE_ENDPOINT + "/" + songId,
+                method: .post,
+                parameters: ["url": url],
+                encoding: JSONEncoding.default,
+                headers: [.authorization(bearerToken: token)]
+            )
+            .validate()
+            .responseDecodable(of: Response.self) { response in
+                print("code",response.response?.statusCode)
+                guard let result = response.value else {
+                    completion(.failure(response.error ?? ServiceError.noResult),response.response?.statusCode)
+                    return
+                }
+                completion(.success(result),response.response?.statusCode)
             }
         }
     }

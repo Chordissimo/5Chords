@@ -14,15 +14,18 @@ struct AppRoot: View {
     @StateObject var songsList = SongsList()
     @State var productInfoLoaded = false
     @State var showOnboarding = AppDefaults.showOnboarding
+    @State var loaderFinished: Bool = false
     
     var body: some View {
         NavigationStack {
-            if loadingStage < 3 {
-                SplashScreen(loadingStage: $loadingStage)
+            if loadingStage < 3 || !loaderFinished {
+                SplashScreen() {
+                    loaderFinished = true
+                }
             } else {
                 if showOnboarding {
                     OnboardingPage1() {
-//                        AppDefaults.showOnboarding = false
+                        AppDefaults.showOnboarding = false
                         showOnboarding = false
                     }
                 } else {
@@ -33,9 +36,7 @@ struct AppRoot: View {
         .onChange(of: store.productInfoLoaded) {
             if store.productInfoLoaded {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    withAnimation {
-                        loadingStage += 1
-                    }
+                    loadingStage += 1
                 }
             }
         }
@@ -43,14 +44,10 @@ struct AppRoot: View {
             AppDefaults.loadDefaultsFromFirestore() { isSuccess in
                 if isSuccess {
                     AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
-                        withAnimation {
-                            loadingStage += 1
-                        }
+                        loadingStage += 1
                     }
                     AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
-                        withAnimation {
-                            loadingStage += 1
-                        }
+                        loadingStage += 1
                     }
                 }
             }

@@ -11,8 +11,8 @@ import SwiftUI
 
 public struct AuthService {
     public static func getToken(completion: @escaping (String) -> Void) {
-        let currentTimestamp: TimeInterval = NSDate().timeIntervalSince1970
-        if Int(currentTimestamp - AppDefaults.tokenTimestamp) > 60 * 55 {
+//        let currentTimestamp: TimeInterval = NSDate().timeIntervalSince1970
+//        if Int(currentTimestamp - AppDefaults.tokenTimestamp) > 60 * 55 {
             Auth.auth().signInAnonymously() { result, error in
                 if let err = error {
                     print(err)
@@ -32,8 +32,8 @@ public struct AuthService {
                     print("FirebaseAuthError: failed to fetch signed in user.")
                 }
             }
-        } else {
-            completion(AppDefaults.token)
-        }
+//        } else {
+//            completion(AppDefaults.token)
+//        }
     }
 }

@@ -23,21 +23,29 @@ public struct AppDefaults {
     }
 
     public static var UPLOAD_ENDPOINT: String {
-        get { UserDefaults.standard.object(forKey: "UPLOAD_ENDPOINT") as? String ?? "https://app.fivechords.com/api/upload" }
+        get { UserDefaults.standard.object(forKey: "UPLOAD_ENDPOINT") as? String ?? "https://app.fivechords.com/api/recognize/upload" }
     }
 
-    public static var YOUTUBE_CHECK_ENDPOINT: String {
-        get { UserDefaults.standard.object(forKey: "YOUTUBE_CHECK_ENDPOINT") as? String ?? "https://app.fivechords.com/api/youtube" }
+    public static var YOUTUBE_RETRIEVE_ENDPOINT: String {
+        get { UserDefaults.standard.object(forKey: "YOUTUBE_RETRIEVE_ENDPOINT") as? String ?? "https://app.fivechords.com/api/retrieve/youtube" }
     }
 
     public static var YOUTUBE_ENDPOINT: String {
-        get { UserDefaults.standard.object(forKey: "YOUTUBE_ENDPOINT") as? String ?? "https://app.fivechords.com/youtube" }
+        get { UserDefaults.standard.object(forKey: "YOUTUBE_ENDPOINT") as? String ?? "https://app.fivechords.com/api/recognize/youtube" }
     }
 
     public static var STATUS_ENDPOINT: String {
-        get { UserDefaults.standard.object(forKey: "STATUS_ENDPOINT") as? String ?? "https://app.fivechords.com/api/status" }
+        get { UserDefaults.standard.object(forKey: "STATUS_ENDPOINT") as? String ?? "https://app.fivechords.com/api/retrieve/status" }
     }
 
+    public static var PRIVACY_LINK: String {
+        get { UserDefaults.standard.object(forKey: "PRIVACY_LINK") as? String ?? "https://fivechords.com/privacy-policy/" }
+    }
+
+    public static var TERMS_LINK: String {
+        get { UserDefaults.standard.object(forKey: "TERMS_LINK") as? String ?? "https://fivechords.com/terms-of-use/" }
+    }
+    
     public static var LIMITED_UPLOAD_FILE_SIZE: Int {
         get { Int(UserDefaults.standard.object(forKey: "LIMITED_UPLOAD_FILE_SIZE") as? String ?? "31457280") ?? 31457280 }
     }
@@ -134,7 +142,7 @@ public struct AppDefaults {
         let storage = Storage.storage()
         let storageRef = storage.reference()
         
-        let fileRef = storageRef.child("/prochords_conf.json")
+        let fileRef = storageRef.child("/conf.json")
         
         fileRef.getData(maxSize: 1024 * 1024 * 10) { (data, error) in
             if let error = error {

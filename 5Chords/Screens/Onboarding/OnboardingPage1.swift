@@ -14,7 +14,6 @@ struct OnboardingPage1: View {
     var body: some View {
         
         GeometryReader { geometry in
-//            let logoWidth = geometry.size.width * 0.24
             let logoHeight = geometry.size.height * 0.135
             
             if animationStage >= 8 {
@@ -27,7 +26,6 @@ struct OnboardingPage1: View {
                 ZStack {
                     Color.gray5
                     if animationStage >= 4 && animationStage < 8 {
-//                        Image("OnboardingPage1")
                         Image("files")
                             .resizable()
                             .aspectRatio(contentMode: .fill)
@@ -36,7 +34,6 @@ struct OnboardingPage1: View {
                     }
                     VStack {
                         if animationStage > 1 && animationStage < 4 {
-//                            Image(animationStage == 3 ? "OnboardingPage2" : "OnboardingPage1")
                             Image(animationStage == 3 ? "man" : "girl")
                                 .resizable()
                                 .aspectRatio(contentMode: .fill)
@@ -66,7 +63,6 @@ struct OnboardingPage1: View {
                     
                     if animationStage > 0 && animationStage < 8 {
                         VStack {
-//                            Image("logoOutlined")
                             Image("logo3")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
