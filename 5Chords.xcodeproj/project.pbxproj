@@ -29,7 +29,6 @@
 		C30ADA672C40523000CC9F9A /* DurationLimitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA662C40523000CC9F9A /* DurationLimitView.swift */; };
 		C30ADA692C41679200CC9F9A /* EditChordsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C30ADA682C41679200CC9F9A /* EditChordsView.swift */; };
 		C32460C32C9378EB004FFFF1 /* 5Chords-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C3DE80EE2BC45C250063189D /* 5Chords-Info.plist */; };
-		C32460C82C95A7A4004FFFF1 /* 5Chords.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C32460C72C95A7A4004FFFF1 /* 5Chords.storekit */; };
 		C32563F92C86CCBB00399615 /* MatrixRain.swift in Sources */ = {isa = PBXBuildFile; fileRef = C32563F82C86CCBB00399615 /* MatrixRain.swift */; };
 		C34150A12C4623B700C4C3B2 /* AdsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A02C4623B700C4C3B2 /* AdsView.swift */; };
 		C34150A32C46242B00C4C3B2 /* PlaybackControls.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */; };
@@ -72,6 +71,7 @@
 		C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */; };
 		C3AC1BA72C1AB52D000DE8E5 /* YouTubeAPIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */; };
 		C3AD8ED22BB1648000D94DB5 /* SubscriptionModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */; };
+		C3B4B9952C988DFA000C7F79 /* SofiaSans-VariableFont_wght.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3B4B9932C988DFA000C7F79 /* SofiaSans-VariableFont_wght.ttf */; };
 		C3B775792C93630C00A1D201 /* TitanOne-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C3B775782C93630C00A1D201 /* TitanOne-Regular.ttf */; };
 		C3BCF9CE2C744D0800F6BFD9 /* SwiftyChords in Frameworks */ = {isa = PBXBuildFile; productRef = C3BCF9CD2C744D0800F6BFD9 /* SwiftyChords */; };
 		C3BCF9D02C75EC3300F6BFD9 /* AuthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3BCF9CF2C75EC3300F6BFD9 /* AuthService.swift */; };
@@ -90,6 +90,7 @@
 		C3F0B6232BF21EBA00866D2B /* MusicModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B6222BF21EBA00866D2B /* MusicModel.swift */; };
 		C3F0B6252BF21FC500866D2B /* SongModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3F0B6242BF21FC500866D2B /* SongModel.swift */; };
 		C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C39C873B2BB0073D00EBF82C /* Assets.xcassets */; };
+		C3FE3ABE2C973BCC004B43E1 /* 5Chords.storekit in Resources */ = {isa = PBXBuildFile; fileRef = C3FE3ABD2C973BCC004B43E1 /* 5Chords.storekit */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -113,7 +114,6 @@
 		C30ADA682C41679200CC9F9A /* EditChordsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditChordsView.swift; sourceTree = "<group>"; };
 		C32460C52C937EBF004FFFF1 /* 5ChordsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = 5ChordsRelease.entitlements; sourceTree = "<group>"; };
 		C32460C62C937F7B004FFFF1 /* 5Chords.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = 5Chords.entitlements; sourceTree = "<group>"; };
-		C32460C72C95A7A4004FFFF1 /* 5Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = 5Chords.storekit; sourceTree = "<group>"; };
 		C32563F82C86CCBB00399615 /* MatrixRain.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatrixRain.swift; sourceTree = "<group>"; };
 		C34150A02C4623B700C4C3B2 /* AdsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsView.swift; sourceTree = "<group>"; };
 		C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackControls.swift; sourceTree = "<group>"; };
@@ -156,16 +156,18 @@
 		C3AC1B842C0F6EE9000DE8E5 /* ChordSuffixes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordSuffixes.swift; sourceTree = "<group>"; };
 		C3AC1BA62C1AB52D000DE8E5 /* YouTubeAPIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubeAPIService.swift; sourceTree = "<group>"; };
 		C3AD8ED12BB1647F00D94DB5 /* SubscriptionModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionModel.swift; sourceTree = "<group>"; };
-		C3B775782C93630C00A1D201 /* TitanOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "TitanOne-Regular.ttf"; sourceTree = "<group>"; };
+		C3B4B9932C988DFA000C7F79 /* SofiaSans-VariableFont_wght.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "SofiaSans-VariableFont_wght.ttf"; path = "5Chords/Fonts/SofiaSans-VariableFont_wght.ttf"; sourceTree = SOURCE_ROOT; };
+		C3B775782C93630C00A1D201 /* TitanOne-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "TitanOne-Regular.ttf"; path = "5Chords/Fonts/TitanOne-Regular.ttf"; sourceTree = SOURCE_ROOT; };
 		C3BCF9CF2C75EC3300F6BFD9 /* AuthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthService.swift; sourceTree = "<group>"; };
 		C3DC6FD22BFCDB2E00EA0095 /* AppRoot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRoot.swift; sourceTree = "<group>"; };
 		C3DC6FD92BFDF2B300EA0095 /* PlaybackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackView.swift; sourceTree = "<group>"; };
 		C3DC6FDE2C02EF6400EA0095 /* Tunings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Tunings.swift; sourceTree = "<group>"; };
 		C3DE80EC2BC1C3010063189D /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
-		C3DE80EE2BC45C250063189D /* 5Chords-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "5Chords-Info.plist"; sourceTree = SOURCE_ROOT; };
+		C3DE80EE2BC45C250063189D /* 5Chords-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "5Chords-Info.plist"; path = "../../../../Users/antonandreyev/Development/AmDm AI/5Chords-Info.plist"; sourceTree = DEVELOPER_DIR; };
 		C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Chunked.swift; sourceTree = "<group>"; };
 		C3F0B6222BF21EBA00866D2B /* MusicModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MusicModel.swift; sourceTree = "<group>"; };
 		C3F0B6242BF21FC500866D2B /* SongModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongModel.swift; sourceTree = "<group>"; };
+		C3FE3ABD2C973BCC004B43E1 /* 5Chords.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = 5Chords.storekit; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -332,19 +334,19 @@
 		C39C87342BB0073B00EBF82C /* 5Chords */ = {
 			isa = PBXGroup;
 			children = (
+				C3B4B9962C9B1CD3000C7F79 /* Fonts */,
 				C32460C52C937EBF004FFFF1 /* 5ChordsRelease.entitlements */,
 				C32460C62C937F7B004FFFF1 /* 5Chords.entitlements */,
 				C3DE80EE2BC45C250063189D /* 5Chords-Info.plist */,
 				C3A993622C36BD5C00C2D8B5 /* GoogleService-Info.plist */,
+				C3FE3ABD2C973BCC004B43E1 /* 5Chords.storekit */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
-				C3B775782C93630C00A1D201 /* TitanOne-Regular.ttf */,
 				C39C87352BB0073B00EBF82C /* 5Chords.swift */,
 				C3B54DFE2BB1AB0A000DCF15 /* Models */,
 				C361E8252BB860C200F33B40 /* Helpers */,
 				B798989A2BCAAAAB0052C127 /* Services */,
 				C3B54DFA2BB1AA55000DCF15 /* Screens */,
 				C357AB032BB7D4CC00440554 /* SharedComponents */,
-				C32460C72C95A7A4004FFFF1 /* 5Chords.storekit */,
 			);
 			path = 5Chords;
 			sourceTree = "<group>";
@@ -375,6 +377,15 @@
 				C308BD3D2C4CF6ED00C54602 /* AdsViewModel.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		C3B4B9962C9B1CD3000C7F79 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				C3B4B9932C988DFA000C7F79 /* SofiaSans-VariableFont_wght.ttf */,
+				C3B775782C93630C00A1D201 /* TitanOne-Regular.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		C3B54DFA2BB1AA55000DCF15 /* Screens */ = {
@@ -537,10 +548,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C3B4B9952C988DFA000C7F79 /* SofiaSans-VariableFont_wght.ttf in Resources */,
 				C3F7AB9C2BE0083100223F10 /* Assets.xcassets in Resources */,
 				C32460C32C9378EB004FFFF1 /* 5Chords-Info.plist in Resources */,
 				C3B775792C93630C00A1D201 /* TitanOne-Regular.ttf in Resources */,
-				C32460C82C95A7A4004FFFF1 /* 5Chords.storekit in Resources */,
+				C3FE3ABE2C973BCC004B43E1 /* 5Chords.storekit in Resources */,
 				C3A993632C36BD5C00C2D8B5 /* GoogleService-Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

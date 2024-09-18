@@ -1,5 +1,5 @@
 {
-  "identifier" : "C82468A3",
+  "identifier" : "7DE8F639",
   "nonRenewingSubscriptions" : [
 
   ],
@@ -8,20 +8,20 @@
   ],
   "settings" : {
     "_applicationInternalID" : "6499357254",
+    "_billingGracePeriodEnabled" : false,
+    "_billingIssuesEnabled" : false,
     "_compatibilityTimeRate" : {
       "3" : 6
     },
     "_developerTeamID" : "YLUV9GUS77",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 748005288.94068098,
+    "_lastSynchronizedDate" : 748358319.09454405,
     "_locale" : "en_US",
+    "_renewalBillingIssuesEnabled" : false,
     "_storefront" : "USA",
     "_storeKitErrors" : [
       {
-        "current" : {
-          "index" : 2,
-          "type" : "generic"
-        },
+        "current" : null,
         "enabled" : false,
         "name" : "Load Products"
       },
@@ -56,10 +56,7 @@
         "name" : "Manage Subscriptions Sheet"
       },
       {
-        "current" : {
-          "index" : 0,
-          "type" : "refund request"
-        },
+        "current" : null,
         "enabled" : false,
         "name" : "Refund Request Sheet"
       },
@@ -69,7 +66,7 @@
         "name" : "Offer Code Redeem Sheet"
       }
     ],
-    "_timeRate" : 1001
+    "_timeRate" : 1002
   },
   "subscriptionGroups" : [
     {
@@ -86,7 +83,7 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "9.99",
+          "displayPrice" : "5.99",
           "familyShareable" : false,
           "groupNumber" : 2,
           "internalID" : "6502223936",
@@ -94,7 +91,7 @@
           "localizations" : [
             {
               "description" : "Renew every month",
-              "displayName" : "Starter",
+              "displayName" : "Monthly",
               "locale" : "en_US"
             }
           ],
@@ -111,12 +108,12 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "99.99",
+          "displayPrice" : "49.99",
           "familyShareable" : false,
           "groupNumber" : 1,
           "internalID" : "6502232792",
           "introductoryOffer" : {
-            "internalID" : "86C0EC23",
+            "internalID" : "926D4B71",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P1W"
@@ -124,7 +121,7 @@
           "localizations" : [
             {
               "description" : "Renew yearly",
-              "displayName" : "Best value",
+              "displayName" : "Yearly",
               "locale" : "en_US"
             }
           ],

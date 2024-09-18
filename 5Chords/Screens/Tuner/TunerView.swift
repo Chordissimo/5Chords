@@ -63,7 +63,7 @@ struct TunerView: View {
                                     } label: {
                                         VStack {
                                             Text(instrument.name.uppercased())
-                                                .font(.system(size: 14))
+                                                .font(.custom(SOFIA, size: 14))
                                                 .fontWeight(.semibold)
                                                 .fontWidth(.expanded)
                                                 .foregroundStyle(.white)
@@ -142,12 +142,12 @@ struct TunerView: View {
                             ZStack {
                                 HStack(spacing: 0) {
                                     Text("Tune up")
-                                        .font(.system(size: 16))
+                                        .font(.custom(SOFIA, size: 16))
                                         .foregroundStyle(tunerModel.data.distance < 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
                                         .frame(width: geometry.size.width / 2, alignment: .center)
                                                                         
                                     Text("Tune down")
-                                        .font(.system(size: 16))
+                                        .font(.custom(SOFIA, size: 16))
                                         .foregroundStyle(tunerModel.data.distance > 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
                                         .frame(width: geometry.size.width / 2, alignment: .center)
                                 }
@@ -257,7 +257,7 @@ struct TuningsMenuView: View {
                         tunerModel.switchTuning(tuningIndex: selectedTuning)
                     } label: {
                         Text(tuning.name)
-                            .font(.system(size: 14))
+                            .font(.custom(SOFIA, size: 14))
                             .fontWeight(.semibold)
                             .foregroundStyle(selectedTuning == tuningIndex ? .white : .gray40)
                     }
@@ -279,7 +279,7 @@ struct CircleView: View {
                 .frame(height: 50)
             Text(label)
                 .foregroundStyle(.gray40)
-                .font(.system(size: 14))
+                .font(.custom(SOFIA, size: 14))
                 .fontWeight(.semibold)
                 .fontWidth(.expanded)
         }

@@ -92,7 +92,7 @@ struct TopPanel: View {
                                     .foregroundColor(.disabledText)
                                 Text(song.ext.uppercased())
                                     .fontWeight(.bold)
-                                    .font(.system(size: 16))
+                                    .font(.custom(SOFIA, size: 16))
                                     .foregroundColor(.gray10)
                             }
                             .frame(height: LyricsViewModelConstants.videoPlayerHeight)
@@ -106,11 +106,11 @@ struct TopPanel: View {
             /// MARK: Song title
             VStack {
                 Text(song.name)
-                    .font(.system(size: 20))
+                    .font(.custom(SOFIA, size: 20))
                     .fontWeight(.semibold)
                     .multilineTextAlignment(.center)
                 Text(song.songType.rawValue + " • " + dateToString(song.created))
-                    .font(.system(size: 14))
+                    .font(.custom(SOFIA, size: 14))
                     .foregroundStyle(.white)
                     .opacity(0.6)
             }

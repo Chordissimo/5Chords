@@ -36,13 +36,12 @@ struct AllSongs: View {
                         HStack {
                             Image("logo3")
                                 .resizable()
-                                .foregroundColor(.crown)
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 20)
                             Text("Upgrade to Premium")
                                 .foregroundStyle(.white)
                                 .fontWeight(.semibold)
-                                .font(.system(size: 18))
+                                .font(.custom(SOFIA, size: 18))
                         }
                     }
                     .frame(width: AppDefaults.screenWidth, height: 50)
@@ -243,7 +242,7 @@ struct AllSongs: View {
                         .frame(width: 300, height: 80)
                         .foregroundStyle(.gray5)
                         .fontWeight(.semibold)
-                        .font(.system(size: 16))
+                        .font(.custom(SOFIA, size: 16))
                         .opacity(0.7)
                         .multilineTextAlignment(.center)
                         .background {
@@ -275,10 +274,9 @@ struct AllSongs: View {
         .toolbar {
             ToolbarItem(placement: .principal) {
                 VStack {
-                    Text("COLLECTION")
+                    Text("My collection")
                         .foregroundStyle(.secondaryText)
-                        .font(.system(size: 20))
-                        .fontWeight(.semibold)
+                        .font(.custom(SOFIA_SEMIBOLD, size: 20))
                 }
                 .frame(height: 20)
             }
@@ -289,17 +287,26 @@ struct AllSongs: View {
         .toolbarColorScheme(.dark)
         .navigationBarItems(
             leading:
-                ActionButton(imageName: "custom.hexagon.fill") {
+                Button {
                     showSettings = true
-                }
-                .frame(height: 22)
-                .foregroundColor(.white),
+                } label: {
+                    Image(systemName: "gearshape.fill")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 22, height: 22)
+                        .foregroundColor(.white)
+                },
             trailing:
-                ActionButton(imageName: "magnifyingglass") {
-                    withAnimation {
-                        songsList.showSearch.toggle()
-                    }
-                }.foregroundColor(.white)
+                Button {
+                    songsList.showSearch.toggle()
+                } label: {
+                    Image(systemName: "magnifyingglass")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 22, height: 22)
+                        .foregroundColor(songsList.songs.count == 0 ? .gray40 : .white)
+                }
+                .disabled(songsList.songs.count == 0)
         )
         .fullScreenCover(isPresented: $showPaywall) {  
             Paywall(showPaywall: $showPaywall) {

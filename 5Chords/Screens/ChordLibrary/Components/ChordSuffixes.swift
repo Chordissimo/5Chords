@@ -22,7 +22,7 @@ struct ChordSuffixes: View {
         VStack {
             if model.chordSearchResults.count == 0 {
                 Text("Hint: Type in a chord name such as Am or C minor.")
-                    .font(.system(size: 14))
+                    .font(.custom(SOFIA, size: 14))
                     .foregroundStyle(.gray40)
                     .transition(.identity)
             } else {

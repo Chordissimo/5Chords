@@ -52,7 +52,7 @@ struct PlaybackView: View {
                                     MatrixRain()
                                     VStack {
                                         Text("Extracting chords and lyrics")
-                                            .font(.system(size: 18))
+                                            .font(.custom(SOFIA, size: 18))
                                             .fontWeight(.semibold)
                                             .foregroundStyle(.white)
                                             .multilineTextAlignment(.center)
@@ -181,7 +181,7 @@ struct PlaybackView: View {
                                         if showOptions {
                                             VStack {
                                                 Text(AppDefaults.isLimited ? "Premium features" : "Preferences")
-                                                    .font(.system(size: 16))
+                                                    .font(.custom(SOFIA, size: 16))
                                                     .foregroundStyle(.gray40)
                                                     .fontWeight(.semibold)
                                                     .padding(.top, 20)

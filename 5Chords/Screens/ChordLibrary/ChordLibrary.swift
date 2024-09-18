@@ -77,7 +77,7 @@ struct ChordLibrary: View {
                         // Titile
                         VStack {
                             Text("GUITAR CHORD SHAPES")
-                                .font(.system(size: 20))
+                                .font(.custom(SOFIA, size: 20))
                                 .fontWeight(.semibold)
                                 .fontWidth(.expanded)
                                 .foregroundStyle(.white)
@@ -165,7 +165,7 @@ struct ChordLibrary: View {
                             //                        if chords.count > 0 {
                             Text(chords[0].key.display.symbol + chords[0].suffix.display.short)
                                 .foregroundStyle(.white)
-                                .font(.system(size: 24))
+                                .font(.custom(SOFIA, size: 24))
                                 .fontWeight(.semibold)
                                 .padding(.vertical, 15)
                             //                        }

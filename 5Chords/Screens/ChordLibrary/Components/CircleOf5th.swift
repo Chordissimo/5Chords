@@ -83,7 +83,7 @@ struct CircleOf5th: View {
 
                     Text(majorLabel)
                         .lineLimit(2)
-                        .font(.system(size: majorLabelFontSize))
+                        .font(.custom(SOFIA, size: majorLabelFontSize))
                         .fontWidth(.expanded)
                         .foregroundStyle(.gray10)
                         .frame(width: 30)
@@ -94,7 +94,7 @@ struct CircleOf5th: View {
                     
                     Text(minorLabel)
                         .lineLimit(2)
-                        .font(.system(size: minorLabelFontSize))
+                        .font(.custom(SOFIA, size: minorLabelFontSize))
                         .fontWidth(.expanded)
                         .foregroundStyle(.gray40)
                         .frame(width: 35)
@@ -104,10 +104,17 @@ struct CircleOf5th: View {
                         }
                 }
                 
-                Image("logoFilled")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
+                Circle()
+                    .fill(Color.progressCircle)
                     .frame(height: logoSize)
+                Text("5")
+                    .font(.custom("TitanOne", size: 35))
+                    .foregroundStyle(.gray10)
+                
+//                Image("logo3")
+//                    .resizable()
+//                    .aspectRatio(contentMode: .fit)
+//                    .frame(height: logoSize)
                 
             }
             .ignoresSafeArea()

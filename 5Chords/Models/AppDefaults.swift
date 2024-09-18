@@ -11,6 +11,13 @@ import SwiftUI
 import Alamofire
 import SwiftyChords
 
+let SOFIA = "SonfiaSans"
+let SOFIA_SEMIBOLD = "SofiaSans-Regular_SemiBold"
+let SOFIA_BOLD = "SofiaSans-Regular_Bold"
+let SOFIA_EXTRABOLD = "SofiaSans-Regular_ExtraBold"
+let SOFIA_BLACK = "SofiaSans-Regular_Black"
+let TITAN = "TitanOne"
+
 public struct AppDefaults {
     // --------- firebase defaults -----------------
 

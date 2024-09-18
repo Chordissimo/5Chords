@@ -26,19 +26,19 @@ struct SplashScreen: View {
                     Text("5")
                         .font(.custom("TitanOne", size: 60))
                         .foregroundStyle(.progressCircle)
+                    
                     Text("CHORDS")
-                        .fontWeight(.semibold)
-                        .fontWidth(.standard)
-                        .font(.system(size: 38))
+                        .font(.custom(SOFIA, size: 38))
                 }
                 .padding(.top, AppDefaults.topSafeArea + 50)
+                
                 Text("POWERED BY AI")
-                    .fontWeight(.semibold)
-                    .fontWidth(.expanded)
+                    .font(.custom(SOFIA, size: 12))
                     .foregroundStyle(.secondaryText)
-                    .font(.system(size: 11))
                     .padding(.bottom, AppDefaults.bottomSafeArea + 50)
+                
                 Spacer()
+                
                 ZStack(alignment: Alignment(horizontal: .leading, vertical: .center)) {
                     RoundedRectangle(cornerRadius: 5)
                         .fill(Color.gray40)

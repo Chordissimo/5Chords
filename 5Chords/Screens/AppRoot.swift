@@ -26,7 +26,9 @@ struct AppRoot: View {
                 if showOnboarding {
                     OnboardingPage1() {
                         AppDefaults.showOnboarding = false
-                        showOnboarding = false
+                        withAnimation {
+                            showOnboarding = false
+                        }
                     }
                 } else {
                     AllSongs()
@@ -41,14 +43,17 @@ struct AppRoot: View {
             }
         }
         .onAppear {
+            Task {
+                await self.store.prepareStore()
+            }
             AppDefaults.loadDefaultsFromFirestore() { isSuccess in
                 if isSuccess {
-                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
+//                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
                         loadingStage += 1
-                    }
-                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
+//                    }
+//                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
                         loadingStage += 1
-                    }
+//                    }
                 }
             }
         }

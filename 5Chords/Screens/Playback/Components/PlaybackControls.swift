@@ -21,7 +21,7 @@ struct PlaybackControls: View {
         VStack {
             VStack {
                 Text(formatTime(Double(player.currentTime / 1000)) + " / " + formatTime(song.duration))
-                    .font(.system(size: 16))
+                    .font(.custom(SOFIA, size: 16))
                     .foregroundStyle(.secondaryText)
             }
             HStack {
@@ -34,10 +34,9 @@ struct PlaybackControls: View {
                         }
                     } label: {
                         if AppDefaults.isLimited {
-                            Image(systemName: "crown.fill")
+                            Image("logo3")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .foregroundStyle(.crown)
                                 .frame(width: 30, height: 30)
                                 .opacityAnimaion()
                                 .glow()

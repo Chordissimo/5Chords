@@ -98,7 +98,7 @@ struct SearchChordsAds: View {
                         
                         Text("Save")
                             .fontWeight(.semibold)
-                            .font(.system(size: 20))
+                            .font(.custom(SOFIA, size: 20))
                             .padding(20)
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.black)

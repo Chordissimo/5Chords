@@ -20,7 +20,7 @@ struct EmptyListView: View {
                 VStack {
                     Text("No Recents")
                         .foregroundStyle(Color.white)
-                        .font(.system(size: 28))
+                        .font(.custom(SOFIA, size: 28))
                         .fontWeight(.bold)
                     Text("Songs and recordings will appear here.")
                         .foregroundStyle(Color.customGray1)

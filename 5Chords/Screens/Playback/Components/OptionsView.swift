@@ -28,7 +28,7 @@ struct OptionsView: View {
                     UpgradeButton(rightIconName: "arrow.up.arrow.down", content: {
                         VStack {
                             Text("Transpose chords")
-                                .font(.system(size: 20))
+                                .font(.custom(SOFIA, size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
                         }
@@ -39,7 +39,7 @@ struct OptionsView: View {
                     UpgradeButton(rightIconName: "square.and.pencil", content: {
                         VStack {
                             Text("Edit chords")
-                                .font(.system(size: 20))
+                                .font(.custom(SOFIA, size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
                         }
@@ -50,7 +50,7 @@ struct OptionsView: View {
                     UpgradeButton(rightIconName: "eye.slash.fill", content: {
                         VStack {
                             Text("Show or hide lyrics")
-                                .font(.system(size: 20))
+                                .font(.custom(SOFIA, size: 20))
                                 .foregroundStyle(.black)
                                 .fontWeight(.semibold)
                         }
@@ -63,7 +63,7 @@ struct OptionsView: View {
                     .padding(.top, 30)
                 HStack {
                     Text("Hide lyrics")
-                        .font(.system(size: 16))
+                        .font(.custom(SOFIA, size: 16))
                         .foregroundStyle(.white)
                         .fontWeight(.semibold)
                     Toggle("",isOn: $hideLyrics)
@@ -93,12 +93,12 @@ struct OptionsView: View {
                     } label: {
                         VStack(spacing: 3) {
                             Text("Transpose chords")
-                                .font(.system(size: 16))
+                                .font(.custom(SOFIA, size: 16))
                                 .foregroundStyle(.white)
                                 .fontWeight(.semibold)
                             HStack(spacing: 3) {
                                 Text("How it works")
-                                    .font(.system(size: 14))
+                                    .font(.custom(SOFIA, size: 14))
                                     .fontWeight(.semibold)
                                     .foregroundStyle(.gray40)
                                 Image(systemName: "questionmark.circle.fill")

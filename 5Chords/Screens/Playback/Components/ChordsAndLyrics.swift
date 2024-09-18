@@ -37,7 +37,7 @@ struct ChordsAndLyrics: View {
                                     .foregroundStyle(.gray20)
                                     .frame(width: width, height: 1)
                                 Text(formatTime(Double(timeframe.start / 1000)))
-                                    .font(.system(size: 12))
+                                    .font(.custom(SOFIA, size: 12))
                                     .foregroundStyle(Color.gray40)
                                     .padding(.trailing, 5)
                                     .background(Color.gray5)
@@ -58,14 +58,14 @@ struct ChordsAndLyrics: View {
                                             VStack {
                                                 VStack {
                                                     Text(chord)
-                                                        .font(.system(size: LyricsViewModelConstants.lyricsfontSize))
+                                                        .font(.custom(SOFIA, size: LyricsViewModelConstants.lyricsfontSize))
                                                         .fontWeight(chordIndex == currentChordIndex ? .bold : .semibold)
                                                         .foregroundStyle(chordIndex == currentChordIndex ? .progressCircle : .white)
                                                         .padding(.horizontal, 0)
                                                     if !song.hideLyrics {
                                                         Spacer()
                                                         Text(interval.words)
-                                                            .font(.system(size: LyricsViewModelConstants.lyricsfontSize))
+                                                            .font(.custom(SOFIA, size: LyricsViewModelConstants.lyricsfontSize))
                                                             .lineLimit(interval.limitLines)
                                                             .multilineTextAlignment(.center)
                                                             .foregroundStyle(chordIndex == currentChordIndex ? .progressCircle : .white)
@@ -121,11 +121,11 @@ struct ChordsAndLyrics: View {
                                 UpgradeButton(content: {
                                     VStack {
                                         Text("Upgrade to Premium")
-                                            .font(.system(size: 20))
+                                            .font(.custom(SOFIA, size: 20))
                                             .foregroundStyle(.black)
                                             .fontWeight(.semibold)
                                         Text("for more chords and lyrics")
-                                            .font(.system(size: 16))
+                                            .font(.custom(SOFIA, size: 16))
                                             .fontWeight(.semibold)
                                             .foregroundStyle(.gray10)
                                     }

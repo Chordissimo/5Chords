@@ -36,7 +36,7 @@ struct RainCharacters: View {
                 let character = Array(constant)[getRandomIndex(index: index)]
                 Text(String(character))
                     .foregroundStyle(.gray40)
-                    .font(.system(size: 14))
+                    .font(.custom(SOFIA, size: 14))
                     .frame(width: 30)
             }
         }

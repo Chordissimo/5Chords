@@ -50,7 +50,7 @@ struct TimerView: View {
             VStack {
                 Text(songName)
                     .foregroundStyle(Color.white)
-                    .font(.system(size: 24))
+                    .font(.custom(SOFIA, size: 24))
                     .padding(.bottom, 20)
                 Text(formatTime(duration,precision: TimePrecision.santiseconds))
                     .foregroundStyle(Color.customGray1)

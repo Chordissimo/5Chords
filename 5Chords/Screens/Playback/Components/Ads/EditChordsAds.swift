@@ -46,7 +46,7 @@ struct EditChordsAds: View {
                                     .frame(width: 70, height: 70)
                                 Text("Replay")
                                     .foregroundStyle(.white)
-                                    .font(.system(size: 14))
+                                    .font(.custom(SOFIA, size: 14))
                                     .fontWeight(.semibold)
                             }
                         }
