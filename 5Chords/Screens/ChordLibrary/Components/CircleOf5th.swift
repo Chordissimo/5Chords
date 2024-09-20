@@ -23,8 +23,8 @@ struct CircleOf5th: View {
             let minorSegmentCircleSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.275
 //            let majorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.063
 //            let minorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.04
-            let majorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.053
-            let minorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.04
+            let majorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.06
+            let minorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.05
 //            let logoSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.143
             let logoSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.2
             let innerWhiteCircleSize: CGFloat = geometry.size.width * 0.71
@@ -83,8 +83,8 @@ struct CircleOf5th: View {
 
                     Text(majorLabel)
                         .lineLimit(2)
-                        .font(.custom(SOFIA, size: majorLabelFontSize))
-                        .fontWidth(.expanded)
+                        .font(.system(size: majorLabelFontSize))
+                        .fontWeight(.semibold)
                         .foregroundStyle(.gray10)
                         .frame(width: 30)
                         .offset(x: majorOffsetX, y: majorOffsetY)
@@ -94,8 +94,7 @@ struct CircleOf5th: View {
                     
                     Text(minorLabel)
                         .lineLimit(2)
-                        .font(.custom(SOFIA, size: minorLabelFontSize))
-                        .fontWidth(.expanded)
+                        .font(.system(size: minorLabelFontSize))
                         .foregroundStyle(.gray40)
                         .frame(width: 35)
                         .offset(x: minorOffsetX, y: minorOffsetY)
@@ -110,12 +109,7 @@ struct CircleOf5th: View {
                 Text("5")
                     .font(.custom("TitanOne", size: 35))
                     .foregroundStyle(.gray10)
-                
-//                Image("logo3")
-//                    .resizable()
-//                    .aspectRatio(contentMode: .fit)
-//                    .frame(height: logoSize)
-                
+                                
             }
             .ignoresSafeArea()
         }

@@ -15,12 +15,18 @@ struct AppRoot: View {
     @State var productInfoLoaded = false
     @State var showOnboarding = AppDefaults.showOnboarding
     @State var loaderFinished: Bool = false
+    @State var showError: Bool = false
     
     var body: some View {
         NavigationStack {
             if loadingStage < 3 || !loaderFinished {
                 SplashScreen() {
-                    loaderFinished = true
+                    switch store.error {
+                    case .productLoadingError, .subscriptionGoupLoading, .subscriptionInfoLoading, .subscriptionRenewalInfoLoading:
+                        loaderFinished = false
+                    default:
+                        loaderFinished = true
+                    }
                 }
             } else {
                 if showOnboarding {
@@ -42,22 +48,39 @@ struct AppRoot: View {
                 }
             }
         }
+        .onChange(of: store.error) {
+            switch store.error {
+            case .productLoadingError, .subscriptionGoupLoading, .subscriptionInfoLoading, .subscriptionRenewalInfoLoading:
+                showError = true
+            default:
+                showError = false
+            }
+        }
         .onAppear {
             Task {
                 await self.store.prepareStore()
             }
             AppDefaults.loadDefaultsFromFirestore() { isSuccess in
                 if isSuccess {
-//                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
+                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
                         loadingStage += 1
-//                    }
-//                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
+                    }
+                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
                         loadingStage += 1
-//                    }
+                    }
                 }
             }
         }
         .environmentObject(store)
         .environmentObject(songsList)
+        .alert("Something went wrong", isPresented: $showError) {
+            Button {
+                exit(EXIT_SUCCESS)
+            } label: {
+                Text("Ok")
+            }
+        } message: {
+            Text(store.error.rawValue)
+        }
     }
 }

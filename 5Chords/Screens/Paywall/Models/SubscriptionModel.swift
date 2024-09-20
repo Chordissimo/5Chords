@@ -18,13 +18,17 @@ struct Subscription: Identifiable, Hashable {
     var startDate: Date? = nil
     var renewalDate: Date? = nil
     var expirationDate: Date? = nil
-    var expirationReason: Product.SubscriptionInfo.RenewalInfo.ExpirationReason?
+    var graceExpirationDate: Date? = nil
+//    var expirationReason: Product.SubscriptionInfo.RenewalInfo.ExpirationReason?
     var state: Product.SubscriptionInfo.RenewalState? = nil
     var willAutoRenew: Bool = false
     var renewProductId: String = ""
     var isEligibleForFreeTrial: Bool = false
     var isInTrialPeriod: Bool = false
     var trial: String = ""
+    var error: Subscription.SubscriptionModelError = .none
+    var info: Subscription.SubscriptionModelInfo = .none
+
     
     var billingPeriodLabel: String {
         switch self.billingPeriod {
@@ -40,33 +44,25 @@ struct Subscription: Identifiable, Hashable {
             return ""
         }
     }
-}
-
-enum PaywallState {
-    case eligibleForFreeTrial
-    case noActiveSubscriptions
-
-    case freeTrial
-    case freeTrialCancelled
-    case freeTrialBoughtMonthly
-
-    case yearlyActivated
-    case yearlyCancelled
-    case yearlyActivatedBoughtMonthly
-
-    case monthlyActivated
-    case monthlyCancelled
-    case monthlyActivatedBoughtYearly
+    
+    enum SubscriptionModelError: String {
+        case subscriptionInfoLoading = "Unable to load subsciption info from AppStore."
+        case subscriptionRenewalInfoLoading = "Unable to load subsciption renewal info from AppStore."
+        case none
+    }
+    
+    enum SubscriptionModelInfo: String {
+        case transactionPending = "Your purchase is transaction is awaiting confirmation. The subscription will start as soon as it's confirmed."
+        case transactionCancelled = "Your transaction hase been cancelled."
+        case transactionVerification = "Transaction verification failed."
+        case none
+    }
 }
 
 struct ProductFeature: Identifiable, Hashable {
     var id = UUID()
     var name: String
     var subscriptions: [String]
-}
-
-public enum StoreError: Error {
-    case failedVerification
 }
 
 class ProductModel: ObservableObject {
@@ -99,6 +95,23 @@ class ProductModel: ObservableObject {
         ),
     ]
     
+    enum PaywallState {
+        case eligibleForFreeTrial
+        case noActiveSubscriptions
+
+        case freeTrial
+        case freeTrialCancelled
+        case freeTrialBoughtMonthly
+
+        case yearlyActivated
+        case yearlyCancelled
+        case yearlyActivatedBoughtMonthly
+
+        case monthlyActivated
+        case monthlyCancelled
+        case monthlyActivatedBoughtYearly
+    }
+    
     var currentSubscription: Subscription? {
         switch self.paywallState {
         case .eligibleForFreeTrial, .noActiveSubscriptions:
@@ -114,16 +127,30 @@ class ProductModel: ObservableObject {
         return self.subscriptions.filter { $0.isDefault }.first
     }
     
+    enum StoreModelError: String, Error {
+        case productLoadingError = "Can't connect to AppStore.\nPlease check your internet connection."
+        case purchaseError = "Failed to purchase the subscription: transaction failed.\nSteps that might help to resolve the issue:\n- Please check your payment method settings and make sure you have enough funds.\n- Open Subscription Settings on your device and check if the correct subscription is activated. If so restart the 5Chords app.\n- Open Subscriptions page in the 5Chords app and tap Restore to sync the subscription data with AppStore."
+        case subscriptionGoupLoading = "Unable to load active subsciptions info from AppStore."
+        case subscriptionInfoLoading = "Unable to load subsciption info from AppStore."
+        case subscriptionRenewalInfoLoading = "Unable to load subsciption renewal info from AppStore."
+        case subscriptionRestore = "Restoring subscriptions failed."
+        case transactionVerificationError = "Couldn't verify transaction."
+        case manageSubscriptions = "Unable to access subscriptions on your device. Please open Setting -> Subscriptions -> 5Chords to manage your subscription."
+        case billingIssue = "There has been an issue with you payment.\nYour current subscription is going to expire soon."
+        case none
+    }
+    
     var products: [Product] = []
     @Published var productInfoLoaded = false
     var isMock: Bool = false
-    var updateListenerTask: Task<Void, Error>? = nil
+    var transactionListener: Task<Void, Error>? = nil
     @Published var updatingSubscriptions: Bool = false
-    @Published var paywallState: PaywallState = .eligibleForFreeTrial
+    @Published var paywallState: ProductModel.PaywallState = .eligibleForFreeTrial
+    @Published var error: ProductModel.StoreModelError = .none
     
     init(isMock: Bool = false) {
         self.isMock = isMock
-        self.updateListenerTask = listenForTransactions()
+        self.transactionListener = listenForTransactions()
     }
     
     func prepareStore() async {
@@ -141,7 +168,7 @@ class ProductModel: ObservableObject {
     
     deinit {
         if !self.isMock {
-            updateListenerTask?.cancel()
+            transactionListener?.cancel()
         }
     }
     
@@ -156,11 +183,30 @@ class ProductModel: ObservableObject {
         return Task.detached {
             for await result in Transaction.updates {
                 do {
-                    let transaction = try self.checkVerified(result)
-                    await self.loadSubScriptionInfo()
-                    await transaction.finish()
+                    switch result {
+                    case .unverified(let transaction, let error):
+                        dump(transaction)
+                        throw error
+                    case .verified(let transaction):
+                        dump(transaction)
+                        await self.loadSubScriptionInfo()
+                        await transaction.finish()
+                    }
                 } catch {
-                    print("Transaction failed verification")
+                    await MainActor.run {
+                        do {
+                            if let index = self.getSubscriptionIndexBy(id: try result.payloadValue.productID) {
+                                self.subscriptions[index].info = .transactionVerification
+                                print(self.subscriptions[index].info, error)
+                            } else {
+                                self.error = .transactionVerificationError
+                                print(self.error, error)
+                            }
+                        } catch {
+                            self.error = .transactionVerificationError
+                            print(self.error, error)
+                        }
+                    }
                 }
             }
         }
@@ -173,7 +219,10 @@ class ProductModel: ObservableObject {
         do {
             self.products = try await Product.products(for: productIds)
         } catch {
-            print(error)
+            await MainActor.run {
+                self.error = .productLoadingError
+                print(self.error.rawValue, error)
+            }
         }
     }
     
@@ -211,28 +260,27 @@ class ProductModel: ObservableObject {
             let result = try await product.purchase()
             switch result {
             case .success(let verificationResult):
-                let transaction = try checkVerified(verificationResult)
-                await transaction.finish()
-                await self.loadSubScriptionInfo()
-            default:
-                print("failed to purchase: subscriptionId")
+                switch verificationResult {
+                case .unverified(let transaction, let error):
+                    dump(transaction)
+                    throw error
+                case .verified(let transaction):
+                    await self.loadSubScriptionInfo()
+                    await transaction.finish()
+                }
+            case .pending: /// <- interrupted purchase
+                return false
+            default: /// <- user closed manage subs dialog without paying
                 return false
             }
         } catch {
-            print("here:",error)
+            await MainActor.run {
+                self.error = .purchaseError
+                print(self.error.rawValue, subscriptionId, error)
+            }
             result = false
         }
-        
         return result
-    }
-    
-    func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
-        switch result {
-        case .unverified:
-            throw StoreError.failedVerification
-        case .verified(let signedType):
-            return signedType
-        }
     }
     
     func loadSubScriptionInfo() async {
@@ -243,10 +291,14 @@ class ProductModel: ObservableObject {
         do {
             subs = try await Product.SubscriptionInfo.status(for: "21482440")
         } catch {
-            print(error)
+            await MainActor.run {
+                self.error = .subscriptionGoupLoading
+                self.updatingSubscriptions = false
+                print(self.error.rawValue, error)
+            }
+            return
         }
         
-        guard subs != nil else { return }
         self.subscriptions = ProductModel.resetSubscriptions()
         for p in self.products {
             if let index = self.subscriptions.firstIndex(where: { $0.id == p.id} ) {
@@ -276,30 +328,32 @@ class ProductModel: ObservableObject {
                     do {
                         return try $0.renewalInfo.payloadValue.currentProductID == p.id
                     } catch {
-                        print(error)
+                        self.error = .subscriptionInfoLoading
+                        print(self.error.rawValue, error)
+                        return false
                     }
-                    return false
                 })
+                
                 if let status = statuses?.first {
-                    switch status.state {
-                    case .subscribed, .inGracePeriod, .inBillingRetryPeriod:
-                        do {
-                            if let index = subscriptions.firstIndex(where: { $0.id == p.id} ) {
-                                self.subscriptions[index].state = status.state
-                                self.subscriptions[index].startDate = try status.transaction.payloadValue.signedDate
-                                self.subscriptions[index].expirationDate = try status.transaction.payloadValue.expirationDate
-
-                                self.subscriptions[index].renewProductId = try status.renewalInfo.payloadValue.autoRenewPreference ?? ""
-                                self.subscriptions[index].renewalDate = try status.renewalInfo.payloadValue.renewalDate
-                                self.subscriptions[index].expirationReason = try status.renewalInfo.payloadValue.expirationReason
-                                self.subscriptions[index].willAutoRenew = try status.renewalInfo.payloadValue.willAutoRenew
-                                self.subscriptions[index].isInTrialPeriod = try status.transaction.payloadValue.offerType == .introductory
+                    do {
+                        if let index = subscriptions.firstIndex(where: { $0.id == p.id} ) {
+                            self.subscriptions[index].state = status.state
+                            self.subscriptions[index].startDate = try status.transaction.payloadValue.signedDate
+                            self.subscriptions[index].expirationDate = try status.transaction.payloadValue.expirationDate
+                            self.subscriptions[index].graceExpirationDate = try status.renewalInfo.payloadValue.gracePeriodExpirationDate
+                            self.subscriptions[index].renewProductId = try status.renewalInfo.payloadValue.autoRenewPreference ?? ""
+                            self.subscriptions[index].renewalDate = try status.renewalInfo.payloadValue.renewalDate
+                            self.subscriptions[index].willAutoRenew = try status.renewalInfo.payloadValue.willAutoRenew
+                            self.subscriptions[index].isInTrialPeriod = try status.transaction.payloadValue.offerType == .introductory
+                            if self.subscriptions[index].state == .inGracePeriod {
+                                await MainActor.run { self.error = .billingIssue }
                             }
-                        } catch {
-                            print(error)
                         }
-                    default:
-                        print("Unprocessed status")
+                    } catch {
+                        await MainActor.run {
+                            self.error = .subscriptionRenewalInfoLoading
+                            print(self.error.rawValue, error)
+                        }
                     }
                 }
             }
@@ -315,8 +369,8 @@ class ProductModel: ObservableObject {
             }
             self.updatingSubscriptions = false
 
-            dump(self.subscriptions)
-            print("paywallState:",self.paywallState)
+//            dump(self.subscriptions)
+//            print("paywallState:",self.paywallState, "expires:",self.subscriptions.map({ $0.expirationDate }) )
         }
     }
     
@@ -330,7 +384,7 @@ class ProductModel: ObservableObject {
             }
             
             if let mState = monthly.state, let yState = yearly.state {
-                if mState == .subscribed && yState == .subscribed {
+                if (mState == .subscribed || mState == .inGracePeriod) && (yState == .subscribed || yState == .inGracePeriod) {
                     if let mStart = monthly.startDate, let yEnd = yearly.expirationDate, let yStart = yearly.startDate, let mEnd = monthly.expirationDate {
                         if mStart >= yEnd {
                             if monthly.willAutoRenew {
@@ -352,7 +406,7 @@ class ProductModel: ObservableObject {
                     }
                 }
             } else if let yState = yearly.state {
-                if yState == .subscribed {
+                if (yState == .subscribed || yState == .inGracePeriod) {
                     if yearly.willAutoRenew {
                         if yearly.isInTrialPeriod {
                             if yearly.renewProductId == yearly.id {
@@ -382,7 +436,7 @@ class ProductModel: ObservableObject {
                     }
                 }
             } else if let mState = monthly.state {
-                if mState == .subscribed {
+                if (mState == .subscribed || mState == .inGracePeriod) {
                     if monthly.willAutoRenew {
                         if monthly.renewProductId == monthly.id {
                             return
@@ -398,18 +452,15 @@ class ProductModel: ObservableObject {
                 }
             }
         }
-                        
         return .eligibleForFreeTrial
     }
     
     func getSubscriptionBy(id: String) -> Subscription? {
-        guard id != "" else { return nil }
-        let result = subscriptions.filter { $0.id == id }
-        return result.count > 0 ? result.first! : nil
+        return subscriptions.filter { $0.id == id }.first
     }
-    
-    func getSubscriptionIdBy(subscriptionId: String) -> Subscription? {
-        return self.subscriptions.filter { $0.id == subscriptionId }.first
+
+    func getSubscriptionIndexBy(id: String) -> Int? {
+        return subscriptions.firstIndex(where: { $0.id == id })
     }
     
     func restoreSubscription() async {
@@ -418,7 +469,8 @@ class ProductModel: ObservableObject {
             try await AppStore.sync()
             await self.loadSubScriptionInfo()
         } catch {
-            print(error)
+            self.error = .subscriptionRestore
+            print(self.error.rawValue, error)
         }
     }
     
@@ -448,27 +500,31 @@ class ProductModel: ObservableObject {
         guard subscriptionId != "" else { return result }
         
         if let subscription = getSubscriptionBy(id: subscriptionId) {
-            switch self.paywallState {
-            case .eligibleForFreeTrial:
-                result = subscription.billingPeriod == .year ? "Start 7 Days free trial" : "Subscribe"
-                
-            case .freeTrial, .yearlyActivated:
-                result = subscription.billingPeriod == .year ? "Manage subscriptions" : "Subscribe"
-                
-            case .freeTrialBoughtMonthly, .monthlyActivated:
-                result = subscription.billingPeriod == .year ? "Subscribe" : "Manage subscriptions"
-                
-            case .noActiveSubscriptions:
-                result = "Subscribe"
-
-            case .yearlyCancelled, .freeTrialCancelled:
-                result = subscription.billingPeriod == .year ? "Resubscribe" : "Subscribe"
-
-            case .monthlyCancelled:
-                result = subscription.billingPeriod == .year ? "Subscribe" : "Resubscribe"
-
-            case .yearlyActivatedBoughtMonthly, .monthlyActivatedBoughtYearly:
-                result = "Manage subscriptions"
+            if subscription.state == .inBillingRetryPeriod {
+                result = "Resubscribe"
+            } else {
+                switch self.paywallState {
+                case .eligibleForFreeTrial:
+                    result = subscription.billingPeriod == .year ? "Start \(subscription.trial) free trial" : "Subscribe"
+                    
+                case .freeTrial, .yearlyActivated:
+                    result = subscription.billingPeriod == .year ? "Manage subscriptions" : "Subscribe"
+                    
+                case .freeTrialBoughtMonthly, .monthlyActivated:
+                    result = subscription.billingPeriod == .year ? "Subscribe" : "Manage subscriptions"
+                    
+                case .noActiveSubscriptions:
+                    result = "Subscribe"
+                    
+                case .yearlyCancelled, .freeTrialCancelled:
+                    result = subscription.billingPeriod == .year ? "Resubscribe" : "Subscribe"
+                    
+                case .monthlyCancelled:
+                    result = subscription.billingPeriod == .year ? "Subscribe" : "Resubscribe"
+                    
+                case .yearlyActivatedBoughtMonthly, .monthlyActivatedBoughtYearly:
+                    result = "Manage subscriptions"
+                }
             }
         }
         return result
@@ -521,39 +577,58 @@ class ProductModel: ObservableObject {
         guard subscriptionId != "" else { return result }
         
         if let subscription = getSubscriptionBy(id: subscriptionId) {
-            let expDate = subscription.expirationDate?.formatted(date: .abbreviated, time: .omitted) ?? ""
-            switch self.paywallState {
-            case .eligibleForFreeTrial, .noActiveSubscriptions:
-                result = "No commitement,\ncancel any time"
-                
-            case .freeTrialCancelled:
-                result = subscription.billingPeriod == .year ? "7 Days Free trial\nExpires on \(expDate)" : "No commitement,\ncancel any time"
-                
-            case .freeTrial:
-                result = subscription.billingPeriod == .year ? "7 Days Free trial\n" : "No commitement,\ncancel any time"
-                
-            case .freeTrialBoughtMonthly:
-                result = subscription.billingPeriod == .year ? "7 Days Free trial\n" : "Begins after\nthe Free Trial expiration"
-                
-            case .monthlyActivated:
-                result = subscription.billingPeriod == .year ? "No commitement,\ncancel any time" : "Subscribed.\nWill renew on \(expDate)"
-                
-            case .monthlyCancelled:
-                result = subscription.billingPeriod == .year ? "No commitement,\ncancel any time" : "Expires on \(expDate)\n"
-                
-            case .yearlyActivated:
-                result = subscription.billingPeriod == .year ? "Subscribed\nWill renew on \(expDate)" : "No commitement,\ncancel any time"
-                
-            case .yearlyCancelled:
-                result = subscription.billingPeriod == .year ? "Expires on \(expDate)\n" : "No commitement,\ncancel any time"
-                
-            case .yearlyActivatedBoughtMonthly:
-                result = subscription.billingPeriod == .year ? "Subscribed\nExpires on \(expDate)" : "Begins after the Yearly\nsubscription expiration"
-                
-            case .monthlyActivatedBoughtYearly:
-                result = subscription.billingPeriod == .year ? "Begins after the Monthly\nsubscription expiration" : "Subscribed.\nExpires on \(expDate)"
+            if subscription.state == .inGracePeriod {
+                let graceExpDate = subscription.graceExpirationDate?.formatted(date: .abbreviated, time: .omitted) ?? ""
+                result = "Expires on \(graceExpDate)\nThere has been an issue with your payment."
+            } else {
+                let expDate = subscription.expirationDate?.formatted(date: .abbreviated, time: .omitted) ?? ""
+                switch self.paywallState {
+                case .eligibleForFreeTrial, .noActiveSubscriptions:
+                    result = "No commitement,\ncancel any time"
+                    
+                case .freeTrialCancelled:
+                    result = subscription.billingPeriod == .year ? "7 Days Free trial\nExpires on \(expDate)" : "No commitement,\ncancel any time"
+                    
+                case .freeTrial:
+                    result = subscription.billingPeriod == .year ? "7 Days Free trial\n" : "No commitement,\ncancel any time"
+                    
+                case .freeTrialBoughtMonthly:
+                    result = subscription.billingPeriod == .year ? "7 Days Free trial\n" : "Begins after\nthe Free Trial expiration"
+                    
+                case .monthlyActivated:
+                    result = subscription.billingPeriod == .year ? "No commitement,\ncancel any time" : "Subscribed.\nWill renew on \(expDate)"
+                    
+                case .monthlyCancelled:
+                    result = subscription.billingPeriod == .year ? "No commitement,\ncancel any time" : "Expires on \(expDate)\n"
+                    
+                case .yearlyActivated:
+                    result = subscription.billingPeriod == .year ? "Subscribed\nWill renew on \(expDate)" : "No commitement,\ncancel any time"
+                    
+                case .yearlyCancelled:
+                    result = subscription.billingPeriod == .year ? "Expires on \(expDate)\n" : "No commitement,\ncancel any time"
+                    
+                case .yearlyActivatedBoughtMonthly:
+                    result = subscription.billingPeriod == .year ? "Subscribed\nExpires on \(expDate)" : "Begins after the Yearly\nsubscription expiration"
+                    
+                case .monthlyActivatedBoughtYearly:
+                    result = subscription.billingPeriod == .year ? "Begins after the Monthly\nsubscription expiration" : "Subscribed.\nExpires on \(expDate)"
+                }
             }
         }
         return result
+    }
+    
+    func openManageSubscription() async {
+        if let scene = await UIApplication.shared.connectedScenes.first as? UIWindowScene {
+            do {
+                try await AppStore.showManageSubscriptions(in: scene)
+                await self.loadSubScriptionInfo()
+            } catch {
+                await MainActor.run {
+                    self.error = .manageSubscriptions
+                    print(self.error.rawValue, error)
+                }
+            }
+        }
     }
 }

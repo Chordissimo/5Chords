@@ -20,6 +20,7 @@ struct ChordLibrary: View {
     @State var searchText: String = ""
     @FocusState var isFocused: Bool
     @State var keyboardVisible: Bool = false
+    @State var showHint: Bool = false
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
@@ -77,7 +78,7 @@ struct ChordLibrary: View {
                         // Titile
                         VStack {
                             Text("GUITAR CHORD SHAPES")
-                                .font(.custom(SOFIA, size: 20))
+                                .font(.system( size: 20))
                                 .fontWeight(.semibold)
                                 .fontWidth(.expanded)
                                 .foregroundStyle(.white)
@@ -127,23 +128,17 @@ struct ChordLibrary: View {
                             }
                             .frame(width: geometry.size.width, height: circleOf5thSize)
                             .padding(.top,20)
-                        }
-                        
-                        Spacer()
-                    }
-//                    .frame(height: twoThirdsScreenHeight)
-                    
-                    if !showSearchResults {
-                        if selectedMajor < 0 && selectedMinor < 0 {
-                            // Hint when no key is selected
-                            VStack {
-                                ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+                            
+                            if selectedMajor < 0 && selectedMinor < 0 && showHint {
+                                // Hint when no key is selected
+                                VStack(spacing: 0) {
                                     Triangle()
                                         .fill(Color.gray20)
-                                        .frame(width: 160, height: 75)
+                                        .frame(width: 25, height: 15)
                                     
                                     Text("Tap the key to see chord shapes.")
-                                        .frame(width: 250, height: 60)
+                                        .font(.system(size: 18))
+                                        .frame(width: 260, height: 60)
                                         .foregroundStyle(.white)
                                         .opacity(0.7)
                                         .multilineTextAlignment(.center)
@@ -152,23 +147,22 @@ struct ChordLibrary: View {
                                                 .fill(Color.gray20)
                                         }
                                 }
+                                Spacer()
                             }
-                            .transition(.move(edge: .bottom))
-                            
-                            Spacer()
-                            
                         }
+                        
+                        Spacer()
                     }
+                    
                     // Chord shapes in a scroll view
                     if chords.count > 0 && !keyboardVisible {
                         VStack {
-                            //                        if chords.count > 0 {
                             Text(chords[0].key.display.symbol + chords[0].suffix.display.short)
                                 .foregroundStyle(.white)
-                                .font(.custom(SOFIA, size: 24))
+                                .font(.system( size: 24))
                                 .fontWeight(.semibold)
                                 .padding(.vertical, 15)
-                            //                        }
+
                             ScrollViewReader { proxy in
                                 ScrollView(.horizontal) {
                                     HStack(spacing: 0) {
@@ -228,6 +222,13 @@ struct ChordLibrary: View {
         .background(Color.gray5, ignoresSafeAreaEdges: .vertical)
         .onReceive(Publishers.keyboardHeight) { value in
             keyboardVisible = value > 0
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                withAnimation {
+                    showHint = true
+                }
+            }
         }
     }
 }

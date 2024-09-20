@@ -20,7 +20,7 @@ struct DurationLimitView: View {
                     VStack {
                         Text(isLimited ? limitedMessage : subscribedMessage)
                             .foregroundStyle(Color.gray5)
-                            .font(.custom(SOFIA, size: 16))
+                            .font(.system( size: 16))
                             .multilineTextAlignment(.center)
                     }
                     .padding()

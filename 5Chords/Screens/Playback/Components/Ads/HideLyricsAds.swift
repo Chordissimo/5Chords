@@ -44,7 +44,7 @@ struct HideLyricsAds: View {
                                 
                             HStack {
                                 Text("Hide lyrics")
-                                    .font(.custom(SOFIA, size: 16))
+                                    .font(.system( size: 16))
                                     .foregroundStyle(.white)
                                     .fontWeight(.semibold)
                                 Toggle("",isOn: $hideLyrics)

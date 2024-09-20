@@ -137,7 +137,6 @@ class RecognitionApiService: RequestInterceptor {
             )
             .validate()
             .responseDecodable(of: Response.self) { response in
-                print("code",response.response?.statusCode)
                 guard let result = response.value else {
                     completion(.failure(response.error ?? ServiceError.noResult),response.response?.statusCode)
                     return
@@ -159,7 +158,6 @@ class RecognitionApiService: RequestInterceptor {
             .validate(statusCode: 200...200)
             .responseDecodable(of: Response.self) { response in
                 guard let result = response.value else {
-                    print("getUnfinished: -->",response.error ?? ServiceError.noResult)
                     completion(.failure(response.error ?? ServiceError.noResult))
                     return
                 }

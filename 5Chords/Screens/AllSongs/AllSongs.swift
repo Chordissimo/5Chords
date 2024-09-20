@@ -25,6 +25,7 @@ struct AllSongs: View {
     @State var errorMessage: String = ""
     @State var showPermissionError = false
     @State var showIsLimited: Bool = AppDefaults.isLimited
+    @State var showBillingError: Bool = false
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
@@ -41,7 +42,7 @@ struct AllSongs: View {
                             Text("Upgrade to Premium")
                                 .foregroundStyle(.white)
                                 .fontWeight(.semibold)
-                                .font(.custom(SOFIA, size: 18))
+                                .font(.system( size: 18))
                         }
                     }
                     .frame(width: AppDefaults.screenWidth, height: 50)
@@ -242,7 +243,7 @@ struct AllSongs: View {
                         .frame(width: 300, height: 80)
                         .foregroundStyle(.gray5)
                         .fontWeight(.semibold)
-                        .font(.custom(SOFIA, size: 16))
+                        .font(.system( size: 16))
                         .opacity(0.7)
                         .multilineTextAlignment(.center)
                         .background {
@@ -267,6 +268,7 @@ struct AllSongs: View {
                     withAnimation(.linear(duration: 0.1)) {
                         initialAnimationStep = 2
                     }
+                    showBillingError = store.error == .billingIssue
                 }
             }
         }
@@ -413,6 +415,25 @@ struct AllSongs: View {
             }
         } message: {
             Text("You have denied the access to microphone. That means we are unable to capture and recognize chords and lyrics from audio input. If you wish to allow us to do so, please allow access for PROCHORDS app in the system settings.")
+        }
+        .alert("Something went wrong", isPresented: $showBillingError) {
+            Button {
+                store.error = .none
+                showBillingError = false
+                Task {
+                    await store.openManageSubscription()
+                }
+            } label: {
+                Text("Manage subscriptions")
+            }
+            Button {
+                store.error = .none
+                showBillingError = false
+            } label: {
+                Text("Close")
+            }
+        } message: {
+            Text(store.error.rawValue)
         }
     }
 }

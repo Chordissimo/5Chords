@@ -92,6 +92,15 @@ public struct AppDefaults {
     public static var STATUS_CALL_RETRY_INTERVAL: TimeInterval {
         get { TimeInterval(UserDefaults.standard.object(forKey: "STATUS_CALL_RETRY_INTERVAL") as? String ?? "12") ?? 12 }
     }
+
+    public static var SUPPORT_EMAIL: String {
+        get { UserDefaults.standard.object(forKey: "SUPPORT_EMAIL") as? String ?? "support@fivechords.com" }
+    }
+
+    public static var CONTACT_US_LINK: String {
+        get { UserDefaults.standard.object(forKey: "CONTACT_US_LINK") as? String ?? "https://fivechords.com/#contact-us" }
+    }
+
     
 // --------- local defaults -----------------
     public static var token: String {

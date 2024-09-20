@@ -27,11 +27,11 @@ struct ChordShapesView: View {
                                         VStack(alignment: .center, spacing: 10) {
                                             Text(key.display.symbol + suffix.display.symbolized)
                                                 .foregroundStyle(.white)
-                                                .font(.custom(SOFIA, size: 30))
+                                                .font(.system( size: 30))
                                                 .fontWeight(.semibold)
                                             Text(key.display.accessible + suffix.display.accessible)
                                                 .foregroundStyle(.white)
-                                                .font(.custom(SOFIA, size: 16))
+                                                .font(.system( size: 16))
                                                 .lineLimit(2)
                                                 .multilineTextAlignment(.center)
                                         }

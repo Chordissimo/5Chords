@@ -76,7 +76,7 @@ struct YoutubeView: View {
                 showWebView = false
             }
             .frame(height: 18)
-            .font(.custom(SOFIA, size: 18))
+            .font(.system( size: 18))
             .padding(.vertical, 10)
             .padding(.horizontal,5)
             Spacer()

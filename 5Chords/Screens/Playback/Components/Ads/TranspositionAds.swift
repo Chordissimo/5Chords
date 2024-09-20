@@ -59,7 +59,7 @@ struct TranspositionAds: View {
                                     VStack(spacing: 3) {
                                         Text("Transpose\nchords")
                                             .multilineTextAlignment(.center)
-                                            .font(.custom(SOFIA, size: 16))
+                                            .font(.system( size: 16))
                                             .foregroundStyle(.white)
                                             .fontWeight(.semibold)
                                     }

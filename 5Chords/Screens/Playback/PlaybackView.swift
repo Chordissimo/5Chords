@@ -49,10 +49,14 @@ struct PlaybackView: View {
                         if song.timeframes.count == 0 {
                             VStack {
                                 ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
-                                    MatrixRain()
+                                    if songsList.recognitionInProgress {
+                                        MatrixRain()
+                                    }
                                     VStack {
-                                        Text("Extracting chords and lyrics")
-                                            .font(.custom(SOFIA, size: 18))
+                                        let label1 = "Extracting chords and lyrics"
+                                        let label2 = "Sorry, couldn't extract chords and lyrics from audio source."
+                                        Text(songsList.recognitionInProgress ? label1 : label2)
+                                            .font(.system( size: 18))
                                             .fontWeight(.semibold)
                                             .foregroundStyle(.white)
                                             .multilineTextAlignment(.center)
@@ -64,6 +68,7 @@ struct PlaybackView: View {
                                     }
                                     .clipShape(.rect(cornerRadius: 12))
                                     .padding(.top, 100)
+                                    
                                 }
                                 .onChange(of: song.recognitionStatus) {
                                     if song.recognitionStatus == .serverError {
@@ -181,7 +186,7 @@ struct PlaybackView: View {
                                         if showOptions {
                                             VStack {
                                                 Text(AppDefaults.isLimited ? "Premium features" : "Preferences")
-                                                    .font(.custom(SOFIA, size: 16))
+                                                    .font(.system( size: 16))
                                                     .foregroundStyle(.gray40)
                                                     .fontWeight(.semibold)
                                                     .padding(.top, 20)

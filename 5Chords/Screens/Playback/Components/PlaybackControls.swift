@@ -21,7 +21,7 @@ struct PlaybackControls: View {
         VStack {
             VStack {
                 Text(formatTime(Double(player.currentTime / 1000)) + " / " + formatTime(song.duration))
-                    .font(.custom(SOFIA, size: 16))
+                    .font(.system( size: 16))
                     .foregroundStyle(.secondaryText)
             }
             HStack {

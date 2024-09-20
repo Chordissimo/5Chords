@@ -8,50 +8,71 @@
   ],
   "settings" : {
     "_applicationInternalID" : "6499357254",
-    "_billingGracePeriodEnabled" : false,
+    "_billingGracePeriodEnabled" : true,
     "_billingIssuesEnabled" : false,
     "_compatibilityTimeRate" : {
       "3" : 6
     },
     "_developerTeamID" : "YLUV9GUS77",
     "_failTransactionsEnabled" : false,
-    "_lastSynchronizedDate" : 748358319.09454405,
+    "_lastSynchronizedDate" : 748446231.29080904,
     "_locale" : "en_US",
-    "_renewalBillingIssuesEnabled" : false,
+    "_renewalBillingIssuesEnabled" : true,
     "_storefront" : "USA",
     "_storeKitErrors" : [
       {
-        "current" : null,
+        "current" : {
+          "index" : 3,
+          "type" : "generic"
+        },
         "enabled" : false,
         "name" : "Load Products"
       },
       {
-        "current" : null,
+        "current" : {
+          "index" : 2,
+          "type" : "purchase"
+        },
         "enabled" : false,
         "name" : "Purchase"
       },
       {
-        "current" : null,
+        "current" : {
+          "index" : 0,
+          "type" : "verification"
+        },
         "enabled" : false,
         "name" : "Verification"
       },
       {
-        "current" : null,
+        "current" : {
+          "index" : 2,
+          "type" : "generic"
+        },
         "enabled" : false,
         "name" : "App Store Sync"
       },
       {
-        "current" : null,
+        "current" : {
+          "index" : 1,
+          "type" : "generic"
+        },
         "enabled" : false,
         "name" : "Subscription Status"
       },
       {
-        "current" : null,
+        "current" : {
+          "index" : 3,
+          "type" : "generic"
+        },
         "enabled" : false,
         "name" : "App Transaction"
       },
       {
-        "current" : null,
+        "current" : {
+          "index" : 3,
+          "type" : "generic"
+        },
         "enabled" : false,
         "name" : "Manage Subscriptions Sheet"
       },
@@ -66,7 +87,7 @@
         "name" : "Offer Code Redeem Sheet"
       }
     ],
-    "_timeRate" : 1002
+    "_timeRate" : 1001
   },
   "subscriptionGroups" : [
     {
@@ -113,7 +134,7 @@
           "groupNumber" : 1,
           "internalID" : "6502232792",
           "introductoryOffer" : {
-            "internalID" : "926D4B71",
+            "internalID" : "519E38E6",
             "numberOfPeriods" : 1,
             "paymentMode" : "free",
             "subscriptionPeriod" : "P1W"

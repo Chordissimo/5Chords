@@ -33,7 +33,7 @@ struct AdsView<Content: View>: View {
             VStack {
                 Text(title)
                     .multilineTextAlignment(.center)
-                    .font(.custom(SOFIA, size: 20))
+                    .font(.system( size: 20))
                     .fontWeight(.semibold)
                     .fontWidth(.expanded)
                     .foregroundStyle(.white)
@@ -43,7 +43,7 @@ struct AdsView<Content: View>: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(height: 20)
                     Text("Premium feature")
-                        .font(.custom(SOFIA, size: 18))
+                        .font(.system( size: 18))
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
                 }
@@ -63,7 +63,7 @@ struct AdsView<Content: View>: View {
                 } label: {
                     Text("Upgrade to Premium")
                         .fontWeight(.semibold)
-                        .font(.custom(SOFIA, size: 20))
+                        .font(.system( size: 20))
                         .padding(20)
                         .frame(maxWidth: .infinity)
                         .foregroundColor(.black)

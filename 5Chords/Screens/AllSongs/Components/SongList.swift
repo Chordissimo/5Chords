@@ -21,18 +21,21 @@ struct SongList: View {
                         Spacer()
                     }
                 } else {
-                    List($songsList.songs, id: \.id) { song in
+                    if songsList.showSearch {
+                        SearchSongView(searchText: $searchText, showSearch: $songsList.showSearch, songsList: songsList)
+                            .padding(.horizontal, 20)
+                            .padding(.top, 10)
+                    }
+
+                    List($songsList.songs.filter({
+                        ($0.wrappedValue.name.localizedCaseInsensitiveContains(searchText) || searchText == "") &&
+                        (songsList.showSearch ? !$0.wrappedValue.isProcessing : true)
+                    }), id: \.id) { song in
                         VStack {
-                            if songsList.showSearch && songsList.songs.firstIndex(of: song.wrappedValue) == 0 {
-                                SearchSongView(searchText: $searchText, showSearch: $songsList.showSearch, songsList: songsList)
-                                    .listRowBackground(Color.gray5)
-                                    .id(0)
-                            }
                             if song.isVisible.wrappedValue {
                                 NavigationLink(destination: PlaybackView(song: song.wrappedValue, songsList: songsList)) {
                                     RecognizedSongView(songsList: songsList, song: song.wrappedValue)
-                                        .padding(.top,5)
-                                        .id(songsList.songs.firstIndex(of: song.wrappedValue)! + 1)
+                                        .id(songsList.songs.firstIndex(of: song.wrappedValue) ?? 0 + 1)
                                 }
                             }
                         }
@@ -43,6 +46,7 @@ struct SongList: View {
                     .listStyle(.plain)
                     .onDisappear {
                         songsList.showSearch = false
+                        searchText = ""
                     }
                 }
             }

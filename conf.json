@@ -16,5 +16,7 @@
     "GUITAR_CHORDS_URL": "https://app.fivechords.com/chords/GuitarChords.json",
     "UKULELE_CHORDS_URL": "https://app.fivechords.com/chords/UkuleleChords.json",
     "STATUS_CALL_RETRY_LIMIT": "10",
-    "STATUS_CALL_RETRY_INTERVAL": "12"
+    "STATUS_CALL_RETRY_INTERVAL": "12",
+    "SUPPORT_EMAIL": "support@fivechords.com",
+    "CONTACT_US_LINK":"https://fivechords.com/#contact-us"
 }

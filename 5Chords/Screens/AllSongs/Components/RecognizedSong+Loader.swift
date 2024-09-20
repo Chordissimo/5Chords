@@ -22,7 +22,7 @@ struct RecognizedSongView: View {
                         
                         VStack(alignment: .leading, spacing: 0) {
                             Text("Extracting chords and lyrics")
-                                .font(.custom(SOFIA, size: 18))
+                                .font(.system( size: 18))
                                 .fontWeight(.semibold)
                                 .foregroundStyle(.white)
                                 .padding(.bottom, 3)
@@ -83,7 +83,7 @@ struct RecognizedSongView: View {
                                 .foregroundColor(.disabledText)
                             Text(song.ext.uppercased())
                                 .fontWeight(.bold)
-                                .font(.custom(SOFIA, size: 16))
+                                .font(.system( size: 16))
                                 .foregroundColor(.gray10)
                         }
                     }
@@ -92,16 +92,16 @@ struct RecognizedSongView: View {
                         Text(song.name)
                             .foregroundStyle(Color.white)
                             .fontWeight(.semibold)
-                            .font(.custom(SOFIA, size: 18))
+                            .font(.system( size: 16))
                             .lineLimit(1)
                         
                         Text(formatTime(song.duration, precision: .seconds))
-                            .font(.custom(SOFIA, size: 14))
+                            .font(.system( size: 14))
                             .fontWeight(.bold)
                             .foregroundStyle(.secondaryText)
                         
                         Text(song.songType.rawValue + " · " + dateToString(song.created))
-                            .font(.custom(SOFIA, size: 14))
+                            .font(.system( size: 14))
                             .fontWeight(.regular)
                             .foregroundStyle(.disabledText)
                     }

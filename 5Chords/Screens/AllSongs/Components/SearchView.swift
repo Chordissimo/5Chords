@@ -21,8 +21,13 @@ struct SearchSongView: View {
                 
                 TextField("Search", text: $searchText)
                     .onChange(of: searchText) {
-                        songsList.filterSongs(searchText: searchText)
-                        songsList.objectWillChange.send()
+//                        if searchText == "" {
+//                            songsList.searchResults = songsList.songs
+//                        } else {
+//                            songsList.searchResults = songsList.songs.filter({ $0.name.contains(searchText) })
+//                        }
+//                        songsList.filterSongs(searchText: searchText)
+//                        songsList.objectWillChange.send()
                     }
                     .focused($isFocused)
                     .onAppear {
@@ -33,6 +38,7 @@ struct SearchSongView: View {
                     .foregroundColor(searchText != "" ? .secondaryText : .clear)
                     .onTapGesture {
                         searchText = ""
+                        songsList.objectWillChange.send()
                     }
                     .padding(.trailing,10)
             }
@@ -44,13 +50,9 @@ struct SearchSongView: View {
                 .foregroundStyle(.white)
                 .onTapGesture {
                     showSearch = false
+                    searchText = ""
+                    songsList.objectWillChange.send()
                 }
-        }
-        .onDisappear {
-            searchText = ""
-            songsList.filterSongs(searchText: searchText)
-            songsList.objectWillChange.send()
-
         }
         .padding(.vertical, 10)
     }

@@ -43,10 +43,10 @@ struct OnboardingPage1: View {
                             VStack {
                                 Spacer()
                                 Text("PICK YOUR")
-                                    .font(.custom(SOFIA_BOLD, size: 38))
+                                    .font(.custom(SOFIA, size: 36))
 
                                 Text("FAVORITE SONG")
-                                    .font(.custom(SOFIA_BOLD, size: 38))
+                                    .font(.custom(SOFIA, size: 36))
                             }
                             .frame(height: 150)
                             .transition(.push(from: .top))
@@ -71,12 +71,8 @@ struct OnboardingPage1: View {
                                     if animationStage >= 5 {
                                         VStack {
                                             HStack {
-                                                Text("FROM")
-                                                    .font(.custom(SOFIA_SEMIBOLD, size: 20))
-                                                    .foregroundStyle(.gray10)
-
-                                                Text("YOUTUBE™")
-                                                    .font(.custom(SOFIA_SEMIBOLD, size: 20))
+                                                Text("FROM YOUTUBE")
+                                                    .font(.custom(SOFIA_BOLD, size: 20))
                                                     .foregroundStyle(.gray10)
                                             }
                                         }
@@ -97,12 +93,8 @@ struct OnboardingPage1: View {
                                     if animationStage >= 6 {
                                         VStack {
                                             HStack {
-                                                Text("RECORDED")
-                                                    .font(.custom(SOFIA_SEMIBOLD, size: 20))
-                                                    .foregroundStyle(.gray10)
-
-                                                Text("AUDIO")
-                                                    .font(.custom(SOFIA_SEMIBOLD, size: 20))
+                                                Text("RECORDED AUDIO")
+                                                    .font(.custom(SOFIA_BOLD, size: 20))
                                                     .foregroundStyle(.gray10)
                                             }
                                         }
@@ -123,12 +115,8 @@ struct OnboardingPage1: View {
                                     if animationStage >= 7 {
                                         VStack {
                                             HStack {
-                                                Text("UPLOADED")
-                                                    .font(.custom(SOFIA_SEMIBOLD, size: 20))
-                                                    .foregroundStyle(.gray10)
-
-                                                Text("AUDIO")
-                                                    .font(.custom(SOFIA_SEMIBOLD, size: 20))
+                                                Text("UPLOADED AUDIO")
+                                                    .font(.custom(SOFIA_BOLD, size: 20))
                                                     .foregroundStyle(.gray10)
                                             }
                                         }
@@ -147,7 +135,7 @@ struct OnboardingPage1: View {
                                         
                                         VStack {
                                             Text("MP3, MPeg4, M4A, WAV\nand more")
-                                                .font(.custom(SOFIA_BOLD, size: 18))
+                                                .font(.system(size: 18))
                                                 .lineLimit(2)
                                                 .lineSpacing(10)
                                                 .multilineTextAlignment(.center)
@@ -170,32 +158,23 @@ struct OnboardingPage1: View {
                             VStack {
                                 if animationStage == 2 {
                                     VStack(spacing: 0) {
-                                        HStack(spacing: 5) {
-                                            Text("AI")
-                                                .font(.custom(SOFIA_BOLD, size: 36))
+                                        Text("CHORD")
+                                            .font(.custom(SOFIA, size:36))
+                                            .foregroundStyle(.progressCircle)
 
-                                            Text("CHORDS")
-                                                .font(.custom(SOFIA_BOLD, size: 38))
-                                                .foregroundStyle(.progressCircle)
-                                        }
-                                        Text("DETECTION")
-                                            .font(.custom(SOFIA_BOLD, size: 38))
+                                        Text("RECOGNITION")
+                                            .font(.custom(SOFIA, size:36))
                                     }
                                     .transition(.push(from: .trailing))
+                                    
                                 } else if animationStage == 3 {
                                     VStack(spacing: 0) {
-                                        HStack(spacing: 5) {
-                                            Text("AI")
-                                                .font(.custom(SOFIA_BOLD, size: 37))
-                                            
-                                            Text("LYRICS")
-                                                .font(.custom(SOFIA_BOLD, size: 38))
-                                                .foregroundStyle(.progressCircle)
-                                        }
+                                        Text("LYRICS")
+                                            .font(.custom(SOFIA, size: 36))
+                                            .foregroundStyle(.progressCircle)
+                                        
                                         Text("RECOGNITION")
-                                            .fontWeight(.semibold)
-                                            .fontWidth(.expanded)
-                                            .font(.custom(SOFIA_BOLD, size: 38))
+                                            .font(.custom(SOFIA, size: 36))
                                         
                                     }
                                     .transition(.push(from: .trailing))
@@ -203,22 +182,20 @@ struct OnboardingPage1: View {
                             }
                             if animationStage > 0 && animationStage < 3 {
                                 VStack {
-                                    Text("Instant Harmony:")
-                                        .font(.custom(SOFIA, size: 14))
+                                    Text("Pre-trained AI model will extract chords from any song for you.")
+                                        .font(.custom(SOFIA, size: 16))
                                         .foregroundStyle(.secondaryText)
-                                    Text("AI Chord Detection at Your Fingertips")
-                                        .font(.custom(SOFIA, size: 14))
-                                        .foregroundStyle(.secondaryText)
+                                        .multilineTextAlignment(.center)
                                 }
+                                .frame(width: 250)
                             } else if animationStage == 3 {
                                 VStack {
-                                    Text("Unveil the Lyrics:")
-                                        .font(.custom(SOFIA, size: 14))
+                                    Text("Large language model will recognize lyrics of your favorite songs.")
+                                        .font(.system( size: 16))
                                         .foregroundStyle(.secondaryText)
-                                    Text("AI-Driven Lyrics Extraction")
-                                        .font(.custom(SOFIA, size: 14))
-                                        .foregroundStyle(.secondaryText)
+                                        .multilineTextAlignment(.center)
                                 }
+                                .frame(width: 270)
                             }
                             
                             VStack {
@@ -251,7 +228,7 @@ struct OnboardingPage1: View {
                                     }
                                 } label: {
                                     Text("Next")
-                                        .font(.custom(SOFIA_BOLD, size: 20))
+                                        .font(.system(size: 20))
                                         .padding(20)
                                         .frame(maxWidth: .infinity)
                                         .foregroundColor(.black)

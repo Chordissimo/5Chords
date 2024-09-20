@@ -70,14 +70,15 @@ struct OnboardingPage2: View {
                                     
                                     Text("CHORD TABS")
                                         .font(.custom(SOFIA, size: 30))
-                                    
+                                        .padding(.bottom, 5)
+
                                     VStack {
                                         Text("Explore different options")
-                                            .font(.custom(SOFIA, size: 14))
+                                            .font(.custom(SOFIA, size: 16))
                                             .foregroundStyle(.secondaryText)
 
                                         Text("of playing any chord.")
-                                            .font(.custom(SOFIA, size: 14))
+                                            .font(.custom(SOFIA, size: 16))
                                             .foregroundStyle(.secondaryText)
                                     }
                                 }
@@ -92,7 +93,7 @@ struct OnboardingPage2: View {
                                                     VStack {
                                                         Text(ch.key.display.symbol + ch.suffix.display.symbolized)
                                                             .foregroundStyle(Color.white)
-                                                            .font(.custom(SOFIA, size: 15))
+                                                            .font(.system( size: 15))
                                                         ShapeLayerView(shapeLayer: createShapeLayer(chordPosition: Chords.guitar.matching(key: ch.key).matching(suffix: ch.suffix).first!, width: chordWidth, height: chordHeight))
                                                             .frame(width: chordWidth, height: chordHeight)
                                                     }
@@ -121,16 +122,15 @@ struct OnboardingPage2: View {
 
                                     Text("TUNER")
                                         .font(.custom(SOFIA, size: 30))
+                                        .padding(.bottom, 5)
 
                                     VStack {
                                         Text("Stay in tune")
-                                            .fontWeight(.semibold)
-                                            .font(.custom(SOFIA, size: 14))
+                                            .font(.custom(SOFIA, size: 16))
                                             .foregroundStyle(.secondaryText)
 
-                                        Text("with easy-to-use chromatic tuner")
-                                            .fontWeight(.semibold)
-                                            .font(.custom(SOFIA, size: 14))
+                                        Text("with chromatic tuner")
+                                            .font(.custom(SOFIA, size: 16))
                                             .foregroundStyle(.secondaryText)
                                     }
                                 }
@@ -210,7 +210,7 @@ struct OnboardingPage2: View {
                         } label: {
                             Text("Next")
                                 .fontWeight(.semibold)
-                                .font(.custom(SOFIA, size: 20))
+                                .font(.system( size: 20))
                                 .padding(20)
                                 .frame(maxWidth: .infinity)
                                 .foregroundColor(.black)

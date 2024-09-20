@@ -19,7 +19,8 @@ struct Paywall: View  {
     @State var messageColorTrigger: Bool = false
     var completion: () -> Void = {}
     @State var disableSubscribe: Bool = true
-    @State var showManageSubs: Bool = false
+//    @State var showManageSubs: Bool = false
+    @State var showError: Bool = false
         
     var body: some View {
         ZStack {
@@ -45,10 +46,10 @@ struct Paywall: View  {
                             }
                         } label: {
                             Text("Restore")
-                                .font(.custom(SOFIA, size: 18))
+                                .font(.system( size: 18))
                                 .foregroundStyle(.white)
                                 .fontWeight(.semibold)
-                                .font(.custom(SOFIA, size: 20))
+                                .font(.system( size: 20))
                         }
                     }
                     .padding(.top, AppDefaults.topSafeArea + 10)
@@ -62,13 +63,12 @@ struct Paywall: View  {
                             .font(.custom("TitanOne", size: 60))
                             .foregroundStyle(.progressCircle)
                         Text("CHORDS")
-                            .fontWeight(.semibold)
-                            .fontWidth(.expanded)
-                            .font(.custom(SOFIA, size: 38))
+                            .font(.custom(SOFIA_BOLD, size: 50))
                     }
                     Text("POWERED BY AI")
+                        .font(.system( size: 10))
+                        .fontWidth(.expanded)
                         .foregroundStyle(.secondaryText)
-                        .font(.custom(SOFIA, size: 12))
                 }
                 .padding(.vertical,40)
                 
@@ -118,12 +118,13 @@ struct Paywall: View  {
                             .font(.custom(SOFIA_BOLD, size: 20))
                             .foregroundStyle(.gray40)
                             .fontWeight(.semibold)
+                            .padding(.bottom, 2)
                     }
                     .frame(height: 30)
                     
                     Text(billingPeriod)
                         .foregroundStyle(.secondaryText)
-                        .font(.custom(SOFIA, size: 14))
+                        .font(.system( size: 14))
                     
                     Text(message)
                         .foregroundStyle(messageColor)
@@ -150,7 +151,7 @@ struct Paywall: View  {
                             ForEach(store.features, id: \.self) { feature in
                                 HStack {
                                     Text(feature.name)
-                                        .font(.custom(SOFIA, size: 15))
+                                        .font(.system( size: 15))
                                     
                                     Spacer()
                                     
@@ -185,7 +186,7 @@ struct Paywall: View  {
                         } label: {
                             Text("Terms of use")
                                 .foregroundStyle(.gray)
-                                .font(.custom(SOFIA, size: 14))
+                                .font(.system( size: 14))
                         }
                         .foregroundStyle(.white)
                         
@@ -194,7 +195,7 @@ struct Paywall: View  {
                         } label: {
                             Text("Privacy policy")
                                 .foregroundStyle(.gray)
-                                .font(.custom(SOFIA, size: 14))
+                                .font(.system( size: 14))
                         }
                         .foregroundStyle(.white)
                     }
@@ -209,26 +210,30 @@ struct Paywall: View  {
                     let manageSubs = store.showManageSubscriptions(subscriptionId: selectedSubscriptionId)
                     Button {
                         disableSubscribe = true
-                        if manageSubs {
-                            showManageSubs = true
-                        } else {
-                            Task {
+                        Task {
+                            if manageSubs {
+                                await store.openManageSubscription()
+                            } else {
                                 if await store.purchase(subscriptionId: selectedSubscriptionId) {
                                     await MainActor.run {
-                                        disableSubscribe = false
-                                        self.currentSubscriptionId = store.currentSubscription?.id ?? ""
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                            showPaywall = false
-                                            completion()
+                                        if store.error == .none {
+                                            self.currentSubscriptionId = store.currentSubscription?.id ?? ""
                                         }
                                     }
                                 }
-                                await MainActor.run { disableSubscribe = false }
+                            }
+                            await MainActor.run { disableSubscribe = false }
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                if store.error == .none {
+                                    showPaywall = false
+                                    completion()
+                                }
                             }
                         }
                     } label: {
                         Text(label)
-                            .font(.custom(SOFIA_SEMIBOLD, size: 20))
+                            .font(.system(size: 20))
+                            .fontWeight(.semibold)
                             .padding(20)
                             .frame(maxWidth: .infinity)
                             .foregroundColor(.black)
@@ -250,16 +255,8 @@ struct Paywall: View  {
                     }
                 }
             }
-            .onChange(of: showManageSubs) { oldValue, newValue in
-                if oldValue && !newValue {
-                    Task {
-                        await store.loadSubScriptionInfo()
-                        await MainActor.run { disableSubscribe = false }
-                    }
-                }
-            }
-            .manageSubscriptionsSheet(isPresented: $showManageSubs)
             .onAppear {
+                Task { await store.loadSubScriptionInfo() }
                 if let subscription = self.store.currentSubscription {
                     self.currentSubscriptionId = subscription.id
                     if subscription.renewProductId == subscription.id {
@@ -280,6 +277,22 @@ struct Paywall: View  {
                 self.messageColorTrigger = self.store.currentSubscription != nil
                 disableSubscribe = false
             }
+            .onChange(of: store.error) {
+                if store.error != .none {
+                    showError = true
+                }
+            }
+            .alert("Something went wrong", isPresented: $showError) {
+                Button {
+                    store.error = .none
+                    showError = false
+                } label: {
+                    Text("Ok")
+                }
+            } message: {
+                Text(store.error.rawValue)
+            }
+            
             if store.updatingSubscriptions {
                 Color.black.opacity(0.6)
                 VStack {

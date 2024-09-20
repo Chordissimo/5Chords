@@ -92,7 +92,7 @@ class DatabaseService {
 //        }
         Realm.Configuration.defaultConfiguration = config
         self.realm = try! Realm()
-        print("User Realm User file location: \(realm.configuration.fileURL!.path)")
+//        print("Realm location: \(realm.configuration.fileURL!.path)")
     }
     
     private func writeChords(chords: [APIChord]) -> List<ChordModel> {

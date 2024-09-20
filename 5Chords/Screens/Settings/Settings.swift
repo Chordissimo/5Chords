@@ -62,11 +62,26 @@ struct Settings: View {
                         }
                     }
                     .foregroundStyle(.white)
+
+                    Button {
+                        openURL(URL(string: AppDefaults.CONTACT_US_LINK)!)
+                    } label: {
+                        HStack {
+                            Text("Support")
+                            Spacer()
+                            Image(systemName: "questionmark.circle")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 18)
+                                .foregroundColor(.gray30)
+                        }
+                    }
+                    .foregroundStyle(.white)
                 }
                 
             }
             .navigationTitle("Settings")
-            .toolbarTitleDisplayMode(.inline)
+            .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     ActionButton(imageName: "xmark.circle.fill") {

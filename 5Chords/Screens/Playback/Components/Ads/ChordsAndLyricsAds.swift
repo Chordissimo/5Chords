@@ -30,7 +30,7 @@ struct ChordsAndLyricsAds: View {
                             .foregroundStyle(.gray20)
                             .frame(height: 1)
                         Text(line.start)
-                            .font(.custom(SOFIA, size: 12))
+                            .font(.system( size: 12))
                             .foregroundStyle(Color.gray40)
                             .padding(.horizontal, 5)
                     }
@@ -56,14 +56,14 @@ struct ChordsAndLyricsAds: View {
                                     }
                                     VStack {
                                         Text(chord.chord)
-                                            .font(.custom(SOFIA, size: LyricsViewModelConstants.lyricsfontSize))
+                                            .font(.system( size: LyricsViewModelConstants.lyricsfontSize))
                                             .fontWeight(isBold ? .bold : .semibold)
                                             .foregroundStyle(isBold ? .progressCircle : .white)
                                             .padding(.horizontal, 0)
                                         if !hideLyrics {
                                             Spacer()
                                             Text(chord.lyrics)
-                                                .font(.custom(SOFIA, size: LyricsViewModelConstants.lyricsfontSize))
+                                                .font(.system( size: LyricsViewModelConstants.lyricsfontSize))
                                                 .foregroundStyle(isBold ? .progressCircle : .white)
                                                 .padding(.horizontal, 0)
                                         }

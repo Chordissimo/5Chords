@@ -338,8 +338,9 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     }
 }
 
-final class SongsList: ObservableObject {    
+final class SongsList: ObservableObject {
     @Published var songs: [Song] = []
+    @Published var searchResults: [Song] = []
     @Published var recordStarted: Bool = false
     @Published var duration: TimeInterval = 0
     @Published var decibelChanges = [Float]()
@@ -431,9 +432,7 @@ final class SongsList: ObservableObject {
         self.songs.insert(song, at: 0)
         self.songs[0].startTimer()
         self.objectWillChange.send()
-        print("Start time:", Date())
         recognitionApiService.retrieveYoutubeFromDB(url: resultUrl, songId: song.id) { result, statusCode  in
-            print("End time:", Date())
             let i = self.getSongIndexByID(id: song.id)
             switch result {
             case .success(let response):
@@ -558,9 +557,10 @@ final class SongsList: ObservableObject {
     }
     
     func filterSongs(searchText: String) {
-        for i in songs.indices {
-            songs[i].isVisible = searchText == "" ? true : songs[i].name.contains(searchText)
-        }
+        self.searchResults = self.songs.filter({ $0.name.contains(searchText) })
+//        for i in songs.indices {
+//            songs[i].isVisible = searchText == "" ? true : songs[i].name.contains(searchText)
+//        }
     }
     
     func rebuildTimeframes() {

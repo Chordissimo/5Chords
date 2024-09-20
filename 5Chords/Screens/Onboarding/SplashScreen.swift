@@ -28,12 +28,13 @@ struct SplashScreen: View {
                         .foregroundStyle(.progressCircle)
                     
                     Text("CHORDS")
-                        .font(.custom(SOFIA, size: 38))
+                        .font(.custom(SOFIA_BOLD, size: 50))
                 }
                 .padding(.top, AppDefaults.topSafeArea + 50)
                 
                 Text("POWERED BY AI")
-                    .font(.custom(SOFIA, size: 12))
+                    .font(.system( size: 10))
+                    .fontWidth(.expanded)
                     .foregroundStyle(.secondaryText)
                     .padding(.bottom, AppDefaults.bottomSafeArea + 50)
                 
