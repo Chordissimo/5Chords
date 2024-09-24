@@ -197,14 +197,11 @@ class ProductModel: ObservableObject {
                         do {
                             if let index = self.getSubscriptionIndexBy(id: try result.payloadValue.productID) {
                                 self.subscriptions[index].info = .transactionVerification
-                                print(self.subscriptions[index].info, error)
                             } else {
                                 self.error = .transactionVerificationError
-                                print(self.error, error)
                             }
                         } catch {
                             self.error = .transactionVerificationError
-                            print(self.error, error)
                         }
                     }
                 }

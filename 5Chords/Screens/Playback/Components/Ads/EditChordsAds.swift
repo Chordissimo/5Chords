@@ -15,7 +15,7 @@ struct EditChordsAds: View {
     @State var hideLyrics = false
 
     var body: some View {
-        let width: CGFloat = AppDefaults.screenWidth * 0.8
+        let width: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? AppDefaults.screenWidth * 0.6 : AppDefaults.screenWidth * 0.8
 
         ZStack(alignment: Alignment(horizontal: .center, vertical: .center)) {
             VStack(alignment: .center) {

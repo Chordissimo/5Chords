@@ -225,6 +225,7 @@
 		C308BD3F2C4CF75600C54602 /* Ads */ = {
 			isa = PBXGroup;
 			children = (
+				C34150A02C4623B700C4C3B2 /* AdsView.swift */,
 				C308BD392C4A291B00C54602 /* EditChordsAds.swift */,
 				C308BD3B2C4CF68C00C54602 /* HideLyricsAds.swift */,
 				C308BD422C4CF9D700C54602 /* ChordsAndLyricsAds.swift */,
@@ -243,7 +244,6 @@
 				C3A9935E2C3573AD00C2D8B5 /* NavbarView.swift */,
 				C3A993602C35761400C2D8B5 /* ChordShapesView.swift */,
 				C30ADA682C41679200CC9F9A /* EditChordsView.swift */,
-				C34150A02C4623B700C4C3B2 /* AdsView.swift */,
 				C34150A22C46242B00C4C3B2 /* PlaybackControls.swift */,
 				C34150A42C46280900C4C3B2 /* TopPanel.swift */,
 				C34150A62C462A2400C4C3B2 /* ChordsAndLyrics.swift */,

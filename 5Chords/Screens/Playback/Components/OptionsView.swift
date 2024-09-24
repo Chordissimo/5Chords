@@ -163,17 +163,17 @@ struct OptionsView: View {
         .onAppear {
             showIsLimited = AppDefaults.isLimited
         }
-        .popover(isPresented: $showTranspositionAds) {
+        .sheet(isPresented: $showTranspositionAds) {
             AdsView(showAds: $showTranspositionAds, showPaywall: $showPaywall, title: "CHORD TRANSPOSITION", content: {
                 TranspositionAds()
             })
         }
-        .popover(isPresented: $showEditChordsAds) {
+        .sheet(isPresented: $showEditChordsAds) {
             AdsView(showAds: $showEditChordsAds, showPaywall: $showPaywall, title: "EDITING CHORDS", content: {
                 EditChordsAds()
             }) 
         }
-        .popover(isPresented: $showHideLyricsAds) {
+        .sheet(isPresented: $showHideLyricsAds) {
             AdsView(showAds: $showHideLyricsAds, showPaywall: $showPaywall, title: "SHOWING\nAND HIDING LYRICS", content: {
                 HideLyricsAds()
             })

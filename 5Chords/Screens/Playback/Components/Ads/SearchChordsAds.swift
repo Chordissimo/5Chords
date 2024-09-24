@@ -100,7 +100,13 @@ struct SearchChordsAds: View {
                             .fontWeight(.semibold)
                             .font(.system( size: 20))
                             .padding(20)
-                            .frame(maxWidth: .infinity)
+                            .apply {
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    $0.frame(width: 400)
+                                } else {
+                                    $0.frame(maxWidth: .infinity)
+                                }
+                            }
                             .foregroundColor(.black)
                             .background(isPressed ? .gray40 : .white, in: Capsule())
                         

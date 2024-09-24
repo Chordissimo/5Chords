@@ -232,6 +232,13 @@ struct AllSongs: View {
                             }
                         }
                         .padding(.top, 20)
+                        .apply {
+                            if UIDevice.current.userInterfaceIdiom == .pad {
+                                $0.frame(height: 400)
+                            } else {
+                                $0
+                            }
+                        }
                     }
                     .transition(.move(edge: .bottom))
                     .ignoresSafeArea()

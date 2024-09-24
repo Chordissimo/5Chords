@@ -17,7 +17,7 @@ struct TranspositionAds: View {
     let timer = Timer.publish(every: 2, on: .main, in: .common).autoconnect()
 
     var body: some View {
-        let width: CGFloat = AppDefaults.screenWidth * 0.8
+        let width: CGFloat = UIDevice.current.userInterfaceIdiom == .pad ? AppDefaults.screenWidth * 0.6 : AppDefaults.screenWidth * 0.8
         
         ZStack {
             VStack {

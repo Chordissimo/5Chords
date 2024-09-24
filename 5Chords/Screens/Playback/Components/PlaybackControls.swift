@@ -81,7 +81,6 @@ struct PlaybackControls: View {
                         if player.isPlaying {
                             player.pause()
                         } else {
-                            print(song.intervals, currentChordIndex)
                             player.jumpTo(miliseconds: song.intervals[currentChordIndex].start) {
                                 if AppDefaults.isPlaybackPanelMaximized {
                                     withAnimation {

@@ -70,6 +70,20 @@ struct AdsView<Content: View>: View {
                         .background(.progressCircle, in: Capsule())
                 }
                 .padding(20)
+                .apply {
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        $0.frame(width: 400)
+                    } else {
+                        $0
+                    }
+                }
+            }
+        }
+        .apply {
+            if UIDevice.current.userInterfaceIdiom == .pad {
+                $0.frame(height: AppDefaults.screenHeight / 3 * 2)
+            } else {
+                $0
             }
         }
     }
