@@ -1,5 +1,5 @@
 {
-    "GOOGLE_DATA_API_KEY": "AIzaSyBETfbiYDupCbYGm1CfCbNVOyU_tYKfBTc",
+    "GOOGLE_DATA_API_KEY": "AIzaSyBrjR0_EvjIsXTz46EjCAewwV2Bs_YOnfA",
     "GOOGLE_DATA_API_URL": "https://www.googleapis.com/youtube/v3/videos",
     "UPLOAD_ENDPOINT": "https://app.fivechords.com/api/recognize/upload",
     "YOUTUBE_ENDPOINT": "https://app.fivechords.com/api/recognize/youtube",

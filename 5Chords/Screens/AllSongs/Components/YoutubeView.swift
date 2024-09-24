@@ -15,38 +15,95 @@ struct WebView: UIViewRepresentable {
     
     func makeUIView(context: Context) -> WKWebView {
         let wkWebViewConfig = WKWebViewConfiguration()
+
         wkWebViewConfig.allowsInlineMediaPlayback = true
+        wkWebViewConfig.allowsAirPlayForMediaPlayback = true
+
         let wKWebView = WKWebView(frame: UIScreen.main.bounds, configuration: wkWebViewConfig)
+
         context.coordinator.updateState = { resultUrl in
             videoDidSelected(resultUrl)
             showWebView = false
         }
+
         wKWebView.configuration.userContentController.add(context.coordinator, name: "clickHandler")
+//        let script = """
+//                document.addEventListener('click', function(event) {
+//                    var currentElement = event.target;
+//                    while (currentElement !== null) {
+//                        if (currentElement.tagName === 'A') {
+//                            break;
+//                        }
+//                        currentElement = currentElement.parentNode;
+//                    }
+//                    window.webkit.messageHandlers.clickHandler.postMessage(currentElement.href);
+//                });
+//        """
         let script = """
-                document.addEventListener('click', function(event) {
+            window.addEventListener('click', function(event) {
+                if(event.target !== undefined) {
                     var currentElement = event.target;
-                    while (currentElement !== null) {
-                        if (currentElement.tagName === 'A') {
-                            break;
+                    var url = "";
+                    do {
+                        if(currentElement.tagName === 'A' && "href" in currentElement) {
+                            if(currentElement.href.includes("/watch?v=")) {
+                                event.stopImmediatePropagation();
+                                event.preventDefault();
+                                url = currentElement.href;
+                                break;
+                            }
                         }
                         currentElement = currentElement.parentNode;
+                    } while (currentElement !== null)
+
+                    if(url === "") {
+                        currentElement = event.target;
+                        do {
+                            if(currentElement.tagName === 'DIV' && currentElement.id == "dismissible") {
+                                event.stopImmediatePropagation();
+                                event.preventDefault();
+                                for (const child of currentElement.children) {
+                                    if(child.tagName === 'YTD-THUMBNAIL') {
+                                        for (const grandChild of child.children) {
+                                            if(grandChild.tagName === 'A' && grandChild.id == "thumbnail") {
+                                                if(grandChild.href.includes("/watch?v=")) {
+                                                    url = grandChild.href;
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                        if(url != "") break;
+                                    }
+                                }
+                                if(url != "") break;
+                            }
+                            currentElement = currentElement.parentNode;
+                        } while (currentElement !== null)
                     }
-                    window.webkit.messageHandlers.clickHandler.postMessage(currentElement.href);
-                });
+                    window.webkit.messageHandlers.clickHandler.postMessage(url);
+                }
+            }, { capture: true });
         """
-        wKWebView.configuration.userContentController.addUserScript(WKUserScript(source: script, injectionTime: .atDocumentEnd, forMainFrameOnly: true))
+
+        wKWebView.configuration.userContentController.addUserScript(
+            WKUserScript(
+                source: script,
+                injectionTime: .atDocumentEnd,
+                forMainFrameOnly: true)
+        )
+
         wKWebView.navigationDelegate = context.coordinator
-        
+
         return wKWebView
     }
     
     func updateUIView(_ webView: WKWebView, context: Context) {
-        let request = URLRequest(url: url)
+        let request = URLRequest(url: self.url)
         webView.load(request)
     }
     
     func makeCoordinator() -> WebViewCoordinator {
-        WebViewCoordinator(self)
+        return WebViewCoordinator(self)
     }
     
     class WebViewCoordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
@@ -68,6 +125,7 @@ struct WebView: UIViewRepresentable {
 
 struct YoutubeView: View {
     @Binding var showWebView: Bool
+    var url: String
     var videoDidSelected: (_ resultUrl: String) -> Void
 
     var body: some View {
@@ -82,7 +140,7 @@ struct YoutubeView: View {
             Spacer()
         }
         .frame(maxWidth: .infinity)
-        WebView(url: URL(string: "https://youtube.com")!, showWebView: $showWebView, videoDidSelected: videoDidSelected)
+        WebView(url: URL(string: url  == "" ? "https://youtube.com" : url)!, showWebView: $showWebView, videoDidSelected: videoDidSelected)
     }
     
 }

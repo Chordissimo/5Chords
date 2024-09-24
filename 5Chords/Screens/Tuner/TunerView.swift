@@ -20,221 +20,219 @@ struct TunerView: View {
 
     var body: some View {
         VStack {
-            GeometryReader { geometry in
-                let smallSegmentHeight = geometry.size.height * 0.04
-                let tallSegmentHeight = geometry.size.height * 0.07
-                let instrumentImageOriginalWidth = 412.0
-                let scaleFactor = geometry.size.width * 0.6 / instrumentImageOriginalWidth
-                let tunerSegmentsSpacing = (geometry.size.width - 31) / 30
+            let smallSegmentHeight = AppDefaults.screenHeight * 0.04
+            let tallSegmentHeight = AppDefaults.screenHeight * 0.07
+            let instrumentImageOriginalWidth = 412.0
+            let scaleFactor = AppDefaults.screenWidth * 0.6 / instrumentImageOriginalWidth
+            let tunerSegmentsSpacing = (AppDefaults.screenWidth - 31) / 30
 
-                ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
-                    Color.gray5
+            ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
+                Color.gray5
+                
+                VStack {
+                    // Close button on top
+                    HStack {
+                        Spacer()
+                        Button {
+                            isTunerPresented = false
+                        } label: {
+                            Image(systemName: "xmark")
+                                .resizable()
+                                .foregroundColor(.gray40)
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 20, height: 20)
+                        }
+                        .padding(.top, AppDefaults.topSafeArea + 20)
+                        .padding(.trailing, 20)
+                        .padding(.bottom, 5)
+                    }
                     
                     VStack {
-                        // Close button on top
+                        // Instruments menu
                         HStack {
-                            Spacer()
-                            Button {
-                                isTunerPresented = false
-                            } label: {
-                                Image(systemName: "xmark")
-                                    .resizable()
-                                    .foregroundColor(.gray40)
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 20, height: 20)
-                            }
-                            .padding(.top, geometry.safeAreaInsets.top + 20)
-                            .padding(.trailing, 20)
-                            .padding(.bottom, 5)
-                        }
-                        
-                        VStack {
-                            // Instruments menu
-                            HStack {
-                                ForEach(tunerModel.tuningsCollection.instruments, id: \.self) { instrument in
-                                    Button {
-                                        selectedInstrument = tunerModel.tuningsCollection.instruments.firstIndex(of: instrument)!
-                                        
-                                        let tunings = tunerModel.tuningsCollection.tunings.filter { $0.instrumentType == tunerModel.tuningsCollection.instruments[selectedInstrument].instrumentType }
+                            ForEach(tunerModel.tuningsCollection.instruments, id: \.self) { instrument in
+                                Button {
+                                    selectedInstrument = tunerModel.tuningsCollection.instruments.firstIndex(of: instrument)!
+                                    
+                                    let tunings = tunerModel.tuningsCollection.tunings.filter { $0.instrumentType == tunerModel.tuningsCollection.instruments[selectedInstrument].instrumentType }
 
-                                        selectedTuning = tunings.count > 0 ? tunerModel.tuningsCollection.tunings.firstIndex(where: { $0 == tunings[0] })! : 0
-                                        
-                                        tunerModel.switchTuning(tuningIndex: selectedTuning)
-                                    } label: {
-                                        VStack {
-                                            Text(instrument.name.uppercased())
-                                                .font(.custom(SOFIA_SEMIBOLD, size: 18))
-                                                .foregroundStyle(.white)
-                                                .padding(.horizontal, 20)
-                                                .padding(.vertical, 15)
-                                        }
-                                        .background(selectedInstrument == tunerModel.tuningsCollection.instruments.firstIndex(of: instrument)! ? Color.gray20 : Color.clear)
-                                        .clipShape(RoundedRectangle(cornerRadius: 30))
+                                    selectedTuning = tunings.count > 0 ? tunerModel.tuningsCollection.tunings.firstIndex(where: { $0 == tunings[0] })! : 0
+                                    
+                                    tunerModel.switchTuning(tuningIndex: selectedTuning)
+                                } label: {
+                                    VStack {
+                                        Text(instrument.name.uppercased())
+                                            .font(.custom(SOFIA_SEMIBOLD, size: 18))
+                                            .foregroundStyle(.white)
+                                            .padding(.horizontal, 20)
+                                            .padding(.vertical, 15)
                                     }
+                                    .background(selectedInstrument == tunerModel.tuningsCollection.instruments.firstIndex(of: instrument)! ? Color.gray20 : Color.clear)
+                                    .clipShape(RoundedRectangle(cornerRadius: 30))
                                 }
                             }
+                        }
+                        .frame(height: 50)
+                    }
+                    
+                    // Tunings menu
+                    VStack {
+                        let tunings = tunerModel.tuningsCollection.tunings.filter { $0.instrumentType == tunerModel.tuningsCollection.instruments[selectedInstrument].instrumentType }
+
+                        if tunings.count > 0 && tunings.count <= 3 {
+                            TuningsMenuView(tunerModel: tunerModel, selectedInstrument: $selectedInstrument, selectedTuning: $selectedTuning)
+                                .frame(height: 50)
+                        } else {
+                            ScrollView(.horizontal) {
+                                TuningsMenuView(tunerModel: tunerModel, selectedInstrument: $selectedInstrument, selectedTuning: $selectedTuning)
+                            }
+                            .scrollIndicators(.hidden)
                             .frame(height: 50)
                         }
-                        
-                        // Tunings menu
-                        VStack {
-                            let tunings = tunerModel.tuningsCollection.tunings.filter { $0.instrumentType == tunerModel.tuningsCollection.instruments[selectedInstrument].instrumentType }
+                    }.padding(.bottom, 10)
 
-                            if tunings.count > 0 && tunings.count <= 3 {
-                                TuningsMenuView(tunerModel: tunerModel, selectedInstrument: $selectedInstrument, selectedTuning: $selectedTuning)
-                                    .frame(height: 50)
-                            } else {
-                                ScrollView(.horizontal) {
-                                    TuningsMenuView(tunerModel: tunerModel, selectedInstrument: $selectedInstrument, selectedTuning: $selectedTuning)
+                    // Tuning scale: center indicator
+                    VStack {
+                        Image(systemName: "triangle.fill")
+                            .resizable()
+                            .foregroundColor(.progressCircle)
+                            .rotationEffect(Angle(degrees: 180))
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 28, height: 28)
+                    }
+                    
+                    // Tuning scale: segments
+                    ZStack {
+                        VStack {
+                            HStack(spacing: tunerSegmentsSpacing) {
+                                ForEach(tunerModel.scaleIntervals, id: \.self) { interval in
+                                    Rectangle()
+                                        .frame(width: 1, height: interval % 5 == 0 ? tallSegmentHeight : smallSegmentHeight)
+                                        .foregroundColor(.secondaryText)
+                                        .id(interval)
                                 }
-                                .scrollIndicators(.hidden)
-                                .frame(height: 50)
                             }
-                        }.padding(.bottom, 10)
-
-                        // Tuning scale: center indicator
-                        VStack {
-                            Image(systemName: "triangle.fill")
-                                .resizable()
-                                .foregroundColor(.progressCircle)
-                                .rotationEffect(Angle(degrees: 180))
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 28, height: 28)
                         }
-                        
-                        // Tuning scale: segments
-                        ZStack {
-                            VStack {
-                                HStack(spacing: tunerSegmentsSpacing) {
-                                    ForEach(tunerModel.scaleIntervals, id: \.self) { interval in
-                                        Rectangle()
-                                            .frame(width: 1, height: interval % 5 == 0 ? tallSegmentHeight : smallSegmentHeight)
-                                            .foregroundColor(.secondaryText)
-                                            .id(interval)
-                                    }
-                                }
+                        HStack(spacing: 0) {
+                            HStack {
+                                Spacer()
+                                Rectangle()
+                                    .fill(Color.progressCircle.opacity(0.1))
+                                    .frame(width: leftIndicator, height: tallSegmentHeight)
                             }
+                            .frame(width: AppDefaults.screenWidth / 2)
+                            HStack {
+                                Rectangle()
+                                    .fill(Color.progressCircle.opacity(0.1))
+                                    .frame(width: rightIndicator, height: tallSegmentHeight)
+                                Spacer()
+                            }
+                            .frame(width: AppDefaults.screenWidth / 2)
+                        }
+
+                    }
+                    
+                    // Tuneup, tune down, and checkmark
+                    VStack {
+                        let percentageDiff = abs(tunerModel.data.distance) / (tunerModel.data.semitoneRange / 2)
+                        let segmentWeight = ((tunerModel.data.semitoneRange / 2) / 15) / (tunerModel.data.semitoneRange / 2)
+                        ZStack {
                             HStack(spacing: 0) {
-                                HStack {
-                                    Spacer()
-                                    Rectangle()
-                                        .fill(Color.progressCircle.opacity(0.1))
-                                        .frame(width: leftIndicator, height: tallSegmentHeight)
-                                }
-                                .frame(width: geometry.size.width / 2)
-                                HStack {
-                                    Rectangle()
-                                        .fill(Color.progressCircle.opacity(0.1))
-                                        .frame(width: rightIndicator, height: tallSegmentHeight)
-                                    Spacer()
-                                }
-                                .frame(width: geometry.size.width / 2)
+                                Text("Tune up")
+                                    .font(.system( size: 16))
+                                    .foregroundStyle(tunerModel.data.distance < 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
+                                    .frame(width: AppDefaults.screenWidth / 2, alignment: .center)
+                                                                    
+                                Text("Tune down")
+                                    .font(.system( size: 16))
+                                    .foregroundStyle(tunerModel.data.distance > 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
+                                    .frame(width: AppDefaults.screenWidth / 2, alignment: .center)
                             }
-
+                            
+                            Image(systemName: "checkmark")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 30)
+                                .foregroundStyle(percentageDiff <= segmentWeight / 2 ? .progressCircle : .clear)
                         }
-                        
-                        // Tuneup, tune down, and checkmark
-                        VStack {
-                            let percentageDiff = abs(tunerModel.data.distance) / (tunerModel.data.semitoneRange / 2)
-                            let segmentWeight = ((tunerModel.data.semitoneRange / 2) / 15) / (tunerModel.data.semitoneRange / 2)
-                            ZStack {
-                                HStack(spacing: 0) {
-                                    Text("Tune up")
-                                        .font(.system( size: 16))
-                                        .foregroundStyle(tunerModel.data.distance < 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
-                                        .frame(width: geometry.size.width / 2, alignment: .center)
-                                                                        
-                                    Text("Tune down")
-                                        .font(.system( size: 16))
-                                        .foregroundStyle(tunerModel.data.distance > 0 && percentageDiff > segmentWeight / 2 ? .white : .clear)
-                                        .frame(width: geometry.size.width / 2, alignment: .center)
-                                }
-                                
-                                Image(systemName: "checkmark")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 30)
-                                    .foregroundStyle(percentageDiff <= segmentWeight / 2 ? .progressCircle : .clear)
-                            }
-                        }
-                        
-                        Spacer()
                     }
                     
-                    // Instrument image
-                    let asset = tunerModel.tuningsCollection.instruments[selectedInstrument].imageAssets[tunerModel.data.stringIndex]
-                    Image(asset)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: geometry.size.width)
-                        .scaleEffect(scaleFactor, anchor: .bottom)
-                        .background {
-                            GeometryReader { imageGeo in
-                                Color.clear.onAppear {
-                                    actualImageHeight = imageGeo.size.height
-                                    actualImageWidth = imageGeo.size.width
-                                }
-                                .onChange(of: selectedInstrument) { _, _ in
-                                    actualImageHeight = imageGeo.size.height
-                                    actualImageWidth = imageGeo.size.width
-                                }
+                    Spacer()
+                }
+                
+                // Instrument image
+                let asset = tunerModel.tuningsCollection.instruments[selectedInstrument].imageAssets[tunerModel.data.stringIndex]
+                Image(asset)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: scaleFactor >= 1 ? instrumentImageOriginalWidth : AppDefaults.screenWidth)
+                    .scaleEffect(scaleFactor >= 1 ? 1 : scaleFactor, anchor: .bottom)
+                    .background {
+                        GeometryReader { imageGeo in
+                            Color.clear.onAppear {
+                                actualImageHeight = imageGeo.size.height
+                                actualImageWidth = imageGeo.size.width
+                            }
+                            .onChange(of: selectedInstrument) { _, _ in
+                                actualImageHeight = imageGeo.size.height
+                                actualImageWidth = imageGeo.size.width
                             }
                         }
-                    
-                    // String labels on sides of insturument image
-                    HStack {
-                        let stringsCount = tunerModel.tuningsCollection.tunings[selectedTuning].notes.count / 2
-                        let leftStrings = tunerModel.tuningsCollection.tunings[selectedTuning].notes[0..<stringsCount]
-                        let rightStrings = tunerModel.tuningsCollection.tunings[selectedTuning].notes[stringsCount...]
-                        
-                        ZStack {
-                            ForEach(leftStrings.reversed(), id: \.id) { string in
-                                let offsetY = tunerModel.tuningsCollection.instruments[selectedInstrument].noteLabelOffsets[string.id]
-                                let posX = (geometry.size.width - actualImageWidth * scaleFactor) / 4
-                                let posY = actualImageHeight * offsetY * scaleFactor
-                                CircleView(
-                                    isSelected: string.id == tunerModel.data.stringIndex - 1,
-                                    label: string.name
-                                )
-                                .offset(x: 0, y: actualImageHeight * scaleFactor / -2 + 25)
-                                .position(x: posX, y: posY)
-                                .frame(height: 50)
-                            }
-                        }
-                        .frame(width: (geometry.size.width - actualImageWidth * scaleFactor) / 2, height: actualImageHeight * scaleFactor)
-
-                        Spacer()
-
-                        ZStack {
-                            ForEach(rightStrings, id: \.id) { string in
-                                let offsetY = tunerModel.tuningsCollection.instruments[selectedInstrument].noteLabelOffsets[string.id]
-                                let posX = (geometry.size.width - actualImageWidth * scaleFactor) / 4
-                                let posY = actualImageHeight * offsetY * scaleFactor
-                                CircleView(
-                                    isSelected: string.id == tunerModel.data.stringIndex - 1,
-                                    label: string.name
-                                )
-                                .offset(x: 0, y: actualImageHeight * scaleFactor / -2 + 25)
-                                .position(x: posX, y: posY)
-                                .frame(height: 50)
-                            }
-                        }
-                        .frame(width: (geometry.size.width - actualImageWidth * scaleFactor) / 2, height: actualImageHeight * scaleFactor)
                     }
-                    .frame(height: actualImageHeight * scaleFactor)
+                
+                // String labels on sides of insturument image
+                HStack {
+                    let stringsCount = tunerModel.tuningsCollection.tunings[selectedTuning].notes.count / 2
+                    let leftStrings = tunerModel.tuningsCollection.tunings[selectedTuning].notes[0..<stringsCount]
+                    let rightStrings = tunerModel.tuningsCollection.tunings[selectedTuning].notes[stringsCount...]
+                    
+                    ZStack {
+                        ForEach(leftStrings.reversed(), id: \.id) { string in
+                            let offsetY = tunerModel.tuningsCollection.instruments[selectedInstrument].noteLabelOffsets[string.id]
+                            let posX = (AppDefaults.screenWidth - actualImageWidth * (scaleFactor >= 1 ? 1 : scaleFactor)) / 4
+                            let posY = actualImageHeight * offsetY * (scaleFactor >= 1 ? 1 : scaleFactor)
+                            CircleView(
+                                isSelected: string.id == tunerModel.data.stringIndex - 1,
+                                label: string.name
+                            )
+                            .offset(x: 0, y: actualImageHeight * (scaleFactor >= 1 ? 1 : scaleFactor) / -2 + 25)
+                            .position(x: posX, y: posY)
+                            .frame(height: 50)
+                        }
+                    }
+                    .frame(width: (AppDefaults.screenWidth - actualImageWidth * (scaleFactor >= 1 ? 1 : scaleFactor)) / 2, height: actualImageHeight * (scaleFactor >= 1 ? 1 : scaleFactor))
+
+                    Spacer()
+
+                    ZStack {
+                        ForEach(rightStrings, id: \.id) { string in
+                            let offsetY = tunerModel.tuningsCollection.instruments[selectedInstrument].noteLabelOffsets[string.id]
+                            let posX = (AppDefaults.screenWidth - actualImageWidth * (scaleFactor >= 1 ? 1 : scaleFactor)) / 4
+                            let posY = actualImageHeight * offsetY * (scaleFactor >= 1 ? 1 : scaleFactor)
+                            CircleView(
+                                isSelected: string.id == tunerModel.data.stringIndex - 1,
+                                label: string.name
+                            )
+                            .offset(x: 0, y: actualImageHeight * (scaleFactor >= 1 ? 1 : scaleFactor) / -2 + 25)
+                            .position(x: posX, y: posY)
+                            .frame(height: 50)
+                        }
+                    }
+                    .frame(width: (AppDefaults.screenWidth - actualImageWidth * (scaleFactor >= 1 ? 1 : scaleFactor)) / 2, height: actualImageHeight * (scaleFactor >= 1 ? 1 : scaleFactor))
                 }
-                .ignoresSafeArea()
-                .onAppear {
-                    tunerModel.start()
-                }
-                .onDisappear {
-                    tunerModel.stop()
-                }
-                .onChange(of: tunerModel.data) { _, data in
-                    let w = abs(data.distance) >= data.semitoneRange ? Float(geometry.size.width / 2) : (abs(data.distance) / data.semitoneRange) * (Float(geometry.size.width / 2))
-                    leftIndicator = data.distance < 0 ? CGFloat(w) : 1
-                    rightIndicator = data.distance > 0 ? CGFloat(w) : 1
-                }
+                .frame(height: actualImageHeight * (scaleFactor >= 1 ? 1 : scaleFactor))
+            }
+            .ignoresSafeArea()
+            .onAppear {
+                tunerModel.start()
+            }
+            .onDisappear {
+                tunerModel.stop()
+            }
+            .onChange(of: tunerModel.data) { _, data in
+                let w = abs(data.distance) >= data.semitoneRange ? Float(AppDefaults.screenWidth / 2) : (abs(data.distance) / data.semitoneRange) * (Float(AppDefaults.screenWidth / 2))
+                leftIndicator = data.distance < 0 ? CGFloat(w) : 1
+                rightIndicator = data.distance > 0 ? CGFloat(w) : 1
             }
         }
     }

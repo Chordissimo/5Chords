@@ -38,19 +38,18 @@ struct ChordLibrary: View {
                             VStack {
                                 if showMoreShapes || showSearchResults {
                                     Button {
-                                        searchText = ""
+                                        showSearchResults = false
                                         isFocused = false
+                                        searchText = ""
                                         chords = []
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                            model.clearSearchResults()
+                                        }
                                         withAnimation(.linear(duration: 0.2)) {
                                             selectedMajor = -1
                                             selectedMinor = -1
                                             showMoreShapes = false
-                                            showSearchResults = false
-                                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                                                model.clearSearchResults()
-                                            }
                                         }
-                                        
                                     } label: {
                                         Image(systemName: "chevron.left")
                                             .resizable()

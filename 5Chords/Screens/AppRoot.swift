@@ -62,12 +62,12 @@ struct AppRoot: View {
             }
             AppDefaults.loadDefaultsFromFirestore() { isSuccess in
                 if isSuccess {
-                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
+//                    AppDefaults.loadChordsJSON(AppDefaults.GUITAR_CHORDS_URL) {
                         loadingStage += 1
-                    }
-                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
+//                    }
+//                    AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
                         loadingStage += 1
-                    }
+//                    }
                 }
             }
         }

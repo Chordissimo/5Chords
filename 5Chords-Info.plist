@@ -20,5 +20,10 @@
 		<string>TitanOne-Regular.ttf</string>
 		<string>SofiaSans-VariableFont_wght.ttf</string>
 	</array>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 </dict>
 </plist>

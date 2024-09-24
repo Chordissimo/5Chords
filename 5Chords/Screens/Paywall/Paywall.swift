@@ -19,7 +19,6 @@ struct Paywall: View  {
     @State var messageColorTrigger: Bool = false
     var completion: () -> Void = {}
     @State var disableSubscribe: Bool = true
-//    @State var showManageSubs: Bool = false
     @State var showError: Bool = false
         
     var body: some View {
@@ -85,7 +84,13 @@ struct Paywall: View  {
                                 Text(subscription.billingPeriodLabel)
                                     .font(.custom(SOFIA_SEMIBOLD, size: 18))
                                     .foregroundStyle(selectedSubscriptionId == subscription.id ? Color.black : Color.white)
-                                    .frame(width: (AppDefaults.screenWidth - 40) / 2, height: 40)
+                                    .apply {
+                                        if UIDevice.current.userInterfaceIdiom == .pad {
+                                            $0.frame(width: (AppDefaults.screenWidth / 4 * 3) / 2, height: 40)
+                                        } else {
+                                            $0.frame(width: (AppDefaults.screenWidth - 40) / 2, height: 40)
+                                        }
+                                    }
                             }
                             .background(selectedSubscriptionId == subscription.id ? Color.white : Color.clear, in: Capsule())
                         }
@@ -168,6 +173,13 @@ struct Paywall: View  {
                     .padding(.vertical, 5)
                     .padding(.horizontal, 20)
                 }
+                .apply {
+                    if UIDevice.current.userInterfaceIdiom == .pad {
+                        $0.frame(width: AppDefaults.screenWidth / 3 * 2)
+                    } else {
+                        $0
+                    }
+                }
                 .clipShape(.rect(cornerRadius: 20))
                 .background(
                     RoundedRectangle(cornerRadius: 20)
@@ -235,7 +247,13 @@ struct Paywall: View  {
                             .font(.system(size: 20))
                             .fontWeight(.semibold)
                             .padding(20)
-                            .frame(maxWidth: .infinity)
+                            .apply {
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    $0.frame(width: AppDefaults.screenWidth / 3 * 2)
+                                } else {
+                                    $0.frame(maxWidth: .infinity)
+                                }
+                            }
                             .foregroundColor(.black)
                             .background(buttonColor, in: Capsule())
                     }

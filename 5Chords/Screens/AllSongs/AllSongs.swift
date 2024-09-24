@@ -26,6 +26,7 @@ struct AllSongs: View {
     @State var showPermissionError = false
     @State var showIsLimited: Bool = AppDefaults.isLimited
     @State var showBillingError: Bool = false
+    @State var youtubeSearchUrl: String = ""
     
     var body: some View {
         ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
@@ -55,7 +56,7 @@ struct AllSongs: View {
                 }
                 
                 VStack {
-                    SongList(songsList: songsList)
+                    SongList(songsList: songsList, youtubeSearchUrl: $youtubeSearchUrl, youtubeViewPresented: $youtubeViewPresented)
                 }
                 
                 //Bottom panel
@@ -95,6 +96,10 @@ struct AllSongs: View {
                     ZStack(alignment: Alignment(horizontal: .center, vertical: .bottom)) {
                         HStack {
                             HStack(spacing: 20) {
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    Spacer()
+                                }
+                                
                                 NavigationSecondaryButton(imageName: "folder.fill") {
                                     if AppDefaults.isLimited && AppDefaults.songCounter == AppDefaults.LIMITED_NUMBER_OF_SONGS {
                                         showPaywall = true
@@ -113,6 +118,11 @@ struct AllSongs: View {
                                     }
                                 }
                                 .frame(width: 45, height: 45)
+
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    Spacer()
+                                }
+                                
                                 NavigationSecondaryButton(imageName: "mic.fill") {
                                     if AppDefaults.isLimited && AppDefaults.songCounter == AppDefaults.LIMITED_NUMBER_OF_SONGS {
                                         showPaywall = true
@@ -155,20 +165,46 @@ struct AllSongs: View {
                                         }
                                     }
                                 }
+                                
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    Spacer()
+                                }
                             }
                             .padding(.top,20)
                             
                             Spacer()
+                                .apply {
+                                    if UIDevice.current.userInterfaceIdiom == .pad {
+                                        $0.frame(width: AppDefaults.screenWidth / 5)
+                                    } else {
+                                        $0
+                                    }
+                                }
+                                
                             
                             HStack(spacing: 20)  {
+                                
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    Spacer()
+                                }
+                                
                                 NavigationSecondaryButton(imageName: "book.fill") {
                                     isLibraryPresented = true
                                 }
                                 .frame(width: 45, height: 45)
+                                
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    Spacer()
+                                }
+                                
                                 NavigationSecondaryButton(imageName: "custom.tuningfork.2") {
                                     isTunerPresented = true
                                 }
                                 .frame(width: 38, height: 38)
+                                
+                                if UIDevice.current.userInterfaceIdiom == .pad {
+                                    Spacer()
+                                }
                             }
                             .padding(.top,20)
                         }
@@ -332,8 +368,9 @@ struct AllSongs: View {
             ChordLibrary(isLibraryPresented: $isLibraryPresented)
         }
         .fullScreenCover(isPresented: $youtubeViewPresented) {
-            YoutubeView(showWebView: $youtubeViewPresented, videoDidSelected: { resultUrl in
+            YoutubeView(showWebView: $youtubeViewPresented, url: youtubeSearchUrl, videoDidSelected: { resultUrl in
                 self.youtubeViewPresented = false
+                self.youtubeSearchUrl = ""
                 let ytService = YouTubeAPIService()
                 ytService.getVideoData(videoUrl: resultUrl) { title, thumbnail, duration in
                     if duration == 0 {

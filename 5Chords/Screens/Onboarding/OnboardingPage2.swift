@@ -212,7 +212,13 @@ struct OnboardingPage2: View {
                                 .fontWeight(.semibold)
                                 .font(.system( size: 20))
                                 .padding(20)
-                                .frame(maxWidth: .infinity)
+                                .apply {
+                                    if UIDevice.current.userInterfaceIdiom == .pad {
+                                        $0.frame(width: AppDefaults.screenWidth / 3 * 2)
+                                    } else {
+                                        $0.frame(maxWidth: .infinity)
+                                    }
+                                }
                                 .foregroundColor(.black)
                                 .background(.progressCircle, in: Capsule())
                                 .padding(20)

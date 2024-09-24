@@ -21,17 +21,13 @@ struct CircleOf5th: View {
             let strokeLineWidth: CGFloat = (geometry.size.width - outerBorderWidth) * 0.428
             let majorSegmentCircleSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.571
             let minorSegmentCircleSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.275
-//            let majorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.063
-//            let minorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.04
-            let majorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.06
-            let minorLabelFontSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.05
-//            let logoSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.143
+            let majorLabelFontSize: CGFloat = ceil((geometry.size.width - outerBorderWidth) * 0.05)
+            let minorLabelFontSize: CGFloat = ceil((geometry.size.width - outerBorderWidth) * 0.035)
             let logoSize: CGFloat = (geometry.size.width - outerBorderWidth) * 0.2
             let innerWhiteCircleSize: CGFloat = geometry.size.width * 0.71
             let majorRadius = (geometry.size.width - outerBorderWidth) * 0.428
-//            let minorRadius = (geometry.size.width - outerBorderWidth) * 0.257
             let minorRadius = (geometry.size.width - outerBorderWidth) * 0.267
-
+            let _ = print(minorSegmentCircleSize,majorSegmentCircleSize)
 
             ZStack {
                 Color.gray5

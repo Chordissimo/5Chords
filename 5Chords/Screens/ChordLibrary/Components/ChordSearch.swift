@@ -29,6 +29,13 @@ struct ChordSearchView: View {
                             chords = []
                         }
                     }
+                    .onChange(of: isFocused) { oldValue, newValue in
+                        if !oldValue && newValue && !showSearchResults {
+                            showSearchResults = true
+                            chords = []
+                            model.clearSearchResults()
+                        }
+                    }
                 if searchText != "" {
                     Button {
                         searchText = ""

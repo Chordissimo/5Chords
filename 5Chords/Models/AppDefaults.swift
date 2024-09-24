@@ -22,7 +22,7 @@ public struct AppDefaults {
     // --------- firebase defaults -----------------
 
     public static var GOOGLE_DATA_API_KEY: String {
-        get { UserDefaults.standard.object(forKey: "GOOGLE_DATA_API_KEY") as? String ?? "AIzaSyBETfbiYDupCbYGm1CfCbNVOyU_tYKfBTc" }
+        get { UserDefaults.standard.object(forKey: "GOOGLE_DATA_API_KEY") as? String ?? "AIzaSyBrjR0_EvjIsXTz46EjCAewwV2Bs_YOnfA" }
     }
 
     public static var GOOGLE_DATA_API_URL: String {

@@ -36,6 +36,7 @@
 		C34150A72C462A2400C4C3B2 /* ChordsAndLyrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A62C462A2400C4C3B2 /* ChordsAndLyrics.swift */; };
 		C34150A92C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150A82C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift */; };
 		C34150AB2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34150AA2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift */; };
+		C34307972CA145E700B929A8 /* ConditionalModifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34307962CA145DF00B929A8 /* ConditionalModifier.swift */; };
 		C34A9BF32BD2EC7800CFC08F /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */; };
 		C34D48732C298E810008E5CE /* YouTubePlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48722C298E810008E5CE /* YouTubePlayerService.swift */; };
 		C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48742C2DA6970008E5CE /* UniPlayer.swift */; };
@@ -121,6 +122,7 @@
 		C34150A62C462A2400C4C3B2 /* ChordsAndLyrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChordsAndLyrics.swift; sourceTree = "<group>"; };
 		C34150A82C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationPrimaryButton.swift; sourceTree = "<group>"; };
 		C34150AA2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavigationSecondaryButton.swift; sourceTree = "<group>"; };
+		C34307962CA145DF00B929A8 /* ConditionalModifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConditionalModifier.swift; sourceTree = "<group>"; };
 		C34A9BF22BD2EC7800CFC08F /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		C34D48722C298E810008E5CE /* YouTubePlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YouTubePlayerService.swift; sourceTree = "<group>"; };
 		C34D48742C2DA6970008E5CE /* UniPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniPlayer.swift; sourceTree = "<group>"; };
@@ -197,6 +199,7 @@
 		B75A6FDF2BE0F870001153ED /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				C34307962CA145DF00B929A8 /* ConditionalModifier.swift */,
 				B75A6FE02BE0F882001153ED /* Int.swift */,
 				C3DF0ABB2BE93D1900F69AFB /* Chunked.swift */,
 				C30ADA5E2C38F4AE00CC9F9A /* LogEvents.swift */,
@@ -582,6 +585,7 @@
 				C37996E52C08580600DA3556 /* ChordSearch.swift in Sources */,
 				C3AC1BA72C1AB52D000DE8E5 /* YouTubeAPIService.swift in Sources */,
 				C37996E72C089B9E00DA3556 /* ChordLibraryModel.swift in Sources */,
+				C34307972CA145E700B929A8 /* ConditionalModifier.swift in Sources */,
 				C39B6D932BEFE3F6002279E3 /* TunerModel.swift in Sources */,
 				C3AC1B852C0F6EE9000DE8E5 /* ChordSuffixes.swift in Sources */,
 				C37D58342BFB181B001DA8E1 /* SearchView.swift in Sources */,
@@ -759,7 +763,7 @@
 				CODE_SIGN_ENTITLEMENTS = 5Chords/5ChordsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = YLUV9GUS77;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -772,6 +776,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
@@ -780,7 +785,6 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
@@ -795,7 +799,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -807,7 +811,7 @@
 				CODE_SIGN_ENTITLEMENTS = 5Chords/5ChordsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = YLUV9GUS77;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -820,6 +824,7 @@
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UILaunchScreen_Generation[sdk=iphoneos*]" = YES;
@@ -828,7 +833,6 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
@@ -843,7 +847,7 @@
 				SUPPORTS_MACCATALYST = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

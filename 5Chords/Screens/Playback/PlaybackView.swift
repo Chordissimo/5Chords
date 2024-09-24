@@ -49,9 +49,7 @@ struct PlaybackView: View {
                         if song.timeframes.count == 0 {
                             VStack {
                                 ZStack(alignment: Alignment(horizontal: .center, vertical: .top)) {
-                                    if songsList.recognitionInProgress {
-                                        MatrixRain()
-                                    }
+                                    MatrixRain()
                                     VStack {
                                         let label1 = "Extracting chords and lyrics"
                                         let label2 = "Sorry, couldn't extract chords and lyrics from audio source."

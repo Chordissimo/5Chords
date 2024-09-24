@@ -20,7 +20,7 @@ struct SearchSongView: View {
                     .padding(.leading,10)
                 
                 TextField("Search", text: $searchText)
-                    .onChange(of: searchText) {
+//                    .onChange(of: searchText) {
 //                        if searchText == "" {
 //                            songsList.searchResults = songsList.songs
 //                        } else {
@@ -28,7 +28,7 @@ struct SearchSongView: View {
 //                        }
 //                        songsList.filterSongs(searchText: searchText)
 //                        songsList.objectWillChange.send()
-                    }
+//                    }
                     .focused($isFocused)
                     .onAppear {
                         isFocused = true
