@@ -12,7 +12,8 @@ struct DurationLimitView: View {
     @State var showMessage: Bool = false
     
     var body: some View {
-        let limitedMessage = "Recording time is limited to \(AppDefaults.LIMITED_DURATION) minute.\nUpgrade your subscription to increase the limit."
+        let limit = AppDefaults.LIMITED_DURATION / 60
+        let limitedMessage = "Recording time is limited to \(limit) minute(s).\nUpgrade your subscription to increase the limit."
         let subscribedMessage = "Recording time is limited to \(AppDefaults.MAX_DURATION) minutes."
         ZStack {
             if showMessage {
