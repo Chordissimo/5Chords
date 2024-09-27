@@ -27,7 +27,6 @@ struct CircleOf5th: View {
             let innerWhiteCircleSize: CGFloat = geometry.size.width * 0.71
             let majorRadius = (geometry.size.width - outerBorderWidth) * 0.428
             let minorRadius = (geometry.size.width - outerBorderWidth) * 0.267
-            let _ = print(minorSegmentCircleSize,majorSegmentCircleSize)
 
             ZStack {
                 Color.gray5
@@ -77,7 +76,7 @@ struct CircleOf5th: View {
                     let majorLabel = model.majorKeysAlt[index] != "" ? model.majorKeys[index] + " " + model.majorKeysAlt[index] : model.majorKeys[index]
                     let minorLabel = model.minorKeysAlt[index] != "" ? model.minorKeys[index] + " " + model.minorKeysAlt[index] : model.minorKeys[index]
 
-                    Text(majorLabel)
+                    Text(majorLabel.uppercased())
                         .lineLimit(2)
                         .font(.system(size: majorLabelFontSize))
                         .fontWeight(.semibold)
@@ -88,7 +87,7 @@ struct CircleOf5th: View {
                             action(index, -1)
                         }
                     
-                    Text(minorLabel)
+                    Text(minorLabel.uppercased())
                         .lineLimit(2)
                         .font(.system(size: minorLabelFontSize))
                         .foregroundStyle(.gray40)

@@ -24,11 +24,11 @@ struct OnboardingPage2: View {
     
     init(completion: @escaping () -> Void) {
         var _chords = [[Any]]()
-        _chords.append([Chords.Key.a, Chords.Suffix.seven])
-        _chords.append([Chords.Key.c, Chords.Suffix.minor])
-        _chords.append([Chords.Key.d, Chords.Suffix.nineFlatFive])
-        _chords.append([Chords.Key.g, Chords.Suffix.addNine])
-        _chords.append([Chords.Key.f, Chords.Suffix.majorSeven])
+        _chords.append([Chords.Key.a, Chords.Suffix._7])
+        _chords.append([Chords.Key.c, Chords.Suffix._minor])
+        _chords.append([Chords.Key.d, Chords.Suffix._9b5])
+        _chords.append([Chords.Key.g, Chords.Suffix._add9])
+        _chords.append([Chords.Key.f, Chords.Suffix._maj7])
         for _ in 0..<10 {
             for ch in _chords {
                 let k = ch[0]

@@ -14,10 +14,7 @@ struct ChordSuffixes: View {
     var action: (Chords.Key, Chords.Suffix) -> Void
     @State var selectedChord = ChordSearchResults()
     
-    public func selectChord(chord: ChordSearchResults) {
-        self.selectedChord = chord
-    }
-        
+
     var body: some View {
         VStack {
             if model.chordSearchResults.count == 0 {

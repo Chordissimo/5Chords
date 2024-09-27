@@ -84,7 +84,7 @@ struct EditChordsView: View {
                 selectedKey = chord.key
                 selectedSuffix = chord.suffix
                 searchText = chord.getChordString(flatSharpSymbols: false)
-                model.searchChordsBy(key: selectedKey!, groups: [chord.getChordGroup()])
+                model.searchChordsBy(key: selectedKey!, groups: [selectedSuffix?.group ?? .other])
             } else {
                 model.searchChordsBy(searchString: searchText)
             }

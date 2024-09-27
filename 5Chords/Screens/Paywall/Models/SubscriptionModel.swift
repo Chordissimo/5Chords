@@ -185,10 +185,8 @@ class ProductModel: ObservableObject {
                 do {
                     switch result {
                     case .unverified(let transaction, let error):
-                        dump(transaction)
                         throw error
                     case .verified(let transaction):
-                        dump(transaction)
                         await self.loadSubScriptionInfo()
                         await transaction.finish()
                     }
@@ -259,7 +257,6 @@ class ProductModel: ObservableObject {
             case .success(let verificationResult):
                 switch verificationResult {
                 case .unverified(let transaction, let error):
-                    dump(transaction)
                     throw error
                 case .verified(let transaction):
                     await self.loadSubScriptionInfo()

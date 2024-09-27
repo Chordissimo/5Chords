@@ -44,7 +44,6 @@ class APIChord: Codable, Identifiable, Equatable, Hashable {
     }
 }
 
-
 class UIChord: Identifiable, Hashable {
     static func == (lhs: UIChord, rhs: UIChord) -> Bool {
         lhs.id == rhs.id
@@ -127,162 +126,74 @@ class UIChord: Identifiable, Hashable {
     
     private func getSuffix(from string: String) -> Chords.Suffix? {
         switch string {
-        case "": return .major
-        case "m": return .minor
-        case "m7b5": return .minorSevenFlatFive
-        case "6": return .six
-        case "7": return .seven
-        case "maj7": return .majorSeven
-        case "m7": return .minorSeven
-        case "m6": return .minorSix
-        case "dim": return .dim
-        case "aug": return .aug
-        case "min": return .minor
-        case "hdim7": return .minorSevenFlatFive
-        case "maj6": return .six
-        case "min7": return .minorSeven
-        case "min6": return .minorSix
-        case "/e": return .slashE
-        case "/f": return .slashF
-        case "/f#": return .slashFSharp
-        case "/g": return .slashG
-        case "/g#": return .slashGSharp
-        case "/a": return .slashA
-        case "/bb": return .slashBFlat
-        case "/b": return .slashB
-        case "/c": return .slashC
-        case "/c#" : return .slashCSharp
-        case "m/b": return .minorSlashB
-        case "m/c": return .minorSlashC
-        case "m/c#": return .minorSlashCSharp
-        case "/d": return .slashD
-        case "m/d": return .minorSlashD
-        case "/d#": return .slashDSharp
-        case "m/d#": return .minorSlashDSharp
-        case "m/e": return .minorSlashE
-        case "m/f": return .minorSlashF
-        case "m/f#": return .minorSlashFSharp
-        case "m/g": return .minorSlashG
-        case "m/g#": return .minorSlashGSharp
-        case "dim7": return .dimSeven
-        case "sus2": return .susTwo
-        case "sus4": return .susFour
-        case "7sus4": return .sevenSusFour
-        case "5": return .five
-        case "alt": return .altered
-        case "6/9": return .sixNine
-        case "7b5": return .sevenFlatFive
-        case "aug7": return .augSeven
-        case "9": return .nine
-        case "9b5": return .nineFlatFive
-        case "aug9": return .augNine
-        case "m9": return .sevenFlatNine
-        case "7#9": return .sevenSharpNine
-        case "11": return .eleven
-        case "9#11": return .nineSharpEleven
-        case "13": return .thirteen
-        case "maj7b5": return .majorSevenFlatFive
-        case "maj7#5": return .majorSevenSharpFive
-        case "7#5": return .sevenSharpFive
-        case "maj9": return .majorNine
-        case "maj11": return .majorEleven
-        case "maj13": return .majorThirteen
-        case "m6/9": return .minorSixNine
-        case "mmaj7": return .minorMajorSeven
-        case "mmaj7b5": return .minorMajorSeventFlatFive
-        case "mmaj9": return .minorMajorNine
-        case "mmaj11": return .minorMajorEleven
-        case "add9": return .addNine
-        case "madd9": return .minorAddNine
+        case "": return ._major
+        case "m": return ._minor
+        case "m7b5": return ._m7b5
+        case "6": return ._6
+        case "7": return ._7
+        case "maj7": return ._maj7
+        case "m7": return ._m7
+        case "m6": return ._m6
+        case "dim": return ._dim
+        case "aug": return ._aug
+        case "min": return ._minor
+        case "hdim7": return ._m7b5
+//        case "maj6": return ._maj6
+        case "min7": return ._m7
+        case "min6": return ._m6
+        case "/e": return ._overE
+        case "/f": return ._overF
+        case "/f#": return ._overFSharp
+        case "/g": return ._overG
+        case "/g#": return ._overGSharp
+        case "/a": return ._overA
+        case "/bb": return ._overASharp
+        case "/b": return ._overB
+        case "/c": return ._overC
+        case "/c#" : return ._overCSharp
+        case "m/b": return ._mOverB
+        case "m/c": return ._mOverC
+        case "m/c#": return ._mOverCSharp
+        case "/d": return ._overD
+        case "m/d": return ._mOverD
+        case "/d#": return ._overDSharp
+        case "m/d#": return ._mOverDSharp
+        case "m/e": return ._mOverE
+        case "m/f": return ._mOverF
+        case "m/f#": return ._mOverFSharp
+        case "m/g": return ._mOverG
+        case "m/g#": return ._mOverGSharp
+        case "dim7": return ._dim7
+        case "sus2": return ._sus2
+        case "sus4": return ._sus4
+        case "7sus4": return ._7sus4
+        case "5": return ._5
+        case "alt": return ._7b9
+        case "6/9": return ._6add9
+        case "7b5": return ._7b5
+        case "aug7": return ._aug7
+        case "9": return ._9
+        case "9b5": return ._9b5
+        case "aug9": return ._aug9
+        case "m9": return ._m9
+        case "7#9": return ._7sharp9
+        case "11": return ._11
+        case "9#11": return ._9sharp11
+        case "13": return ._13
+        case "maj7b5": return ._maj7b5
+        case "maj7#5": return ._maj7sharp5
+        case "7#5": return ._7sharp5
+        case "maj9": return ._maj9
+        case "maj11": return ._maj11
+        case "maj13": return ._maj13
+        case "m6/9": return ._m6add9
+        case "mmaj7": return ._mMaj7
+        case "mmaj7b5": return ._mMaj7b5
+        case "mmaj9": return ._mMaj9
+        case "mmaj11": return ._mMaj11
+        case "add9": return ._add9
+        case "madd9": return ._m6add9
         default: return nil
-        }
-    }
-    
-    private func getSuffixString(from suffix: Chords.Suffix) -> String {
-        switch suffix {
-        case .major: return ""
-        case .minor: return "m"
-        case .dim: return "dim"
-        case .dimSeven: return "dim7"
-        case .susTwo: return "sus2"
-        case .susFour: return "sus4"
-        case .sevenSusFour: return "7sus4"
-        case .five: return "5"
-        case .altered: return "alt"
-        case .aug: return "aug"
-        case .six: return "6"
-        case .sixNine: return "6/9"
-        case .seven: return "7"
-        case .sevenFlatFive: return "7b5"
-        case .augSeven: return "aug7"
-        case .nine: return "9"
-        case .nineFlatFive: return "9b5"
-        case .augNine: return "aug9"
-        case .sevenFlatNine: return "m9"
-        case .sevenSharpNine: return "7#9"
-        case .eleven: return "11"
-        case .nineSharpEleven: return "9#11"
-        case .thirteen: return "13"
-        case .majorSeven: return "maj7"
-        case .majorSevenFlatFive: return "maj7b5"
-        case .majorSevenSharpFive: return "maj7#5"
-        case .sevenSharpFive: return "7#5"
-        case .majorNine: return "maj9"
-        case .majorEleven: return "maj11"
-        case .majorThirteen: return "maj13"
-        case .minorSix: return "m6"
-        case .minorSixNine: return "m6/9"
-        case .minorSeven: return "m7"
-        case .minorSevenFlatFive: return "m7b5"
-        case .minorNine: return "m9"
-        case .minorEleven: return "m11"
-        case .minorMajorSeven: return "mmaj7"
-        case .minorMajorSeventFlatFive: return "mmaj7b5"
-        case .minorMajorNine: return "mmaj9"
-        case .minorMajorEleven: return "mmaj11"
-        case .addNine: return "add9"
-        case .minorAddNine: return "madd9"
-        case .slashE: return "/e"
-        case .slashF: return "/f"
-        case .slashFSharp: return "/f#"
-        case .slashG: return "/g"
-        case .slashGSharp: return "/g#"
-        case .slashA: return "/a"
-        case .slashBFlat: return "/bb"
-        case .slashB: return "/b"
-        case .slashC: return "/c"
-        case .slashCSharp: return "/c#"
-        case .minorSlashB: return "m/b"
-        case .minorSlashC: return "m/c"
-        case .minorSlashCSharp: return "m/c#"
-        case .slashD: return "/d"
-        case .minorSlashD: return "m/d"
-        case .slashDSharp: return "/d#"
-        case .minorSlashDSharp: return "m/d#"
-        case .minorSlashE: return "m/e"
-        case .minorSlashF: return "m/f"
-        case .minorSlashFSharp: return "m/f#"
-        case .minorSlashG: return "m/g"
-        case .minorSlashGSharp: return "m/g#"
-        }
-    }
-    
-    func getChordGroup() -> Chords.Group {
-        switch self.suffix {
-        case .major, .majorSeven, .majorSevenFlatFive, .majorSevenSharpFive, .majorNine, .majorEleven, .majorThirteen, .addNine, .slashE, .slashF, .slashFSharp, .slashG, .slashGSharp, .slashA, .slashBFlat, .slashB, .slashC, .slashCSharp, .slashD, .slashDSharp:
-            return .major
-        case .minor, .minorSix, .minorSixNine, .minorSeven, .minorEleven, .minorSevenFlatFive, .minorMajorSeven, .minorMajorSeventFlatFive, .minorMajorNine, .minorMajorEleven, .minorAddNine, .minorSlashB, .minorSlashC, .minorSlashCSharp, .minorSlashD, .minorSlashDSharp, .minorSlashE, .minorSlashF, .minorSlashFSharp, .minorSlashG, .minorNine, .minorSlashGSharp:
-            return .minor
-        case .dim, .dimSeven:
-            return .diminished
-        case .susTwo, .susFour, .sevenSusFour:
-            return .suspended
-        case .aug, .augSeven, .augNine:
-            return .augmented
-        case .altered, .five, .six, .sixNine, .seven, .sevenFlatFive, .nine, .nineFlatFive, .sevenFlatNine, .sevenSharpNine, .eleven, .nineSharpEleven, .thirteen, .sevenSharpFive:
-            return .other
-        default:
-            return .major
         }
     }
     
@@ -316,7 +227,7 @@ class UIChord: Identifiable, Hashable {
             if flatSharpSymbols {
                 result = k.display.symbol + s.display.symbolized
             } else {
-                result = k.rawValue + getSuffixString(from: s)
+                result = k.rawValue + s.rawValue
             }
         }
         return result

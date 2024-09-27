@@ -12,14 +12,14 @@ import SwiftyChords
 struct ChordSearchResults: Identifiable, Equatable, Hashable {
     var id = UUID()
     var key: Chords.Key = .c
-    var suffix: Chords.Suffix = .major
+    var suffix: Chords.Suffix = ._major
 }
 
 class ChordLibraryModel: ObservableObject {
-    let majorKeys =     ["C","G","D","A","E","B","G♭","D♭","A♭","E♭","B♭","F"]
-    let majorKeysAlt =  ["" ,"" ,"" ,"" ,"" ,"" ,"F♯","C♯","G♯","D♯","A♯",""]
-    let minorKeys =     ["Am","Em","Bm","F♯m","C♯m","G♯m","E♭m","B♭m","Fm","Cm","Gm","Dm"]
-    let minorKeysAlt =  [""  ,""  ,""  ,"G♭m","D♭m","A♭m","D♯m","A♯m",""  ,""  ,""  ,""]
+    let majorKeys =     ["c","g","d","a","e","b","g♭","d♭","a♭","e♭","b♭","f"]
+    let majorKeysAlt =  ["" ,"" ,"" ,"" ,"" ,"" ,"f♯","c♯","g♯","d♯","a♯",""]
+    let minorKeys =     ["am","em","bm","f♯m","c♯m","g♯m","e♭m","b♭m","fm","cm","gm","dm"]
+    let minorKeysAlt =  [""  ,""  ,""  ,"g♭m","d♭m","a♭m","d♯m","a♯m",""  ,""  ,""  ,""]
 
     @Published var chordSearchResults: [ChordSearchResults] = []
     
@@ -54,7 +54,7 @@ class ChordLibraryModel: ObservableObject {
         let chordPositions = Chords.guitar.matching(key: getChordKeyByIndex(selectedMajor: selectedMajor, selectedMinor: selectedMinor))
         
         if chordPositions.count > 0 {
-            result = selectedMajor != -1 ? chordPositions.matching(suffix: .major) : chordPositions.matching(suffix: .minor)
+            result = selectedMajor != -1 ? chordPositions.matching(suffix: ._major) : chordPositions.matching(suffix: ._minor)
         }
         
         return result
@@ -75,7 +75,7 @@ class ChordLibraryModel: ObservableObject {
             .replacingOccurrences(of: "m", with: "", options: .literal, range: nil)
         
         let keys = Chords.Key.allCases.filter { k in
-            return k.rawValue == key
+            return k.rawValue.lowercased() == key.lowercased()
         }
         
         return keys.count > 0 ? keys.first! : .c
@@ -90,8 +90,8 @@ class ChordLibraryModel: ObservableObject {
             if searchString.count == 1 {
                 result = $0.key.rawValue.lowercased().contains(searchString.lowercased())
             } else {
-                let search1 = ($0.key.rawValue + $0.suffix.display.accessible).lowercased().contains(searchString.lowercased())
-                let search2 = ($0.key.rawValue + $0.suffix.display.short).lowercased().contains(searchString.lowercased())
+                let search1 = ($0.key.rawValue.lowercased() + $0.suffix.display.accessible).lowercased().contains(searchString.lowercased())
+                let search2 = ($0.key.rawValue.lowercased() + $0.suffix.display.short).lowercased().contains(searchString.lowercased())
                 let search3 = ($0.key.display.accessible + $0.suffix.display.accessible).lowercased().contains(searchString.lowercased())
                 let search4 = ($0.key.display.accessible + $0.suffix.display.short).lowercased().contains(searchString.lowercased())
                 result = search1 || search2 || search3 || search4

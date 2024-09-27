@@ -1,4 +1,5 @@
 {
+  "originHash" : "48b90df699db932059d862be3f00beb6435bd339ca0adb59f1f3ba4e5e039844",
   "pins" : [
     {
       "identity" : "abseil-cpp-binary",
@@ -186,7 +187,7 @@
       "location" : "https://github.com/Chordissimo/SwiftyGuitarChords.git",
       "state" : {
         "branch" : "main",
-        "revision" : "0d9455c6798c8136e0a31d1b80f6be7ed0f4b457"
+        "revision" : "2568edebbd2505d18a14bff0289ca0d59ef556d5"
       }
     },
     {
@@ -199,5 +200,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

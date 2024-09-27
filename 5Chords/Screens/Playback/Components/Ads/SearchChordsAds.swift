@@ -129,7 +129,7 @@ struct SearchChordsAds: View {
                     searchText = "Em"
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                         withAnimation {
-                            selectedChord = ChordSearchResults(key: .e, suffix: .minor)
+                            selectedChord = ChordSearchResults(key: .e, suffix: ._minor)
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             withAnimation {

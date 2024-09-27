@@ -337,7 +337,6 @@
 		C39C87342BB0073B00EBF82C /* 5Chords */ = {
 			isa = PBXGroup;
 			children = (
-				C3B4B9962C9B1CD3000C7F79 /* Fonts */,
 				C32460C52C937EBF004FFFF1 /* 5ChordsRelease.entitlements */,
 				C32460C62C937F7B004FFFF1 /* 5Chords.entitlements */,
 				C3DE80EE2BC45C250063189D /* 5Chords-Info.plist */,
@@ -345,6 +344,7 @@
 				C3FE3ABD2C973BCC004B43E1 /* 5Chords.storekit */,
 				C39C873B2BB0073D00EBF82C /* Assets.xcassets */,
 				C39C87352BB0073B00EBF82C /* 5Chords.swift */,
+				C3B4B9962C9B1CD3000C7F79 /* Fonts */,
 				C3B54DFE2BB1AB0A000DCF15 /* Models */,
 				C361E8252BB860C200F33B40 /* Helpers */,
 				B798989A2BCAAAAB0052C127 /* Services */,
@@ -772,8 +772,8 @@
 				INFOPLIST_FILE = "5Chords-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = 5Chords;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2024, fivechords.com";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "5CHORDS application for iOS requires access to microphone in order to record voice or music to extract chords and lyrics.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -784,7 +784,8 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
@@ -820,8 +821,8 @@
 				INFOPLIST_FILE = "5Chords-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = 5Chords;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Voice recording";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "2024, fivechords.com";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "5CHORDS application for iOS requires access to microphone in order to record voice or music to extract chords and lyrics.";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -832,7 +833,8 @@
 				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleDarkContent;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphoneos*]" = UIStatusBarStyleDefault;
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_UIUserInterfaceStyle = Dark;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";

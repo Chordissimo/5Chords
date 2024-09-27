@@ -458,7 +458,7 @@ struct AllSongs: View {
                 Text("Cancel")
             }
         } message: {
-            Text("You have denied the access to microphone. That means we are unable to capture and recognize chords and lyrics from audio input. If you wish to allow us to do so, please allow access for PROCHORDS app in the system settings.")
+            Text("You have denied the access to microphone. That means we are unable to capture and recognize chords and lyrics from audio input. If you wish to allow us to do so, please allow access for 5CHORDS app in the system settings.")
         }
         .alert("Something went wrong", isPresented: $showBillingError) {
             Button {
