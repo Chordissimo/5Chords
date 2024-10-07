@@ -35,7 +35,7 @@ struct AppRoot: View {
                         withAnimation {
                             showOnboarding = false
                         }
-                        if AppDefaults.FREE_SONG != "" {
+                        if AppDefaults.FREE_SONG != "" && store.currentSubscription == nil {
                             songsList.processYoutubeVideo(by: "https://youtube.com/watch?v=" + AppDefaults.FREE_SONG, title: "FREE Demo Song", thumbnailUrl: "", isDemo: true)
                         }
                     }

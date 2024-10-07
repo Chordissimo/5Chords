@@ -19,7 +19,6 @@ struct Subscription: Identifiable, Hashable {
     var renewalDate: Date? = nil
     var expirationDate: Date? = nil
     var graceExpirationDate: Date? = nil
-//    var expirationReason: Product.SubscriptionInfo.RenewalInfo.ExpirationReason?
     var state: Product.SubscriptionInfo.RenewalState? = nil
     var willAutoRenew: Bool = false
     var renewProductId: String = ""
