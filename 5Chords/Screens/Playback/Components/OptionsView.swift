@@ -9,6 +9,7 @@ import SwiftUI
 
 struct OptionsView: View {
     @ObservedObject var songsList: SongsList
+    @ObservedObject var song: Song
     @Binding var hideLyrics: Bool
     @Binding var showOptions: Bool
     @State var isAlertPresented = false
@@ -22,7 +23,7 @@ struct OptionsView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            if showIsLimited {
+            if showIsLimited && !song.isDemo {
                 Spacer()
                 VStack {
                     UpgradeButton(rightIconName: "arrow.up.arrow.down", content: {
@@ -83,7 +84,7 @@ struct OptionsView: View {
                                 .frame(width: 25, height: 25)
                                 .foregroundColor(.white)
                         }
-                        .disabled(showIsLimited)
+                        .disabled(showIsLimited && !song.isDemo)
                         .frame(width: 80, height: 40)
                         .background(.gray30, in: UnevenRoundedRectangle(topLeadingRadius: 16, bottomLeadingRadius: 16))
                     }
@@ -124,14 +125,14 @@ struct OptionsView: View {
                                 .foregroundColor(.white)
                         }
                     }
-                    .disabled(showIsLimited)
+                    .disabled(showIsLimited && !song.isDemo)
                     .frame(width: 80, height: 40)
                     .background(.gray30, in: UnevenRoundedRectangle(bottomTrailingRadius: 16, topTrailingRadius: 16))
                 }
                 .frame(height: 60)
             }
             
-            if !showIsLimited {
+            if !showIsLimited || song.isDemo{
                 Divider()
                 VStack {
                     Button {

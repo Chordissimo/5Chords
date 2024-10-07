@@ -72,6 +72,7 @@ class SongModel: Object {
     @Persisted var tempo: Float
     @Persisted var thumbnailUrl: String
     @Persisted var isProcessing: Bool
+    @Persisted var isDemo: Bool?
     
     convenience init(name: String, url: String) {
         self.init()
@@ -84,7 +85,7 @@ class DatabaseService {
     var realm: Realm
     
     init() {
-        let config = Realm.Configuration(schemaVersion: 2)
+        let config = Realm.Configuration(schemaVersion: 3)
 //        let config = Realm.Configuration(schemaVersion: 2) { migration, oldSchemaVersion in
 //            if oldSchemaVersion < 2 {
 //                print("needs updating...")
@@ -119,7 +120,7 @@ class DatabaseService {
         return realmTextList
     }
         
-    func createSongStub(id: String, name: String, url: String, duration: TimeInterval, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .recorded, ext: String, thumbnailUrl: String) -> Song {
+    func createSongStub(id: String, name: String, url: String, duration: TimeInterval, chords: [APIChord], text: [AlignedText], tempo: Float, songType: SongType = .recorded, ext: String, thumbnailUrl: String, isDemo: Bool? = nil) -> Song {
         
         let realmChordList = writeChords(chords: chords)
         let realmTextList = writeText(text: text)
@@ -138,6 +139,7 @@ class DatabaseService {
         song.ext = ext
         song.thumbnailUrl = thumbnailUrl
         song.isProcessing = true
+        song.isDemo = isDemo
         
         try! realm.write {
             realm.add(song)
@@ -153,6 +155,7 @@ class DatabaseService {
             text: text,
             tempo: song.tempo,
             songType: songType,
+            isDemo: song.isDemo ?? false,
             ext: song.ext,
             isProcessing: song.isProcessing,
             thumbnailUrl: song.thumbnailUrl
@@ -339,7 +342,6 @@ class DatabaseService {
             return s1.created >= s2.created
         }
         .map {
-            let intervals = self.readIntervals(dbIntervals: $0.intervals)
             var song = Song(
                 id: $0.id,
                 name: $0.name,
@@ -362,9 +364,10 @@ class DatabaseService {
                         end: $0.end
                     )
                 },
-                intervals: intervals,
+                intervals: self.readIntervals(dbIntervals: $0.intervals),
                 tempo: $0.tempo,
                 songType: $0.songType == "uploaded" ? .localFile : ($0.songType == "recorded" ? .recorded : .youtube),
+                isDemo: $0.isDemo ?? false,
                 ext: $0.ext,
                 isProcessing: $0.isProcessing,
                 isFakeLoaderVisible: $0.isProcessing,

@@ -42,6 +42,7 @@
 		C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48742C2DA6970008E5CE /* UniPlayer.swift */; };
 		C34D48782C2EBB830008E5CE /* MoreShapesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C34D48772C2EBB830008E5CE /* MoreShapesView.swift */; };
 		C357AB142BB7EB4B00440554 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357AB132BB7EB4B00440554 /* ActionButton.swift */; };
+		C357E6672CAFF34C009CDE91 /* SearchResultsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C357E6662CAFF34C009CDE91 /* SearchResultsView.swift */; };
 		C361E8272BB860D300F33B40 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = C361E8262BB860D300F33B40 /* Helpers.swift */; };
 		C3693C082BF6371D00DC137B /* SongList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3693C072BF6371D00DC137B /* SongList.swift */; };
 		C36F9EB32BEA85F200D5836C /* LiveWaveform.swift in Sources */ = {isa = PBXBuildFile; fileRef = C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */; };
@@ -128,6 +129,7 @@
 		C34D48742C2DA6970008E5CE /* UniPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UniPlayer.swift; sourceTree = "<group>"; };
 		C34D48772C2EBB830008E5CE /* MoreShapesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MoreShapesView.swift; sourceTree = "<group>"; };
 		C357AB132BB7EB4B00440554 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
+		C357E6662CAFF34C009CDE91 /* SearchResultsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultsView.swift; sourceTree = "<group>"; };
 		C361E8262BB860D300F33B40 /* Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		C3693C072BF6371D00DC137B /* SongList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongList.swift; sourceTree = "<group>"; };
 		C36F9EB22BEA85F200D5836C /* LiveWaveform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveWaveform.swift; sourceTree = "<group>"; };
@@ -457,6 +459,7 @@
 				C30ADA662C40523000CC9F9A /* DurationLimitView.swift */,
 				C34150A82C47E8AE00C4C3B2 /* NavigationPrimaryButton.swift */,
 				C34150AA2C47E8E200C4C3B2 /* NavigationSecondaryButton.swift */,
+				C357E6662CAFF34C009CDE91 /* SearchResultsView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -611,6 +614,7 @@
 				C37DCF102BDE338F00DD38A0 /* AllSongs.swift in Sources */,
 				C37D58402BFB25E4001DA8E1 /* OnboardingPage1.swift in Sources */,
 				C308BD432C4CF9D700C54602 /* ChordsAndLyricsAds.swift in Sources */,
+				C357E6672CAFF34C009CDE91 /* SearchResultsView.swift in Sources */,
 				C34D48752C2DA6970008E5CE /* UniPlayer.swift in Sources */,
 				C3A9935D2C35737100C2D8B5 /* OptionsView.swift in Sources */,
 				C39C87362BB0073B00EBF82C /* 5Chords.swift in Sources */,
@@ -763,7 +767,7 @@
 				CODE_SIGN_ENTITLEMENTS = 5Chords/5ChordsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = YLUV9GUS77;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -812,7 +816,7 @@
 				CODE_SIGN_ENTITLEMENTS = 5Chords/5ChordsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 6;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = YLUV9GUS77;
 				ENABLE_HARDENED_RUNTIME = YES;

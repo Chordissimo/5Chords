@@ -229,6 +229,7 @@ struct OnboardingPage1: View {
                                 } label: {
                                     Text("Next")
                                         .font(.system(size: 20))
+                                        .fontWeight(.semibold)
                                         .padding(20)
                                         .apply {
                                             if UIDevice.current.userInterfaceIdiom == .pad {

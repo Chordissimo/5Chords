@@ -355,11 +355,15 @@ class ProductModel: ObservableObject {
 
         await MainActor.run {
             self.paywallState = getPaywallState()
-
-            if let currentSubscription = self.currentSubscription {
-                AppDefaults.isLimited = currentSubscription.startDate == nil
+            
+            if !AppDefaults.godMode {
+                if let currentSubscription = self.currentSubscription {
+                    AppDefaults.isLimited = currentSubscription.startDate == nil
+                } else {
+                    AppDefaults.isLimited = true
+                }
             } else {
-                AppDefaults.isLimited = true
+                AppDefaults.isLimited = false
             }
             self.updatingSubscriptions = false
 

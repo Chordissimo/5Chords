@@ -1,10 +1,11 @@
 {
     "GOOGLE_DATA_API_KEY": "AIzaSyBrjR0_EvjIsXTz46EjCAewwV2Bs_YOnfA",
     "GOOGLE_DATA_API_URL": "https://www.googleapis.com/youtube/v3/videos",
-    "UPLOAD_ENDPOINT": "https://app.fivechords.com/api/recognize/upload",
-    "YOUTUBE_ENDPOINT": "https://app.fivechords.com/api/recognize/youtube",
-    "STATUS_ENDPOINT": "https://app.fivechords.com/api/retrieve/status",
-    "YOUTUBE_RETRIEVE_ENDPOINT": "https://app.fivechords.com/api/retrieve/youtube",
+    "UPLOAD_ENDPOINT": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/api/recognize/upload",
+    "YOUTUBE_ENDPOINT": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/api/recognize/youtube",
+    "STATUS_ENDPOINT": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/api/retrieve/status",
+    "YOUTUBE_RETRIEVE_ENDPOINT": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/api/retrieve/youtube",
+    "FIND_ENDPOINT": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/api/find/youtube",
     "PRIVACY_LINK": "https://fivechords.com/privacy-policy/",
     "TERMS_LINK": "https://fivechords.com/terms-of-use/",
     "LIMITED_UPLOAD_FILE_SIZE": "31457280",
@@ -13,10 +14,11 @@
     "MAX_DURATION": "600",
     "LIMITED_NUMBER_OF_SONGS": "3",
     "INTERVAL_START_ADJUSTMENT": "-1000",
-    "GUITAR_CHORDS_URL": "https://app.fivechords.com/chords/GuitarChords.json",
-    "UKULELE_CHORDS_URL": "https://app.fivechords.com/chords/UkuleleChords.json",
+    "GUITAR_CHORDS_URL": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/chords/GuitarChords.json",
+    "UKULELE_CHORDS_URL": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/chords/UkuleleChords.json",
     "STATUS_CALL_RETRY_LIMIT": "10",
     "STATUS_CALL_RETRY_INTERVAL": "12",
     "SUPPORT_EMAIL": "support@fivechords.com",
-    "CONTACT_US_LINK":"https://fivechords.com/#contact-us"
+    "CONTACT_US_LINK":"https://fivechords.com/#contact-us",
+    "FREE_SONG":"CD-E-LDc384"
 }

@@ -84,6 +84,14 @@ struct Timeframe: Identifiable, Hashable {
     var limit: Bool = false
 }
 
+struct Video: Decodable, Hashable, Identifiable {
+    var id: String
+    var title: String
+    var url: String
+    var thumbnail: String
+    var isAdded: Bool = false
+}
+
 
 class Song: ObservableObject, Identifiable, Equatable, Hashable {
     static func == (lhs: Song, rhs: Song) -> Bool {
@@ -112,6 +120,7 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     var tempo: Float
     var beats: Int = 4
     var bars: [CGFloat] = []
+    var isDemo: Bool = false
     @Published var isProcessing: Bool = false
     @Published var isFakeLoaderVisible: Bool = false
     @Published private var timer: Timer?
@@ -120,7 +129,7 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
     @Published var progress: Float = 0.0
     @Published var recognitionStatus: RecognitionStatus = .ok
     
-    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], intervals: [Interval] = [], tempo: Float, songType: SongType, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
+    init(id: String, name: String, url: String, duration: TimeInterval, created: Date, chords: [APIChord], text: [AlignedText], intervals: [Interval] = [], tempo: Float, songType: SongType, isDemo: Bool = false, ext: String = "", isProcessing: Bool = false, isFakeLoaderVisible: Bool = false, thumbnailUrl: String = "", transposition: Int = 0) {
         self.id = id
         self.name = name
         self.url = URL(string: url)!
@@ -135,6 +144,8 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
         self.isFakeLoaderVisible = isFakeLoaderVisible
         self.intervals = intervals
         self.hideLyrics = hideLyrics
+        self.isDemo = isDemo
+
         
         if self.songType == .youtube {
             if self.url.absoluteString != "" {
@@ -193,7 +204,7 @@ class Song: ObservableObject, Identifiable, Equatable, Hashable {
                 line = []
                 indices = []
                 width = interval.width
-                if AppDefaults.isLimited && timeframe.start > AppDefaults.LIMITED_DURATION * 1000 {
+                if AppDefaults.isLimited && timeframe.start > AppDefaults.LIMITED_DURATION * 1000 && !self.isDemo {
                     self.timeframes[self.timeframes.count - 1].limit = true
                     break
                 }
@@ -346,6 +357,7 @@ final class SongsList: ObservableObject {
     @Published var decibelChanges = [Float]()
     @Published var showSearch: Bool = false
     @Published var recognitionInProgress: Bool = false
+    @Published var dbSearchResults: [Video] = []
 
     let recordingService = RecordingService()
     private let recognitionApiService = RecognitionApiService()
@@ -414,7 +426,7 @@ final class SongsList: ObservableObject {
         }
     }
     
-    func processYoutubeVideo(by resultUrl: String, title: String, thumbnailUrl: String) {
+    func processYoutubeVideo(by resultUrl: String, title: String, thumbnailUrl: String, isDemo: Bool? = nil) {
         let song = self.databaseService.createSongStub(
             id: UUID().uuidString,
             name: title == "" ? self.getNewSongName() : title,
@@ -425,7 +437,8 @@ final class SongsList: ObservableObject {
             tempo: 0,
             songType: .youtube,
             ext: "",
-            thumbnailUrl: thumbnailUrl
+            thumbnailUrl: thumbnailUrl,
+            isDemo: isDemo ?? false
         )
 
         song.isFakeLoaderVisible = true
@@ -475,11 +488,19 @@ final class SongsList: ObservableObject {
     }
     
     static func recognitionSuccess(song: inout Song, response: RecognitionApiService.Response) {
-        if let _ = response.result {
-            song.duration = TimeInterval(response.result!.duration ?? 0)
-            song.chords = response.result!.chords ?? []
-            song.text = response.result!.text ?? []
-            song.tempo = response.result!.tempo ?? 0
+        if let result = response.result {
+            if let title = result.title {
+                song.name = title != "" ? (song.isDemo ? "FREE Demo - " + title : title) : song.name
+            }
+            if let thumbnail = result.thumbnail {
+                song.thumbnailUrl = thumbnail == "" ? URL(string: "local")! : URL(string: result.thumbnail!)!
+            } else {
+                song.thumbnailUrl = URL(string: "local")!
+            }
+            song.duration = TimeInterval(result.duration ?? 0)
+            song.chords = result.chords ?? []
+            song.text = result.text ?? []
+            song.tempo = result.tempo ?? 0
         } else {
             song.duration = TimeInterval(response.duration ?? 0)
             song.chords = response.chords ?? []
@@ -557,10 +578,35 @@ final class SongsList: ObservableObject {
     }
     
     func filterSongs(searchText: String) {
-        self.searchResults = self.songs.filter({ $0.name.contains(searchText) })
-//        for i in songs.indices {
-//            songs[i].isVisible = searchText == "" ? true : songs[i].name.contains(searchText)
-//        }
+        self.searchResults = self.songs.filter({ $0.name.contains(searchText) && !$0.isProcessing })
+    }
+    
+    func find(searchString: String, skip: Int, completion: @escaping (Bool) -> Void) {
+        if searchString.count >= 2 {
+            self.recognitionApiService.findSongs(searchString: searchString, skip: skip) { result in
+                switch result {
+                case .success(let response):
+                    let videos = response.result.map({ video in
+                        
+                        let isAdded = self.songs.filter({ song in
+                            song.url.absoluteString.contains("v=" + video.video_id)
+                        }).count > 0
+                        
+                        return Video(
+                            id: video.video_id,
+                            title: video.title,
+                            url: "https://youtube.com/watch?v=\(video.video_id)",
+                            thumbnail: video.thumbnail,
+                            isAdded: isAdded
+                        )
+                    })
+                    self.dbSearchResults = skip > 0 ? self.dbSearchResults + videos : videos
+                    completion(self.dbSearchResults.count > 0)
+                case .failure:
+                    completion(false)
+                }
+            }
+        }
     }
     
     func rebuildTimeframes() {

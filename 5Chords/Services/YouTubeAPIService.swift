@@ -109,7 +109,7 @@ class YouTubeAPIService {
                 break
             case .failure(let error):
                 print("YTService:",error.localizedDescription)
-                return
+                action("", "", 0)
             }
         }
     }

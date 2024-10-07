@@ -53,6 +53,10 @@ public struct AppDefaults {
         get { UserDefaults.standard.object(forKey: "TERMS_LINK") as? String ?? "https://fivechords.com/terms-of-use/" }
     }
     
+    public static var FIND_ENDPOINT: String {
+        get { UserDefaults.standard.object(forKey: "FIND_ENDPOINT") as? String ?? "https://app.fivechords.com/api/find" }
+    }
+
     public static var LIMITED_UPLOAD_FILE_SIZE: Int {
         get { Int(UserDefaults.standard.object(forKey: "LIMITED_UPLOAD_FILE_SIZE") as? String ?? "31457280") ?? 31457280 }
     }
@@ -101,6 +105,10 @@ public struct AppDefaults {
         get { UserDefaults.standard.object(forKey: "CONTACT_US_LINK") as? String ?? "https://fivechords.com/#contact-us" }
     }
 
+    public static var FREE_SONG: String {
+        get { UserDefaults.standard.object(forKey: "FREE_SONG") as? String ?? "" }
+    }
+
     
 // --------- local defaults -----------------
     public static var token: String {
@@ -121,6 +129,11 @@ public struct AppDefaults {
     public static var isLimited: Bool {
         get { UserDefaults.standard.object(forKey: "isLimited") as? Bool ?? false }
         set(newValue) { UserDefaults.standard.set(newValue, forKey: "isLimited") }
+    }
+    
+    public static var godMode: Bool {
+        get { UserDefaults.standard.object(forKey: "godMode") as? Bool ?? false }
+        set(newValue) { UserDefaults.standard.set(newValue, forKey: "godMode") }
     }
     
     public static var songCounter: Int {

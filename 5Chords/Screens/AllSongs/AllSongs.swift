@@ -56,7 +56,11 @@ struct AllSongs: View {
                 }
                 
                 VStack {
-                    SongList(songsList: songsList, youtubeSearchUrl: $youtubeSearchUrl, youtubeViewPresented: $youtubeViewPresented)
+                    SongList(
+                        songsList: songsList,
+                        youtubeSearchUrl: $youtubeSearchUrl,
+                        youtubeViewPresented: $youtubeViewPresented
+                    )
                 }
                 
                 //Bottom panel
@@ -66,7 +70,7 @@ struct AllSongs: View {
                         .frame(width: AppDefaults.screenWidth, height: 100)
                         .overlay(
                             Rectangle()
-                                .frame(width: nil, height: 1)
+                                .frame(height: 1)
                                 .foregroundColor(Color.gray20),
                             alignment: .top
                                 
@@ -86,7 +90,7 @@ struct AllSongs: View {
                             .frame(width: 121, height: 120)
                             .foregroundColor(.customDarkGray)
                     }
-                    .transition(.move(edge: .bottom))
+                    .transition(.identity)
                 }
             }
             
@@ -180,7 +184,6 @@ struct AllSongs: View {
                                         $0
                                     }
                                 }
-                                
                             
                             HStack(spacing: 20)  {
                                 
@@ -210,7 +213,7 @@ struct AllSongs: View {
                         }
                     }
                     .padding(.horizontal,10)
-                    .transition(.move(edge: .bottom))
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
             .ignoresSafeArea()
@@ -318,12 +321,11 @@ struct AllSongs: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .principal) {
-                VStack {
-                    Text("My collection")
-                        .foregroundStyle(.secondaryText)
-                        .font(.custom(SOFIA_SEMIBOLD, size: 20))
-                }
-                .frame(height: 20)
+                let title = songsList.showSearch ? "Search" : "My collection"
+                Text(title)
+                    .foregroundStyle(.secondaryText)
+                    .font(.custom(SOFIA_SEMIBOLD, size: 20))
+                    .frame(width: 180, height: 25)
             }
         }
         .navigationBarBackButtonHidden(true)
@@ -333,9 +335,14 @@ struct AllSongs: View {
         .navigationBarItems(
             leading:
                 Button {
-                    showSettings = true
+                    if songsList.showSearch {
+                        songsList.showSearch = false
+                    } else {
+                        showSettings = true
+                    }
                 } label: {
-                    Image(systemName: "gearshape.fill")
+                    let icon = songsList.showSearch ? "chevron.left" : "gearshape.fill"
+                    Image(systemName: icon)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 22, height: 22)
@@ -349,11 +356,10 @@ struct AllSongs: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 22, height: 22)
-                        .foregroundColor(songsList.songs.count == 0 ? .gray40 : .white)
+                        .foregroundColor(.white)
                 }
-                .disabled(songsList.songs.count == 0)
         )
-        .fullScreenCover(isPresented: $showPaywall) {  
+        .fullScreenCover(isPresented: $showPaywall) {
             Paywall(showPaywall: $showPaywall) {
                 showIsLimited = AppDefaults.isLimited
                 if !showIsLimited {

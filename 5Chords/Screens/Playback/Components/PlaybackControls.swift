@@ -33,7 +33,7 @@ struct PlaybackControls: View {
                             bottomPanelHieght = !showOptions ? LyricsViewModelConstants.minBottomPanelHeight : LyricsViewModelConstants.maxBottomPanelHeight
                         }
                     } label: {
-                        if AppDefaults.isLimited {
+                        if AppDefaults.isLimited && !song.isDemo {
                             Image("logo3")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
