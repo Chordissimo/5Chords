@@ -33,7 +33,7 @@ struct AllSongs: View {
             Color.gray5
             //Layer 1: song list + limited version label
             VStack {
-                if showIsLimited {
+                if AppDefaults.isLimited {
                     VStack {
                         HStack {
                             Image("logo3")
@@ -128,7 +128,7 @@ struct AllSongs: View {
                                 }
                                 
                                 NavigationSecondaryButton(imageName: "mic.fill") {
-                                    if AppDefaults.isLimited && AppDefaults.songCounter == AppDefaults.LIMITED_NUMBER_OF_SONGS {
+                                    if AppDefaults.isLimited && AppDefaults.songCounter >= AppDefaults.LIMITED_NUMBER_OF_SONGS {
                                         showPaywall = true
                                     } else {
                                         if songsList.recognitionInProgress {
@@ -252,7 +252,7 @@ struct AllSongs: View {
             VStack {
                 if initialAnimationStep == 2 && !songsList.showSearch {
                     NavigationPrimaryButton(imageName: "youtube.custom", recordStarted: $songsList.recordStarted, duration: $songsList.duration, durationLimit: (AppDefaults.isLimited ? AppDefaults.LIMITED_DURATION : AppDefaults.MAX_DURATION)) {
-                        if AppDefaults.isLimited && AppDefaults.songCounter == AppDefaults.LIMITED_NUMBER_OF_SONGS {
+                        if AppDefaults.isLimited && AppDefaults.songCounter >= AppDefaults.LIMITED_NUMBER_OF_SONGS {
                             showPaywall = true
                         } else {
                             if recordPanelPresented {

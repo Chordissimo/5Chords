@@ -151,14 +151,14 @@ struct SearchResultSong: View {
                 Spacer()
                 if index < songsList.dbSearchResults.count {
                     Button {
-                        if AppDefaults.isLimited && AppDefaults.songCounter <= 3 {
+                        if AppDefaults.isLimited && AppDefaults.songCounter >= AppDefaults.LIMITED_NUMBER_OF_SONGS {
+                            showPaywall = true
+                        } else {
                             if !songsList.dbSearchResults[index].isAdded {
                                 songsList.recognitionInProgress = true
                                 songsList.processYoutubeVideo(by: video.url, title: video.title, thumbnailUrl: video.thumbnail)
                                 songsList.dbSearchResults[index].isAdded = true
                             }
-                        } else {
-                            showPaywall = true
                         }
                     } label: {
                         if !songsList.dbSearchResults[index].isAdded {

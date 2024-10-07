@@ -455,7 +455,9 @@ final class SongsList: ObservableObject {
                 self.databaseService.updateSong(song: self.songs[i])
                 self.recognitionInProgress = false
                 self.objectWillChange.send()
-                AppDefaults.songCounter = AppDefaults.isLimited ? AppDefaults.songCounter + 1 : AppDefaults.songCounter
+                if !song.isDemo {
+                    AppDefaults.songCounter = AppDefaults.isLimited ? AppDefaults.songCounter + 1 : AppDefaults.songCounter
+                }
 
             case .failure(let failure):
                 if statusCode == 204 {
