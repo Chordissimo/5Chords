@@ -225,9 +225,21 @@ class UIChord: Identifiable, Hashable {
         var result = ""
         if let k = self.key, let s = self.suffix {
             if flatSharpSymbols {
-                result = k.display.symbol + (s != ._major && s != ._minor ? s.display.symbolized : "")
+                if s == ._major {
+                    result = k.display.symbol
+                } else if s == ._minor {
+                    result = k.display.symbol + "m"
+                } else {
+                    result = k.display.symbol + s.display.symbolized
+                }
             } else {
-                result = k.rawValue + (s != ._major && s != ._minor ? s.rawValue : "")
+                if s == ._major {
+                    result = k.rawValue
+                } else if s == ._minor {
+                    result = k.rawValue + "m"
+                } else {
+                    result = k.display.symbol + s.rawValue
+                }
             }
         }
         return result

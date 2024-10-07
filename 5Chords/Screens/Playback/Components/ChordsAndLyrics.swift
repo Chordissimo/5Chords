@@ -50,6 +50,7 @@ struct ChordsAndLyrics: View {
                                         let interval = song.intervals[chordIndex]
                                         let intervalIndex = timeframe.intervals.firstIndex(where: { $0 == chordIndex })
                                         let chord = interval.uiChord == nil ? "" : interval.uiChord!.getChordString()
+                                        let _ = print(chord)
                                         let intervalWidth = intervalIndex == 0 || intervalIndex == (timeframe.intervals.count - 1) ?
                                         (timeframe.intervals.count == 1 ? (width - LyricsViewModelConstants.padding) : (interval.width + intervalPaddingWidth)) :
                                         interval.width

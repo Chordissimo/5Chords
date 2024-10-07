@@ -35,6 +35,9 @@ struct AppRoot: View {
                         withAnimation {
                             showOnboarding = false
                         }
+                        if AppDefaults.FREE_SONG != "" {
+                            songsList.processYoutubeVideo(by: "https://youtube.com/watch?v=" + AppDefaults.FREE_SONG, title: "FREE Demo Song", thumbnailUrl: "", isDemo: true)
+                        }
                     }
                 } else {
                     AllSongs()
@@ -67,9 +70,6 @@ struct AppRoot: View {
                     }
                     AppDefaults.loadChordsJSON(AppDefaults.UKULELE_CHORDS_URL) {
                         loadingStage += 1
-                    }
-                    if AppDefaults.FREE_SONG != "" && AppDefaults.showOnboarding {
-                        songsList.processYoutubeVideo(by: "https://youtube.com/watch?v=" + AppDefaults.FREE_SONG, title: "FREE Demo Song", thumbnailUrl: "", isDemo: true)
                     }
                 }
             }

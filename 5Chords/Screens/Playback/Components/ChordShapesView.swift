@@ -18,22 +18,24 @@ struct ChordShapesView: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(song.intervals, id: \.self) { interval in
-                                if let key = interval.uiChord?.key, let suffix = interval.uiChord?.suffix {
+                                if let uiChord = interval.uiChord {
+                                    let chord = uiChord.getChordString()
+//                                    let _ = print(chord)
                                     HStack {
                                         interval.uiChord?.renderShape(positionIndex: 0)
                                             .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
-                                            .id(interval.uiChord!.id)
+                                            .id(uiChord.id)
                                         
                                         VStack(alignment: .center, spacing: 10) {
-                                            Text(key.display.symbol + suffix.display.symbolized)
+                                            Text(chord)
                                                 .foregroundStyle(.white)
                                                 .font(.system( size: 30))
                                                 .fontWeight(.semibold)
-                                            Text(key.display.accessible + suffix.display.accessible)
-                                                .foregroundStyle(.white)
-                                                .font(.system( size: 16))
-                                                .lineLimit(2)
-                                                .multilineTextAlignment(.center)
+//                                            Text(key.display.accessible + suffix.display.accessible)
+//                                                .foregroundStyle(.white)
+//                                                .font(.system( size: 16))
+//                                                .lineLimit(2)
+//                                                .multilineTextAlignment(.center)
                                         }
                                         .frame(width: LyricsViewModelConstants.chordWidth, height: LyricsViewModelConstants.chordHeight)
                                     }
