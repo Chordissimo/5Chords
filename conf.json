@@ -1,5 +1,5 @@
 {
-    "GOOGLE_DATA_API_KEY": "AIzaSyBrjR0_EvjIsXTz46EjCAewwV2Bs_YOnfA",
+    "GOOGLE_DATA_API_KEY": "",
     "GOOGLE_DATA_API_URL": "https://www.googleapis.com/youtube/v3/videos",
     "UPLOAD_ENDPOINT": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/api/recognize/upload",
     "YOUTUBE_ENDPOINT": "https://ubr15qf9fnmz3j-443.proxy.runpod.net/api/recognize/youtube",
